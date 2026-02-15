@@ -1,0 +1,46 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="modal-form-solucion">
+    <EditForm Model="@nuevaSolucion" OnValidSubmit="GuardarSolucion">
+        <div class="form-container-dav">
+            @* Grupo: Nombre *@
+            <div class="form-group-dav">
+                <label>NOMBRE DE LA SOLUCIÓN</label>
+                <InputText @bind-Value="nuevaSolucion.SOL_NOM" class="input-dav" placeholder="Ingrese el título..." />
+            </div>
+
+            @* Grupo: Descripción *@
+            <div class="form-group-dav">
+                <label>DESCRIPCIÓN DE LA SOLUCIÓN</label>
+                <InputTextArea @bind-Value="nuevaSolucion.SOL_DES" class="input-dav textarea-dav" placeholder="Detalle técnico..." />
+            </div>
+
+            @* Fila: Estado y Efectividad *@
+            <div class="form-row-dav">
+                <div class="form-group-dav flex-1">
+                    <label>ESTADO</label>
+                    <InputSelect @bind-Value="nuevaSolucion.SOL_EST" class="input-dav">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Progreso">En Progreso</option>
+                        <option value="Completada">Completada</option>
+                    </InputSelect>
+                </div>
+                <div class="form-group-dav flex-1">
+                    <label>EFECTIVIDAD (%)</label>
+                    <InputNumber @bind-Value="nuevaSolucion.SOL_NIV_EFE" class="input-dav" min="0" max="100" />
+                </div>
+            </div>
+
+            @* Acciones *@
+            <div class="footer-actions-dav">
+                <button type="submit" class="btn-save-dav">
+                    <i class="bi bi-save"></i> Registrar Solución y Bitácora
+                </button>
+            </div>
+        </div>
+    </EditForm>
+</div>

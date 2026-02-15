@@ -35,7 +35,8 @@
                     {
                         @foreach (var tarea in TareasFiltradas)
                         {
-                            <div class="task-card-column">
+                            @* Tarjeta individual de tarea: Al tocarla abre DetalleTarea *@
+                            <div class="task-card-column" @onclick="() => AbrirDetalleTarea(tarea)" style="cursor: pointer;">
                                 <div class="task-card-inner">
                                     <div class="task-header-prio">
                                         <span class="badge @GetPrioridadNombre(tarea.PRI_ID).ToLower()">
@@ -93,7 +94,7 @@
                     </div>
                 </div>
 
-                @* BOTÓN INTERACTIVO: Abre el Modal de Agenda *@
+                @* BOTÓN INTERACTIVO: Abre el Modal de Agenda Detallada *@
                 @{
                     var proxima = GetProximaTarea();
                 }
@@ -132,21 +133,28 @@
     </div>
 </div>
 
-@* ... final de tu grid y otros contenedores ... *@
-
+@* --- LÓGICA DE MODAL ÚNICA: Calendario o DetalleTarea --- *@
 @if (MostrarModal)
 {
-    <div class="modal-backdrop-dav" @onclick="CerrarModalCalendario">
+    <div class="modal-backdrop-dav" @onclick="CerrarModal">
         <div class="modal-calendar-content" @onclick:stopPropagation>
             <div class="modal-header-dav">
                 <div class="header-content-left">
-                    <h3 style="font-weight: 800; color: #1e293b; margin: 0;">Agenda de Tareas</h3>
+                    <h3 style="font-weight: 800; color: #1e293b; margin: 0;">
+                        @(ModalActual == "CALENDARIO" ? "Agenda de Tareas" : "Detalle de la Tarea")
+                    </h3>
                 </div>
-                <button class="close-btn-dav" @onclick="CerrarModalCalendario">×</button>
+                <button class="close-btn-dav" @onclick="CerrarModal">×</button>
             </div>
             <div class="modal-body-dav">
-                @* El componente ahora se verá arriba de todo *@
-                <Calendario />
+                @if (ModalActual == "CALENDARIO")
+                {
+                    <Calendario />
+                }
+                else if (ModalActual == "DETALLE" && TareaSeleccionada != null)
+                {
+                    <Davivienda.Component.Componentes.DetalleTarea Tarea="TareaSeleccionada" OnClose="CerrarModal" />
+                }
             </div>
         </div>
     </div>

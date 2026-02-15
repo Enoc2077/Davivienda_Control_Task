@@ -1,0 +1,81 @@
+.modal-form-solucion {
+    padding: 10px;
+}
+
+.form-container-dav {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* Espaciado entre grupos de inputs */
+}
+
+.form-group-dav label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #475569;
+    margin-bottom: 6px;
+    display: block;
+}
+
+/* Inputs con bordes y espacio [cite: 2026-02-12] */
+.input-dav {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background-color: #ffffff;
+    transition: border-color 0.2s;
+}
+
+    .input-dav:focus {
+        outline: none;
+        border-color: #0033a0;
+        box-shadow: 0 0 0 2px rgba(0, 51, 160, 0.1);
+    }
+
+.textarea-dav {
+    min-height: 100px;
+    resize: vertical;
+}
+
+.form-row-dav {
+    display: flex;
+    gap: 12px;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.footer-actions-dav {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-save-dav {
+    background-color: #0033a0;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .btn-save-dav:hover {
+        background-color: #00257a;
+    }
+
+/* En el CSS de CrearSolucion */
+.modal-content-centered {
+    width: 400px; /* Reducido de 500px a 400px */
+    padding: 15px;
+    border-radius: 16px;
+}
+
+.input-dav {
+    padding: 8px 12px; /* Más compacto */
+}

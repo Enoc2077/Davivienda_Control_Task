@@ -1,0 +1,117 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
+
+<div class="bitacora-global-container">
+    @* --- BARRA DE FILTROS SUPERIOR --- *@
+    <div class="filters-bar-dav">
+        <div class="filter-item">
+            <label>PROYECTO</label>
+            <select class="input-dav select-filter" @onchange="OnProyectoChanged">
+                <option value="">Todas los Proyectos</option>
+                @foreach (var pro in ProyectosList)
+                {
+                    <option value="@pro.PRO_ID">@pro.PRO_NOM</option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-item">
+            <label>PROCESO</label>
+            <select class="input-dav select-filter" @onchange="OnProcesoChanged">
+                <option value="">Todos los Procesos</option>
+                @foreach (var proc in ProcesosFiltrados)
+                {
+                    <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-item">
+            <label>TAREA</label>
+            <select class="input-dav select-filter" @onchange="OnTareaChanged">
+                <option value="">Todas las Tareas</option>
+                @foreach (var tar in TareasFiltradas)
+                {
+                    <option value="@tar.TAR_ID">@tar.TAR_NOM</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    @* --- CONTENEDOR HORIZONTAL DE FRICCIONES --- *@
+    <div class="fricciones-horizontal-scroll custom-scroll">
+        @if (FriccionesFiltradas != null && FriccionesFiltradas.Any())
+        {
+            @foreach (var fri in FriccionesFiltradas)
+            {
+                <div class="card-friccion-bitacora clickable-card"
+                     style="border-top: 8px solid @ObtenerColorTarea(fri.TAR_ID)"
+                     @onclick="() => AbrirDetalle(fri)">
+                    <div class="card-fri-header">
+                        <span class="tarea-tag" style="background-color: @ObtenerColorTarea(fri.TAR_ID)">
+                            @ObtenerNombreTarea(fri.TAR_ID)
+                        </span>
+                        <span class="impacto-badge @fri.FRI_IMP?.ToLower()">@fri.FRI_IMP</span>
+                    </div>
+                    <h5 class="fri-title">@fri.FRI_TIP</h5>
+                    <p class="fri-desc">@fri.FRI_DES</p>
+                    <div class="fri-footer-data">
+                        <span><b>Estado:</b> @fri.FRI_EST</span>
+                        <span><b>Fecha:</b> @fri.FRI_FEC_CRE.ToString("dd/MM/yy")</span>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state-container">
+                <p>No se encontraron fricciones para los filtros seleccionados.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@* --- SUB-MODAL DE DETALLE (ENCIMA DE TODO EL SISTEMA) --- *@
+@if (MostrarDetalle && FriccionSeleccionada != null)
+{
+    <div class="modal-backdrop-dav sub-modal-top" @onclick="CerrarDetalle">
+        <div class="modal-content-centered detail-card" @onclick:stopPropagation>
+            <div class="modal-header-dav border-friccion-yellow">
+                <h4>Detalle de Fricción Detectada</h4>
+                <button class="close-btn-dav" @onclick="CerrarDetalle">×</button>
+            </div>
+            <div class="modal-body-dav">
+                <div class="detail-grid-container">
+                    <div class="detail-item">
+                        <label>NOMBRE DE LA FRICCIÓN / TIPO</label>
+                        <p class="val-highlight">@FriccionSeleccionada.FRI_TIP</p>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <label>IMPACTO EN EL NEGOCIO</label>
+                            <span class="impacto-badge @FriccionSeleccionada.FRI_IMP?.ToLower()">@FriccionSeleccionada.FRI_IMP</span>
+                        </div>
+                        <div class="detail-item">
+                            <label>ESTADO ACTUAL</label>
+                            <p class="val-highlight">@FriccionSeleccionada.FRI_EST</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item full-width">
+                        <label>DESCRIPCIÓN DETALLADA DEL OBSTÁCULO</label>
+                        <div class="desc-content-box">
+                            @FriccionSeleccionada.FRI_DES
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>FECHA DE REGISTRO ORIGINAL</label>
+                        <p>@FriccionSeleccionada.FRI_FEC_CRE.ToString("f")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
