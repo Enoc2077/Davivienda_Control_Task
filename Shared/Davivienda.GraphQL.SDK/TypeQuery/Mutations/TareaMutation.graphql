@@ -1,0 +1,11 @@
+mutation InsertTarea($input: TareaModelInput!) {
+  insertTarea(tarea: $input)
+}
+
+mutation UpdateTarea($input: TareaModelInput!) {
+  updateTarea(tarea: $input)
+}
+
+mutation DeleteTarea($id: UUID!) {
+  deleteTarea(tar_id: $id)
+}

@@ -1,0 +1,15 @@
+{
+  "schema": "schema.graphql",
+  "documents": "**/*.graphql",
+  "extensions": {
+    "strawberryShake": {
+      "name": "DaviviendaGraphQLClient",
+      "namespace": "Davivienda.GraphQL.SDK",
+      "url": "http://localhost:5098/graphql",
+      "records": {
+        "inputs": false,
+        "entities": false
+      }
+    }
+  }
+}

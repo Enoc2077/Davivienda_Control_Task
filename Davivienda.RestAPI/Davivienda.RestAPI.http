@@ -1,0 +1,6 @@
+@Davivienda.RestAPI_HostAddress = http://localhost:5050
+
+GET {{Davivienda.RestAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

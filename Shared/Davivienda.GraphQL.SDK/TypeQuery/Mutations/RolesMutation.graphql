@@ -1,0 +1,11 @@
+mutation InsertRol($input: RolesModelInput!) {
+  insertRol(rol: $input)
+}
+
+mutation UpdateRol($input: RolesModelInput!) {
+  updateRol(rol: $input)
+}
+
+mutation DeleteRol($id: UUID!) {
+  deleteRol(rol_id: $id)
+}

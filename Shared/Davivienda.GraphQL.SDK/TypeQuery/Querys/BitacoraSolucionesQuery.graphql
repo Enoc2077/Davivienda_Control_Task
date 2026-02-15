@@ -1,0 +1,41 @@
+# 1. Obtener todas las bitácoras de soluciones (ACTIVA)
+query GetBitacoraSoluciones {
+  bitacoraSoluciones {
+    bit_SOL_ID
+    bit_SOL_NOM
+    bit_SOL_EST
+    bit_SOL_DES
+    bit_SOL_TIE_TOT_TRA
+    sol_ID
+    usu_ID
+    bit_SOL_FEC_CRE
+    bit_SOL_FEC_MOD
+  }
+}
+
+# 2. Obtener bitácoras de soluciones por nombre (COMENTADA PARA DESPUÉS)
+ query GetBitacoraSolucionesByName($nombre: String!) {
+  bitacoraSolucionesByName(nombre: $nombre) {
+     bit_SOL_ID
+     bit_SOL_NOM
+     bit_SOL_EST
+     bit_SOL_DES
+     sol_ID
+     usu_ID
+   }
+ }
+
+# 3. Obtener bitácora de solución por ID (ACTIVA)
+query GetBitacoraSolucionById($id: UUID!) {
+  bitacoraSolucionById(bit_sol_id: $id) {
+    bit_SOL_ID
+    bit_SOL_NOM
+    bit_SOL_EST
+    bit_SOL_DES
+    bit_SOL_TIE_TOT_TRA
+    sol_ID
+    usu_ID
+    bit_SOL_FEC_CRE
+    bit_SOL_FEC_MOD
+  }
+}

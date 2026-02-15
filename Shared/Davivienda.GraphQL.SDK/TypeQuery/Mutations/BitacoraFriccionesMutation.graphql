@@ -1,0 +1,15 @@
+# 1. Insertar bitácora (Coincide con insertBitacora)
+mutation InsertBitacora($bitacora: BitacoraFriccionModelInput!) {
+  insertBitacora(bitacora: $bitacora)
+}
+
+# 2. Actualizar bitácora (Coincide con updateBitacora)
+mutation UpdateBitacora($bitacora: BitacoraFriccionModelInput!) {
+  updateBitacora(bitacora: $bitacora)
+}
+
+# 3. Eliminar bitácora de SOLUCIÓN 
+# (En tu esquema NO definiste deleteBitacora para Fricción, solo para Solución)
+mutation DeleteBitacoraSolucion($id: UUID!) {
+  deleteBitacoraSolucion(bit_sol_id: $id)
+}

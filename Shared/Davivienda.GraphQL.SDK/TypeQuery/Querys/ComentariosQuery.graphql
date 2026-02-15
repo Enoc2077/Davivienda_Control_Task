@@ -1,0 +1,34 @@
+# 1. Obtener todos los comentarios
+query GetComentarios {
+  comentarios {
+    com_ID
+    com_COM
+    fri_ID
+    usu_ID
+    com_FEC_CRE
+    com_FEC_MOD
+  }
+}
+
+# 2. Obtener comentarios por texto (ACTIVADA)
+query GetComentariosByText($texto: String!) {
+  comentariosByText(texto: $texto) {
+    com_ID
+    com_COM
+    fri_ID
+    usu_ID
+    com_FEC_CRE
+  }
+}
+
+# 3. Obtener comentario por ID
+query GetComentarioById($id: UUID!) {
+  comentarioById(com_id: $id) {
+    com_ID
+    com_COM
+    fri_ID
+    usu_ID
+    com_FEC_CRE
+    com_FEC_MOD
+  }
+}

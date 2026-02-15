@@ -1,0 +1,391 @@
+﻿/* =========================================
+   MODAL ESTRUCTURA (PROCESO)
+   ========================================= */
+.modal-backdrop-warm {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.25);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-window-proceso {
+    background: #fff;
+    width: 96%;
+    height: 92%;
+    border-radius: 25px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    border: 1px solid #fceaea;
+}
+
+/* --- BOTÓN VOLVER --- */
+.btn-modal-back-red {
+    background: #fff5f5;
+    border: 1px solid rgba(237, 28, 36, 0.2);
+    color: #ed1c24;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 10px 20px;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+    .btn-modal-back-red:hover {
+        background: #ed1c24;
+        color: white;
+        transform: translateX(-5px);
+    }
+
+/* --- GRID DE 3 COLUMNAS --- */
+.proceso-grid-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr 320px;
+    gap: 20px;
+    flex-grow: 1;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.white-panel-inner {
+    background: #fff;
+    border-radius: 15px;
+    padding: 0 15px 15px 15px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    overflow: hidden;
+}
+
+/* --- LÍNEAS DE COLOR SUPERIOR --- */
+.panel-top-line {
+    height: 5px;
+    width: 100%;
+    border-radius: 10px 10px 0 0;
+    margin-bottom: 10px;
+}
+
+.line-red {
+    background: #ed1c24;
+}
+
+.line-blue {
+    background: #007bff;
+}
+
+.line-yellow {
+    background: #ffc107;
+}
+
+/* --- COLUMNA 1: PROCESOS (Cuadros Blancos) --- */
+.process-card {
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+
+    .process-card.active {
+        border-left: 5px solid #ed1c24;
+        background: #fff5f5;
+        font-weight: bold;
+    }
+
+/* --- COLUMNA 2: CONFIGURACIÓN (Clean Form) --- */
+.warm-form-modal {
+    padding: 10px;
+}
+
+.label-form {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+    color: #4a5568;
+    font-size: 0.85rem;
+}
+
+.input-warm, .select-warm-input {
+    width: 100%;
+    padding: 12px;
+    border: 1.5px solid #e2e8f0; /* Borde definido solicitado */
+    border-radius: 8px;
+    margin-bottom: 20px; /* Espacio entre inputs */
+    outline: none;
+    transition: border-color 0.3s;
+}
+
+    .input-warm:focus {
+        border-color: #ed1c24;
+    }
+
+.form-row-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.status-switch-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    height: 48px;
+}
+
+.btn-save-pill {
+    background-color: #ffffff;
+    border: 1px solid #004b93;
+    color: #004b93;
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-left: 79%;
+}
+
+    .btn-save-pill:hover {
+        background-color: #004b93;
+        color: white;
+    }
+
+/* --- COLUMNA 3: TAREAS (Cuadros Blancos) --- */
+.task-entry-card-white {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07);
+    border: 1px solid #edf2f7;
+}
+
+/* --- SWITCH --- */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 20px;
+}
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    inset: 0;
+    background-color: #cbd5e0;
+    transition: .4s;
+    border-radius: 20px;
+}
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 14px;
+        width: 14px;
+        left: 3px;
+        bottom: 3px;
+        background: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+input:checked + .slider {
+    background-color: #28a745;
+}
+
+    input:checked + .slider:before {
+        transform: translateX(20px);
+    }
+
+
+/* --- HEADER LAYOUT --- */
+.modal-top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+/* --- BARRA DE BUSQUEDA DERECHA --- */
+.modal-search-bar-horizontal {
+    display: flex;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 50px;
+    padding: 10px 25px;
+    width: 56%;
+    margin-right: 10px;
+    margin-top: 19px;
+
+}
+
+    .modal-search-bar-horizontal:focus-within {
+        border-color: #ed1c24;
+        box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.1);
+        background: white;
+    }
+
+.modal-input-long {
+    border: none;
+    background: transparent;
+    outline: none;
+    flex-grow: 1;
+    font-size: 0.9rem;
+}
+
+/* --- ESTILO DE LOS INPUTS (Borders y Spacing) --- */
+.input-warm, .select-warm-input {
+    border: 1.5px solid #e2e8f0 !important; /* Bordes marcados solicitado */
+    padding: 12px 15px;
+    margin-top: 5px;
+    margin-bottom: 20px; /* Espacio entre inputs */
+    display: block;
+}
+
+/* --- PLACEHOLDER DE CONFIGURACIÓN --- */
+.no-selection-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #cbd5e0;
+    text-align: center;
+    padding: 40px;
+}
+
+    .no-selection-placeholder i {
+        font-size: 4rem;
+        margin-bottom: 15px;
+    }
+
+/* --- AJUSTE DE ALTURA DEL MODAL --- */
+.modal-window-proceso {
+    background: #fff;
+    width: 96%;
+    max-height: 95vh; /* Evita que se salga de la pantalla */
+    height: auto;
+    border-radius: 25px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* El scroll lo maneja el contenido interno */
+}
+
+/* --- GRID Y SCROLL INTERNO --- */
+.proceso-grid-layout {
+    display: grid;
+    grid-template-columns: 300px 1fr 320px;
+    gap: 20px;
+    flex-grow: 1;
+    overflow-y: auto; /* Permite bajar si el contenido de las columnas es muy alto */
+    padding-right: 5px;
+}
+
+.scrollable-content-inner {
+    overflow-y: auto;
+    max-height: 60vh; /* Ajuste para que los paneles tengan su propio scroll */
+    padding: 10px;
+}
+
+/* --- BARRA DE BUSQUEDA LIMPIA --- */
+.modal-search-bar-horizontal {
+    display: flex;
+    background: #f8fafc;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 50px;
+    padding: 10px 25px; /* Más padding para compensar la falta de botón */
+    width: 450px;
+}
+
+.modal-input-long {
+    width: 100%;
+    border: none;
+    background: transparent;
+    outline: none;
+}
+
+/* --- TARJETA DE PROCESO (COLUMNA 1) --- */
+.process-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 10px;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column; /* Alineación vertical */
+    gap: 4px; /* Espacio entre nombre y frecuencia */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+    .process-card:hover {
+        border-color: #ed1c24;
+        background: #fffafa;
+    }
+
+    .process-card.active {
+        border-left: 5px solid #ed1c24;
+        background: #fff5f5;
+        border-top-color: #fceaea;
+        border-right-color: #fceaea;
+        border-bottom-color: #fceaea;
+    }
+
+/* Estilo para el nombre */
+.process-title-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+/* Estilo para la frecuencia (visible debajo) */
+.process-freq-text {
+    font-size: 0.75rem;
+    color: #718096;
+    font-weight: 400;
+    display: block; /* Asegura que tome su propia línea */
+}
+
+/* Cambio de color cuando está activo */
+.process-card.active .process-title-text {
+    color: #ed1c24;
+}
+
+.process-card.active .process-freq-text {
+    color: #e53e3e;
+    opacity: 0.8;
+}

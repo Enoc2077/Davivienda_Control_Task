@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<StrawberryShake_SkipCodeGen>true</StrawberryShake_SkipCodeGen>
+		<GenerateClient>false</GenerateClient>
+		<StrawberryShake_IsProjectClient>false</StrawberryShake_IsProjectClient>
+
+		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+		<RunAnalyzers>false</RunAnalyzers>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<SupportedPlatform Include="browser" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Davivienda.Models\Davivienda.Models.csproj" />
+		<ProjectReference Include="..\Shared\Davivienda.GraphQL.SDK\Davivienda.GraphQL.SDK.csproj" />
+	</ItemGroup>
+
+	<Target Name="RemoveStrawberryShakeAnalyzer" BeforeTargets="CoreCompile">
+		<ItemGroup>
+			<Analyzer Remove="@(Analyzer)" Condition="'%(FileName)' == 'StrawberryShake.CodeGeneration.CSharp.Analyzers'" />
+		</ItemGroup>
+	</Target>
+
+</Project>

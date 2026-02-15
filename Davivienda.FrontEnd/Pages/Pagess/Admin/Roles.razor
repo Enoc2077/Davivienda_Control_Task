@@ -1,0 +1,94 @@
+﻿@page "/Roles"
+@using Davivienda.Models
+
+<div class="page-container">
+    <div class="search-bar-wrapper">
+        <div class="search-input-box">
+            @* Filtrado en tiempo real usando @oninput *@
+            <input type="text"
+                   value="@Busqueda"
+                   @oninput="OnSearchChanged"
+                   placeholder="Buscar por nombre..." />
+        </div>
+        <button class="btn-primary-blue" @onclick="AbrirModalNuevo">
+            Nuevo Rol
+        </button>
+    </div>
+
+    <div class="main-card">
+        <div class="card-header">
+            <h3>Gestión de Roles</h3>
+        </div>
+
+        <div class="table-container">
+            <table class="dav-table">
+                <thead>
+                    <tr>
+                        <th>NOMBRE DEL ROL</th>
+                        <th class="text-center">ESTADO</th>
+                        <th class="text-center">ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (RolesFiltrados == null || !RolesFiltrados.Any())
+                    {
+                        <tr><td colspan="3" class="text-center py-4">No se encontraron roles disponibles.</td></tr>
+                    }
+                    else
+                    {
+                        @foreach (var rol in RolesFiltrados)
+                        {
+                            <tr>
+                                <td class="rol-name-cell">@rol.ROL_NOM</td>
+                                <td class="text-center">
+                                    <span class="status-badge-blue">
+                                        @(rol.ROL_EST ? "Activo" : "Inactivo")
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    <div class="action-flex">
+                                        <button class="btn-action-edit" @onclick="() => AbrirModalEditar(rol)">Editar</button>
+                                        <button class="btn-action-delete" @onclick="() => EliminarRol(rol.ROL_ID)">Eliminar</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@if (MostrarModal)
+{
+    <div class="modal-backdrop">
+        <div class="modal-card-warm animate-fade-in">
+            <div class="modal-header-simple">
+                <h2 class="modal-title">@(Editando ? "Actualizar Rol" : "Nuevo Rol")</h2>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-field">
+                    <label>Nombre del Rol</label>
+                    <input type="text" @bind="RolForm.ROL_NOM" class="input-warm" placeholder="Nombre del rol" />
+                </div>
+                <div class="form-field">
+                    <label>Descripción</label>
+                    <textarea @bind="RolForm.ROL_DES" class="input-warm" rows="3" placeholder="Descripción breve..."></textarea>
+                </div>
+                <div class="form-check-custom" style="margin-top: 15px; display: flex; align-items: center;">
+                    <input type="checkbox" id="chkActivo" @bind="RolForm.ROL_EST" style="width: auto;" />
+                    <label for="chkActivo" style="margin-left: 8px; cursor: pointer; margin-bottom: 0;">Rol Activo</label>
+                </div>
+            </div>
+
+            <div class="modal-footer-flex">
+                <button class="btn-cancel-warm" @onclick="() => MostrarModal = false">Cancelar</button>
+                <button class="btn-save-warm" @onclick="GuardarCambios">
+                    @(Editando ? "Confirmar" : "Registrar")
+                </button>
+            </div>
+        </div>
+    </div>
+}

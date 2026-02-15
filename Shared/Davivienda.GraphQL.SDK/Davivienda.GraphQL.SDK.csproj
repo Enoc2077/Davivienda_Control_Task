@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<EmitCompilerGeneratedFiles>false</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<GraphQL Include="**/*.graphql" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="Generated\**\*.cs" />
+		<None Include="Generated\**\*.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Davivienda.Models\Davivienda.Models.csproj" />
+		<ProjectReference Include="..\Davivienda.QueryBuilder\Davivienda.QueryBuilder.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="StrawberryShake.CodeGeneration.CSharp.Analyzers" Version="13.0.0-preview.24" />
+		<PackageReference Include="StrawberryShake.Transport.Http" Version="13.0.0-preview.24" />
+	</ItemGroup>
+
+</Project>

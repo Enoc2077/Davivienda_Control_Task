@@ -1,0 +1,453 @@
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Suscripciones
+}
+
+type Query {
+  areas: [AreasModel!]!
+  areasByName(area_name: String!): [AreasModel!]!
+  areasById(area_id: UUID!): AreasModel!
+  bitacoras: [BitacoraFriccionModel!]!
+  bitacoraById(bif_id: UUID!): BitacoraFriccionModel
+  bitacoraSoluciones: [BitacoraSolucionesModel!]!
+  bitacoraSolucionById(bit_sol_id: UUID!): BitacoraSolucionesModel
+  bitacoraSolucionesByName(nombre: String!): [BitacoraSolucionesModel!]!
+  comentarios: [ComentariosModel!]!
+  comentariosByText(texto: String!): [ComentariosModel!]!
+  comentarioById(com_id: UUID!): ComentariosModel
+  detallesProyecto: [DetalleProyectoModel!]!
+  detalleProyectoById(det_pro_id: UUID!): DetalleProyectoModel
+  documentaciones: [DocumentacionModel!]!
+  documentacionById(doc_id: UUID!): DocumentacionModel
+  fricciones: [FriccionModel!]!
+  friccionById(fri_id: UUID!): FriccionModel
+  notificaciones: [NotificacionesModel!]!
+  notificacionById(not_id: UUID!): NotificacionesModel
+  prioridades: [PrioridadModel!]!
+  prioridadesByName(nombre: String!): [PrioridadModel!]!
+  prioridadById(pri_id: UUID!): PrioridadModel
+  procesos: [ProcesoModel!]!
+  procesosByName(nombre: String!): [ProcesoModel!]!
+  procesoById(proc_id: UUID!): ProcesoModel
+  proyectos: [ProyectosModel!]!
+  proyectosByName(nombre: String!): [ProyectosModel!]!
+  proyectoById(pro_id: UUID!): ProyectosModel
+  roles: [RolesModel!]!
+  rolesByName(nombre: String!): [RolesModel!]!
+  rolById(rol_id: UUID!): RolesModel
+  soluciones: [SolucionesModel!]!
+  solucionesByName(nombre: String!): [SolucionesModel!]!
+  solucionById(sol_id: UUID!): SolucionesModel
+  tareas: [TareaModel!]!
+  tareasByName(nombre: String!): [TareaModel!]!
+  tareaById(tar_id: UUID!): TareaModel
+  usuarios: [UsuarioModel!]!
+  usuarioByEmail(email: String!): UsuarioModel
+  usuarioById(usu_id: UUID!): UsuarioModel
+}
+
+type Mutation {
+  insertAreas(area: AreasModelInput!): Boolean!
+  deleteArea(area_id: UUID!): Boolean!
+  updateArea(areas: AreasModelInput!): Boolean!
+  insertBitacora(bitacora: BitacoraFriccionModelInput!): Boolean!
+  updateBitacora(bitacora: BitacoraFriccionModelInput!): Boolean!
+  deleteBitacoraSolucion(bit_sol_id: UUID!): Boolean!
+  insertBitacoraSolucion(bitacora: BitacoraSolucionesModelInput!): Boolean!
+  updateBitacoraSolucion(bitacora: BitacoraSolucionesModelInput!): Boolean!
+  insertComentario(comentario: ComentariosModelInput!): Boolean!
+  updateComentario(comentario: ComentariosModelInput!): Boolean!
+  deleteComentario(com_id: UUID!): Boolean!
+  insertDetalleProyecto(detalle: DetalleProyectoModelInput!): Boolean!
+  updateDetalleProyecto(detalle: DetalleProyectoModelInput!): Boolean!
+  deleteDetalleProyecto(det_pro_id: UUID!): Boolean!
+  insertDocumentacion(doc: DocumentacionModelInput!): Boolean!
+  updateDocumentacion(doc: DocumentacionModelInput!): Boolean!
+  deleteDocumentacion(doc_id: UUID!): Boolean!
+  insertFriccion(friccion: FriccionModelInput!): Boolean!
+  updateFriccion(friccion: FriccionModelInput!): Boolean!
+  deleteFriccion(fri_id: UUID!): Boolean!
+  insertNotificacion(notificacion: NotificacionesModelInput!): Boolean!
+  updateNotificacion(notificacion: NotificacionesModelInput!): Boolean!
+  deleteNotificacion(not_id: UUID!): Boolean!
+  insertPrioridad(prioridad: PrioridadModelInput!): Boolean!
+  updatePrioridad(prioridad: PrioridadModelInput!): Boolean!
+  deletePrioridad(pri_id: UUID!): Boolean!
+  insertProceso(proceso: ProcesoModelInput!): Boolean!
+  updateProceso(proceso: ProcesoModelInput!): Boolean!
+  deleteProceso(proc_id: UUID!): Boolean!
+  insertProyecto(proyecto: ProyectosModelInput!): Boolean!
+  updateProyecto(proyecto: ProyectosModelInput!): Boolean!
+  deleteProyecto(pro_id: UUID!): Boolean!
+  insertRol(rol: RolesModelInput!): Boolean!
+  updateRol(rol: RolesModelInput!): Boolean!
+  deleteRol(rol_id: UUID!): Boolean!
+  insertSolucion(solucion: SolucionesModelInput!): Boolean!
+  updateSolucion(solucion: SolucionesModelInput!): Boolean!
+  deleteSolucion(sol_id: UUID!): Boolean!
+  insertTarea(tarea: TareaModelInput!): Boolean!
+  updateTarea(tarea: TareaModelInput!): Boolean!
+  deleteTarea(tar_id: UUID!): Boolean!
+  login(usuNum: Int! password: String!): String!
+  insertUsuario(usuario: UsuarioModelInput!): Boolean!
+  updateUsuario(usuario: UsuarioModelInput!): Boolean!
+  deleteUsuario(usu_id: UUID!): Boolean!
+}
+
+type Suscripciones {
+  onAreaInserted: AreasModel!
+  onAreaUpdated: AreasModel!
+  onProyectoInserted: ProyectosModel!
+  onProyectoUpdated: ProyectosModel!
+  onDetalleProyectoInserted: DetalleProyectoModel!
+  onDetalleProyectoUpdated: DetalleProyectoModel!
+  onTareaInserted: TareaModel!
+  onTareaUpdated: TareaModel!
+  onUsuarioInserted: UsuarioModel!
+  onRolInserted: RolesModel!
+  onFriccionInserted: FriccionModel!
+  onFriccionUpdated: FriccionModel!
+  onSolucionInserted: SolucionesModel!
+  onSolucionUpdated: SolucionesModel!
+  onBitacoraFriccionInserted: BitacoraFriccionModel!
+  onBitacoraSolucionInserted: BitacoraSolucionesModel!
+  onComentarioInserted: ComentariosModel!
+  onDocumentacionInserted: DocumentacionModel!
+  onNotificacionSent: NotificacionesModel!
+  onPrioridadUpdated: PrioridadModel!
+  onProcesoInserted: ProcesoModel!
+}
+
+input UsuarioModelInput {
+  usu_ID: UUID!
+  usu_NOM: String!
+  usu_NUM: String
+  usu_COR: String
+  usu_CON: String
+  usu_TEL: String
+  usu_EST: Boolean
+  rol_ID: UUID
+  are_ID: UUID
+  usu_FEC_CRE: DateTime!
+  usu_FEC_MOD: DateTime
+}
+
+input TareaModelInput {
+  tar_ID: UUID!
+  tar_NOM: String!
+  tar_DES: String
+  tar_EST: String
+  tar_FEC_INI: DateTime!
+  tar_FEC_FIN: DateTime
+  proc_ID: UUID
+  pri_ID: UUID
+  usu_ID: UUID
+  tar_FEC_CRE: DateTime!
+  tar_FEC_MOD: DateTime
+}
+
+input SolucionesModelInput {
+  sol_ID: UUID!
+  sol_NOM: String!
+  sol_DES: String!
+  sol_EST: String!
+  sol_TIE_RES: DateTime
+  sol_NIV_EFE: Int
+  fri_ID: UUID
+  usu_ID: UUID
+  sol_FEC_CRE: DateTime!
+  sol_FEC_MOD: DateTime
+}
+
+input RolesModelInput {
+  rol_ID: UUID!
+  rol_NOM: String!
+  rol_DES: String
+  rol_EST: Boolean!
+  rol_FEC_CRE: DateTime
+  rol_FEC_MOD: DateTime
+}
+
+input ProyectosModelInput {
+  pro_ID: UUID!
+  pro_NOM: String!
+  pro_DES: String
+  pro_FEC_INI: DateTime!
+  pro_FEC_FIN: DateTime
+  pro_EST: String
+  are_ID: UUID
+  pro_FEC_CRE: DateTime!
+  pro_FEC_MOD: DateTime
+}
+
+input ProcesoModelInput {
+  proc_ID: UUID!
+  proc_NOM: String!
+  proc_DES: String
+  proc_FRE: String
+  proc_EST: Boolean
+  pro_ID: UUID
+  proc_FEC_CRE: DateTime!
+  proc_FEC_MOD: DateTime
+}
+
+input PrioridadModelInput {
+  pri_ID: UUID!
+  pri_NOM: String
+  pri_DES: String
+  pri_NIV: Int!
+  pri_FEC_CRE: DateTime!
+  pri_FEC_MOD: DateTime
+}
+
+input NotificacionesModelInput {
+  not_ID: UUID!
+  not_MEN: String!
+  not_LEI: Boolean!
+  usu_ID: UUID
+  not_FEC_CRE: DateTime!
+  not_FEC_MOD: DateTime
+}
+
+input FriccionModelInput {
+  fri_ID: UUID!
+  fri_TIP: String
+  fri_DES: String
+  fri_EST: String
+  fri_IMP: String
+  tar_ID: UUID
+  usu_ID: UUID
+  fri_FEC_CRE: DateTime!
+  fri_FEC_MOD: DateTime
+}
+
+input DocumentacionModelInput {
+  doc_ID: UUID!
+  doc_NOM: String!
+  doc_RUT: String!
+  tar_ID: UUID
+  usu_ID: UUID
+  doc_FEC_CRE: DateTime!
+  doc_FEC_MOD: DateTime
+}
+
+input DetalleProyectoModelInput {
+  det_PRO_ID: UUID!
+  pro_ID: UUID
+  usu_ID: UUID
+  rol_ID: UUID
+  det_PRO_FEC_ASI: DateTime!
+  det_PRO_FEC_CRE: DateTime!
+  det_PRO_FEC_MOD: DateTime
+}
+
+input ComentariosModelInput {
+  com_ID: UUID!
+  com_COM: String!
+  fri_ID: UUID
+  usu_ID: UUID
+  com_FEC_CRE: DateTime!
+  com_FEC_MOD: DateTime
+}
+
+input BitacoraSolucionesModelInput {
+  bit_SOL_ID: UUID!
+  bit_SOL_NOM: String
+  bit_SOL_EST: String
+  bit_SOL_DES: String
+  bit_SOL_TIE_TOT_TRA: DateTime!
+  sol_ID: UUID
+  usu_ID: UUID
+  bit_SOL_FEC_CRE: DateTime!
+  bit_SOL_FEC_MOD: DateTime
+}
+
+input BitacoraFriccionModelInput {
+  bit_FRI_ID: UUID!
+  bit_FRI_NOM: String!
+  bit_FRI_DES: String!
+  bit_FRI_EST: Boolean!
+  bit_FRI_FEC_CRE: DateTime!
+  bit_FRI_FEC_MOD: DateTime
+  usu_ID: UUID
+  fri_ID: UUID
+}
+
+input AreasModelInput {
+  are_ID: UUID!
+  are_NOM: String
+  are_DES: String
+  are_EST: Boolean
+  are_FEC_CRE: DateTime
+  are_FEC_MOD: DateTime
+}
+
+type UsuarioModel {
+  usu_ID: UUID!
+  usu_NOM: String!
+  usu_NUM: String
+  usu_COR: String
+  usu_CON: String
+  usu_TEL: String
+  usu_EST: Boolean
+  rol_ID: UUID
+  are_ID: UUID
+  usu_FEC_CRE: DateTime!
+  usu_FEC_MOD: DateTime
+}
+
+type TareaModel {
+  tar_ID: UUID!
+  tar_NOM: String!
+  tar_DES: String
+  tar_EST: String
+  tar_FEC_INI: DateTime!
+  tar_FEC_FIN: DateTime
+  proc_ID: UUID
+  pri_ID: UUID
+  usu_ID: UUID
+  tar_FEC_CRE: DateTime!
+  tar_FEC_MOD: DateTime
+}
+
+type SolucionesModel {
+  sol_ID: UUID!
+  sol_NOM: String!
+  sol_DES: String!
+  sol_EST: String!
+  sol_TIE_RES: DateTime
+  sol_NIV_EFE: Int
+  fri_ID: UUID
+  usu_ID: UUID
+  sol_FEC_CRE: DateTime!
+  sol_FEC_MOD: DateTime
+}
+
+type RolesModel {
+  rol_ID: UUID!
+  rol_NOM: String!
+  rol_DES: String
+  rol_EST: Boolean!
+  rol_FEC_CRE: DateTime
+  rol_FEC_MOD: DateTime
+}
+
+type ProyectosModel {
+  pro_ID: UUID!
+  pro_NOM: String!
+  pro_DES: String
+  pro_FEC_INI: DateTime!
+  pro_FEC_FIN: DateTime
+  pro_EST: String
+  are_ID: UUID
+  pro_FEC_CRE: DateTime!
+  pro_FEC_MOD: DateTime
+}
+
+type ProcesoModel {
+  proc_ID: UUID!
+  proc_NOM: String!
+  proc_DES: String
+  proc_FRE: String
+  proc_EST: Boolean
+  pro_ID: UUID
+  proc_FEC_CRE: DateTime!
+  proc_FEC_MOD: DateTime
+}
+
+type PrioridadModel {
+  pri_ID: UUID!
+  pri_NOM: String
+  pri_DES: String
+  pri_NIV: Int!
+  pri_FEC_CRE: DateTime!
+  pri_FEC_MOD: DateTime
+}
+
+type NotificacionesModel {
+  not_ID: UUID!
+  not_MEN: String!
+  not_LEI: Boolean!
+  usu_ID: UUID
+  not_FEC_CRE: DateTime!
+  not_FEC_MOD: DateTime
+}
+
+type FriccionModel {
+  fri_ID: UUID!
+  fri_TIP: String
+  fri_DES: String
+  fri_EST: String
+  fri_IMP: String
+  tar_ID: UUID
+  usu_ID: UUID
+  fri_FEC_CRE: DateTime!
+  fri_FEC_MOD: DateTime
+}
+
+type DocumentacionModel {
+  doc_ID: UUID!
+  doc_NOM: String!
+  doc_RUT: String!
+  tar_ID: UUID
+  usu_ID: UUID
+  doc_FEC_CRE: DateTime!
+  doc_FEC_MOD: DateTime
+}
+
+type DetalleProyectoModel {
+  det_PRO_ID: UUID!
+  pro_ID: UUID
+  usu_ID: UUID
+  rol_ID: UUID
+  det_PRO_FEC_ASI: DateTime!
+  det_PRO_FEC_CRE: DateTime!
+  det_PRO_FEC_MOD: DateTime
+}
+
+type ComentariosModel {
+  com_ID: UUID!
+  com_COM: String!
+  fri_ID: UUID
+  usu_ID: UUID
+  com_FEC_CRE: DateTime!
+  com_FEC_MOD: DateTime
+}
+
+type BitacoraSolucionesModel {
+  bit_SOL_ID: UUID!
+  bit_SOL_NOM: String
+  bit_SOL_EST: String
+  bit_SOL_DES: String
+  bit_SOL_TIE_TOT_TRA: DateTime!
+  sol_ID: UUID
+  usu_ID: UUID
+  bit_SOL_FEC_CRE: DateTime!
+  bit_SOL_FEC_MOD: DateTime
+}
+
+type BitacoraFriccionModel {
+  bit_FRI_ID: UUID!
+  bit_FRI_NOM: String!
+  bit_FRI_DES: String!
+  bit_FRI_EST: Boolean!
+  bit_FRI_FEC_CRE: DateTime!
+  bit_FRI_FEC_MOD: DateTime
+  usu_ID: UUID
+  fri_ID: UUID
+}
+
+scalar UUID
+
+type AreasModel {
+  are_ID: UUID!
+  are_NOM: String
+  are_DES: String
+  are_EST: Boolean
+  are_FEC_CRE: DateTime
+  are_FEC_MOD: DateTime
+}
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime

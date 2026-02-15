@@ -1,0 +1,14 @@
+# Insertar comentario
+mutation InsertComentario($comentario: ComentariosModelInput!) {
+  insertComentario(comentario: $comentario)
+}
+
+# Actualizar comentario
+mutation UpdateComentario($comentario: ComentariosModelInput!) {
+  updateComentario(comentario: $comentario)
+}
+
+# Eliminar comentario
+mutation DeleteComentario($id: UUID!) {
+  deleteComentario(com_id: $id)
+}

@@ -1,0 +1,34 @@
+# 1. Obtener todas las fricciones (CORREGIDO)
+query GetFricciones {
+  fricciones {
+    fri_ID        # Antes: frI_ID (Error)
+    fri_TIP       # Antes: frI_TIP (Error)
+    fri_DES       # Antes: frI_DES (Error)
+    fri_EST       # Antes: frI_EST (Error)
+    fri_IMP       # Antes: frI_IMP (Error)
+    tar_ID
+    usu_ID
+    fri_FEC_CRE
+    fri_FEC_MOD
+  }
+}
+
+# 2. Obtener fricciones por tipo (COMENTADA PARA DESPUÉS)
+# query GetFriccionesByType($tipo: String!) {
+#   friccionesByType(tipo: $tipo) {
+#     fri_ID
+#     fri_TIP
+#     fri_DES
+#   }
+# }
+
+# 3. Obtener fricción por ID (CORREGIDO)
+query GetFriccionById($id: UUID!) {
+  friccionById(fri_id: $id) {
+    fri_ID
+    fri_TIP
+    fri_DES
+    fri_EST
+    fri_IMP
+  }
+}

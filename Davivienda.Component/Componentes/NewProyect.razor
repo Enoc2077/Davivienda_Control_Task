@@ -1,0 +1,72 @@
+﻿@namespace Davivienda.Component.Component
+@using Davivienda.Models.Modelos
+
+<div class="modal-overlay-gold">
+    <div class="modal-container-gold">
+
+        <div class="modal-header-gold">
+            <h2 class="modal-title-gold">
+                <i class="fas fa-folder-plus"></i>
+                @(Proyecto.PRO_ID == Guid.Empty ? "Nuevo Proyecto" : "Editar Proyecto: " + Proyecto.PRO_NOM)
+            </h2>
+            <button class="close-btn-gold" @onclick="CerrarModal">✕</button>
+        </div>
+
+        <div class="modal-body-gold">
+            <div class="form-grid-gold">
+
+                <div class="form-group-gold full-width">
+                    <label class="label-gold">Nombre del Proyecto</label>
+                    <input type="text" @bind="Proyecto.PRO_NOM" class="form-input-gold" placeholder="Ej: Migración de Core" />
+                </div>
+
+                <div class="form-group-gold full-width">
+                    <label class="label-gold">Descripción</label>
+                    <textarea @bind="Proyecto.PRO_DES" rows="3" class="form-input-gold" placeholder="Detalles del proyecto..."></textarea>
+                </div>
+
+                <div class="form-group-gold">
+                    <label class="label-gold">Fecha Inicio</label>
+                    <input type="date" @bind-value="Proyecto.PRO_FEC_INI" @bind-value:format="yyyy-MM-dd" class="form-input-gold" />
+                </div>
+
+                <div class="form-group-gold">
+                    <label class="label-gold">Fecha Fin</label>
+                    <input type="date" @bind-value="Proyecto.PRO_FEC_FIN" @bind-value:format="yyyy-MM-dd" class="form-input-gold" />
+                </div>
+
+                <div class="form-group-gold">
+                    <label class="label-gold">Estado</label>
+                    <select @bind="Proyecto.PRO_EST" class="form-input-gold">
+                        <option value="NUEVO">NUEVO</option>
+                        <option value="INICIADO">INICIADO</option>
+                        <option value="EN PROCESO">EN PROCESO</option>
+                        <option value="FINALIZADO">FINALIZADO</option>
+                    </select>
+                </div>
+
+                <div class="form-group-gold">
+                    <label class="label-gold">Área Asociada</label>
+                    <select @bind="Proyecto.ARE_ID" class="form-input-gold">
+                        <option value="@Guid.Empty">-- Seleccione Área --</option>
+                        @if (ListaAreas != null)
+                        {
+                            @foreach (var area in ListaAreas)
+                            {
+                                <option value="@area.ARE_ID">@area.ARE_NOM</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer-gold">
+            <button class="btn-gold-secondary" @onclick="CerrarModal">Cancelar</button>
+            <button class="btn-gold-primary" @onclick="GuardarProyecto">
+                <i class="fas fa-save"></i> Guardar Proyecto
+            </button>
+        </div>
+    </div>
+</div>

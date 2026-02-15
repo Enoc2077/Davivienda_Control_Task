@@ -1,0 +1,29 @@
+query GetRoles {
+  roles {
+    rol_ID
+    rol_NOM
+    rol_DES
+    rol_EST
+    rol_FEC_CRE   # <--- Agrega esto
+    rol_FEC_MOD   # <--- Agrega esto
+  }
+}
+
+# 2. Obtener roles por nombre (ACTIVADA)
+query GetRolesByName($nombre: String!) {
+  rolesByName(nombre: $nombre) {
+    rol_ID
+    rol_NOM
+    rol_EST
+  }
+}
+
+# 3. Obtener rol por ID
+query GetRolById($id: UUID!) {
+  rolById(rol_id: $id) {
+    rol_ID
+    rol_NOM
+    rol_DES
+    rol_EST
+  }
+}

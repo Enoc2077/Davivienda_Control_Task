@@ -1,0 +1,74 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+
+<div class="modal-overlay-gold blurred-bg">
+    <div class="modal-container-gold large-modal">
+        @* --- HEADER --- *@
+        <div class="modal-header-gold">
+            <h2 class="modal-title-gold">
+                <i class="fas fa-tasks"></i> Editar Tarea: @Tarea.TAR_NOM
+            </h2>
+            <button class="close-btn-gold" @onclick="CerrarModal">✕</button>
+        </div>
+
+        @* --- CUERPO CON MÁS ESPACIO --- *@
+        <div class="modal-body-gold extra-padding">
+            <div class="form-grid-gold spacious-gap">
+
+                @* Nombre *@
+                <div class="form-group-gold full-width">
+                    <label class="label-gold">Nombre de la Tarea</label>
+                    <input type="text" @bind="Tarea.TAR_NOM" class="form-input-gold" />
+                </div>
+
+                @* Descripción *@
+                <div class="form-group-gold full-width">
+                    <label class="label-gold">Descripción</label>
+                    <textarea @bind="Tarea.TAR_DES" rows="4" class="form-input-gold"></textarea>
+                </div>
+
+                @* Fechas *@
+                <div class="form-group-gold">
+                    <label class="label-gold">Fecha Inicio</label>
+                    <input type="date" @bind-value="Tarea.TAR_FEC_INI" @bind-value:format="yyyy-MM-dd" class="form-input-gold" />
+                </div>
+
+                <div class="form-group-gold">
+                    <label class="label-gold">Fecha Fin</label>
+                    <input type="date" @bind-value="Tarea.TAR_FEC_FIN" @bind-value:format="yyyy-MM-dd" class="form-input-gold" />
+                </div>
+
+                @* Estado *@
+                <div class="form-group-gold">
+                    <label class="label-gold">Estado Actual</label>
+                    <select @bind="Tarea.TAR_EST" class="form-input-gold">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Progreso">En Progreso</option>
+                        <option value="Completado">Completado</option>
+                        <option value="Bloqueado">Bloqueado</option>
+                    </select>
+                </div>
+
+                @* Usuario: Ahora muestra nombre pero bindea el ID *@
+                <div class="form-group-gold">
+                    <label class="label-gold">Usuario Responsable</label>
+                    <select @bind="Tarea.USU_ID" class="form-input-gold">
+                        <option value="@Guid.Empty">-- Seleccione Usuario --</option>
+                        @foreach (var usu in ListaUsuarios)
+                        {
+                            <option value="@usu.USU_ID">@usu.USU_NOM</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        @* --- FOOTER --- *@
+        <div class="modal-footer-gold">
+            <button class="btn-gold-secondary" @onclick="CerrarModal">Cancelar</button>
+            <button class="btn-gold-primary large-btn" @onclick="ActualizarTarea">
+                <i class="fas fa-save"></i> Guardar Cambios
+            </button>
+        </div>
+    </div>
+</div>

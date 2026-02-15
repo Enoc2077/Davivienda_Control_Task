@@ -1,0 +1,240 @@
+﻿/* =========================================
+   1. ESTRUCTURA DE CUADRANTES (LAYOUT)
+   ========================================= */
+.cuadrantes-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    grid-template-areas:
+        "top-left right-side"
+        "bottom-left right-side";
+    gap: 25px;
+    height: 92vh;
+    padding: 20px;
+    background-color: #f4f7f9;
+}
+
+/* Tarjetas Base */
+.cuadro-blanco {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+}
+
+.q-90-180 {
+    grid-area: top-left;
+}
+
+.q-180-270 {
+    grid-area: bottom-left;
+}
+
+.q-270-90 {
+    grid-area: right-side;
+    border-right: 6px solid #ed1c24; /* Acento Davivienda */
+}
+
+/* =========================================
+   2. FORMULARIOS, INPUTS Y BORDES
+   ========================================= */
+/* Unificación total para que el formulario se vea "libre" y limpio */
+.form-control-dv,
+.form-creacion-full input,
+.form-creacion-full textarea,
+.form-creacion-full select,
+.modal-content-small input,
+.modal-content-small textarea {
+    width: 100%;
+    padding: 14px 18px;
+    margin-bottom: 22px; /* Espacio amplio entre inputs */
+    border: 2px solid #e2e8f0; /* Borde visible y limpio */
+    border-radius: 12px; /* Bordes redondeados */
+    background-color: #f8fafc;
+    color: #1e293b;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    outline: none;
+}
+
+    /* Efecto Focus para resaltar el redondeado */
+    .form-control-dv:focus,
+    .form-creacion-full input:focus,
+    .form-creacion-full textarea:focus,
+    .form-creacion-full select:focus,
+    .modal-content-small input:focus,
+    .modal-content-small textarea:focus {
+        border-color: #ed1c24;
+        box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.1);
+        background-color: #ffffff;
+    }
+
+.input-group-dv label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #475569;
+    margin-bottom: 8px;
+    display: block;
+    margin-left: 4px;
+}
+
+/* =========================================
+   3. LISTADO DE TAREAS Y ACCIONES
+   ========================================= */
+.tareas-scroll-area {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.tarea-card-simple {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: #fff;
+    border: 1px solid #f1f5f9;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+    .tarea-card-simple:hover {
+        transform: translateX(5px);
+        border-color: #cbd5e1;
+    }
+
+.tarea-info {
+    cursor: pointer;
+    flex: 1;
+}
+
+    .tarea-info strong {
+        display: block;
+        color: #1e293b;
+        font-size: 1rem;
+    }
+
+    .tarea-info p {
+        margin: 4px 0 0;
+        font-size: 0.85rem;
+        color: #64748b;
+    }
+
+.tarea-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-action {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+    .btn-action.edit:hover {
+        background: #eef2ff;
+        color: #0033a0;
+    }
+
+    .btn-action.delete:hover {
+        background: #fff1f2;
+        color: #ed1c24;
+    }
+
+/* =========================================
+   4. DISEÑO DE MODAL (EDICIÓN)
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content-small {
+    background: white;
+    padding: 30px;
+    border-radius: 20px; /* Modal muy redondeado */
+    width: 420px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+/* =========================================
+   5. BOTONES Y ESTADÍSTICAS
+   ========================================= */
+.btn-primary-dv {
+    background: #0033a0;
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 10px;
+}
+
+    .btn-primary-dv:hover:not(:disabled) {
+        background: #00267a;
+    }
+
+    .btn-primary-dv:disabled {
+        background: #cbd5e1;
+        cursor: not-allowed;
+    }
+
+.btn-save {
+    background: #0033a0;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-cancel {
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+    .stat-row strong {
+        color: #0033a0;
+        font-size: 1.1rem;
+    }

@@ -1,0 +1,31 @@
+# 1. Obtener todas las notificaciones (CORREGIDO)
+query GetNotificaciones {
+  notificaciones {
+    not_ID        # Antes: noT_ID
+    not_MEN       # Antes: noT_MEN
+    not_LEI       # Antes: noT_LEI
+    usu_ID        # Antes: usU_ID
+    not_FEC_CRE
+    not_FEC_MOD
+  }
+}
+
+# 2. Obtener notificaciones por mensaje (COMENTADA)
+# query GetNotificacionesByMessage($mensaje: String!) {
+#   notificacionesByMessage(mensaje: $mensaje) {
+#     not_ID
+#     not_MEN
+#     not_LEI
+#     usu_ID
+#   }
+# }
+
+# 3. Obtener notificacion por ID (CORREGIDO)
+query GetNotificacionById($id: UUID!) {
+  notificacionById(not_id: $id) {
+    not_ID
+    not_MEN
+    not_LEI
+    usu_ID
+  }
+}

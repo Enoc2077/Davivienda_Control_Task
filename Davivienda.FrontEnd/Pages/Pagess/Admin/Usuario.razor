@@ -1,0 +1,111 @@
+﻿@page "/Usuario"
+
+<div class="admin-layout">
+    <div class="toolbar-section">
+        <div class="search-bar">
+            <i class="bi bi-search"></i>
+            <input type="text" placeholder="Buscar por nombre..." @bind="Busqueda" @bind:event="oninput" @onkeyup="FiltrarUsuarios" />
+        </div>
+        <button class="btn-create" @onclick="AbrirModalNuevo">
+            <i class="bi bi-plus-lg"></i> Nuevo Usuario
+        </button>
+    </div>
+
+    <div class="data-card">
+        <div class="card-header">
+            <h3>Gestión de Usuarios</h3>
+        </div>
+
+        <div class="table-responsive">
+            <table class="user-table">
+                <thead>
+                    <tr>
+                        <th>N° EMPLEADO</th>
+                        <th>NOMBRE</th>
+                        <th>ESTADO</th>
+                        <th class="text-center">ACCIONES</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var u in UsuariosFiltrados)
+                    {
+                        <tr>
+                            <td class="emp-col">@u.USU_NUM</td>
+                            <td class="name-col">@u.USU_NOM</td>
+                            <td>
+                                <span class="status-pill @(u.USU_EST == true ? "active" : "inactive")">
+                                    @(u.USU_EST == true ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+                            <td class="actions-col">
+                                <button class="btn-action edit" @onclick="() => AbrirModalEditar(u)">
+                                    <i class="bi bi-pencil-fill"></i> Editar
+                                </button>
+                                <button class="btn-action delete" @onclick="() => EliminarUsuario(u.USU_ID)">
+                                    <i class="bi bi-trash3-fill"></i> Eliminar
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@if (MostrarModal)
+{
+    <div class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-head">
+                <h4>@(Editando ? "Editar Usuario" : "Registro de Usuario")</h4>
+                <button class="close-x" @onclick="() => MostrarModal = false">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-grid">
+                    <div class="input-box">
+                        <label>Nombre Completo</label>
+                        <input @bind="UsuarioForm.USU_NOM" placeholder="Nombre y Apellido" />
+                    </div>
+                    <div class="input-box">
+                        <label>Empleado #</label>
+                        <input @bind="UsuarioForm.USU_NUM" placeholder="12345" />
+                    </div>
+                    <div class="input-box">
+                        <label>Correo Institucional</label>
+                        <input @bind="UsuarioForm.USU_COR" placeholder="ejemplo@davivienda.com" />
+                    </div>
+                    <div class="input-box">
+                        <label>Teléfono</label>
+                        <input @bind="UsuarioForm.USU_TEL" placeholder="+(504) 9999-9999" />
+                    </div>
+                    <div class="input-box">
+                        <label>Rol asignado</label>
+                        <select @bind="UsuarioForm.ROL_ID">
+                            <option value="">Seleccionar Rol...</option>
+                            @foreach (var rol in Roles)
+                            {
+                                <option value="@rol.ROL_ID">@rol.ROL_NOM</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="input-box">
+                        <label>Estado del Usuario</label>
+                        <select @bind="UsuarioForm.USU_EST">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-foot">
+                <button class="btn-gray" @onclick="() => MostrarModal = false">Cancelar</button>
+                <button class="btn-primary-dv" @onclick="GuardarCambios">
+                    @(Editando ? "Actualizar" : "Guardar Registro")
+                </button>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,39 @@
+# 1. Obtener todas las soluciones
+query GetSoluciones {
+  soluciones {
+    sol_ID
+    sol_NOM
+    sol_DES
+    sol_EST
+    sol_TIE_RES
+    sol_NIV_EFE
+    fri_ID
+    usu_ID
+    sol_FEC_CRE
+    sol_FEC_MOD
+  }
+}
+
+# 2. Obtener soluciones por nombre (ACTIVADA)
+query GetSolucionesByName($nombre: String!) {
+  solucionesByName(nombre: $nombre) {
+    sol_ID
+    sol_NOM
+    sol_EST
+    sol_NIV_EFE
+    fri_ID
+  }
+}
+
+# 3. Obtener solución por ID
+query GetSolucionById($id: UUID!) {
+  solucionById(sol_id: $id) {
+    sol_ID
+    sol_NOM
+    sol_DES
+    sol_TIE_RES
+    sol_NIV_EFE
+    fri_ID
+    usu_ID
+  }
+}

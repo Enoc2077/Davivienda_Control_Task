@@ -1,0 +1,11 @@
+mutation InsertPrioridad($input: PrioridadModelInput!) {
+  insertPrioridad(prioridad: $input)
+}
+
+mutation UpdatePrioridad($input: PrioridadModelInput!) {
+  updatePrioridad(prioridad: $input)
+}
+
+mutation DeletePrioridad($id: UUID!) {
+  deletePrioridad(pri_id: $id)
+}

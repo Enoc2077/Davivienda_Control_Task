@@ -1,0 +1,11 @@
+mutation InsertSolucion($input: SolucionesModelInput!) {
+  insertSolucion(solucion: $input)
+}
+
+mutation UpdateSolucion($input: SolucionesModelInput!) {
+  updateSolucion(solucion: $input)
+}
+
+mutation DeleteSolucion($id: UUID!) {
+  deleteSolucion(sol_id: $id)
+}

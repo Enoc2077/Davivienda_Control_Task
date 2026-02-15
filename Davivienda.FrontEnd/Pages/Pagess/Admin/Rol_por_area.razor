@@ -1,0 +1,90 @@
+﻿@page "/Rol_por_area"
+@using Davivienda.Models.Modelos
+
+<div class="page-container">
+    <h2 class="section-title">Asignación de Roles por Usuario</h2>
+
+    <div class="top-bar">
+        <div class="search-box">
+            <input type="text" class="search-input-premium" value="@Busqueda"
+                   @oninput="OnSearchChanged" placeholder="Buscar por nombre o ID del colaborador..." />
+        </div>
+
+        <div class="filter-box">
+            <select class="select-rounded-simple" @onchange="OnAreaFilterChanged">
+                <option value="">Filtrar por Área: Todas</option>
+                @foreach (var area in ListaAreas)
+                {
+                    <option value="@area.ARE_ID">@area.ARE_NOM</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    <div class="cards-stack">
+        @if (UsuariosFiltrados != null)
+        {
+            @foreach (var usu in UsuariosFiltrados)
+            {
+                <div class="card-horizontal-large" @onclick="() => AbrirModalAsignacion(usu)">
+                    <div class="user-profile-info">
+                        <div class="avatar-large">
+                            @(usu.USU_NOM?[0].ToString().ToUpper() ?? "U")
+                        </div>
+                        <div class="user-text-details">
+                            <span class="full-name">@usu.USU_NOM</span>
+                            <span class="employee-id">ID: @usu.USU_NUM</span>
+                        </div>
+                    </div>
+
+                    <div class="status-tags">
+                        @* Aquí mostramos el área real asignada al usuario *@
+                        <span class="tag-area">@ObtenerNombreArea(usu.ARE_ID)</span>
+                        <span class="tag-role">@ObtenerNombreRol(usu.ROL_ID)</span>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+
+@if (MostrarModal)
+{
+    <div class="modal-overlay-blur">
+        <div class="modal-content-premium animate-pop">
+            <div class="modal-header">
+                <h3>Gestionar Usuario</h3>
+                <p>Modificando accesos de: <strong>@UsuarioSeleccionado?.USU_NOM</strong></p>
+            </div>
+
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Área Organizacional</label>
+                    <select @bind="AreaIdSeleccionada" class="select-rounded-simple full-width">
+                        <option value="">-- Seleccione el Área --</option>
+                        @foreach (var area in ListaAreas)
+                        {
+                            <option value="@area.ARE_ID">@area.ARE_NOM</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Rol de Sistema</label>
+                    <select @bind="RolIdSeleccionado" class="select-rounded-simple full-width">
+                        <option value="">-- Seleccione el Rol --</option>
+                        @foreach (var rol in ListaRoles)
+                        {
+                            <option value="@rol.ROL_ID">@rol.ROL_NOM</option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-main-action" @onclick="GuardarAsignacion">Confirmar Cambios</button>
+                <button class="btn-ghost" @onclick="CerrarModal">Cancelar</button>
+            </div>
+        </div>
+    </div>
+}

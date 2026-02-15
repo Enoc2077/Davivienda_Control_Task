@@ -1,0 +1,34 @@
+# 1. Obtener todas las documentaciones (CORREGIDO)
+query GetDocumentaciones {
+  documentaciones {
+    doc_ID        # Antes: doC_ID (Error)
+    doc_NOM       # Antes: doC_NOM (Error)
+    doc_RUT       # Antes: doC_RUT (Error)
+    tar_ID        # Antes: taR_ID (Error)
+    usu_ID        # Antes: usU_ID (Error)
+    doc_FEC_CRE
+    doc_FEC_MOD
+  }
+}
+
+# 2. Obtener documentaciones por nombre (COMENTADA PARA DESPUÉS)
+# query GetDocumentacionByName($nombre: String!) {
+#   documentacionByName(nombre: $nombre) {
+#     doc_ID
+#     doc_NOM
+#     doc_RUT
+#     tar_ID
+#     usu_ID
+#   }
+# }
+
+# 3. Obtener documentación por ID (CORREGIDO)
+query GetDocumentacionById($id: UUID!) {
+  documentacionById(doc_id: $id) {
+    doc_ID
+    doc_NOM
+    doc_RUT
+    tar_ID
+    usu_ID
+  }
+}

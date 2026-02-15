@@ -1,0 +1,14 @@
+# 1. Insertar (Nombre de operación único: CreateBitacoraSolucion)
+mutation CreateBitacoraSolucion($bitacora: BitacoraSolucionesModelInput!) {
+  insertBitacoraSolucion(bitacora: $bitacora)
+}
+
+# 2. Actualizar (Nombre de operación único: EditBitacoraSolucion)
+mutation EditBitacoraSolucion($bitacora: BitacoraSolucionesModelInput!) {
+  updateBitacoraSolucion(bitacora: $bitacora)
+}
+
+# 3. Eliminar (Nombre de operación único: RemoveBitacoraSolucion)
+mutation RemoveBitacoraSolucion($id: UUID!) {
+  deleteBitacoraSolucion(bit_sol_id: $id)
+}

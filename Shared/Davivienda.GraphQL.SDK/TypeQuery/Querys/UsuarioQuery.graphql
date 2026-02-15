@@ -1,0 +1,38 @@
+query GetUsuarios {
+  usuarios {
+    usu_ID
+    usu_NOM
+    usu_NUM
+    usu_COR
+    usu_TEL
+    usu_EST
+    rol_ID
+    are_ID  # <--- AGREGADO PARA EL CAMBIO DE ÁREA
+    usu_FEC_CRE
+    usu_FEC_MOD
+  }
+}
+
+# 2. Obtener usuario por email (ACTIVADA)
+query GetUsuarioByEmail($email: String!) {
+  usuarioByEmail(email: $email) {
+    usu_ID
+    usu_NOM
+    usu_COR
+    rol_ID
+  }
+}
+
+# 3. Obtener usuario por ID (INCLUYENDO ARE_ID)
+query GetUsuarioById($id: UUID!) {
+  usuarioById(usu_id: $id) {
+    usu_ID
+    usu_NOM
+    usu_NUM
+    usu_COR
+    usu_TEL
+    usu_EST
+    rol_ID
+    are_ID  # <--- AGREGADO PARA EL CAMBIO DE ÁREA
+  }
+}

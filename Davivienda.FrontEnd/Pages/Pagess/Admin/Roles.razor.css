@@ -1,0 +1,179 @@
+﻿.page-container {
+    padding: 40px;
+    background-color: #f1f4f9;
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.search-bar-wrapper {
+    background: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.search-input-box input {
+    border: 1px solid #dce1e9;
+    padding: 10px 15px;
+    border-radius: 8px;
+    width: 300px;
+}
+
+.btn-primary-blue {
+    background-color: #002d9c;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.main-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+
+.card-header {
+    padding: 25px;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+    .card-header h3 {
+        font-weight: 700;
+        margin: 0;
+        color: #1a1a1a;
+    }
+
+.dav-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+    .dav-table th {
+        padding: 15px 25px;
+        text-align: left;
+        color: #8a94a6;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        border-bottom: 1px solid #f0f2f5;
+    }
+
+    .dav-table td {
+        padding: 15px 25px;
+        border-bottom: 1px solid #f8f9fb;
+        font-size: 0.9rem;
+    }
+
+.status-badge-blue {
+    background-color: #e6f0ff;
+    color: #0056d2;
+    padding: 5px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.action-flex {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.btn-action-edit {
+    background-color: #f0f2f8;
+    color: #4e5d78;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-action-delete {
+    background-color: #fff1f1;
+    color: #ff5c5c;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Modal Estilos */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-card-warm {
+    background: white;
+    width: 480px;
+    border-radius: 28px;
+    padding: 35px;
+    position: relative;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+
+.modal-header-nav {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.modal-close-x {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #888;
+}
+
+.modal-footer-flex {
+    display: flex;
+    gap: 15px;
+    margin-top: 30px;
+}
+
+.btn-cancel-warm {
+    flex: 1;
+    background: #f0f2f5;
+    color: #4e5d78;
+    border: none;
+    padding: 15px;
+    border-radius: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-save-warm {
+    flex: 2;
+    background: #002d9c;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.input-warm {
+    width: 100%;
+    border: 1px solid #dce1e9;
+    border-radius: 12px;
+    padding: 12px;
+    margin-top: 8px;
+}

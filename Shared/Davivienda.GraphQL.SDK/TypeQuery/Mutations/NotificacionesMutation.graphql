@@ -1,0 +1,11 @@
+mutation InsertNotificacion($input: NotificacionesModelInput!) {
+  insertNotificacion(notificacion: $input)
+}
+
+mutation UpdateNotificacion($input: NotificacionesModelInput!) {
+  updateNotificacion(notificacion: $input)
+}
+
+mutation DeleteNotificacion($id: UUID!) {
+  deleteNotificacion(not_id: $id)
+}

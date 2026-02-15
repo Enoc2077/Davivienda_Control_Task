@@ -1,0 +1,32 @@
+# 1. Obtener todos los detalles de proyectos (CORREGIDO)
+query GetDetallesProyecto {
+  detallesProyecto {
+    det_PRO_ID       # Antes: DET_PRO_ID (Error)
+    pro_ID           # Antes: PRO_ID (Error)
+    usu_ID           # Antes: USU_ID (Error)
+    rol_ID           # Antes: ROL_ID (Error)
+    det_PRO_FEC_ASI
+    det_PRO_FEC_CRE
+    det_PRO_FEC_MOD
+  }
+}
+
+# 2. Obtener detalles por proyecto (COMENTADA PARA DESPUÉS)
+# query GetDetallesByProyecto($proyectoId: UUID!) {
+#   detallesByProyecto(proyectoId: $proyectoId) {
+#     det_PRO_ID
+#     usu_ID
+#     rol_ID
+#     det_PRO_FEC_ASI
+#   }
+# }
+
+# 3. Obtener detalle por ID (CORREGIDO)
+query GetDetalleProyectoById($id: UUID!) {
+  detalleProyectoById(det_pro_id: $id) {
+    det_PRO_ID
+    pro_ID
+    usu_ID
+    rol_ID
+  }
+}

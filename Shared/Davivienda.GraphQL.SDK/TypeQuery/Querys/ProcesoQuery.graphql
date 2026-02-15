@@ -1,0 +1,35 @@
+# 1. Obtener todos los procesos
+query GetProcesos {
+  procesos {
+    proc_ID
+    proc_NOM
+    proc_DES
+    proc_FRE
+    proc_EST
+    pro_ID
+    proc_FEC_CRE
+    proc_FEC_MOD
+  }
+}
+
+# 2. Obtener procesos por nombre (ACTIVADA)
+query GetProcesosByName($nombre: String!) {
+  procesosByName(nombre: $nombre) {
+    proc_ID
+    proc_NOM
+    proc_EST
+    pro_ID
+  }
+}
+
+# 3. Obtener proceso por ID
+query GetProcesoById($id: UUID!) {
+  procesoById(proc_id: $id) {
+    proc_ID
+    proc_NOM
+    proc_DES
+    proc_FRE
+    proc_EST
+    pro_ID
+  }
+}

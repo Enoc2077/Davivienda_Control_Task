@@ -1,0 +1,74 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+
+<div class="modal-overlay-gold blurred-bg">
+    <div class="modal-container-gold large-modal">
+        @* --- HEADER ROJO --- *@
+        <div class="modal-header-gold">
+            <h2 class="modal-title-gold">
+                <i class="fas fa-plus-circle"></i> Crear Nueva Tarea
+            </h2>
+            <button class="close-btn-gold" @onclick="CerrarModal">✕</button>
+        </div>
+
+        @* --- CUERPO ESPACIOSO (3 COLUMNAS) --- *@
+        <div class="modal-body-gold extra-padding">
+            <div class="form-grid-gold spacious-gap">
+
+                @* Nombre de la Tarea (Ocupa todo el ancho) *@
+                <div class="form-group-gold full-width">
+                    <label class="label-gold">Nombre de la Tarea</label>
+                    <input type="text" @bind="NuevaTarea.TAR_NOM" class="form-input-gold" placeholder="Ej: Desarrollo de API" />
+                </div>
+
+                @* Descripción (Ocupa todo el ancho) *@
+                <div class="form-group-gold full-width">
+                    <label class="label-gold">Descripción Detallada</label>
+                    <textarea @bind="NuevaTarea.TAR_DES" rows="3" class="form-input-gold" placeholder="Detalle las actividades..."></textarea>
+                </div>
+
+                @* Fila de 3 Columnas: Fecha Inicio | Fecha Fin | Estado *@
+                <div class="form-group-gold">
+                    <label class="label-gold">Fecha de Inicio</label>
+                    <input type="date" @bind-value="NuevaTarea.TAR_FEC_INI" @bind-value:format="yyyy-MM-dd" class="form-input-gold" />
+                </div>
+
+                <div class="form-group-gold">
+                    <label class="label-gold">Fecha de Finalización</label>
+                    <input type="date" @bind-value="NuevaTarea.TAR_FEC_FIN" @bind-value:format="yyyy-MM-dd" class="form-input-gold" />
+                </div>
+
+                <div class="form-group-gold">
+                    <label class="label-gold">Estado Inicial</label>
+                    <select @bind="NuevaTarea.TAR_EST" class="form-input-gold">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Progreso">En Progreso</option>
+                        <option value="Completado">Completado</option>
+                    </select>
+                </div>
+
+                @* Fila Inferior: Usuario Responsable *@
+                <div class="form-group-gold">
+                    <label class="label-gold">Usuario Responsable</label>
+                    <select @bind="NuevaTarea.USU_ID" class="form-input-gold">
+                        <option value="@Guid.Empty">-- Seleccionar Responsable --</option>
+                        @foreach (var usu in ListaUsuarios)
+                        {
+                            <option value="@usu.USU_ID">@usu.USU_NOM</option>
+                        }
+                    </select>
+                </div>
+
+                @* Puedes agregar Prioridad aquí si lo necesitas en el futuro *@
+            </div>
+        </div>
+
+        @* --- PIE DE PÁGINA --- *@
+        <div class="modal-footer-gold">
+            <button class="btn-gold-secondary" @onclick="CerrarModal">Cancelar</button>
+            <button class="btn-gold-primary large-btn" @onclick="GuardarNuevaTarea">
+                <i class="fas fa-check"></i> Crear Tarea
+            </button>
+        </div>
+    </div>
+</div>

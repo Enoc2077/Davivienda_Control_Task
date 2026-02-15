@@ -1,0 +1,42 @@
+# 1. Obtener todas las tareas (CORREGIDO)
+query GetTareas {
+  tareas {
+    tar_ID
+    tar_NOM
+    tar_DES
+    tar_EST
+    tar_FEC_INI
+    tar_FEC_FIN
+    proc_ID
+    pri_ID
+    usu_ID
+    tar_FEC_CRE
+    tar_FEC_MOD
+  }
+}
+
+# 2. Obtener tareas por nombre (ACTIVADA)
+query GetTareasByName($nombre: String!) {
+  tareasByName(nombre: $nombre) {
+    tar_ID
+    tar_NOM
+    tar_EST
+    pri_ID
+    usu_ID
+  }
+}
+
+# 3. Obtener tarea por ID (CORREGIDO)
+query GetTareaById($id: UUID!) {
+  tareaById(tar_id: $id) {
+    tar_ID
+    tar_NOM
+    tar_DES
+    tar_EST
+    tar_FEC_INI
+    tar_FEC_FIN
+    proc_ID
+    pri_ID
+    usu_ID
+  }
+}

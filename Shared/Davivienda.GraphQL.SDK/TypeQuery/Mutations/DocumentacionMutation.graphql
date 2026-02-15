@@ -1,0 +1,11 @@
+mutation InsertDocumentacion($input: DocumentacionModelInput!) {
+  insertDocumentacion(doc: $input)
+}
+
+mutation UpdateDocumentacion($input: DocumentacionModelInput!) {
+  updateDocumentacion(doc: $input)
+}
+
+mutation DeleteDocumentacion($id: UUID!) {
+  deleteDocumentacion(doc_id: $id)
+}

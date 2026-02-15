@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+
+		<StrawberryShake_SkipCodeGen>true</StrawberryShake_SkipCodeGen>
+		<GenerateClient>false</GenerateClient>
+
+		<RunAnalyzersDuringBuild>false</RunAnalyzersDuringBuild>
+		<RunAnalyzersDuringLiveAnalysis>false</RunAnalyzersDuringLiveAnalysis>
+		<RunAnalyzers>false</RunAnalyzers>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="HotChocolate.AspNetCore" Version="13.9.0" />
+		<PackageReference Include="HotChocolate.Data.EntityFramework" Version="13.9.0" />
+		<PackageReference Include="HotChocolate.Diagnostics" Version="13.9.0" />
+		<PackageReference Include="HotChocolate.Utilities" Version="13.9.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.0">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Davivienda.Component\Davivienda.Component.csproj" />
+		<ProjectReference Include="..\Davivienda.Contracts\Davivienda.Contracts.csproj" />
+		<ProjectReference Include="..\Davivienda.Migrations\Davivienda.Migrations.csproj" />
+		<ProjectReference Include="..\Davivienda.Models\Davivienda.Models.csproj" />
+	</ItemGroup>
+
+	<Target Name="RemoveStrawberryShakeAnalyzer" BeforeTargets="CoreCompile">
+		<ItemGroup>
+			<Analyzer Remove="@(Analyzer)" Condition="'%(FileName)' == 'StrawberryShake.CodeGeneration.CSharp.Analyzers'" />
+		</ItemGroup>
+	</Target>
+
+</Project>

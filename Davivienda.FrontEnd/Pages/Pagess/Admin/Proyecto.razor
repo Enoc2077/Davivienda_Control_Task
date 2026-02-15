@@ -1,0 +1,223 @@
+﻿@page "/Proyectos"
+@using Davivienda.Models.Modelos
+@using Davivienda.Component.Component;
+@inherits Davivienda.FrontEnd.Pages.Pagess.Admin.Proyectos
+
+<div class="projects-main-container @(MostrarModalProcesos ? "container-blur" : "")">
+
+    @* --- BARRA DE FILTROS SUPERIOR --- *@
+    <div class="header-filter-bar">
+        <div class="search-pill-container">
+            <i class="fas fa-search"></i>
+            <input type="text" @oninput="OnSearchChanged" placeholder="Buscar proyecto..." class="search-input-pill" />
+        </div>
+
+        <div class="select-pill-container">
+            <select @onchange="OnAreaFilterChanged" class="select-pill">
+                <option value="">📂 Todas las Áreas</option>
+                @foreach (var area in ListaAreas)
+                {
+                    <option value="@area.ARE_ID">@area.ARE_NOM</option>
+                }
+            </select>
+        </div>
+
+        <button class="btn-add-role" @onclick="AbrirModalNuevoProyecto">
+            <i class="fas fa-plus"></i> Nuevo Proyecto
+        </button>
+    </div>
+
+    @* --- GRID DE PANELES --- *@
+    <div class="dashboard-top-grid">
+
+        @* PANEL IZQUIERDO: TARJETAS DE PROYECTOS *@
+        <div class="projects-list-card">
+            <div class="list-header">
+                <h2 class="minimal-title">Proyectos Activos</h2>
+                <span class="count-badge">@ProyectosFiltrados.Count()</span>
+            </div>
+
+            <div class="cards-stack">
+                @foreach (var proy in ProyectosFiltrados)
+                {
+                    <div class="project-item-card @(ProyectoFiltroAvance?.PRO_ID == proy.PRO_ID ? "is-selected" : "")"
+                         @onclick="() => VerDetalles(proy)">
+
+                        <div class="project-content-left">
+                            <span class="proy-name">@proy.PRO_NOM</span>
+                            <div class="proy-meta">
+                                <span class="status-indicator">@proy.PRO_EST</span>
+                            </div>
+                        </div>
+
+                        <div class="project-actions">
+                            <button class="btn-view-details"
+                                    @onclick:stopPropagation="true"
+                                    @onclick="() => AbrirModalProcesos(proy)">
+                                ⌐■_■
+                            </button>
+                            <i class="fas fa-chevron-right arrow-icon"></i>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        @* PANEL DERECHO: VISTA DE DETALLE *@
+        <div class="status-progress-card">
+            <div class="status-list-header">
+                <h2 class="status-title-text">
+                    @(ProyectoFiltroAvance == null ? "Detalle de Proyectos" : "Filtro Activo")
+                </h2>
+
+                @if (ProyectoFiltroAvance != null)
+                {
+                    <button class="count-badge reset-filter-btn" @onclick="() => ProyectoFiltroAvance = null">
+                        Ver todos ✕
+                    </button>
+                }
+            </div>
+
+            <div class="status-scroll-area">
+                @if (ProyectoFiltroAvance != null)
+                {
+                    <div class="progress-card-item filtered-highlight selected-top-card">
+                        <div class="detail-header-row">
+                            <span class="progress-project-label">@ProyectoFiltroAvance.PRO_NOM</span>
+                            <button class="btn-edit-inline" @onclick="() => AbrirModalEditar(ProyectoFiltroAvance)">
+                                <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var p in ProyectosFiltrados)
+                    {
+                        <div class="progress-card-item" @onclick="() => VerDetalles(p)">
+                            <div class="detail-header-row">
+                                <span class="progress-project-label">@p.PRO_NOM</span>
+                                <button class="btn-edit-inline" @onclick:stopPropagation="true" @onclick="() => AbrirModalEditar(p)">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+
+    @* --- SECCIÓN INFERIOR: CALENDARIO --- *@
+    <div class="bottom-dashboard-grid">
+        <div class="calendar-card">
+            <div class="calendar-header-nav">
+                <h2 class="calendar-month-title">@FechaCalendario.ToString("MMMM yyyy")</h2>
+                <div class="calendar-controls">
+                    <button class="btn-nav-cal" @onclick="MesAnterior"> Atrás </button>
+                    <button class="btn-nav-cal" @onclick="SiguienteMes"> Siguiente </button>
+                </div>
+            </div>
+
+            <div class="calendar-grid">
+                <div class="day-name">Dom</div>
+                <div class="day-name">Lun</div>
+                <div class="day-name">Mar</div>
+                <div class="day-name">Mié</div>
+                <div class="day-name">Jue</div>
+                <div class="day-name">Vie</div>
+                <div class="day-name">Sáb</div>
+
+                @foreach (var dia in DiasDelMes)
+                {
+                    <div class="calendar-day @(dia.EsMesActual ? "" : "not-current")
+                                          @(DiaSeleccionado?.Fecha == dia.Fecha ? "selected-day" : "")
+                                          @(dia.EsInicioProyecto ? "day-start-green" : "")
+                                          @(dia.EsFinProyecto ? "day-end-red" : "")"
+                         @onclick="() => SeleccionarDiaCalendario(dia)">
+
+                        <span class="day-number">@dia.Fecha.Day</span>
+
+                        <div class="event-markers">
+                            @if (dia.EsInicioProyecto)
+                            {
+                                <span class="dot start-dot"></span>
+                            }
+                            @if (dia.EsFinProyecto)
+                            {
+                                <span class="dot end-dot"></span>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="upcoming-dates-card">
+            <div class="list-header">
+                <h2 class="minimal-title">Fechas Próximas</h2>
+            </div>
+            <div class="table-scroll">
+                <div class="project-cards-stack">
+                    @if (ProyectoFiltroAvance != null)
+                    {
+                        <div class="mini-project-card active-filter selected-first" @onclick="() => VerDetalles(ProyectoFiltroAvance)">
+                            <div class="mini-card-header">
+                                <span class="full-project-name">@ProyectoFiltroAvance.PRO_NOM</span>
+                            </div>
+                            <div class="mini-card-dates">
+                                <div class="date-group">
+                                    <span class="date-label">Inicio:</span>
+                                    <span class="date-badge start">@ProyectoFiltroAvance.PRO_FEC_INI.ToString("dd MMM yyyy")</span>
+                                </div>
+                                <div class="date-group">
+                                    <span class="date-label">Fin:</span>
+                                    <span class="date-badge end">@(ProyectoFiltroAvance.PRO_FEC_FIN.HasValue? ProyectoFiltroAvance.PRO_FEC_FIN.Value.ToString("dd MMM yyyy") : "---")</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @foreach (var p in ListaProyectos.OrderBy(x => x.PRO_FEC_INI))
+                    {
+                        if (ProyectoFiltroAvance?.PRO_ID == p.PRO_ID) continue;
+
+                        <div class="mini-project-card" @onclick="() => VerDetalles(p)">
+                            <div class="mini-card-header">
+                                <span class="full-project-name">@p.PRO_NOM</span>
+                            </div>
+                            <div class="mini-card-dates">
+                                <div class="date-group">
+                                    <span class="date-label">Inicio:</span>
+                                    <span class="date-badge start">@p.PRO_FEC_INI.ToString("dd MMM yyyy")</span>
+                                </div>
+                                <div class="date-group">
+                                    <span class="date-label">Fin:</span>
+                                    <span class="date-badge end">@(p.PRO_FEC_FIN.HasValue? p.PRO_FEC_FIN.Value.ToString("dd MMM yyyy") : "---")</span>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (MostrarModalProcesos)
+{
+    <div class="modal-overlay">
+        @if (ModalActual == "NUEVO")
+        {
+            <Davivienda.Component.Component.NewProyect Proyecto="ProyectoSeleccionado" OnClose="CerrarModalProceso" />
+        }
+        else if (ModalActual == "EDITAR")
+        {
+            <Davivienda.Component.Componentes.EditarProyecto Proyecto="ProyectoSeleccionado" OnClose="CerrarModalProceso" />
+        }
+        else if (ModalActual == "PROCESOS")
+        {
+            <Procesos ProyectoId="ProyectoSeleccionado.PRO_ID" ProyectoNombre="@ProyectoSeleccionado.PRO_NOM" OnClose="CerrarModalProceso" />
+        }
+    </div>
+}

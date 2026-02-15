@@ -1,0 +1,142 @@
+﻿@using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
+@inherits Davivienda.FrontEnd.Pages.Pagess.Admin.ProcesoBase
+
+<div class="modal-backdrop-warm">
+    <div class="modal-window-proceso">
+        @* --- HEADER --- *@
+        <div class="modal-top-section">
+            <div class="header-left">
+                <button class="btn-modal-back-red" @onclick="CerrarModal">Volver a Proyectos</button>
+                <div>
+                    <h2 class="title-project">@ProyectoNombre</h2>
+                    <p class="subtitle">Gestión detallada de procesos</p>
+                </div>
+            </div>
+
+            <div class="modal-search-bar-horizontal">
+                <input type="text" placeholder="Buscar procesos..." class="modal-input-long" @oninput="OnSearchProcesoChanged" />
+            </div>
+        </div>
+
+        <hr class="separator-red" />
+
+        <div class="proceso-grid-layout">
+            @* Columna 1: Procesos *@
+            <div class="white-panel-inner">
+                <div class="panel-top-line line-red"></div>
+                <div class="panel-header">
+                    <h3>Procesos</h3>
+                </div>
+                <div class="scrollable-content-inner">
+                    @foreach (var proc in ProcesosFiltradosEnModal)
+                    {
+                        <div class="process-card @(ProcesoSeleccionado?.PROC_ID == proc.PROC_ID ? "active" : "")"
+                             @onclick="() => CargarTareasDelProceso(proc)">
+                            <span class="process-title-text">@proc.PROC_NOM</span>
+                            <span class="process-freq-text">@proc.PROC_FRE</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            @* Columna 2: Configuración *@
+            <div class="white-panel-inner">
+                <div class="panel-top-line line-blue"></div>
+                <div class="panel-header">
+                    <h3>Configuración</h3>
+                    <button class="btn-save-pill" @onclick="GuardarCambiosProceso">
+                        <i class="fas fa-save"></i> Guardar Cambios
+                    </button>
+                </div>
+
+                <div class="scrollable-content-inner">
+                    <div class="warm-form-modal">
+                        <div class="form-group">
+                            <label class="label-form">Nombre del Proceso</label>
+                            <input type="text" class="input-warm" @bind="ProcesoSeleccionado.PROC_NOM" placeholder="Nombre..." />
+                        </div>
+
+                        <div class="form-row-split">
+                            <div class="form-group">
+                                <label class="label-form">Frecuencia</label>
+                                <select class="select-warm-input" @bind="ProcesoSeleccionado.PROC_FRE">
+                                    <option value="Diario">Diario</option>
+                                    <option value="Semanal">Semanal</option>
+                                    <option value="Mensual">Mensual</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="label-form">Estado</label>
+                                <div class="status-switch-wrapper">
+                                    <span class="status-label">Inactivo</span>
+                                    <label class="switch">
+                                        <input type="checkbox" @bind="ProcesoSeleccionado.PROC_EST">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <span class="status-label">Activo</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="label-form">Descripción</label>
+                            <textarea class="input-warm" rows="4" @bind="ProcesoSeleccionado.PROC_DES" placeholder="Escriba la descripción..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @* Columna 3: Tareas (CON BOTÓN CREAR TAREA) *@
+            <div class="white-panel-inner">
+                <div class="panel-top-line line-yellow"></div>
+                <div class="panel-header">
+                    <h3>Tareas</h3>
+                    @* BOTÓN CREAR TAREA: Aparece junto al título *@
+                    @if (ProcesoSeleccionado?.PROC_ID != Guid.Empty)
+                    {
+                        <button class="btn-save-pill" style="background-color: #f1c40f; color: #000;" @onclick="AbrirCrearTarea">
+                            <i class="fas fa-plus-circle"></i> Crear Tarea
+                        </button>
+                    }
+                </div>
+                <div class="scrollable-content-inner">
+                    @if (TareasDelProceso != null && TareasDelProceso.Any())
+                    {
+                        @foreach (var tar in TareasDelProceso)
+                        {
+                            <div class="task-entry-card-white" @onclick="() => AbrirEditarTarea(tar)" style="cursor: pointer;">
+                                <span class="task-dot @(tar.TAR_EST == "Completado" ? "dot-green" : "dot-orange")"></span>
+                                <div class="task-text">
+                                    <p>@tar.TAR_NOM</p>
+                                    <small>@tar.TAR_EST</small>
+                                </div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-data-msg">Sin tareas disponibles.</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* --- MODAL PARA EDITAR TAREAS --- *@
+@if (MostrarModalTarea)
+{
+    <div class="modal-overlay-gold blurred-bg">
+        <Davivienda.Component.Componentes.EditarTarea Tarea="TareaSeleccionada" OnClose="CerrarModalTarea" />
+    </div>
+}
+
+@* --- MODAL PARA CREAR TAREAS --- *@
+@if (MostrarModalCrearTarea)
+{
+    <div class="modal-overlay-gold blurred-bg">
+        <Davivienda.Component.Componentes.CrearTarea ProcId="ProcesoSeleccionado.PROC_ID" OnClose="CerrarModalCrearTarea" />
+    </div>
+}

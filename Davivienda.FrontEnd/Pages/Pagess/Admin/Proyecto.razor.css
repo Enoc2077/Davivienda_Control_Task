@@ -1,0 +1,926 @@
+﻿/* --- VARIABLES DE COLOR Y ESTILO --- */
+:root {
+    --dav-red: #ed1c24;
+    --dav-blue: #0033a0;
+    --bg-light: #f4f7f9;
+    --border-color: #d1d5db; /* Borde gris definido */
+    --text-dark: #1f2937;
+    --text-muted: #6b7280;
+}
+
+/* Scrollbar estético para todos los paneles */
+.cards-stack::-webkit-scrollbar,
+.status-scroll-area::-webkit-scrollbar,
+.table-scroll::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cards-stack::-webkit-scrollbar-thumb,
+.status-scroll-area::-webkit-scrollbar-thumb,
+.table-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+/* --- CONTENEDOR PRINCIPAL --- */
+.projects-main-container {
+    padding: 2rem;
+    background-color: var(--bg-light);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- BARRA DE FILTROS --- */
+.header-filter-bar {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    align-items: center;
+}
+
+.search-pill-container,
+.select-pill {
+    background: #efebeb;
+    border: 1px solid var(--border-color);
+    border-radius: 60px;
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    transition: all 0.2s;
+}
+
+.search-input-pill {
+    border: none;
+    outline: none;
+    width: 300px;
+    font-size: 0.95rem;
+    background: transparent;
+}
+
+.select-pill {
+    cursor: pointer;
+    min-width: 200px;
+    outline: none;
+}
+
+.btn-add-role {
+    background-color: #a11717;
+    color: white;
+    border: 1px solid var(--dav-red);
+    padding: 0.6rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: auto;
+    transition: background 0.2s;
+}
+
+    .btn-add-role:hover {
+        background-color: #c4161c;
+    }
+
+/* --- GRID DE DISTRIBUCIÓN --- */
+.dashboard-top-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    align-items: start;
+}
+
+/* --- CUADRO IZQUIERDO: PROYECTOS --- */
+.projects-list-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    height: 520px;
+    display: flex;
+    flex-direction: column;
+}
+
+.list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.minimal-title {
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin: 0;
+}
+
+.count-badge {
+    background: #f3f4f6;
+    color: var(--text-muted);
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.cards-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 5px;
+}
+
+.project-item-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .project-item-card:hover {
+        border-color: var(--dav-blue);
+        background-color: #f8fafc;
+    }
+
+    .project-item-card.is-selected {
+        border: 1px solid var(--dav-blue);
+        background-color: #f0f7ff;
+        box-shadow: 0 0 0 1px var(--dav-blue);
+    }
+
+.proy-name {
+    display: block;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--dav-blue);
+    margin-bottom: 0.3rem;
+}
+
+.status-indicator {
+    background: #dcfce7;
+    color: #166534;
+    padding: 0.1rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+
+/* --- CUADRO DERECHO: ESTADO DE AVANCE --- */
+.status-progress-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    display: flex;
+    flex-direction: column;
+    height: 520px;
+}
+
+.status-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.status-title-text {
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin: 0;
+}
+
+.status-scroll-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 8px;
+}
+
+.progress-individual-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.progress-project-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dav-blue);
+}
+
+.progress-flex-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.progress-track-bg {
+    flex-grow: 1;
+    height: 12px;
+    background-color: #efebeb;
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill-indicator {
+    height: 100%;
+    background-color: var(--dav-red);
+    border-radius: 20px;
+    transition: width 0.5s ease-in-out;
+}
+
+.progress-percentage-number {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    min-width: 45px;
+    text-align: right;
+}
+
+/* --- MODAL Y BLUR --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.container-blur {
+    filter: blur(4px);
+    pointer-events: none;
+}
+
+/* Scrollbar para ambos */
+.cards-stack::-webkit-scrollbar,
+.status-scroll-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.cards-stack::-webkit-scrollbar-thumb,
+.status-scroll-area::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+/* --- TARJETAS BLANCAS INDIVIDUALES PARA PROGRESO --- */
+.progress-card-item {
+    background: #ffffff;
+    border: 1px solid #e5e7eb; /* Mismo borde que el cuadro izquierdo */
+    border-radius: 10px;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+    /* Efecto sutil al pasar el mouse */
+    .progress-card-item:hover {
+        border-color: var(--dav-blue);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+/* Ajuste del scroll para dar espacio a las tarjetas */
+.status-scroll-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Espacio entre cada cuadro blanco */
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 0.5rem; /* Padding extra para que la sombra no se corte */
+}
+
+/* Modificación del contenedor del panel (opcional) */
+.status-progress-card {
+    background: #f8fafc; /* Fondo ligeramente gris para que los cuadros blancos resalten */
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 520px;
+    display: flex;
+    flex-direction: column;
+}
+.status-scroll-area {
+    overflow-y: auto; /* Activa el scroll interno si hay muchos proyectos */
+    flex-grow: 1;
+    padding-right: 8px;
+}
+
+/* Estilo de la barra dentro del cuadro blanco */
+.progress-track-bg {
+    flex-grow: 1;
+    height: 10px; /* Un poco más delgada para verse elegante */
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.btn-view-details {
+    background-color: #f3f4f6;
+    color: var(--dav-blue);
+    border: 1px solid var(--border-color);
+    width: 45px; /* Un poco más ancho para que el texto quepa cómodo */
+    height: 38px;
+    border-radius: 20px; /* Estilo cápsula para el texto largo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+    font-weight: bold;
+    line-height: 1;
+    padding-bottom: 2px; /* Ajuste visual fino para centrar el texto */
+}
+
+    .btn-view-details:hover {
+        background-color: var(--dav-blue);
+        color: white;
+        border-color: var(--dav-blue);
+        transform: scale(1.05);
+    }
+    /* Cuando el filtro está activo, el botón se queda resaltado */
+    .btn-view-details.btn-active {
+        background-color: var(--dav-blue);
+        color: white;
+        border-color: var(--dav-blue);
+        box-shadow: 0 0 8px rgba(0, 51, 160, 0.3);
+    }
+
+
+
+
+
+
+    /***************************************************************************/
+/* --- CONTENEDOR INFERIOR --- */
+.calendar-section-container {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: flex-start; /* No muy grande, alineado a la izquierda */
+}
+
+.calendar-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    width: 60%; /* Tamaño moderado para que no ocupe todo el ancho */
+}
+
+/* --- ENCABEZADO Y BOTONES --- */
+.calendar-header-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.calendar-month-title {
+    font-size: 1.5rem;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin: 0;
+}
+
+.calendar-controls {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.btn-nav-cal {
+    background-color: #f3f4f6;
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .btn-nav-cal:hover {
+        background-color: var(--dav-blue);
+        color: white;
+    }
+
+/* --- GRILLA DEL CALENDARIO --- */
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 2px;
+    background-color: #e5e7eb; /* Color de las líneas divisorias */
+    border: 1px solid #e5e7eb;
+}
+
+.day-name {
+    background-color: #f9fafb;
+    padding: 0.75rem;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-muted);
+}
+
+.calendar-day {
+    background-color: #ffffff;
+    min-height: 80px;
+    padding: 0.5rem;
+    transition: background 0.2s;
+}
+
+    .calendar-day:hover {
+        background-color: #f0f7ff;
+    }
+
+.day-number {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
+
+
+
+
+
+/************************************************************************************/
+/* Contenedor Flex para alinear Calendario y Tabla */
+.bottom-dashboard-grid {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    align-items: stretch;
+}
+
+.calendar-card {
+    width: 70%;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+/* --- TABLA FECHAS PRÓXIMAS --- */
+.upcoming-dates-card {
+    width: 30%;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    display: flex;
+    flex-direction: column;
+}
+
+.minimal-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px; /* Espacio entre filas */
+}
+
+    .minimal-table th {
+        text-align: left;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        padding: 0 10px;
+    }
+
+    .minimal-table td {
+        padding: 12px 10px;
+        background: #f9fafb;
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+        .minimal-table td:first-child {
+            border-left: 1px solid var(--border-color);
+            border-radius: 8px 0 0 8px;
+        }
+
+        .minimal-table td:last-child {
+            border-right: 1px solid var(--border-color);
+            border-radius: 0 8px 8px 0;
+        }
+
+.table-proy-name {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: var(--dav-blue);
+    display: block;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Badges de fechas */
+.date-badge {
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 700;
+}
+
+    .date-badge.start {
+        background: #e0f2fe;
+        color: #0369a1;
+    }
+
+    .date-badge.end {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+/* Marcadores dentro del calendario */
+.event-markers {
+    display: flex;
+    gap: 3px;
+    margin-top: 4px;
+    justify-content: center;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.start-dot {
+    background-color: #0ea5e9;
+}
+/* Azul para inicio */
+.end-dot {
+    background-color: var(--dav-red);
+}
+/* Rojo para fin */
+
+
+/* Contenedor del número y los puntos */
+.calendar-day {
+    min-height: 80px;
+    padding: 10px;
+    border: 0.5px solid #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra el contenido horizontalmente */
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+    .calendar-day:hover {
+        background-color: #f8fafc;
+    }
+
+.not-current {
+    color: #ccc;
+    background-color: #fafafa;
+}
+
+.selected-day {
+    border: 2px solid var(--dav-blue) !important;
+    background-color: #eff6ff;
+}
+
+/* Estilo de los puntos indicadores */
+.event-markers {
+    display: flex;
+    gap: 4px;
+    margin-top: auto; /* Empuja los puntos hacia abajo */
+    padding-bottom: 5px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.start-dot {
+    background-color: #0ea5e9;
+}
+/* Azul */
+.end-dot {
+    background-color: #ef4444;
+}
+/* Rojo 
+
+
+
+*/
+
+/* Tarjetas de la derecha */
+.mini-project-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .mini-project-card:hover {
+        border-color: var(--dav-red);
+    }
+
+    .mini-project-card.active-filter {
+        background: #fff1f2;
+        border-color: var(--dav-red);
+    }
+
+.full-project-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1f2937;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.mini-card-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.date-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.date-label {
+    font-size: 0.7rem;
+    color: #6b7280;
+    text-transform: uppercase;
+}
+
+/* Calendario: Marcado de Hoy y Rango */
+.calendar-day.today {
+    background: #fef2f2;
+    font-weight: bold;
+}
+
+    .calendar-day.today .day-number {
+        color: var(--dav-red);
+        border-bottom: 2px solid var(--dav-red);
+    }
+
+.calendar-day.in-range {
+    background: #f0f9ff; /* Azul muy suave para el rango seleccionado */
+}
+/* Día dentro del rango de ejecución */
+.calendar-day.in-process {
+    background-color: #dcfce7 !important; /* Verde suave */
+    color: #166534;
+}
+
+/* Día de entrega / Fin */
+.calendar-day.is-deadline {
+    background-color: #fee2e2 !important; /* Rojo suave */
+    color: #991b1b;
+    border: 2px solid #ef4444;
+}
+
+
+
+
+
+
+
+/* Color para días que inician proyecto */
+.day-start-green {
+    background-color: rgba(40, 167, 69, 0.2) !important; /* Verde suave */
+    border: 1px solid #28a745 !important;
+}
+
+/* Color para días que terminan proyecto */
+.day-end-red {
+    background-color: rgba(220, 53, 69, 0.2) !important; /* Rojo suave */
+    border: 1px solid #dc3545 !important;
+}
+
+/* Punto indicador verde */
+.start-dot {
+    background-color: #28a745;
+}
+
+/* Punto indicador rojo */
+.end-dot {
+    background-color: #dc3545;
+}
+
+.davivienda-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.davivienda-modal-container {
+    width: 900px;
+    max-width: 95%;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+    overflow: hidden;
+    animation: modalFade 0.25s ease;
+}
+
+@keyframes modalFade {
+
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.davivienda-modal-header {
+    background: linear-gradient(135deg, #d71920, #b31318);
+    color: white;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.davivienda-modal-title {
+    display: flex;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.davivienda-close-btn {
+    border: none;
+    background: rgba(255,255,255,0.15);
+    color: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+    .davivienda-close-btn:hover {
+        background: rgba(255,255,255,0.3);
+    }
+
+.davivienda-modal-body {
+    padding: 24px;
+    background: #fafafa;
+}
+
+.mini-card-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 6px; /* Espacio entre inicio y fin */
+    margin-top: 8px;
+}
+
+.date-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.date-label {
+    font-size: 0.7rem;
+    color: #6b7280;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.date-badge {
+    font-size: 0.75rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 700;
+    min-width: 90px;
+    text-align: center;
+}
+
+    .date-badge.start {
+        background: #e0f2fe; /* Azul clarito */
+        color: #0369a1;
+    }
+
+    .date-badge.end {
+        background: #fee2e2; /* Rojo clarito */
+        color: #b91c1c;
+    }
+
+/* El scroll para que solo se vean unos 5 y luego bajes */
+.table-scroll {
+    max-height: 420px; /* Ajusta según el tamaño de tus tarjetas */
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+/* Fila para alinear nombre y botón de editar */
+.detail-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+/* Botón de edición discreto pero visible */
+.btn-edit-inline {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--dav-blue);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .btn-edit-inline:hover {
+        background-color: var(--dav-blue);
+        color: white;
+        border-color: var(--dav-blue);
+    }
+
+/* Estilo para la tarjeta seleccionada arriba */
+.selected-top-card {
+    border: 2px solid var(--dav-blue) !important;
+    background-color: #f0f7ff !important;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    box-shadow: 0 4px 6px rgba(0, 51, 160, 0.1);
+}
+
+/* Contenedor de la tabla lateral (Cuadro Blanco) */
+.upcoming-dates-card {
+    width: 30%;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 520px; /* Altura fija para alinear con el calendario */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+/* Área interna con scroll */
+.table-scroll {
+    overflow-y: auto; /* Activa el scroll vertical */
+    flex-grow: 1;
+    padding-right: 5px;
+    margin-top: 10px;
+}
+
+/* Estilo para que el seleccionado aparezca primero y resaltado */
+.selected-first {
+    border: 2px solid var(--dav-red) !important;
+    background-color: #fff1f2 !important;
+    position: sticky; /* Se queda pegado arriba mientras bajas */
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 4px 6px rgba(237, 28, 36, 0.1);
+}
+
+.selected-top-card {
+    border: 2px solid var(--dav-blue) !important;
+    background-color: #f0f7ff !important;
+    box-shadow: 0 4px 12px rgba(0, 51, 160, 0.1);
+}

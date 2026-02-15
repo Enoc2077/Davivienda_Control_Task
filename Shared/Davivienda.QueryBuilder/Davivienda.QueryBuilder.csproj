@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Dapper" Version="2.1.66" />
+		<PackageReference Include="Dapper.GraphQL" Version="0.4.2-beta" />
+		<PackageReference Include="GraphQL.PreProcessingExtensions" Version="12.4.1.1" />
+
+		<PackageReference Include="HotChocolate.Types" Version="13.9.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\Davivienda.Models\Davivienda.Models.csproj" />
+	</ItemGroup>
+
+</Project>

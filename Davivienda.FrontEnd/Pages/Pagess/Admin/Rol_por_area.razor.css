@@ -1,0 +1,200 @@
+﻿.page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 3rem 1rem;
+}
+
+.section-title {
+    font-size: 2rem;
+    color: #0f172a;
+    font-weight: 700;
+    margin-bottom: 2rem;
+}
+
+/* Barra Superior */
+.top-bar {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 2.5rem;
+}
+
+.search-box {
+    flex: 2;
+}
+
+.filter-box {
+    flex: 1;
+}
+
+.search-input-premium {
+    width: 100%;
+    padding: 16px 28px;
+    border-radius: 50px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+    outline: none;
+    font-size: 1rem;
+}
+
+/* Selectores Redondeados */
+.select-rounded-simple {
+    width: 100%;
+    padding: 14px 20px;
+    border-radius: 18px;
+    border: 1px solid #e2e8f0;
+    background: white;
+    font-size: 0.95rem;
+    color: #475569;
+    appearance: auto;
+    cursor: pointer;
+}
+
+/* LA TARJETA GRANDE Y ORDENADA */
+.card-horizontal-large {
+    background: white;
+    border-radius: 24px;
+    padding: 24px 40px;
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Separa info de tags */
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.03);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .card-horizontal-large:hover {
+        transform: scale(1.02);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+        border-color: #002eab;
+    }
+
+.user-profile-info {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.avatar-large {
+    width: 65px;
+    height: 65px;
+    background: linear-gradient(135deg, #002eab, #0056ff);
+    color: white;
+    border-radius: 20px; /* Estilo squircle */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    font-weight: 800;
+}
+
+.full-name {
+    display: block;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+
+.employee-id {
+    color: #94a3b8;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Tags de Estado */
+.status-tags {
+    display: flex;
+    gap: 15px;
+}
+
+.tag-area {
+    background: #fff1f2;
+    color: #e11d48;
+    padding: 8px 20px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.tag-role {
+    background: #f8fafc;
+    color: #64748b;
+    padding: 8px 20px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    border: 1px solid #e2e8f0;
+}
+
+/* Modal Estilo Davivienda Moderno */
+.modal-overlay-blur {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+}
+
+.modal-content-premium {
+    background: white;
+    width: 90%;
+    max-width: 450px;
+    padding: 40px;
+    border-radius: 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.btn-main-action {
+    background: #002eab;
+    color: white;
+    width: 100%;
+    padding: 16px;
+    border-radius: 18px;
+    border: none;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.2s;
+}
+
+    .btn-main-action:hover {
+        background: #00238a;
+    }
+
+.btn-ghost {
+    background: transparent;
+    color: #94a3b8;
+    width: 100%;
+    padding: 12px;
+    border: none;
+    margin-top: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.animate-pop {
+    animation: pop 0.3s ease-out;
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}

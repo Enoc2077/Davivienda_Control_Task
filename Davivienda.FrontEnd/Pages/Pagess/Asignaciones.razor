@@ -1,0 +1,71 @@
+﻿@page "/Asignaciones"
+@inherits Microsoft.AspNetCore.Components.ComponentBase
+
+<div class="dashboard-wrapper">
+    <div class="main-grid">
+
+        <section class="content-card task-manager">
+            <div class="user-header">
+                <div class="user-profile">
+                    <div class="avatar-circle">@Initials</div>
+                    <div class="user-name-info">
+                        @* Nombre real de la base de datos *@
+                        <h3>@(UsuarioActual?.USU_NOM ?? "Cargando...")</h3>
+                        <span class="role-text">Registros de Base de Datos</span>
+                    </div>
+                </div>
+
+                <div class="priority-filters">
+                    <button class="filter-pill @(PrioridadSeleccionada == "Todas" ? "active" : "")"
+                            @onclick='() => FiltrarPorPrioridad("Todas")'>
+                        Todas
+                    </button>
+
+                    @if (Prioridades != null)
+                    {
+                        @foreach (var p in Prioridades)
+                        {
+                            <button class="filter-pill @(PrioridadSeleccionada == p.PRI_NOM ? "active" : "")"
+                                    @onclick="() => FiltrarPorPrioridad(p.PRI_NOM)">
+                                @p.PRI_NOM
+                            </button>
+                        }
+                    }
+                </div>
+            </div>
+
+            <div class="task-list-container">
+                @if (TareasFiltradas != null && TareasFiltradas.Any())
+                {
+                    @foreach (var tarea in TareasFiltradas)
+                    {
+                        var nombrePrio = GetPrioridadNombre(tarea.PRI_ID);
+
+                        <div class="task-card">
+                            <div class="task-body">
+                                <div class="task-info">
+                                    <strong>@tarea.TAR_NOM</strong>
+                                    <p>@tarea.TAR_DES</p>
+                                    <div class="task-status">
+                                        <i class="bi bi-info-circle"></i> @tarea.TAR_EST
+                                    </div>
+                                </div>
+                                <div class="task-badge">
+                                    <span class="badge @nombrePrio.ToLower()">@nombrePrio.ToUpper()</span>
+                                </div>
+                            </div>
+                            <div class="blue-accent-line"></div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="empty-state">
+                        <p>No se encontraron registros en la tabla TAREAS.</p>
+                    </div>
+                }
+            </div>
+        </section>
+
+    </div>
+</div>

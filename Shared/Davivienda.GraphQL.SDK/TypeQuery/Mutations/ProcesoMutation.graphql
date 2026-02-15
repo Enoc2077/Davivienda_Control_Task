@@ -1,0 +1,11 @@
+mutation InsertProceso($input: ProcesoModelInput!) {
+  insertProceso(proceso: $input)
+}
+
+mutation UpdateProceso($input: ProcesoModelInput!) {
+  updateProceso(proceso: $input)
+}
+
+mutation DeleteProceso($id: UUID!) {
+  deleteProceso(proc_id: $id)
+}

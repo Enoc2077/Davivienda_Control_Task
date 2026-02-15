@@ -1,0 +1,13 @@
+mutation InsertDetalleProyecto($input: DetalleProyectoModelInput!) {
+  insertDetalleProyecto(detalle: $input)
+}
+
+
+mutation UpdateDetalleProyecto($input: DetalleProyectoModelInput!) {
+  updateDetalleProyecto(detalle: $input)
+}
+
+
+mutation DeleteDetalleProyecto($id: UUID!) {
+  deleteDetalleProyecto(det_pro_id: $id)
+}

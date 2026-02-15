@@ -1,0 +1,11 @@
+mutation InsertAreas($area: AreasModelInput!) {
+  insertAreas(area: $area)
+}
+
+mutation UpdateAreas($area: AreasModelInput!) {
+  updateArea(areas: $area)
+}
+
+mutation DeleteAreas($id: UUID!) {
+  deleteArea(area_id: $id)
+}

@@ -1,0 +1,32 @@
+query GetProyectos {
+  proyectos {
+    pro_ID
+    pro_NOM
+    pro_DES
+    pro_FEC_INI
+    pro_FEC_FIN
+    pro_EST
+    are_ID
+  }
+}
+
+# 2. Obtener por ID con detalle de Tareas (Para cuando tocas el proyecto)
+query GetProyectoDetalle($pro_id: UUID!) {
+  proyectoById(pro_id: $pro_id) {
+    pro_ID
+     pro_NOM
+     pro_EST
+     are_ID
+  }
+}
+
+# 3. Obtener proyecto por ID
+query GetProyectoById($pro_id: UUID!) {
+  proyectoById(pro_id: $pro_id) {
+    pro_ID
+    pro_NOM
+    pro_DES
+    pro_FEC_INI
+    pro_EST
+  }
+}

@@ -1,0 +1,93 @@
+﻿@page "/Tarea"
+
+<div class="cuadrantes-container">
+
+    <div class="cuadro-blanco q-90-180">
+        <div class="panel-header">
+            <h3><i class="bi bi-list-task"></i> Tareas Pendientes</h3>
+        </div>
+        <div class="tareas-scroll-area">
+            @foreach (var tarea in TareasLista)
+            {
+                <div class="tarea-card-simple">
+                    <div class="tarea-info" @onclick="() => AbrirModalEdicion(tarea)">
+                        <strong>@tarea.TAR_NOM</strong>
+                        <p>@tarea.TAR_DES</p>
+                    </div>
+                    <div class="tarea-actions">
+                        <button class="btn-action edit" @onclick="() => AbrirModalEdicion(tarea)">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn-action delete" @onclick="() => EliminarTarea(tarea.TAR_ID)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="cuadro-blanco q-270-90">
+        <div class="panel-header">
+            <h3><i class="bi bi-plus-circle"></i> Nueva Tarea</h3>
+        </div>
+        <div class="form-creacion-full">
+            <select class="form-control-dv" @onchange="OnProyectoChanged">
+                <option value="">-- Proyecto --</option>
+                @foreach (var proy in ProyectosLista)
+                {
+                    <option value="@proy.PRO_ID">@proy.PRO_NOM</option>
+                }
+            </select>
+
+            <select class="form-control-dv" @bind="SelectedProcesoId" disabled="@(ProcesosFiltrados.Count == 0)">
+                <option value="">-- Proceso --</option>
+                @foreach (var proc in ProcesosFiltrados)
+                {
+                    <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
+                }
+            </select>
+
+            <input type="text" @bind="NuevaTareaNombre" placeholder="Título..." />
+            <textarea @bind="NuevaTareaDesc" rows="4" placeholder="Descripción..."></textarea>
+
+            <button class="btn-primary-dv" @onclick="GuardarNuevaTarea" disabled="@IsProcessing">
+                @if (IsProcessing)
+                {
+                    <span>Guardando...</span>
+                }
+                else
+                {
+
+                    <span>Registrar Tarea</span>
+                }
+            </button>
+        </div>
+    </div>
+
+    <div class="cuadro-blanco q-180-270">
+        <div class="panel-header">
+            <h3><i class="bi bi-graph-up"></i> Resumen de Actividad</h3>
+        </div>
+        <div class="stats-simple">
+            <div class="stat-row"><span>Tareas:</span> <strong>@TareasLista.Count</strong></div>
+            <div class="stat-row"><span>Proyectos:</span> <strong>@ProyectosLista.Count</strong></div>
+            <div class="stat-row"><span>Procesos:</span> <strong>@TodosLosProcesos.Count</strong></div>
+        </div>
+    </div>
+</div>
+
+@if (MostrarModal)
+{
+    <div class="modal-overlay">
+        <div class="modal-content-small">
+            <h4>Editar Tarea</h4>
+            <input type="text" @bind="TareaEdicion.TAR_NOM" class="form-control-dv" />
+            <textarea @bind="TareaEdicion.TAR_DES" rows="3" class="form-control-dv"></textarea>
+            <div class="modal-buttons">
+                <button class="btn-cancel" @onclick="() => MostrarModal = false">Cancelar</button>
+                <button class="btn-save" @onclick="GuardarEdicion">Guardar</button>
+            </div>
+        </div>
+    </div>
+}

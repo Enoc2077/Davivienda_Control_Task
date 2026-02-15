@@ -1,0 +1,31 @@
+# 1. Obtener todas las bitácoras
+query GetBitacoras {
+  bitacoras {
+    bit_FRI_ID
+    bit_FRI_NOM
+    bit_FRI_DES
+    bit_FRI_EST
+    bit_FRI_FEC_CRE
+    bit_FRI_FEC_MOD
+    usu_ID
+    fri_ID
+  }
+}
+
+# 2. Obtener bitácora por ID 
+# OJO: En tu esquema el parámetro se llama 'bif_id', no 'bit_fri_id'
+query GetBitacoraById($id: UUID!) {
+  bitacoraById(bif_id: $id) {
+    bit_FRI_ID
+    bit_FRI_NOM
+    bit_FRI_DES
+    bit_FRI_EST
+    bit_FRI_FEC_CRE
+    bit_FRI_FEC_MOD
+    usu_ID
+    fri_ID
+  }
+}
+
+# NOTA: He eliminado 'GetBitacorasByName' porque no está en tu schema.graphql.
+# Si la necesitas, primero debes agregarla al archivo schema.graphql bajo 'type Query'.

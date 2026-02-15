@@ -1,0 +1,31 @@
+# Obtener todas las áreas
+query GetAreas {
+  areas {
+    are_ID
+    are_NOM
+    are_DES
+    are_EST
+    are_FEC_CRE
+    are_FEC_MOD
+  }
+}
+
+# Obtener área por ID
+query GetAreaById($id: UUID!) {
+  areasById(area_id: $id) {
+    are_ID
+    are_NOM
+    are_DES
+    are_EST
+  }
+}
+
+# Obtener áreas por nombre
+query GetAreasByName($name: String!) {
+  areasByName(area_name: $name) {
+    are_ID
+    are_NOM
+    are_DES
+    are_EST
+  }
+}

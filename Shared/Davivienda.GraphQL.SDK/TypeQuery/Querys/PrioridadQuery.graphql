@@ -1,0 +1,30 @@
+# 1. Obtener todas las prioridades
+query GetPrioridades {
+  prioridades {
+    pri_ID
+    pri_NOM
+    pri_DES
+    pri_NIV
+    pri_FEC_CRE
+    pri_FEC_MOD
+  }
+}
+
+# 2. Obtener prioridades por nombre (YA NO ESTÁ COMENTADA)
+query GetPrioridadesByName($nombre: String!) {
+  prioridadesByName(nombre: $nombre) {
+    pri_ID
+    pri_NOM
+    pri_DES
+    pri_NIV
+  }
+}
+
+# 3. Obtener prioridad por ID
+query GetPrioridadById($id: UUID!) {
+  prioridadById(pri_id: $id) {
+    pri_ID
+    pri_NOM
+    pri_NIV
+  }
+}

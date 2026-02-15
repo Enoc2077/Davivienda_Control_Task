@@ -1,0 +1,11 @@
+mutation InsertFriccion($input: FriccionModelInput!) {
+  insertFriccion(friccion: $input)
+}
+
+mutation UpdateFriccion($input: FriccionModelInput!) {
+  updateFriccion(friccion: $input)
+}
+
+mutation DeleteFriccion($id: UUID!) {
+  deleteFriccion(fri_id: $id)
+}
