@@ -28,7 +28,7 @@ namespace Davivienda.Migrations.ModelosEF
         public string? BIT_SOL_DES { get; set; }
 
         [Column("BIT_SOL_TIE_TOT_TRA")]
-        public int? BIT_SOL_TIE_TOT_TRA { get; set; } // Tiempo total trabajado (en minutos)
+        public DateTimeOffset? BIT_SOL_TIE_TOT_TRA { get; set; } // Tiempo total trabajado (en minutos)
 
         [Column("BIT_SOL_FEC_CRE")]
         public DateTimeOffset? BIT_SOL_FEC_CRE { get; set; }

@@ -1,52 +1,77 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Data;
-using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Davivienda.GraphQL.DataBases
 {
-    public class DataBase : IDisposable
+    // Implementamos IAsyncDisposable para que el contenedor de servicios
+    // pueda liberar la conexión de forma segura en entornos asíncronos como GraphQL.
+    public class DataBase : IDisposable, IAsyncDisposable
     {
         private SqlConnection? connection;
 
-        // Propiedad para obtener la conexión activa
-        public SqlConnection? Connection { get => this.connection; }
+        // Propiedad para obtener la conexión activa
+        public SqlConnection? Connection { get => this.connection; }
 
-        // Constructor que carga la configuración (Simulado según tu oficina)
-        public DataBase()
+        public DataBase()
         {
-            // Nota: En tu oficina usan un 'LoadConfig'. Aquí lo adaptamos al estándar de .NET
-            // para que use el ConnectionString que pusimos en el appsettings.json
-            string stringConexion = "Server=DESKTOP-IJ2LO3K\\SQLEXPRESS;Database=Davivienda_Asignaciones;Trusted_Connection=True;TrustServerCertificate=True;";
+            // Mantenemos tu cadena de conexión actual
+            string stringConexion = "Server=DESKTOP-IJ2LO3K\\SQLEXPRESS;Database=Davivienda_Asignaciones;Trusted_Connection=True;TrustServerCertificate=True;";
             connection = new SqlConnection(stringConexion);
         }
 
-        // Métodos de gestión de estado
-        public void Connect() => this.connection?.Open();
+        // Métodos de gestión de estado
+        public void Connect()
+        {
+            if (connection != null && connection.State != ConnectionState.Open)
+            {
+                connection.Open();
+            }
+        }
 
         public async Task ConnectAsync()
         {
-            // Solo intentamos abrir si la conexión NO está ya abierta
-            if (Connection.State != System.Data.ConnectionState.Open)
+            // Solo intentamos abrir si la conexión NO está ya abierta
+            if (connection != null && connection.State != ConnectionState.Open)
             {
-                await Connection.OpenAsync();
+                await connection.OpenAsync();
             }
         }
 
         public void Disconnect() => this.connection?.Close();
 
-        public async Task DisconnectAsync() => await this.connection?.CloseAsync();
-
-        // Implementación de IDisposable para liberar recursos
-        public void Dispose()
+        public async Task DisconnectAsync()
         {
-            this.connection?.Dispose();
+            if (this.connection != null)
+            {
+                await this.connection.CloseAsync();
+            }
+        }
+
+        // Limpieza Asíncrona: CRÍTICO para evitar errores de transacciones paralelas
+        public async ValueTask DisposeAsync()
+        {
+            if (connection != null)
+            {
+                await connection.DisposeAsync();
+                connection = null;
+            }
+        }
+
+        // Limpieza Síncrona
+        public void Dispose()
+        {
+            if (connection != null)
+            {
+                connection.Dispose();
+                connection = null;
+            }
         }
     }
 
-    // Enum para manejar distintos tipos de bases de datos si fuera necesario
-    public enum DataBaseType
+    public enum DataBaseType
     {
         AS400,
         SQL_Server
     }
-} 
+}

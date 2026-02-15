@@ -1,0 +1,41 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="modal-form-dav">
+    <EditForm Model="@solEdit" OnValidSubmit="ActualizarSolucion">
+        <div class="form-container-dav">
+            <div class="form-group-dav">
+                <label>NOMBRE DE LA SOLUCIÓN</label>
+                <InputText @bind-Value="solEdit.SOL_NOM" class="input-dav" />
+            </div>
+
+            <div class="form-group-dav">
+                <label>DESCRIPCIÓN TÉCNICA</label>
+                <InputTextArea @bind-Value="solEdit.SOL_DES" class="input-dav textarea-dav" />
+            </div>
+
+            <div class="form-row-dav">
+                <div class="form-group-dav flex-1">
+                    <label>ESTADO</label>
+                    <InputSelect @bind-Value="solEdit.SOL_EST" class="input-dav">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Progreso">En Progreso</option>
+                        <option value="Completada">Completada</option>
+                    </InputSelect>
+                </div>
+                <div class="form-group-dav flex-1">
+                    <label>EFECTIVIDAD (%)</label>
+                    <InputNumber @bind-Value="solEdit.SOL_NIV_EFE" class="input-dav" />
+                </div>
+            </div>
+
+            <div class="footer-actions-dav">
+                <button type="submit" class="btn-save-dav">
+                    <i class="bi bi-save-fill"></i> Guardar Cambios y Bitácora
+                </button>
+            </div>
+        </div>
+    </EditForm>
+</div>

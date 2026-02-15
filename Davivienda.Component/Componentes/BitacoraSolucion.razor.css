@@ -1,0 +1,216 @@
+/* --- CONTENEDOR GENERAL DE BITÁCORA --- */
+.bitacora-global-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 20px;
+}
+
+/* --- BARRA DE FILTROS SUPERIOR --- */
+.filters-bar-dav {
+    display: flex;
+    gap: 20px;
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1.5px solid #cbd5e1; /* Bordes claros y definidos [cite: 2026-02-12] */
+}
+
+.filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+    .filter-item label {
+        font-weight: 800;
+        font-size: 0.7rem;
+        color: #64748b;
+        text-transform: uppercase;
+    }
+
+/* --- ÁREA DE DESPLAZAMIENTO HORIZONTAL (FILA) --- */
+.fricciones-horizontal-scroll {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 10px 5px 25px 5px;
+    min-height: 400px;
+    width: 100%;
+}
+
+/* --- TARJETAS DE BITÁCORA (Fricción y Solución) --- */
+.card-friccion-bitacora, .clickable-card {
+    min-width: 320px;
+    max-width: 320px;
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+    .clickable-card:hover {
+        transform: scale(1.03) translateY(-8px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+    }
+
+/* --- ELEMENTOS INTERNOS DE LA TARJETA --- */
+.card-fri-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.tarea-tag {
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+}
+
+.status-badge-mini {
+    background: #f1f5f9;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #475569;
+}
+
+.fri-title {
+    margin: 10px 0;
+    font-weight: 800;
+    color: #1e293b;
+    font-size: 1.05rem;
+}
+
+.fri-desc {
+    font-size: 0.85rem;
+    color: #64748b;
+    flex-grow: 1;
+    line-height: 1.5;
+    margin-bottom: 15px;
+}
+
+.fri-footer-data {
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px dashed #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #94a3b8;
+}
+
+/* --- ESTADOS DE IMPACTO (Fricciones) --- */
+.impacto-badge {
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+    .impacto-badge.alto {
+        background: #fee2e2;
+        color: #ef4444;
+    }
+
+    .impacto-badge.medio {
+        background: #fefce8;
+        color: #eab308;
+    }
+
+    .impacto-badge.bajo {
+        background: #f0fdf4;
+        color: #22c55e;
+    }
+
+/* --- MODAL DE DETALLE (CAPA SUPERIOR ABSOLUTA) --- */
+.sub-modal-top, .sub-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 15000 !important; /* Prioridad máxima sobre otros modales [cite: 2026-02-10] */
+    background: rgba(15, 23, 42, 0.8);
+    backdrop-filter: blur(12px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.detail-card {
+    width: 520px !important;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    padding: 25px;
+}
+
+.detail-grid-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.detail-item label {
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #94a3b8;
+    letter-spacing: 0.05em;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.val-highlight {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.detail-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* --- CUADRO DE TEXTO PARA DESCRIPCIONES LARGAS --- */
+.desc-content-box {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #334155;
+    border: 1.5px solid #e2e8f0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+/* --- UTILIDADES DE COLOR --- */
+.text-blue {
+    color: #2563eb !important;
+}
+
+.text-green {
+    color: #16a34a !important;
+}
+
+.empty-state-container {
+    width: 100%;
+    text-align: center;
+    padding: 60px;
+    color: #94a3b8;
+    font-style: italic;
+}

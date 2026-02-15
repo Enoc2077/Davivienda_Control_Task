@@ -1,0 +1,119 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
+
+<div class="bitacora-global-container">
+    @* --- BARRA DE FILTROS EN CASCADA --- *@
+    <div class="filters-bar-dav">
+        <div class="filter-item">
+            <label>PROYECTO</label>
+            <select class="input-dav select-filter" @onchange="OnProyectoChanged">
+                <option value="">Todos los Proyectos</option>
+                @foreach (var pro in ProyectosList)
+                {
+                    <option value="@pro.PRO_ID">@pro.PRO_NOM</option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-item">
+            <label>PROCESO</label>
+            <select class="input-dav select-filter" @onchange="OnProcesoChanged">
+                <option value="">Todos los Procesos</option>
+                @foreach (var proc in ProcesosFiltrados)
+                {
+                    <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
+                }
+            </select>
+        </div>
+
+        <div class="filter-item">
+            <label>TAREA</label>
+            <select class="input-dav select-filter" @onchange="OnTareaChanged">
+                <option value="">Todas las Tareas</option>
+                @foreach (var tar in TareasFiltradas)
+                {
+                    <option value="@tar.TAR_ID">@tar.TAR_NOM</option>
+                }
+            </select>
+        </div>
+    </div>
+
+    @* --- CONTENEDOR HORIZONTAL DE SOLUCIONES --- *@
+    <div class="fricciones-horizontal-scroll custom-scroll">
+        @if (SolucionesFiltradas != null && SolucionesFiltradas.Any())
+        {
+            @foreach (var sol in SolucionesFiltradas)
+            {
+                <div class="card-friccion-bitacora clickable-card"
+                     style="border-top: 8px solid @ObtenerColorTarea(sol.FRI_ID)"
+                     @onclick="() => AbrirDetalle(sol)">
+                    <div class="card-fri-header">
+                        <span class="tarea-tag" style="background-color: @ObtenerColorTarea(sol.FRI_ID)">
+                            @ObtenerNombreTareaPorFriccion(sol.FRI_ID)
+                        </span>
+                        <span class="status-badge-mini">@sol.SOL_EST</span>
+                    </div>
+
+                    <h5 class="fri-title">@sol.SOL_NOM</h5>
+                    <p class="fri-desc">@sol.SOL_DES</p>
+
+                    <div class="fri-footer-data">
+                        <span><b>Efectividad:</b> @(sol.SOL_NIV_EFE)%</span>
+                        <span><b>Fecha:</b> @sol.SOL_FEC_CRE.ToString("dd/MM/yy")</span>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state-container">
+                <p>No se encontraron soluciones para los filtros seleccionados.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@* --- SUB-MODAL DE DETALLE (CAPA SUPERIOR ABSOLUTA) --- *@
+@if (MostrarDetalle && SolucionSeleccionada != null)
+{
+    <div class="modal-backdrop-dav sub-modal-top" @onclick="CerrarDetalle">
+        <div class="modal-content-centered detail-card" @onclick:stopPropagation>
+            <div class="modal-header-dav border-solucion-blue">
+                <h4>Detalle Técnico de Solución</h4>
+                <button class="close-btn-dav" @onclick="CerrarDetalle">×</button>
+            </div>
+            <div class="modal-body-dav">
+                <div class="detail-grid-container">
+                    <div class="detail-item">
+                        <label>TÍTULO DE LA SOLUCIÓN</label>
+                        <p class="val-highlight text-blue">@SolucionSeleccionada.SOL_NOM</p>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <label>NIVEL DE EFECTIVIDAD</label>
+                            <p class="val-highlight text-green">@SolucionSeleccionada.SOL_NIV_EFE%</p>
+                        </div>
+                        <div class="detail-item">
+                            <label>ESTADO ACTUAL</label>
+                            <p class="val-highlight">@SolucionSeleccionada.SOL_EST</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-item full-width">
+                        <label>PROPUESTA TÉCNICA DETALLADA</label>
+                        <div class="desc-content-box">
+                            @SolucionSeleccionada.SOL_DES
+                        </div>
+                    </div>
+
+                    <div class="detail-item">
+                        <label>FECHA DE REGISTRO</label>
+                        <p>@SolucionSeleccionada.SOL_FEC_CRE.ToString("f")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

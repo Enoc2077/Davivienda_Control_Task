@@ -1,0 +1,55 @@
+.form-container-dav {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Espacio entre inputs [cite: 2026-02-12] */
+}
+
+.input-dav {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1; /* Bordes con espacio [cite: 2026-02-12] */
+    border-radius: 10px;
+    background-color: #f8fafc;
+}
+
+    .input-dav:focus {
+        outline: none;
+        border-color: #eab308;
+        box-shadow: 0 0 0 2px rgba(234, 179, 8, 0.1);
+    }
+
+.textarea-dav {
+    min-height: 90px;
+}
+
+.form-row-dav {
+    display: flex;
+    gap: 12px;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.footer-actions-dav {
+    margin-top: 15px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-save-dav.yellow {
+    background-color: #eab308; /* Color amarillo de fricción */
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .btn-save-dav.yellow:hover {
+        background-color: #ca8a04;
+    }

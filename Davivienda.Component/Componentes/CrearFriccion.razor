@@ -1,0 +1,56 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="modal-form-dav">
+    <EditForm Model="@nuevaFriccion" OnValidSubmit="GuardarFriccion">
+        <div class="form-container-dav">
+
+            @* Grupo: Nombre de la Fricción (Mapeado a FRI_TIP) *@
+            <div class="form-group-dav">
+                <label>NOMBRE DE LA FRICCIÓN</label>
+                <InputText @bind-Value="nuevaFriccion.FRI_TIP"
+                           class="input-dav"
+                           placeholder="Ej: Acceso denegado a base de datos..." />
+            </div>
+
+            @* Grupo: Descripción *@
+            <div class="form-group-dav">
+                <label>DESCRIPCIÓN DEL OBSTÁCULO</label>
+                <InputTextArea @bind-Value="nuevaFriccion.FRI_DES"
+                               class="input-dav textarea-dav"
+                               placeholder="Detalle el problema técnico o administrativo..." />
+            </div>
+
+            @* Fila: Estado e Impacto *@
+            <div class="form-row-dav">
+                <div class="form-group-dav flex-1">
+                    <label>ESTADO INICIAL</label>
+                    <InputSelect @bind-Value="nuevaFriccion.FRI_EST" class="input-dav">
+                        <option value="Abierta">Abierta</option>
+                        <option value="En Análisis">En Análisis</option>
+                        <option value="Mitigada">Mitigada</option>
+                    </InputSelect>
+                </div>
+                <div class="form-group-dav flex-1">
+                    <label>IMPACTO</label>
+                    <InputSelect @bind-Value="nuevaFriccion.FRI_IMP" class="input-dav">
+                        <option value="Bajo">Bajo</option>
+                        <option value="Medio">Medio</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Crítico">Crítico</option>
+                    </InputSelect>
+                </div>
+            </div>
+
+            @* Acciones: Botón Amarillo de Fricción *@
+            <div class="footer-actions-dav">
+                <button type="submit" class="btn-save-dav yellow">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Registrar Fricción y Bitácora
+                </button>
+            </div>
+        </div>
+    </EditForm>
+</div>

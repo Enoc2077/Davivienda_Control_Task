@@ -21,10 +21,12 @@ namespace Davivienda.FrontEnd.Pages.Pagess
         public List<TareaModel> TareasFiltradas { get; set; } = new();
         public string PrioridadSeleccionada { get; set; } = "Todas";
 
-        // Lógica de Calendario
+        // Lógica de Calendario y Control de Modales
         public DateTime FechaCalendario { get; set; } = DateTime.Today;
         public List<CalendarDayAsignacion> DiasDelMesAsignaciones { get; set; } = new();
         public bool MostrarModal { get; set; } = false;
+        public string ModalActual { get; set; } = ""; // "CALENDARIO" o "DETALLE"
+        public TareaModel? TareaSeleccionada { get; set; }
 
         public string Initials => GetInitials(UsuarioActual?.USU_NOM);
 
@@ -65,7 +67,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                         TAR_EST = t.Tar_EST,
                         PRI_ID = t.Pri_ID,
                         USU_ID = t.Usu_ID,
-                        // Conversión explícita de DateTimeOffset a DateTime para evitar error CS1503
+                        // Conversión explícita de DateTimeOffset a DateTime
                         TAR_FEC_INI = t.Tar_FEC_INI.DateTime,
                         TAR_FEC_FIN = t.Tar_FEC_FIN?.DateTime
                     }).ToList();
@@ -135,18 +137,33 @@ namespace Davivienda.FrontEnd.Pages.Pagess
             return parts.Length > 1 ? $"{parts[0][0]}{parts[1][0]}".ToUpper() : $"{parts[0][0]}".ToUpper();
         }
 
-        // CONTROL DEL MODAL
+        // --- MÉTODOS DE CONTROL DE MODALES ---
+
         private void AbrirModalCalendario()
         {
+            ModalActual = "CALENDARIO";
             MostrarModal = true;
             StateHasChanged();
         }
 
-        private void CerrarModalCalendario()
+        private void AbrirDetalleTarea(TareaModel tarea)
         {
-            MostrarModal = false;
+            TareaSeleccionada = tarea;
+            ModalActual = "DETALLE";
+            MostrarModal = true;
             StateHasChanged();
         }
+
+        private void CerrarModal()
+        {
+            MostrarModal = false;
+            ModalActual = "";
+            TareaSeleccionada = null;
+            StateHasChanged();
+        }
+
+        // Alias para compatibilidad con botones antiguos
+        private void CerrarModalCalendario() => CerrarModal();
 
         public class CalendarDayAsignacion
         {

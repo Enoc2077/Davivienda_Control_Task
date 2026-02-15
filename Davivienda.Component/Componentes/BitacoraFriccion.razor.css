@@ -1,0 +1,70 @@
+.bitacora-global-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 20px;
+}
+
+.filters-bar-dav {
+    display: flex;
+    gap: 20px;
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #e2e8f0;
+}
+
+.fricciones-horizontal-scroll {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    overflow-x: auto;
+    padding: 20px 10px;
+    min-height: 400px;
+    width: 100%;
+}
+
+/* Modal Detalle Superior Absolute */
+.sub-modal-top {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 15000 !important;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.detail-card {
+    width: 500px !important;
+    border-radius: 28px;
+    background: white;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+}
+
+.desc-content-box {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 18px;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: #334155;
+    border: 1px solid #e2e8f0;
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.clickable-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .clickable-card:hover {
+        transform: scale(1.03) translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
