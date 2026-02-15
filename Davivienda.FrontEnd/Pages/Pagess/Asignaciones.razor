@@ -1,71 +1,153 @@
 ﻿@page "/Asignaciones"
 @inherits Microsoft.AspNetCore.Components.ComponentBase
+@using Davivienda.Component.Componentes
 
 <div class="dashboard-wrapper">
-    <div class="main-grid">
+    <div class="asignaciones-grid">
 
-        <section class="content-card task-manager">
-            <div class="user-header">
-                <div class="user-profile">
-                    <div class="avatar-circle">@Initials</div>
-                    <div class="user-name-info">
-                        @* Nombre real de la base de datos *@
-                        <h3>@(UsuarioActual?.USU_NOM ?? "Cargando...")</h3>
-                        <span class="role-text">Registros de Base de Datos</span>
-                    </div>
-                </div>
-
-                <div class="priority-filters">
-                    <button class="filter-pill @(PrioridadSeleccionada == "Todas" ? "active" : "")"
-                            @onclick='() => FiltrarPorPrioridad("Todas")'>
-                        Todas
-                    </button>
-
-                    @if (Prioridades != null)
-                    {
-                        @foreach (var p in Prioridades)
+        @* --- CUADRO 1: Mis Tareas Asignadas --- *@
+        <section class="white-panel-card panel-top-left-large">
+            <div class="panel-header-dav">
+                <div class="header-with-filter">
+                    <h3 class="panel-title">Mis Tareas Asignadas</h3>
+                    <div class="priority-filters">
+                        <button class="filter-pill @(PrioridadSeleccionada == "Todas" ? "active" : "")"
+                                @onclick='() => FiltrarPorPrioridad("Todas")'>
+                            Todas
+                        </button>
+                        @if (Prioridades != null)
                         {
-                            <button class="filter-pill @(PrioridadSeleccionada == p.PRI_NOM ? "active" : "")"
-                                    @onclick="() => FiltrarPorPrioridad(p.PRI_NOM)">
-                                @p.PRI_NOM
-                            </button>
+                            @foreach (var p in Prioridades)
+                            {
+                                <button class="filter-pill @(PrioridadSeleccionada == p.PRI_NOM ? "active" : "")"
+                                        @onclick="() => FiltrarPorPrioridad(p.PRI_NOM)">
+                                    @p.PRI_NOM
+                                </button>
+                            }
                         }
-                    }
+                    </div>
                 </div>
             </div>
 
-            <div class="task-list-container">
-                @if (TareasFiltradas != null && TareasFiltradas.Any())
-                {
-                    @foreach (var tarea in TareasFiltradas)
+            <div class="panel-content-horizontal">
+                <div id="scroll-container" class="horizontal-scroll-wrapper">
+                    @if (TareasFiltradas != null && TareasFiltradas.Any())
                     {
-                        var nombrePrio = GetPrioridadNombre(tarea.PRI_ID);
-
-                        <div class="task-card">
-                            <div class="task-body">
-                                <div class="task-info">
-                                    <strong>@tarea.TAR_NOM</strong>
-                                    <p>@tarea.TAR_DES</p>
-                                    <div class="task-status">
-                                        <i class="bi bi-info-circle"></i> @tarea.TAR_EST
+                        @foreach (var tarea in TareasFiltradas)
+                        {
+                            <div class="task-card-column">
+                                <div class="task-card-inner">
+                                    <div class="task-header-prio">
+                                        <span class="badge @GetPrioridadNombre(tarea.PRI_ID).ToLower()">
+                                            @GetPrioridadNombre(tarea.PRI_ID).ToUpper()
+                                        </span>
+                                    </div>
+                                    <div class="task-body-content">
+                                        <strong>@tarea.TAR_NOM</strong>
+                                        <p class="task-desc-short">@tarea.TAR_DES</p>
+                                    </div>
+                                    <div class="task-footer-info">
+                                        <span class="status-tag">@tarea.TAR_EST</span>
+                                        <div class="blue-accent-bottom"></div>
                                     </div>
                                 </div>
-                                <div class="task-badge">
-                                    <span class="badge @nombrePrio.ToLower()">@nombrePrio.ToUpper()</span>
-                                </div>
                             </div>
-                            <div class="blue-accent-line"></div>
-                        </div>
+                        }
                     }
-                }
-                else
-                {
-                    <div class="empty-state">
-                        <p>No se encontraron registros en la tabla TAREAS.</p>
+                    else
+                    {
+                        <div class="empty-state-msg">No hay tareas asignadas.</div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        @* --- CUADRO 2: Calendario Mini y Botón de Acción --- *@
+        <section class="white-panel-card panel-top-right-small">
+            <div class="panel-header-dav calendar-mini-header">
+                <h3 class="panel-title-bold">Calendario</h3>
+                <div class="header-icon-orange"><i class="bi bi-calendar3"></i></div>
+            </div>
+
+            <div class="panel-scroll-content no-padding-top">
+                <div class="mini-cal-container">
+                    <div class="cal-nav-row">
+                        <button class="btn-cal-nav" @onclick="MesAnterior"><i class="bi bi-chevron-left"></i></button>
+                        <span class="month-label-bold">@FechaCalendario.ToString("MMMM yyyy")</span>
+                        <button class="btn-cal-nav" @onclick="MesSiguiente"><i class="bi bi-chevron-right"></i></button>
                     </div>
+                    <div class="cal-days-grid-header">
+                        <span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span>
+                    </div>
+                    <div class="cal-numbers-grid-spacious">
+                        @foreach (var dia in DiasDelMesAsignaciones)
+                        {
+                            <div class="cal-day-cell-spacious @(dia.EsMesActual ? "" : "not-current") @(dia.EsHoy ? "today-highlight" : "") @(dia.TieneTareas ? "has-task-bg" : "")">
+                                <span class="num">@dia.Fecha.Day</span>
+                                @if (dia.TieneTareas)
+                                {
+                                    <span class="blue-dot-small"></span>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @* BOTÓN INTERACTIVO: Abre el Modal de Agenda *@
+                @{
+                    var proxima = GetProximaTarea();
+                }
+                @if (proxima != null)
+                {
+                    <button class="delivery-action-button" @onclick="AbrirModalCalendario" type="button">
+                        <div class="delivery-blue-box">
+                            <span class="day-num-box">@proxima.TAR_FEC_FIN.Value.Day</span>
+                        </div>
+                        <div class="delivery-text">
+                            <strong>@proxima.TAR_NOM</strong>
+                            <span>Faltan @((proxima.TAR_FEC_FIN.Value.Date - DateTime.Today).Days) días (Ver Agenda)</span>
+                        </div>
+                        <i class="bi bi-chevron-right arrow-icon"></i>
+                    </button>
                 }
             </div>
         </section>
 
+        @* --- CUADROS INFERIORES --- *@
+        <section class="white-panel-card panel-bottom"><div class="panel-header-dav"><h3>Estadísticas</h3></div></section>
+
+        <section class="white-panel-card panel-bottom">
+            <div class="panel-header-dav user-box-header">
+                <div class="user-profile-vertical">
+                    <div class="avatar-circle-large">@Initials</div>
+                    <div class="user-info-centered">
+                        <h3>@(UsuarioActual?.USU_NOM ?? "Usuario DB")</h3>
+                        <span class="role-badge">Administrador</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="white-panel-card panel-bottom"><div class="panel-header-dav"><h3>Alertas</h3></div></section>
     </div>
 </div>
+
+@* ... final de tu grid y otros contenedores ... *@
+
+@if (MostrarModal)
+{
+    <div class="modal-backdrop-dav" @onclick="CerrarModalCalendario">
+        <div class="modal-calendar-content" @onclick:stopPropagation>
+            <div class="modal-header-dav">
+                <div class="header-content-left">
+                    <h3 style="font-weight: 800; color: #1e293b; margin: 0;">Agenda de Tareas</h3>
+                </div>
+                <button class="close-btn-dav" @onclick="CerrarModalCalendario">×</button>
+            </div>
+            <div class="modal-body-dav">
+                @* El componente ahora se verá arriba de todo *@
+                <Calendario />
+            </div>
+        </div>
+    </div>
+}

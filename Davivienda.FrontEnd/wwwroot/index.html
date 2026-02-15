@@ -10,25 +10,31 @@
     <link rel="stylesheet" href="css/app.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link href="Davivienda.FrontEnd.styles.css" rel="stylesheet" />
-    <link href="manifest.webmanifest" rel="manifest" />
-    <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png" />
-    <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png" />
 </head>
 
 <body>
     <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
     </div>
 
-    <div id="blazor-error-ui">
-        An unhandled error has occurred.
-        <a href="" class="reload">Reload</a>
-        <a class="dismiss">🗙</a>
-    </div>
+    <script>
+        // Usamos una función autoejecutable para asegurar el registro
+        (function () {
+            window.setupHorizontalScroll = (elementId) => {
+                const element = document.getElementById(elementId);
+                if (element) {
+                    element.addEventListener("wheel", (evt) => {
+                        evt.preventDefault();
+                        // Ajuste para scroll suave
+                        element.scrollLeft += evt.deltaY;
+                    }, { passive: false });
+                    console.log("Scroll horizontal configurado para: " + elementId);
+                } else {
+                    console.error("No se encontró el elemento: " + elementId);
+                }
+            };
+        })();
+    </script>
+
     <script src="_framework/blazor.webassembly.js"></script>
     <script>navigator.serviceWorker.register('service-worker.js');</script>
 </body>
