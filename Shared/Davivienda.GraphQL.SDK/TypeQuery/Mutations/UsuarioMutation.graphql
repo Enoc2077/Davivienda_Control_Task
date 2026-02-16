@@ -10,6 +10,3 @@ mutation DeleteUsuario($id: UUID!) {
   deleteUsuario(usu_id: $id)
 }
 
-mutation Login($usuNum: Int!, $password: String!) {
-  login(usuNum: $usuNum, password: $password)
-}

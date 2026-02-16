@@ -1,88 +1,99 @@
 ﻿@page "/Usuario"
+@using Davivienda.Models.Modelos
 
-<div class="admin-layout">
-    <div class="toolbar-section">
-        <div class="search-bar">
+<div class="page-container">
+    @* 1. Título Superior *@
+    <div class="header-section">
+        <h2 class="page-title">Gestión de Usuarios</h2>
+    </div>
+
+    @* 2. Barra de herramientas Arreglada *@
+    <div class="search-bar-wrapper">
+        <div class="search-input-box">
             <i class="bi bi-search"></i>
-            <input type="text" placeholder="Buscar por nombre..." @bind="Busqueda" @bind:event="oninput" @onkeyup="FiltrarUsuarios" />
+            <input type="text" placeholder="Buscar usuario por nombre..." @bind="Busqueda" @bind:event="oninput" @onkeyup="FiltrarUsuarios" />
         </div>
-        <button class="btn-create" @onclick="AbrirModalNuevo">
-            <i class="bi bi-plus-lg"></i> Nuevo Usuario
+        <button class="btn-primary-blue" @onclick="AbrirModalNuevo">
+            <i class="bi bi-person-plus-fill"></i> Nuevo Usuario
         </button>
     </div>
 
-    <div class="data-card">
-        <div class="card-header">
-            <h3>Gestión de Usuarios</h3>
-        </div>
+    @* 3. Listado de Usuarios (Tarjetas) *@
+    <div class="users-list-container">
+        @if (UsuariosFiltrados == null || !UsuariosFiltrados.Any())
+        {
+            <div class="empty-state-card">
+                <p>No se encontraron usuarios registrados.</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var u in UsuariosFiltrados)
+            {
+                <div class="user-item-card animate-pop">
+                    <div class="user-main-info">
+                        <div class="user-avatar">
+                            <span>@(string.IsNullOrWhiteSpace(u.USU_NOM) ? "?" : u.USU_NOM.Substring(0, 1).ToUpper())</span>
+                        </div>
+                        <div class="user-details">
+                            <span class="user-name-text">@u.USU_NOM</span>
+                            <span class="user-emp-text">Empleado: @u.USU_NUM | Tel: @u.USU_TEL</span>
+                        </div>
+                    </div>
 
-        <div class="table-responsive">
-            <table class="user-table">
-                <thead>
-                    <tr>
-                        <th>N° EMPLEADO</th>
-                        <th>NOMBRE</th>
-                        <th>ESTADO</th>
-                        <th class="text-center">ACCIONES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var u in UsuariosFiltrados)
-                    {
-                        <tr>
-                            <td class="emp-col">@u.USU_NUM</td>
-                            <td class="name-col">@u.USU_NOM</td>
-                            <td>
-                                <span class="status-pill @(u.USU_EST == true ? "active" : "inactive")">
-                                    @(u.USU_EST == true ? "Activo" : "Inactivo")
-                                </span>
-                            </td>
-                            <td class="actions-col">
-                                <button class="btn-action edit" @onclick="() => AbrirModalEditar(u)">
-                                    <i class="bi bi-pencil-fill"></i> Editar
-                                </button>
-                                <button class="btn-action delete" @onclick="() => EliminarUsuario(u.USU_ID)">
-                                    <i class="bi bi-trash3-fill"></i> Eliminar
-                                </button>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                    <div class="user-meta-info">
+                        <span class="dept-badge">@u.USU_COR</span>
+                        <span class="status-pill @(u.USU_EST == true ? "active" : "inactive")">
+                            @(u.USU_EST == true ? "Activo" : "Inactivo")
+                        </span>
+                    </div>
+
+                    <div class="user-card-actions">
+                        <button class="btn-action-edit-min" @onclick="() => AbrirModalEditar(u)">Editar</button>
+                        <button class="btn-action-delete-min" @onclick="() => EliminarUsuario(u.USU_ID)">Eliminar</button>
+                    </div>
+                </div>
+            }
+        }
     </div>
 </div>
 
 @if (MostrarModal)
 {
     <div class="modal-overlay">
-        <div class="modal-card">
+        <div class="modal-card-premium animate-pop">
+            <div class="modal-top-accent"></div>
+
             <div class="modal-head">
-                <h4>@(Editando ? "Editar Usuario" : "Registro de Usuario")</h4>
-                <button class="close-x" @onclick="() => MostrarModal = false">&times;</button>
+                <h2 class="modal-title-main">@(Editando ? "Editar Usuario" : "Registro de Usuario")</h2>
+                <button class="close-x-dav" @onclick="() => MostrarModal = false">×</button>
             </div>
 
             <div class="modal-body">
-                <div class="form-grid">
-                    <div class="input-box">
-                        <label>Nombre Completo</label>
-                        <input @bind="UsuarioForm.USU_NOM" placeholder="Nombre y Apellido" />
+                <div class="form-grid-dav">
+                    <div class="input-container-dav">
+                        <label>NOMBRE COMPLETO</label>
+                        <input @bind="UsuarioForm.USU_NOM" placeholder="Nombre completo" class="input-field-dav" />
                     </div>
-                    <div class="input-box">
-                        <label>Empleado #</label>
-                        <input @bind="UsuarioForm.USU_NUM" placeholder="12345" />
+
+                    <div class="input-container-dav">
+                        <label>N° EMPLEADO</label>
+                        <input @bind="UsuarioForm.USU_NUM" placeholder="12345" class="input-field-dav" />
                     </div>
-                    <div class="input-box">
-                        <label>Correo Institucional</label>
-                        <input @bind="UsuarioForm.USU_COR" placeholder="ejemplo@davivienda.com" />
+
+                    <div class="input-container-dav">
+                        <label>CORREO INSTITUCIONAL</label>
+                        <input @bind="UsuarioForm.USU_COR" placeholder="usuario@davivienda.com" class="input-field-dav" />
                     </div>
-                    <div class="input-box">
-                        <label>Teléfono</label>
-                        <input @bind="UsuarioForm.USU_TEL" placeholder="+(504) 9999-9999" />
+
+                    <div class="input-container-dav">
+                        <label>TELÉFONO</label>
+                        <input @bind="UsuarioForm.USU_TEL" placeholder="+504 9999-9999" class="input-field-dav" />
                     </div>
-                    <div class="input-box">
-                        <label>Rol asignado</label>
-                        <select @bind="UsuarioForm.ROL_ID">
+
+                    <div class="input-container-dav">
+                        <label>ROL ASIGNADO</label>
+                        <select @bind="UsuarioForm.ROL_ID" class="input-field-dav select-dav">
                             <option value="">Seleccionar Rol...</option>
                             @foreach (var rol in Roles)
                             {
@@ -90,9 +101,11 @@
                             }
                         </select>
                     </div>
-                    <div class="input-box">
-                        <label>Estado del Usuario</label>
-                        <select @bind="UsuarioForm.USU_EST">
+
+                    <div class="input-container-dav">
+                        <label>ESTADO ACTUAL</label>
+                        @* FIX: Select con visibilidad garantizada *@
+                        <select @bind="UsuarioForm.USU_EST" class="input-field-dav select-dav status-select-fix">
                             <option value="true">Activo</option>
                             <option value="false">Inactivo</option>
                         </select>
@@ -100,9 +113,9 @@
                 </div>
             </div>
 
-            <div class="modal-foot">
-                <button class="btn-gray" @onclick="() => MostrarModal = false">Cancelar</button>
-                <button class="btn-primary-dv" @onclick="GuardarCambios">
+            <div class="modal-foot-dav">
+                <button class="btn-secondary-dav" @onclick="() => MostrarModal = false">Cancelar</button>
+                <button class="btn-save-main-dav" @onclick="GuardarCambios">
                     @(Editando ? "Actualizar" : "Guardar Registro")
                 </button>
             </div>

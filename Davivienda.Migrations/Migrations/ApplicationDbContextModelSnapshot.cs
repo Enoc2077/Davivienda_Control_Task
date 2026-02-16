@@ -133,8 +133,8 @@ namespace Davivienda.Migrations.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("BIT_SOL_NOM");
 
-                    b.Property<int?>("BIT_SOL_TIE_TOT_TRA")
-                        .HasColumnType("int")
+                    b.Property<DateTimeOffset?>("BIT_SOL_TIE_TOT_TRA")
+                        .HasColumnType("datetimeoffset")
                         .HasColumnName("BIT_SOL_TIE_TOT_TRA");
 
                     b.Property<Guid?>("SOL_ID")

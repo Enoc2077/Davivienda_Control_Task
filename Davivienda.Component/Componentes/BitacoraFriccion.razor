@@ -1,0 +1,136 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
+
+<div class="bitacora-premium-container animate-fade-in">
+    @* --- BARRA DE FILTROS ESPACIOSA --- *@
+    <div class="toolbar-filters-dav">
+        <div class="filter-capsule">
+            <i class="fas fa-project-diagram icon-accent"></i>
+            <div class="filter-text">
+                <label>PROYECTO</label>
+                <select class="select-premium" @onchange="OnProyectoChanged">
+                    <option value="">Todos los Proyectos</option>
+                    @foreach (var pro in ProyectosList)
+                    {
+                        <option value="@pro.PRO_ID">@pro.PRO_NOM</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-capsule">
+            <i class="fas fa-sync-alt icon-accent"></i>
+            <div class="filter-text">
+                <label>PROCESO</label>
+                <select class="select-premium" @onchange="OnProcesoChanged">
+                    <option value="">Todos los Procesos</option>
+                    @foreach (var proc in ProcesosFiltrados)
+                    {
+                        <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+        <div class="filter-capsule no-border">
+            <i class="fas fa-tasks icon-accent"></i>
+            <div class="filter-text">
+                <label>TAREA</label>
+                <select class="select-premium" @onchange="OnTareaChanged">
+                    <option value="">Todas las Tareas</option>
+                    @foreach (var tar in TareasFiltradas)
+                    {
+                        <option value="@tar.TAR_ID">@tar.TAR_NOM</option>
+                    }
+                </select>
+            </div>
+        </div>
+    </div>
+
+    @* --- CONTENEDOR DE TARJETAS CON MAYOR ESPACIADO --- *@
+    <div class="horizontal-cards-viewport custom-scroll">
+        @if (FriccionesFiltradas != null && FriccionesFiltradas.Any())
+        {
+            @foreach (var fri in FriccionesFiltradas)
+            {
+                <div class="card-premium-bitacora animate-pop" @onclick="() => AbrirDetalle(fri)">
+                    <div class="card-indicator" style="background-color: @ObtenerColorTarea(fri.TAR_ID)"></div>
+
+                    <div class="card-inner-content">
+                        <div class="card-top-row">
+                            <span class="badge-tarea" style="background-color: @ObtenerColorTarea(fri.TAR_ID)">
+                                @ObtenerNombreTarea(fri.TAR_ID)
+                            </span>
+                            <span class="impacto-pill @fri.FRI_IMP?.ToLower()">@fri.FRI_IMP?.ToUpper()</span>
+                        </div>
+
+                        <h4 class="card-main-title">@fri.FRI_TIP</h4>
+                        <p class="card-main-desc">@fri.FRI_DES</p>
+
+                        <div class="card-footer-stats">
+                            <div class="stat-group">
+                                <span class="stat-label">ESTADO</span>
+                                <span class="stat-value text-accent">@fri.FRI_EST</span>
+                            </div>
+                            <div class="stat-group">
+                                <span class="stat-label">REGISTRO</span>
+                                <span class="stat-value">@fri.FRI_FEC_CRE.ToString("dd MMM yyyy")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div class="empty-state-dav">
+                <i class="fas fa-search-minus"></i>
+                <p>No se encontraron fricciones con los filtros aplicados.</p>
+            </div>
+        }
+    </div>
+</div>
+
+@* --- MODAL DE DETALLE ESPACIOSO --- *@
+@if (MostrarDetalle && FriccionSeleccionada != null)
+{
+    <div class="modal-overlay-blur" @onclick="CerrarDetalle">
+        <div class="detail-card-premium animate-zoom" @onclick:stopPropagation>
+            <div class="bg-gold-gradient"></div>
+
+            <div class="detail-head">
+                <div class="head-title-group">
+                    <span class="label-premium text-gold">DETALLE DE OBSTÁCULO</span>
+                    <h3>@FriccionSeleccionada.FRI_TIP</h3>
+                </div>
+                <button class="btn-close-circle" @onclick="CerrarDetalle">×</button>
+            </div>
+
+            <div class="detail-body">
+                <div class="stats-grid-premium">
+                    <div class="stat-box-large">
+                        <label class="label-premium">IMPACTO EN OPERACIÓN</label>
+                        <p class="impacto-display @FriccionSeleccionada.FRI_IMP?.ToLower()">@FriccionSeleccionada.FRI_IMP</p>
+                    </div>
+                    <div class="stat-box-large">
+                        <label class="label-premium">ESTADO ACTUAL</label>
+                        <p class="val-display-dark">@FriccionSeleccionada.FRI_EST</p>
+                    </div>
+
+                    <div class="desc-section-full">
+                        <label class="label-premium">DESCRIPCIÓN TÉCNICA DEL PROBLEMA</label>
+                        <div class="desc-viewport-premium warm-bg-accent">
+                            @FriccionSeleccionada.FRI_DES
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-footer-info">
+                    <i class="far fa-calendar-alt"></i>
+                    <span>Registrado el @FriccionSeleccionada.FRI_FEC_CRE.ToString("f")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}

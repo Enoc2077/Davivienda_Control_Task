@@ -27,7 +27,7 @@ builder.Services.AddCors(options =>
 });
 
 // 2. REGISTRO DE SERVICIOS
-builder.Services.AddSingleton<DataBase>();
+builder.Services.AddScoped<DataBase>();
 builder.Services.AddSingleton<JwtProvider>(); // REGISTRO DEL PROVEEDOR DE TOKENS
 
 // Registro de Builders y Services (Tus servicios existentes)

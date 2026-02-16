@@ -1,0 +1,68 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="modal-premium-overlay">
+    <div class="modal-card-registro animate-pop">
+        @* Franja superior de acento idéntica a Registro de Usuario *@
+        <div class="modal-top-accent-blue"></div>
+
+        <div class="modal-header-registro">
+            <h2 class="modal-title-main">Registrar Solución</h2>
+            @* Botón X funcional *@
+            <button class="btn-close-x" @onclick="CerrarModalInterno" id="btn_x_cerrar_sol">×</button>
+        </div>
+
+        <div class="modal-body-registro">
+            <EditForm Model="@nuevaSolucion" OnValidSubmit="GuardarSolucion">
+                <div class="form-grid-registro">
+
+                    @* Nombre de la Solución *@
+                    <div class="input-group-registro full-width">
+                        <label for="solucion_nombre">NOMBRE DE LA SOLUCIÓN</label>
+                        <InputText id="solucion_nombre"
+                                   @bind-Value="nuevaSolucion.SOL_NOM"
+                                   class="input-field-premium"
+                                   placeholder="Ingrese el título de la solución..." />
+                    </div>
+
+                    @* Descripción Detallada *@
+                    <div class="input-group-registro full-width">
+                        <label for="solucion_descripcion">DESCRIPCIÓN DE LA SOLUCIÓN</label>
+                        <InputTextArea id="solucion_descripcion"
+                                       @bind-Value="nuevaSolucion.SOL_DES"
+                                       rows="4"
+                                       class="input-field-premium textarea-premium"
+                                       placeholder="Detalle técnico de la implementación..." />
+                    </div>
+
+                    @* Fila: Estado y Efectividad perfectamente alineada *@
+                    <div class="input-group-registro">
+                        <label for="solucion_estado">ESTADO ACTUAL</label>
+                        <InputSelect id="solucion_estado" @bind-Value="nuevaSolucion.SOL_EST" class="input-field-premium select-premium">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En Progreso">En Progreso</option>
+                            <option value="Completada">Completada</option>
+                        </InputSelect>
+                    </div>
+
+                    <div class="input-group-registro">
+                        <label for="solucion_efectividad">EFECTIVIDAD (%)</label>
+                        <InputNumber id="solucion_efectividad"
+                                     @bind-Value="nuevaSolucion.SOL_NIV_EFE"
+                                     class="input-field-premium"
+                                     min="0" max="100" />
+                    </div>
+                </div>
+
+                @* Botones de acción inferiores funcionales *@
+                <div class="modal-footer-registro">
+                    <button type="button" class="btn-cancel-premium" @onclick="CerrarModalInterno" id="btn_cancelar_sol">Cancelar</button>
+                    <button type="submit" class="btn-save-premium" id="btn_guardar_sol">Guardar Registro</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>

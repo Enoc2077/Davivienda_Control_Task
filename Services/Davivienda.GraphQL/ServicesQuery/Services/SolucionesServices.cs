@@ -4,18 +4,22 @@ using Davivienda.Models.Modelos;
 using Davivienda.QueryBuilder.Builder;
 using HotChocolate.Language;
 using HotChocolate.Resolvers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Davivienda.GraphQL.ServicesQuery.Services
 {
     public class SolucionesServices
     {
         private readonly DataBase dataBase;
-        private readonly SolucionesQueryBuilder solBuilder; // Inyección del Builder
+        private readonly SolucionesQueryBuilder solBuilder;
 
         public SolucionesServices(DataBase dataBase, SolucionesQueryBuilder builder)
         {
             this.dataBase = dataBase;
-            this.solBuilder = builder; // Asignación del builder
+            this.solBuilder = builder;
         }
 
         public async Task<IEnumerable<SolucionesModel>> GetSoluciones(IResolverContext context)
@@ -41,23 +45,11 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // Búsqueda por coincidencia en el nombre de la solución (SOL_NOM)
                 string sqlQuery = "SELECT s.* FROM dbo.SOLUCIONES s WHERE s.SOL_NOM LIKE @nombre";
-
                 await dataBase.ConnectAsync();
-                return await dataBase.Connection.QueryAsync<SolucionesModel>(
-                    sqlQuery,
-                    new { nombre = $"%{nombre}%" }
-                );
+                return await dataBase.Connection.QueryAsync<SolucionesModel>(sqlQuery, new { nombre = $"%{nombre}%" });
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error en GetSolucionesByName: {ex.Message}", ex);
-            }
-            finally
-            {
-                await dataBase.DisconnectAsync();
-            }
+            finally { await dataBase.DisconnectAsync(); }
         }
 
         public async Task<SolucionesModel?> GetSolucionById(IResolverContext context, Guid sol_id)
@@ -75,52 +67,107 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
+                // 1. Preparación de datos
                 if (solucion.SOL_ID == Guid.Empty) solucion.SOL_ID = Guid.NewGuid();
                 if (solucion.SOL_FEC_CRE == default) solucion.SOL_FEC_CRE = DateTimeOffset.Now;
 
-                string sqlQuery = @"INSERT INTO dbo.SOLUCIONES 
-                                    (SOL_ID, SOL_NOM, SOL_DES, SOL_EST, SOL_TIE_RES, SOL_NIV_EFE, FRI_ID, USU_ID, SOL_FEC_CRE, SOL_FEC_MOD) 
-                                    VALUES 
-                                    (@SOL_ID, @SOL_NOM, @SOL_DES, @SOL_EST, @SOL_TIE_RES, @SOL_NIV_EFE, @FRI_ID, @USU_ID, @SOL_FEC_CRE, @SOL_FEC_MOD)";
+                var bitacora = new BitacoraSolucionesModel
+                {
+                    BIT_SOL_ID = Guid.NewGuid(),
+                    BIT_SOL_NOM = solucion.SOL_NOM,
+                    BIT_SOL_EST = solucion.SOL_EST,
+                    BIT_SOL_DES = solucion.SOL_DES,
+                    BIT_SOL_TIE_TOT_TRA = DateTimeOffset.Now,
+                    SOL_ID = solucion.SOL_ID,
+                    USU_ID = solucion.USU_ID,
+                    BIT_SOL_FEC_CRE = solucion.SOL_FEC_CRE
+                };
 
+                // 2. Conexión y Limpieza
                 await dataBase.ConnectAsync();
-                var exec = await dataBase.Connection.ExecuteAsync(sqlQuery, solucion);
-                return exec > 0;
+
+                // 3. Bloque Transaccional
+                using (var transaction = dataBase.Connection.BeginTransaction())
+                {
+                    try
+                    {
+                        string sqlSol = @"INSERT INTO dbo.SOLUCIONES 
+                    (SOL_ID, SOL_NOM, SOL_DES, SOL_EST, SOL_TIE_RES, SOL_NIV_EFE, FRI_ID, USU_ID, SOL_FEC_CRE) 
+                    VALUES (@SOL_ID, @SOL_NOM, @SOL_DES, @SOL_EST, @SOL_TIE_RES, @SOL_NIV_EFE, @FRI_ID, @USU_ID, @SOL_FEC_CRE)";
+
+                        // IMPORTANTE: Pasar siempre el objeto 'transaction'
+                        await dataBase.Connection.ExecuteAsync(sqlSol, solucion, transaction);
+
+                        string sqlBit = @"INSERT INTO dbo.BITACORA_SOLUCIONES 
+                    (BIT_SOL_ID, BIT_SOL_NOM, BIT_SOL_EST, BIT_SOL_DES, BIT_SOL_TIE_TOT_TRA, SOL_ID, USU_ID, BIT_SOL_FEC_CRE) 
+                    VALUES (@BIT_SOL_ID, @BIT_SOL_NOM, @BIT_SOL_EST, @BIT_SOL_DES, @BIT_SOL_TIE_TOT_TRA, @SOL_ID, @USU_ID, @BIT_SOL_FEC_CRE)";
+
+                        await dataBase.Connection.ExecuteAsync(sqlBit, bitacora, transaction);
+
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        throw new Exception($"Error en transacción SQL: {ex.Message}");
+                    }
+                }
             }
-            finally { await dataBase.DisconnectAsync(); }
+            finally
+            {
+                // Cerramos físicamente la conexión para liberar el hilo en el pool
+                await dataBase.DisconnectAsync();
+            }
         }
+
+
 
         public async Task<bool> UpdateSolucion(IResolverContext context, SolucionesModel solucion)
         {
             try
             {
                 await dataBase.ConnectAsync();
-                var existing = await dataBase.Connection.QueryFirstOrDefaultAsync<SolucionesModel>(
-                    "SELECT * FROM dbo.SOLUCIONES WHERE SOL_ID = @SOL_ID", new { solucion.SOL_ID });
-
-                if (existing == null) return false;
-
-                string sqlQuery = @"UPDATE dbo.SOLUCIONES SET 
-                                    SOL_NOM = @SOL_NOM, SOL_DES = @SOL_DES, SOL_EST = @SOL_EST, 
-                                    SOL_TIE_RES = @SOL_TIE_RES, SOL_NIV_EFE = @SOL_NIV_EFE, 
-                                    FRI_ID = @FRI_ID, USU_ID = @USU_ID, SOL_FEC_MOD = @SOL_FEC_MOD 
-                                    WHERE SOL_ID = @SOL_ID";
-
-                var parameters = new
+                using (var transaction = dataBase.Connection.BeginTransaction())
                 {
-                    SOL_ID = solucion.SOL_ID,
-                    SOL_NOM = !string.IsNullOrEmpty(solucion.SOL_NOM) ? solucion.SOL_NOM : existing.SOL_NOM,
-                    SOL_DES = !string.IsNullOrEmpty(solucion.SOL_DES) ? solucion.SOL_DES : existing.SOL_DES,
-                    SOL_EST = !string.IsNullOrEmpty(solucion.SOL_EST) ? solucion.SOL_EST : existing.SOL_EST,
-                    SOL_TIE_RES = solucion.SOL_TIE_RES ?? existing.SOL_TIE_RES,
-                    SOL_NIV_EFE = solucion.SOL_NIV_EFE ?? existing.SOL_NIV_EFE,
-                    FRI_ID = solucion.FRI_ID ?? existing.FRI_ID,
-                    USU_ID = solucion.USU_ID ?? existing.USU_ID,
-                    SOL_FEC_MOD = DateTimeOffset.Now
-                };
+                    try
+                    {
+                        // 1. Actualizar Tabla Principal
+                        string sqlUpdate = @"UPDATE dbo.SOLUCIONES SET 
+                    SOL_NOM = @SOL_NOM, SOL_DES = @SOL_DES, SOL_EST = @SOL_EST, 
+                    SOL_NIV_EFE = @SOL_NIV_EFE, SOL_FEC_MOD = @SOL_FEC_MOD 
+                    WHERE SOL_ID = @SOL_ID";
 
-                var exec = await dataBase.Connection.ExecuteAsync(sqlQuery, parameters);
-                return exec > 0;
+                        await dataBase.Connection.ExecuteAsync(sqlUpdate, solucion, transaction);
+
+                        // 2. Insertar Nuevo Registro en Bitácora (Auditoría de cambio)
+                        var bitacora = new BitacoraSolucionesModel
+                        {
+                            BIT_SOL_ID = Guid.NewGuid(),
+                            BIT_SOL_NOM = $"Modificación: {solucion.SOL_NOM}",
+                            BIT_SOL_EST = solucion.SOL_EST,
+                            BIT_SOL_DES = $"Cambio realizado: {solucion.SOL_DES}",
+                            BIT_SOL_TIE_TOT_TRA = DateTimeOffset.Now,
+                            SOL_ID = solucion.SOL_ID,
+                            USU_ID = solucion.USU_ID,
+                            BIT_SOL_FEC_CRE = DateTimeOffset.Now
+                        };
+
+                        string sqlBit = @"INSERT INTO dbo.BITACORA_SOLUCIONES 
+                    (BIT_SOL_ID, BIT_SOL_NOM, BIT_SOL_EST, BIT_SOL_DES, BIT_SOL_TIE_TOT_TRA, SOL_ID, USU_ID, BIT_SOL_FEC_CRE) 
+                    VALUES (@BIT_SOL_ID, @BIT_SOL_NOM, @BIT_SOL_EST, @BIT_SOL_DES, @BIT_SOL_TIE_TOT_TRA, @SOL_ID, @USU_ID, @BIT_SOL_FEC_CRE)";
+
+                        await dataBase.Connection.ExecuteAsync(sqlBit, bitacora, transaction);
+
+                        transaction.Commit();
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
             }
             finally { await dataBase.DisconnectAsync(); }
         }
@@ -129,6 +176,8 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
+                // NOTA: Si BITACORA_SOLUCIONES tiene una FK hacia SOLUCIONES, 
+                // primero deberías borrar la bitácora o usar ON DELETE CASCADE en SQL.
                 string sqlQuery = "DELETE FROM dbo.SOLUCIONES WHERE SOL_ID = @sol_id";
                 await dataBase.ConnectAsync();
                 var exec = await dataBase.Connection.ExecuteAsync(sqlQuery, new { sol_id });

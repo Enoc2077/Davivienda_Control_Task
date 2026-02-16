@@ -85,6 +85,17 @@ namespace Davivienda.Migrations.DbContext
                       .HasForeignKey(u => u.ARE_ID);
             });
 
+            modelBuilder.Entity<BitacoraSoluciones>(entity =>
+            {
+                entity.ToTable("BITACORA_SOLUCIONES");
+                entity.HasKey(e => e.BIT_SOL_ID);
+
+                // Configuramos explícitamente el tipo de columna como datetimeoffset
+                entity.Property(e => e.BIT_SOL_TIE_TOT_TRA)
+                      .HasColumnName("BIT_SOL_TIE_TOT_TRA")
+                      .HasColumnType("datetimeoffset");
+            });
+
 
             // Mapeo de las demás tablas en mayúsculas
             modelBuilder.Entity<Roles>().ToTable("ROLES");

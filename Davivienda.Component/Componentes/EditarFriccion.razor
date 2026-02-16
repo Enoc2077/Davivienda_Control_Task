@@ -1,0 +1,47 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="modal-form-dav">
+    <EditForm Model="@friccionEdit" OnValidSubmit="ActualizarFriccion">
+        <div class="form-container-dav">
+            <div class="form-group-dav">
+                <label>NOMBRE DE LA FRICCIÓN</label>
+                <InputText @bind-Value="friccionEdit.FRI_TIP" class="input-dav" placeholder="Nombre del obstáculo..." />
+            </div>
+
+            <div class="form-group-dav">
+                <label>DESCRIPCIÓN DETALLADA</label>
+                <InputTextArea @bind-Value="friccionEdit.FRI_DES" class="input-dav textarea-dav" placeholder="Explique el problema..." />
+            </div>
+
+            <div class="form-row-dav">
+                <div class="form-group-dav flex-1">
+                    <label>ESTADO</label>
+                    <InputSelect @bind-Value="friccionEdit.FRI_EST" class="input-dav">
+                        <option value="Abierta">Abierta</option>
+                        <option value="En Análisis">En Análisis</option>
+                        <option value="Mitigada">Mitigada</option>
+                        <option value="Resuelta">Resuelta</option>
+                    </InputSelect>
+                </div>
+                <div class="form-group-dav flex-1">
+                    <label>IMPACTO</label>
+                    <InputSelect @bind-Value="friccionEdit.FRI_IMP" class="input-dav">
+                        <option value="Bajo">Bajo</option>
+                        <option value="Medio">Medio</option>
+                        <option value="Alto">Alto</option>
+                        <option value="Crítico">Crítico</option>
+                    </InputSelect>
+                </div>
+            </div>
+
+            <div class="footer-actions-dav">
+                <button type="submit" class="btn-save-dav yellow">
+                    <i class="bi bi-save2-fill"></i> Actualizar Fricción y Bitácora
+                </button>
+            </div>
+        </div>
+    </EditForm>
+</div>

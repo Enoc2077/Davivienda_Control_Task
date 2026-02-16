@@ -89,7 +89,7 @@ type Mutation {
   insertTarea(tarea: TareaModelInput!): Boolean!
   updateTarea(tarea: TareaModelInput!): Boolean!
   deleteTarea(tar_id: UUID!): Boolean!
-  login(usuNum: Int! password: String!): String!
+  login(input: LoginInput!): LoginResponse!
   insertUsuario(usuario: UsuarioModelInput!): Boolean!
   updateUsuario(usuario: UsuarioModelInput!): Boolean!
   deleteUsuario(usu_id: UUID!): Boolean!
@@ -119,18 +119,16 @@ type Suscripciones {
   onProcesoInserted: ProcesoModel!
 }
 
-input UsuarioModelInput {
-  usu_ID: UUID!
-  usu_NOM: String!
-  usu_NUM: String
-  usu_COR: String
-  usu_CON: String
-  usu_TEL: String
-  usu_EST: Boolean
-  rol_ID: UUID
-  are_ID: UUID
-  usu_FEC_CRE: DateTime!
-  usu_FEC_MOD: DateTime
+input LoginInput {
+  usuNum: String!
+  password: String!
+}
+
+type LoginResponse {
+  exito: Boolean!
+  token: String
+  mensaje: String
+  usuario: UsuarioModel
 }
 
 input TareaModelInput {
@@ -447,6 +445,20 @@ type AreasModel {
   are_EST: Boolean
   are_FEC_CRE: DateTime
   are_FEC_MOD: DateTime
+}
+
+input UsuarioModelInput {
+  usu_ID: UUID!
+  usu_NOM: String!
+  usu_NUM: String
+  usu_COR: String
+  usu_CON: String
+  usu_TEL: String
+  usu_EST: Boolean
+  rol_ID: UUID
+  are_ID: UUID
+  usu_FEC_CRE: DateTime!
+  usu_FEC_MOD: DateTime
 }
 
 "The `DateTime` scalar represents an ISO-8601 compliant date time type."

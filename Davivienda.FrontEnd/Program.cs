@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Davivienda.FrontEnd;
-using Davivienda.GraphQL.SDK; // Namespace definido en tu .graphqlrc.json
+using Davivienda.GraphQL.SDK;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
+// Paso 1: Importar el namespace del paquete instalado
+using Blazored.LocalStorage;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -17,11 +19,14 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
 
+// Paso 2: Registrar el servicio de Local Storage en el contenedor de dependencias
+builder.Services.AddBlazoredLocalStorage();
+
 // REGISTRO DEL CLIENTE GRAPHQL
-// Strawberry Shake genera este método basado en el "name" de tu archivo JSON
 builder.Services.AddDaviviendaGraphQLClient()
     .ConfigureHttpClient(client =>
     {
+        // Asegúrate de que esta URL sea la correcta para tu servidor backend
         client.BaseAddress = new Uri("http://localhost:5098/graphql");
     });
 

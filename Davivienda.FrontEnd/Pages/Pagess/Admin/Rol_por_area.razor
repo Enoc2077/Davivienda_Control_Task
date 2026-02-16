@@ -1,17 +1,22 @@
 ﻿@page "/Rol_por_area"
 @using Davivienda.Models.Modelos
 
-<div class="page-container">
-    <h2 class="section-title">Asignación de Roles por Usuario</h2>
+<div class="admin-layout">
+    @* Título Superior *@
+    <div class="header-section">
+        <h2 class="page-title">Asignación de Roles por Usuario</h2>
+    </div>
 
-    <div class="top-bar">
-        <div class="search-box">
-            <input type="text" class="search-input-premium" value="@Busqueda"
-                   @oninput="OnSearchChanged" placeholder="Buscar por nombre o ID del colaborador..." />
+    @* Barra de Herramientas Unificada *@
+    <div class="toolbar-section">
+        <div class="search-bar">
+            <i class="bi bi-search"></i>
+            <input type="text" class="input-dav-search" value="@Busqueda"
+                   @oninput="OnSearchChanged" placeholder="Buscar por nombre o ID..." />
         </div>
 
         <div class="filter-box">
-            <select class="select-rounded-simple" @onchange="OnAreaFilterChanged">
+            <select class="input-field-dav select-dav" @onchange="OnAreaFilterChanged">
                 <option value="">Filtrar por Área: Todas</option>
                 @foreach (var area in ListaAreas)
                 {
@@ -21,26 +26,31 @@
         </div>
     </div>
 
-    <div class="cards-stack">
+    @* Listado de Usuarios con Estilo de Cuadros Blancos *@
+    <div class="users-grid-container">
         @if (UsuariosFiltrados != null)
         {
             @foreach (var usu in UsuariosFiltrados)
             {
-                <div class="card-horizontal-large" @onclick="() => AbrirModalAsignacion(usu)">
-                    <div class="user-profile-info">
-                        <div class="avatar-large">
-                            @(usu.USU_NOM?[0].ToString().ToUpper() ?? "U")
+                <div class="user-item-card animate-pop" @onclick="() => AbrirModalAsignacion(usu)">
+                    <div class="user-main-info">
+                        <div class="user-avatar">
+                            <span>@(usu.USU_NOM?[0].ToString().ToUpper() ?? "U")</span>
                         </div>
-                        <div class="user-text-details">
-                            <span class="full-name">@usu.USU_NOM</span>
-                            <span class="employee-id">ID: @usu.USU_NUM</span>
+                        <div class="user-details">
+                            <span class="user-name-text">@usu.USU_NOM</span>
+                            <span class="user-emp-text">ID Colaborador: @usu.USU_NUM</span>
                         </div>
                     </div>
 
-                    <div class="status-tags">
-                        @* Aquí mostramos el área real asignada al usuario *@
-                        <span class="tag-area">@ObtenerNombreArea(usu.ARE_ID)</span>
-                        <span class="tag-role">@ObtenerNombreRol(usu.ROL_ID)</span>
+                    <div class="user-meta-info">
+                        <span class="dept-badge">@ObtenerNombreArea(usu.ARE_ID)</span>
+                        <span class="status-pill active">@ObtenerNombreRol(usu.ROL_ID)</span>
+                    </div>
+
+                    @* Icono indicador de que es clickeable *@
+                    <div class="user-card-actions">
+                        <i class="bi bi-chevron-right" style="font-size: 1.2rem; color: #94a3b8;"></i>
                     </div>
                 </div>
             }
@@ -50,40 +60,46 @@
 
 @if (MostrarModal)
 {
-    <div class="modal-overlay-blur">
-        <div class="modal-content-premium animate-pop">
-            <div class="modal-header">
-                <h3>Gestionar Usuario</h3>
-                <p>Modificando accesos de: <strong>@UsuarioSeleccionado?.USU_NOM</strong></p>
+    <div class="modal-overlay">
+        <div class="modal-card-premium animate-pop">
+            <div class="modal-top-accent"></div>
+
+            <div class="modal-head">
+                <h2 class="modal-title-main">Gestionar Accesos</h2>
+                <button class="close-x-dav" @onclick="CerrarModal">×</button>
             </div>
 
             <div class="modal-body">
-                <div class="form-group">
-                    <label>Área Organizacional</label>
-                    <select @bind="AreaIdSeleccionada" class="select-rounded-simple full-width">
-                        <option value="">-- Seleccione el Área --</option>
-                        @foreach (var area in ListaAreas)
-                        {
-                            <option value="@area.ARE_ID">@area.ARE_NOM</option>
-                        }
-                    </select>
-                </div>
+                <p class="modal-subtitle">Modificando permisos de: <strong>@UsuarioSeleccionado?.USU_NOM</strong></p>
 
-                <div class="form-group">
-                    <label>Rol de Sistema</label>
-                    <select @bind="RolIdSeleccionado" class="select-rounded-simple full-width">
-                        <option value="">-- Seleccione el Rol --</option>
-                        @foreach (var rol in ListaRoles)
-                        {
-                            <option value="@rol.ROL_ID">@rol.ROL_NOM</option>
-                        }
-                    </select>
+                <div class="form-grid-dav">
+                    <div class="input-container-dav">
+                        <label>ÁREA ORGANIZACIONAL</label>
+                        <select @bind="AreaIdSeleccionada" class="input-field-dav select-dav visual-fix">
+                            <option value="">-- Seleccione el Área --</option>
+                            @foreach (var area in ListaAreas)
+                            {
+                                <option value="@area.ARE_ID">@area.ARE_NOM</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="input-container-dav">
+                        <label>ROL DE SISTEMA</label>
+                        <select @bind="RolIdSeleccionado" class="input-field-dav select-dav visual-fix">
+                            <option value="">-- Seleccione el Rol --</option>
+                            @foreach (var rol in ListaRoles)
+                            {
+                                <option value="@rol.ROL_ID">@rol.ROL_NOM</option>
+                            }
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="modal-footer">
-                <button class="btn-main-action" @onclick="GuardarAsignacion">Confirmar Cambios</button>
-                <button class="btn-ghost" @onclick="CerrarModal">Cancelar</button>
+            <div class="modal-foot-dav">
+                <button class="btn-secondary-dav" @onclick="CerrarModal">Cancelar</button>
+                <button class="btn-save-main-dav" @onclick="GuardarAsignacion">Confirmar Cambios</button>
             </div>
         </div>
     </div>

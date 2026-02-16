@@ -1,50 +1,170 @@
-.modal-overlay-gold {
+.modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(62, 39, 35, 0.8);
-    z-index: 1200;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    z-index: 2000;
 }
 
-.modal-container-gold {
-    background: #FFFFFF;
-    border-radius: 12px;
-    border: 3px solid #7D3B2F; /* Borde café oscuro marcado */
-    width: 90%;
-    max-width: 800px;
+.modal-card-premium {
+    background: white;
+    width: 680px;
+    border-radius: 24px;
+    position: relative;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
+    padding: 0;
 }
 
-.modal-header-gold {
-    background-color: #BB5C3B;
-    padding: 20px 30px;
-    border-bottom: 3px solid #7D3B2F;
-}
-
-.label-gold {
-    color: #000000; /* Letras negras para mayor contraste */
-    font-weight: 800;
-    margin-bottom: 5px;
-}
-
-.form-input-gold {
-    border: 2px solid #9B4833; /* Borde definido */
-    color: #000000 !important;
-    padding: 10px;
-    border-radius: 8px;
+.modal-top-accent {
+    height: 6px;
     width: 100%;
+    background: linear-gradient(90deg, #ED1C24 0%, #0A2463 100%);
 }
 
-.btn-gold-primary {
-    background-color: #9B4833;
-    color: white;
-    padding: 10px 25px;
+.modal-head {
+    padding: 35px 45px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title-main {
+    font-size: 24px;
+    font-weight: 800;
+    color: #0A2463;
+    margin: 0;
+}
+
+.modal-subtitle {
+    color: #64748b;
+    margin: -5px 45px 20px;
+    font-size: 14px;
+}
+
+.close-x-dav {
+    background: #f1f5f9;
     border: none;
-    border-radius: 8px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 22px;
+    color: #94a3b8;
     cursor: pointer;
+    transition: 0.2s;
+}
+
+    .close-x-dav:hover {
+        background: #e2e8f0;
+        color: #64748b;
+    }
+
+.modal-body {
+    padding: 20px 45px 30px;
+}
+
+.form-grid-dav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.input-container-dav label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    color: #64748b;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.input-field-dav {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    font-size: 15px;
+    color: #1e293b !important;
+    transition: all 0.3s ease;
+}
+
+    .input-field-dav:focus {
+        outline: none;
+        border-color: #0A2463;
+        background-color: white;
+        box-shadow: 0 0 0 4px rgba(10, 36, 99, 0.05);
+    }
+
+.visual-fix {
+    color: #0A2463 !important;
+    background-color: white !important;
+    appearance: auto !important;
+    cursor: pointer;
+}
+
+.modal-foot-dav {
+    padding: 25px 45px 40px;
+    background: #fcfdfe;
+    display: flex;
+    gap: 15px;
+}
+
+.btn-secondary-dav {
+    flex: 1;
+    background: white;
+    border: 2.5px solid #e2e8f0;
+    color: #64748b;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .btn-secondary-dav:hover {
+        background: #f8fafc;
+    }
+
+.btn-save-main-dav {
+    flex: 2;
+    background: #0A2463;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+    .btn-save-main-dav:hover {
+        background: #081b4d;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(10, 36, 99, 0.2);
+    }
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.animate-pop {
+    animation: popIn 0.3s ease-out;
 }

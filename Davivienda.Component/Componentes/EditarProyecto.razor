@@ -1,41 +1,46 @@
 ﻿@namespace Davivienda.Component.Componentes
 @using Davivienda.Models.Modelos
 
-<div class="modal-overlay-gold">
-    <div class="modal-container-gold">
-        <div class="modal-header-gold">
-            <h2><i class="fas fa-edit"></i> Editar Proyecto: @Proyecto.PRO_NOM</h2>
-            <button class="close-btn-gold" @onclick="CerrarModal">✕</button>
+<div class="modal-overlay">
+    <div class="modal-card-premium animate-pop">
+        @* Línea superior decorativa Davivienda *@
+        <div class="modal-top-accent"></div>
+
+        <div class="modal-head">
+            <h2 class="modal-title-main">
+                <i class="fas fa-edit"></i>
+                Editar Proyecto
+            </h2>
+            <button class="close-x-dav" @onclick="CerrarModal">×</button>
         </div>
 
-        <div class="modal-body-gold">
-            <div class="form-grid-gold">
-                @* SECCIÓN 1: IDENTIDAD *@
-                <div class="form-group-gold full-width">
-                    <label class="label-gold">Nombre del Proyecto</label>
-                    <input type="text" @bind="Proyecto.PRO_NOM" class="form-input-gold" placeholder="Ej. Migración de Core" />
+        <div class="modal-body">
+            <p class="modal-subtitle">Actualizando información de: <strong>@Proyecto.PRO_NOM</strong></p>
+
+            <div class="form-grid-dav">
+                <div class="input-container-dav full-width">
+                    <label>NOMBRE DEL PROYECTO</label>
+                    <input type="text" @bind="Proyecto.PRO_NOM" class="input-field-dav" placeholder="Ej: Migración de Core" />
                 </div>
 
-                <div class="form-group-gold full-width">
-                    <label class="label-gold">Descripción Detallada</label>
-                    <textarea @bind="Proyecto.PRO_DES" rows="2" class="form-input-gold" placeholder="Describa el alcance..."></textarea>
+                <div class="input-container-dav full-width">
+                    <label>DESCRIPCIÓN DEL ALCANCE</label>
+                    <textarea @bind="Proyecto.PRO_DES" rows="2" class="input-field-dav" placeholder="Describa el alcance..."></textarea>
                 </div>
 
-                @* SECCIÓN 2: TIEMPOS *@
-                <div class="form-group-gold">
-                    <label class="label-gold">Fecha de Inicio</label>
-                    <input type="date" @bind-value="Proyecto.PRO_FEC_INI" @bind-value:format="yyyy-MM-dd" class="form-input-gold" />
+                <div class="input-container-dav">
+                    <label>FECHA DE INICIO</label>
+                    <input type="date" @bind-value="Proyecto.PRO_FEC_INI" @bind-value:format="yyyy-MM-dd" class="input-field-dav" />
                 </div>
 
-                <div class="form-group-gold">
-                    <label class="label-gold">Fecha de Finalización</label>
-                    <input type="date" @bind-value="Proyecto.PRO_FEC_FIN" @bind-value:format="yyyy-MM-dd" class="form-input-gold" />
+                <div class="input-container-dav">
+                    <label>FECHA DE FINALIZACIÓN</label>
+                    <input type="date" @bind-value="Proyecto.PRO_FEC_FIN" @bind-value:format="yyyy-MM-dd" class="input-field-dav" />
                 </div>
 
-                @* SECCIÓN 3: CLASIFICACIÓN Y ÁREA *@
-                <div class="form-group-gold">
-                    <label class="label-gold">Estado Actual</label>
-                    <select @bind="Proyecto.PRO_EST" class="form-input-gold">
+                <div class="input-container-dav">
+                    <label>ESTADO ACTUAL</label>
+                    <select @bind="Proyecto.PRO_EST" class="input-field-dav select-dav visual-fix">
                         <option value="NUEVO">NUEVO</option>
                         <option value="INICIADO">INICIADO</option>
                         <option value="EN PROCESO">EN PROCESO</option>
@@ -43,14 +48,12 @@
                     </select>
                 </div>
 
-                <div class="form-group-gold">
-                    <label class="label-gold">Área Responsable</label>
-                    @* Se vincula directamente al ARE_ID del modelo *@
-                    <select @bind="Proyecto.ARE_ID" class="form-input-gold">
+                <div class="input-container-dav">
+                    <label>ÁREA RESPONSABLE</label>
+                    <select @bind="Proyecto.ARE_ID" class="input-field-dav select-dav visual-fix">
                         <option value="">-- Seleccione el Área --</option>
                         @foreach (var area in ListaAreas)
                         {
-                            @* El valor debe ser el Guid del área para no romper la FK *@
                             <option value="@area.ARE_ID">@area.ARE_NOM</option>
                         }
                     </select>
@@ -58,9 +61,9 @@
             </div>
         </div>
 
-        <div class="modal-footer-gold">
-            <button class="btn-gold-secondary" @onclick="CerrarModal">Cancelar</button>
-            <button class="btn-gold-primary" @onclick="ActualizarProyecto">
+        <div class="modal-foot-dav">
+            <button class="btn-secondary-dav" @onclick="CerrarModal">Cancelar</button>
+            <button class="btn-save-main-dav" @onclick="ActualizarProyecto">
                 <i class="fas fa-save"></i> Guardar Cambios
             </button>
         </div>

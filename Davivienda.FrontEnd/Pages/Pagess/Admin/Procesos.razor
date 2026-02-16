@@ -4,100 +4,115 @@
 
 <div class="modal-backdrop-warm">
     <div class="modal-window-proceso">
-        @* --- HEADER --- *@
+        @* --- HEADER MEJORADO (SOLO CAMBIOS SOLICITADOS) --- *@
         <div class="modal-top-section">
             <div class="header-left">
-                <button class="btn-modal-back-red" @onclick="CerrarModal">Volver a Proyectos</button>
-                <div>
-                    <h2 class="title-project">@ProyectoNombre</h2>
+                @* Botón pequeño y alineado *@
+                <button class="btn-modal-back-red-small" @onclick="CerrarModal">
+                    <i class="fas fa-arrow-left"></i> VOLVER A PROYECTOS
+                </button>
+
+                <div class="project-info-header">
+                    <h2 class="title-project-premium">@ProyectoNombre</h2>
                     <p class="subtitle">Gestión detallada de procesos</p>
                 </div>
             </div>
 
-            <div class="modal-search-bar-horizontal">
-                <input type="text" placeholder="Buscar procesos..." class="modal-input-long" @oninput="OnSearchProcesoChanged" />
+            @* Barra de búsqueda horizontal y larga *@
+            <div class="modal-search-bar-horizontal-long">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Buscar procesos por nombre..." class="modal-input-long" @oninput="OnSearchProcesoChanged" />
             </div>
         </div>
 
         <hr class="separator-red" />
 
         <div class="proceso-grid-layout">
-            @* Columna 1: Procesos *@
+            @* Columna 1: Listado de Procesos (Modificación solicitada) *@
             <div class="white-panel-inner">
                 <div class="panel-top-line line-red"></div>
                 <div class="panel-header">
-                    <h3>Procesos</h3>
+                    <h3 class="title-bold-proc">Listado de Procesos</h3>
                 </div>
                 <div class="scrollable-content-inner">
                     @foreach (var proc in ProcesosFiltradosEnModal)
                     {
-                        <div class="process-card @(ProcesoSeleccionado?.PROC_ID == proc.PROC_ID ? "active" : "")"
+                        <div class="process-card-visual @(ProcesoSeleccionado?.PROC_ID == proc.PROC_ID ? "active-selection" : "")"
                              @onclick="() => CargarTareasDelProceso(proc)">
-                            <span class="process-title-text">@proc.PROC_NOM</span>
-                            <span class="process-freq-text">@proc.PROC_FRE</span>
+
+                            <div class="proc-body-content">
+                                <span class="proc-title-main">@proc.PROC_NOM</span>
+                                <span class="proc-freq-sub">FRECUENCIA: @proc.PROC_FRE.ToUpper()</span>
+                            </div>
+
+                            @* Flecha indicadora a la derecha *@
+                            <div class="proc-arrow-icon">
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
                         </div>
                     }
                 </div>
             </div>
 
-            @* Columna 2: Configuración *@
+            @* Columna 2: Configuración (ESTILO ORIGINAL INTACTO) *@
+            @* Columna 2: Configuración (Diseño exacto solicitado) *@
             <div class="white-panel-inner">
                 <div class="panel-top-line line-blue"></div>
-                <div class="panel-header">
-                    <h3>Configuración</h3>
-                    <button class="btn-save-pill" @onclick="GuardarCambiosProceso">
-                        <i class="fas fa-save"></i> Guardar Cambios
+                <div class="panel-header header-split-premium">
+                    <h3 class="title-bold-config">Configuración</h3>
+                    <button class="btn-save-premium-shadow" @onclick="GuardarCambiosProceso">
+                        <i class="fas fa-check-circle"></i> GUARDAR CAMBIOS
                     </button>
                 </div>
 
                 <div class="scrollable-content-inner">
-                    <div class="warm-form-modal">
-                        <div class="form-group">
-                            <label class="label-form">Nombre del Proceso</label>
-                            <input type="text" class="input-warm" @bind="ProcesoSeleccionado.PROC_NOM" placeholder="Nombre..." />
-                        </div>
-
-                        <div class="form-row-split">
-                            <div class="form-group">
-                                <label class="label-form">Frecuencia</label>
-                                <select class="select-warm-input" @bind="ProcesoSeleccionado.PROC_FRE">
-                                    <option value="Diario">Diario</option>
-                                    <option value="Semanal">Semanal</option>
-                                    <option value="Mensual">Mensual</option>
-                                </select>
+                    @if (ProcesoSeleccionado != null)
+                    {
+                        <div class="form-container-visual">
+                            <div class="form-group-premium">
+                                <label class="label-premium">NOMBRE DEL PROCESO</label>
+                                <input type="text" class="input-field-premium" @bind="ProcesoSeleccionado.PROC_NOM" placeholder="Nombre..." />
                             </div>
 
-                            <div class="form-group">
-                                <label class="label-form">Estado</label>
-                                <div class="status-switch-wrapper">
-                                    <span class="status-label">Inactivo</span>
-                                    <label class="switch">
-                                        <input type="checkbox" @bind="ProcesoSeleccionado.PROC_EST">
-                                        <span class="slider"></span>
-                                    </label>
-                                    <span class="status-label">Activo</span>
+                            <div class="form-row-premium">
+                                <div class="form-group-premium flex-grow-1">
+                                    <label class="label-premium">FRECUENCIA</label>
+                                    <select class="select-field-premium" @bind="ProcesoSeleccionado.PROC_FRE">
+                                        <option value="Diario">Diario</option>
+                                        <option value="Semanal">Semanal</option>
+                                        <option value="Mensual">Mensual</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group-premium">
+                                    <label class="label-premium">ESTADO</label>
+                                    <div class="status-badge-capsule" @onclick="() => ProcesoSeleccionado.PROC_EST = !(ProcesoSeleccionado.PROC_EST ?? false)">
+                                        <span class="@(ProcesoSeleccionado.PROC_EST == true ? "text-active-green" : "text-inactive-red")">
+                                            @(ProcesoSeleccionado.PROC_EST == true ? "ACTIVO" : "INACTIVO")
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label class="label-form">Descripción</label>
-                            <textarea class="input-warm" rows="4" @bind="ProcesoSeleccionado.PROC_DES" placeholder="Escriba la descripción..."></textarea>
+                            <div class="form-group-premium">
+                                <label class="label-premium">DESCRIPCIÓN</label>
+                                <textarea class="textarea-field-premium" rows="5" @bind="ProcesoSeleccionado.PROC_DES" placeholder="Escriba los detalles aquí..."></textarea>
+                            </div>
                         </div>
-                    </div>
+                    }
                 </div>
             </div>
 
-            @* Columna 3: Tareas (CON BOTÓN CREAR TAREA) *@
+            @* Columna 3: Tareas (ESTILO EXACTO A LA IMAGEN) *@
+            @* Columna 3: Tareas (Diseño exacto solicitado) *@
             <div class="white-panel-inner">
-                <div class="panel-top-line line-yellow"></div>
+                <div class="panel-top-line line-green"></div>
                 <div class="panel-header">
-                    <h3>Tareas</h3>
-                    @* BOTÓN CREAR TAREA: Aparece junto al título *@
-                    @if (ProcesoSeleccionado?.PROC_ID != Guid.Empty)
+                    <h3 class="title-bold-task">Tareas</h3>
+                    @if (ProcesoSeleccionado?.PROC_ID != Guid.Empty && ProcesoSeleccionado != null)
                     {
-                        <button class="btn-save-pill" style="background-color: #f1c40f; color: #000;" @onclick="AbrirCrearTarea">
-                            <i class="fas fa-plus-circle"></i> Crear Tarea
+                        <button class="btn-new-task-capsule" @onclick="AbrirCrearTarea">
+                            <i class="fas fa-plus-circle"></i> NUEVA
                         </button>
                     }
                 </div>
@@ -106,11 +121,18 @@
                     {
                         @foreach (var tar in TareasDelProceso)
                         {
-                            <div class="task-entry-card-white" @onclick="() => AbrirEditarTarea(tar)" style="cursor: pointer;">
-                                <span class="task-dot @(tar.TAR_EST == "Completado" ? "dot-green" : "dot-orange")"></span>
-                                <div class="task-text">
-                                    <p>@tar.TAR_NOM</p>
-                                    <small>@tar.TAR_EST</small>
+                            <div class="task-card-premium-v2" @onclick="() => AbrirEditarTarea(tar)">
+                                @* Indicador lateral de color según estado *@
+                                <div class="task-status-bar @(tar.TAR_EST == "Completado" ? "status-green" : "status-orange")"></div>
+
+                                <div class="task-content-v2">
+                                    <p class="task-title-v2">@tar.TAR_NOM</p>
+                                    <span class="task-label-v2">@tar.TAR_EST.ToUpper()</span>
+                                </div>
+
+                                @* Icono de lápiz a la derecha *@
+                                <div class="task-edit-icon">
+                                    <i class="fas fa-pencil-alt"></i>
                                 </div>
                             </div>
                         }
@@ -125,18 +147,11 @@
     </div>
 </div>
 
-@* --- MODAL PARA EDITAR TAREAS --- *@
 @if (MostrarModalTarea)
 {
-    <div class="modal-overlay-gold blurred-bg">
-        <Davivienda.Component.Componentes.EditarTarea Tarea="TareaSeleccionada" OnClose="CerrarModalTarea" />
-    </div>
+    <div class="modal-overlay-secondary"><Davivienda.Component.Componentes.EditarTarea Tarea="TareaSeleccionada" OnClose="CerrarModalTarea" /></div>
 }
-
-@* --- MODAL PARA CREAR TAREAS --- *@
 @if (MostrarModalCrearTarea)
 {
-    <div class="modal-overlay-gold blurred-bg">
-        <Davivienda.Component.Componentes.CrearTarea ProcId="ProcesoSeleccionado.PROC_ID" OnClose="CerrarModalCrearTarea" />
-    </div>
+    <div class="modal-overlay-secondary"><Davivienda.Component.Componentes.CrearTarea ProcId="ProcesoSeleccionado!.PROC_ID" OnClose="CerrarModalCrearTarea" /></div>
 }
