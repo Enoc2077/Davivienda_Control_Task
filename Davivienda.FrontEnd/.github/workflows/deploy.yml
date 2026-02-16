@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy Davivienda to Pages
 
 on:
   push:
