@@ -24,7 +24,6 @@ namespace Davivienda.Component.Componentes
             await CargarTareasDesdeDB();
         }
 
-        // Dentro de Calendario.razor.cs, actualiza el método de carga si es necesario
         private async Task CargarTareasDesdeDB()
         {
             try
@@ -38,9 +37,8 @@ namespace Davivienda.Component.Componentes
                         TAR_NOM = t.Tar_NOM,
                         TAR_DES = t.Tar_DES,
                         TAR_EST = t.Tar_EST,
-                        // Si el SDK usa DateTimeOffset, Blazor lo mapeará automáticamente aquí
-                        TAR_FEC_INI = t.Tar_FEC_INI.DateTime,
-                        TAR_FEC_FIN = t.Tar_FEC_FIN?.DateTime,
+                        TAR_FEC_INI = t.Tar_FEC_INI,
+                        TAR_FEC_FIN = t.Tar_FEC_FIN,
                         PRI_ID = t.Pri_ID
                     }).ToList();
                 }
@@ -51,23 +49,38 @@ namespace Davivienda.Component.Componentes
             }
         }
 
-        // Calcula la posición 'top' y 'height' basándose en la hora (60px por hora)
         private string GetEventoPosicion(DateTime inicio, DateTime? fin)
         {
+            // Definimos que el inicio visual del calendario es a las 8:00 AM (Punto 0)
+            const int HORA_INICIO_VISUAL = 8;
+
+            // Calculamos la hora de inicio en formato decimal (ej: 8:30 = 8.5)
             double horaInicioDecimal = inicio.Hour + (inicio.Minute / 60.0);
+
+            // Calculamos la duración. Si no tiene fin, asignamos 1 hora por defecto
             double duracionHoras = fin.HasValue ? (fin.Value - inicio).TotalHours : 1.0;
 
-            // 9:00 AM es el inicio (0px).
-            double top = (horaInicioDecimal - 9) * 60;
+            // Si la duración es menor a 30 min, forzamos 0.5 para que el bloque sea visible
+            if (duracionHoras <= 0) duracionHoras = 0.5;
+
+            // Calculamos los píxeles (basado en 60px por cada hora)
+            // El 'top' es la diferencia entre la hora de la tarea y las 8:00 AM
+            double top = (horaInicioDecimal - HORA_INICIO_VISUAL) * 60;
             double height = duracionHoras * 60;
 
-            return $"top: {top}px; height: {height}px;";
+            // Retornamos el estilo CSS para posicionar el bloque al centro de la franja
+            return $"top: {top}px; height: {height}px; z-index: 10;";
         }
 
         private string GetEventoClase(Guid? priId)
         {
-            // Mapeo simple de prioridades a clases CSS
-            return "event-default";
+            if (priId == null) return "event-baja";
+
+            var id = priId.ToString().ToUpper();
+            // Mapeo dinámico de colores por prioridad
+            if (id.Contains("ALTA") || id == "1") return "event-alta";
+            if (id.Contains("MEDIA") || id == "2") return "event-media";
+            return "event-baja";
         }
 
         private DateTime GetWeekStart(DateTime date)

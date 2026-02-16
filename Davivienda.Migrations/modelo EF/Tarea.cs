@@ -19,8 +19,7 @@ namespace Davivienda.Migrations.ModelosEF
         [StringLength(100)]
         public string? TAR_NOM { get; set; }
 
-        [Column("TAR_DES")]
-        [StringLength(255)]
+        [Column("TAR_DES", TypeName = "nvarchar(max)")]
         public string? TAR_DES { get; set; }
 
         [Column("TAR_EST")]

@@ -1,30 +1,34 @@
-﻿using Davivienda.GraphQL.SDK;
-using Davivienda.Models.Modelos;
+﻿using Davivienda.Models.Modelos;
 using Microsoft.AspNetCore.Components;
+using Davivienda.GraphQL.SDK;
 
 namespace Davivienda.Component.Componentes
 {
     public partial class EditarSolucion
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
-        [Parameter] public SolucionesModel SolucionOriginal { get; set; } = default!;
+        [Parameter] public SolucionesModel Solucion { get; set; } = default!;
         [Parameter] public EventCallback OnSuccess { get; set; }
+        [Parameter] public EventCallback OnClose { get; set; }
 
         private SolucionesModel solEdit = new();
 
         protected override void OnInitialized()
         {
-            solEdit = new SolucionesModel
+            if (Solucion != null)
             {
-                SOL_ID = SolucionOriginal.SOL_ID,
-                SOL_NOM = SolucionOriginal.SOL_NOM,
-                SOL_DES = SolucionOriginal.SOL_DES,
-                SOL_EST = SolucionOriginal.SOL_EST,
-                SOL_NIV_EFE = SolucionOriginal.SOL_NIV_EFE,
-                FRI_ID = SolucionOriginal.FRI_ID,
-                USU_ID = SolucionOriginal.USU_ID,
-                SOL_FEC_CRE = SolucionOriginal.SOL_FEC_CRE // Vital para evitar errores de esquema
-            };
+                solEdit = new SolucionesModel
+                {
+                    SOL_ID = Solucion.SOL_ID,
+                    SOL_NOM = Solucion.SOL_NOM,
+                    SOL_DES = Solucion.SOL_DES,
+                    SOL_EST = Solucion.SOL_EST,
+                    SOL_NIV_EFE = Solucion.SOL_NIV_EFE,
+                    FRI_ID = Solucion.FRI_ID,
+                    USU_ID = Solucion.USU_ID,
+                    SOL_FEC_CRE = Solucion.SOL_FEC_CRE
+                };
+            }
         }
 
         private async Task ActualizarSolucion()
@@ -41,9 +45,10 @@ namespace Davivienda.Component.Componentes
                 Sol_FEC_CRE = solEdit.SOL_FEC_CRE,
                 Sol_FEC_MOD = DateTimeOffset.Now
             };
-
             var result = await Client.UpdateSolucion.ExecuteAsync(input);
             if (result.Data?.UpdateSolucion ?? false) await OnSuccess.InvokeAsync();
         }
+
+        private async Task Cerrar() => await OnClose.InvokeAsync();
     }
 }

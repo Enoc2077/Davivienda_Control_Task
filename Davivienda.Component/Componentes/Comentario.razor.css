@@ -1,0 +1,83 @@
+.comentarios-container {
+    padding: 10px;
+    background: white;
+}
+
+.bloque-linea {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 5px;
+    position: relative;
+}
+
+.input-invisible {
+    width: 100%;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    resize: none;
+    background: transparent;
+    padding: 8px 0;
+    font-family: inherit;
+    color: #334155;
+}
+
+/* Solo mostramos la barra lateral al pasar el mouse */
+.bloque-actions {
+    opacity: 0;
+    transition: 0.2s;
+}
+
+.bloque-linea:hover .bloque-actions {
+    opacity: 1;
+}
+
+.btn-dots {
+    background: transparent;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.menu-flotante {
+    position: absolute;
+    left: 30px;
+    background: white;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+    .menu-flotante button {
+        border: none;
+        background: white;
+        padding: 10px 15px;
+        text-align: left;
+        cursor: pointer;
+        font-size: 13px;
+    }
+
+        .menu-flotante button:hover {
+            background: #f1f5f9;
+        }
+
+.img-preview {
+    max-width: 100%;
+    border-radius: 12px;
+    margin: 10px 0;
+    border: 1px solid #e2e8f0;
+}
+
+.upload-zone {
+    width: 100%;
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+}

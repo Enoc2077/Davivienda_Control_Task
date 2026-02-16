@@ -73,6 +73,19 @@ namespace Davivienda.Migrations.DbContext
             });
 
 
+            modelBuilder.Entity<Tarea>(entity =>
+            {
+                entity.ToTable("TAREA");
+                entity.HasKey(e => e.TAR_ID);
+
+                // Ampliamos TAR_DES a MAX para que soporte el string de Base64 sin cortes
+                entity.Property(e => e.TAR_DES)
+                      .HasColumnName("TAR_DES")
+                      .HasColumnType("nvarchar(max)");
+            });
+
+
+
             // Mapeo USUARIO (Asegura que las llaves foráneas funcionen)
             modelBuilder.Entity<Usuario>(entity =>
             {

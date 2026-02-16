@@ -1,0 +1,84 @@
+.contenedor-gestion-friccion {
+    padding: 15px;
+}
+
+.cuerpo-formulario-friccion > div {
+    margin-bottom: 22px; /* Espaciado limpio entre bloques */
+}
+
+.etiqueta-friccion-unica {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    color: #475569;
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+/* --- SELECTORES ÚNICOS --- */
+
+.input-friccion-tipo-directo {
+    width: 100%;
+    padding: 14px 20px;
+    border: 2px solid #e2e8f0; /* Borde sólido individual */
+    border-radius: 16px;
+    background-color: #f8fafc;
+    font-weight: 700;
+    outline: none;
+}
+
+.textarea-friccion-descripcion-directa {
+    width: 100%;
+    padding: 14px 20px;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    background-color: #f8fafc;
+    min-height: 110px;
+    resize: none;
+    outline: none;
+}
+
+.select-friccion-estado-directo, .select-friccion-impacto-directo {
+    width: 100%;
+    padding: 14px 20px;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    background-color: white;
+    cursor: pointer;
+    appearance: auto;
+}
+
+.grid-friccion-doble {
+    display: flex;
+    gap: 20px; /* Espacio horizontal definido */
+}
+
+/* --- ACCIONES --- */
+.acciones-finales-friccion {
+    display: flex;
+    gap: 15px;
+    padding-top: 25px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.boton-friccion-cancelar {
+    flex: 1;
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    color: #64748b;
+    padding: 14px;
+    border-radius: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.boton-friccion-guardar {
+    flex: 2;
+    background: #800020; /* Color vino de fricción */
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}

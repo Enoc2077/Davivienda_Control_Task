@@ -1,6 +1,7 @@
 ﻿@namespace Davivienda.Component.Componentes
 @using Davivienda.Models.Modelos
 
+@* Referencia a estilos premium *@
 <link href="Calendario.css" rel="stylesheet" />
 
 <div class="calendar-wrapper">
@@ -32,13 +33,9 @@
                 </div>
             </div>
 
-            <div class="categories-section">
+            @* Prioridades ocultas visualmente según lo solicitado *@
+            <div class="categories-section" style="display: none;">
                 <h4>Prioridades</h4>
-                <div class="category-list">
-                    <div class="category-item"><span class="category-color cat-alta"></span><span class="category-name">Alta</span></div>
-                    <div class="category-item"><span class="category-color cat-media"></span><span class="category-name">Media</span></div>
-                    <div class="category-item"><span class="category-color cat-baja"></span><span class="category-name">Baja</span></div>
-                </div>
             </div>
         </div>
 
@@ -65,8 +62,9 @@
             </div>
 
             <div class="time-grid">
+                @* Columna de Horas: Ajustada de 8:00 a 16:00 *@
                 <div class="time-column">
-                    @for (int hour = 9; hour <= 18; hour++)
+                    @for (int hour = 8; hour <= 16; hour++)
                     {
                         <div class="time-slot">@hour:00</div>
                     }
@@ -75,21 +73,23 @@
                 @foreach (var day in GetWeekDays())
                 {
                     <div class="day-column">
-                        @for (int hour = 9; hour <= 18; hour++)
+                        @* Celdas de fondo para la cuadrícula *@
+                        @for (int hour = 8; hour <= 16; hour++)
                         {
                             <div class="hour-cell"></div>
                         }
 
                         @if (ListaTareas != null)
                         {
+                            @* Renderizado de tareas filtradas por día *@
                             @foreach (var tarea in ListaTareas.Where(t => t.TAR_FEC_INI.Date == day.Date))
                             {
-                                @* CORRECCIÓN: Convertimos DateTimeOffset a DateTime usando .DateTime *@
                                 <div class="event @GetEventoClase(tarea.PRI_ID)"
+                                     @* Usamos .DateTime para resolver el error de tipos previo *@
                                      style="@GetEventoPosicion(tarea.TAR_FEC_INI.DateTime, tarea.TAR_FEC_FIN?.DateTime)">
                                     <div class="event-title">@tarea.TAR_NOM</div>
                                     <div class="event-time">
-                                        @tarea.TAR_FEC_INI.ToString("HH:mm") - @(tarea.TAR_FEC_FIN?.ToString("HH:mm") ?? "N/A")
+                                        @tarea.TAR_FEC_INI.ToString("HH:mm") - @(tarea.TAR_FEC_FIN?.ToString("HH:mm") ?? "Límite")
                                     </div>
                                 </div>
                             }

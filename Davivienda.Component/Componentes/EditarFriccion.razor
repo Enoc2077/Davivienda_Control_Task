@@ -1,34 +1,38 @@
-﻿@namespace Davivienda.Component.Componentes
+﻿@namespace Davivienda.Componentes
 @using Davivienda.Models.Modelos
-@using Davivienda.GraphQL.SDK
 @using Microsoft.AspNetCore.Components.Forms
 
-<div class="modal-form-dav">
-    <EditForm Model="@friccionEdit" OnValidSubmit="ActualizarFriccion">
-        <div class="form-container-dav">
-            <div class="form-group-dav">
-                <label>NOMBRE DE LA FRICCIÓN</label>
-                <InputText @bind-Value="friccionEdit.FRI_TIP" class="input-dav" placeholder="Nombre del obstáculo..." />
+<div class="contenedor-gestion-friccion">
+    <EditForm Model="@fricEdit" OnValidSubmit="ActualizarFriccion">
+        <div class="cuerpo-formulario-friccion">
+
+            @* Tipo de Fricción *@
+            <div class="seccion-tipo-friccion">
+                <label class="etiqueta-friccion-unica">TIPO DE FRICCIÓN</label>
+                <InputText @bind-Value="fricEdit.FRI_TIP" class="input-friccion-tipo-directo" placeholder="Ej: Error de servidor, Retraso en aprobación" />
             </div>
 
-            <div class="form-group-dav">
-                <label>DESCRIPCIÓN DETALLADA</label>
-                <InputTextArea @bind-Value="friccionEdit.FRI_DES" class="input-dav textarea-dav" placeholder="Explique el problema..." />
+            @* Descripción *@
+            <div class="seccion-descripcion-friccion">
+                <label class="etiqueta-friccion-unica">DESCRIPCIÓN DEL BLOQUEO</label>
+                <InputTextArea @bind-Value="fricEdit.FRI_DES" class="textarea-friccion-descripcion-directa" placeholder="Detalle el impacto y el origen de la fricción..." />
             </div>
 
-            <div class="form-row-dav">
-                <div class="form-group-dav flex-1">
-                    <label>ESTADO</label>
-                    <InputSelect @bind-Value="friccionEdit.FRI_EST" class="input-dav">
-                        <option value="Abierta">Abierta</option>
-                        <option value="En Análisis">En Análisis</option>
+            <div class="grid-friccion-doble">
+                @* Estado *@
+                <div class="seccion-estado-friccion">
+                    <label class="etiqueta-friccion-unica">ESTADO ACTUAL</label>
+                    <InputSelect @bind-Value="fricEdit.FRI_EST" class="select-friccion-estado-directo">
+                        <option value="Activa">Activa</option>
                         <option value="Mitigada">Mitigada</option>
                         <option value="Resuelta">Resuelta</option>
                     </InputSelect>
                 </div>
-                <div class="form-group-dav flex-1">
-                    <label>IMPACTO</label>
-                    <InputSelect @bind-Value="friccionEdit.FRI_IMP" class="input-dav">
+
+                @* Impacto *@
+                <div class="seccion-impacto-friccion">
+                    <label class="etiqueta-friccion-unica">NIVEL DE IMPACTO</label>
+                    <InputSelect @bind-Value="fricEdit.FRI_IMP" class="select-friccion-impacto-directo">
                         <option value="Bajo">Bajo</option>
                         <option value="Medio">Medio</option>
                         <option value="Alto">Alto</option>
@@ -37,9 +41,10 @@
                 </div>
             </div>
 
-            <div class="footer-actions-dav">
-                <button type="submit" class="btn-save-dav yellow">
-                    <i class="bi bi-save2-fill"></i> Actualizar Fricción y Bitácora
+            <div class="acciones-finales-friccion">
+                <button type="button" class="boton-friccion-cancelar" @onclick="Cerrar">Cancelar</button>
+                <button type="submit" class="boton-friccion-guardar">
+                    <i class="bi bi-shield-check"></i> Actualizar Fricción
                 </button>
             </div>
         </div>

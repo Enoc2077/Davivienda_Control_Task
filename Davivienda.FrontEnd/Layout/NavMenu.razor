@@ -1,86 +1,102 @@
-﻿@using Blazored.LocalStorage
-@inject ILocalStorageService LocalStorage
-@inject NavigationManager Nav
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using Davivienda.FrontEnd.Security
+@inject NavigationManager Navigation
+@inject AuthenticationStateProvider AuthStateProvider
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
-<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="home">Portal Gestión</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
-            <span class="navbar-toggler-icon"></span>
+<div class="nav-container">
+    @* ENCABEZADO: Nombre del Usuario *@
+    <div class="user-header">
+        <AuthorizeView>
+            <Authorized>
+                <div class="d-flex align-items-center py-2 px-3">
+                    <div class="user-avatar me-2">
+                        @context.User.Identity?.Name?.Substring(0, 1).ToUpper()
+                    </div>
+                    <div class="user-info">
+                        <span class="user-name">@context.User.Identity?.Name</span>
+                        <small class="user-role-text">Conectado</small>
+                    </div>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div class="py-2 px-3">
+                    <span class="user-name">Invitado</span>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </div>
+
+    @* CUERPO: Enlaces de Navegación *@
+    <div class="nav-scrollable">
+        <nav class="flex-column">
+            @* Item General *@
+            <div class="nav-item">
+                <NavLink class="nav-link" href="Asignaciones">
+                    <span class="bi bi-clipboard-check" aria-hidden="true"></span> Asignaciones
+                </NavLink>
+            </div>
+
+            @* Sección Administrativa Desplegable *@
+            <AuthorizeView Roles="Administrador,LiderTecnico">
+                <Authorized>
+                    <div class="nav-item">
+                        <button class="nav-link btn-dropdown-dav" @onclick="ToggleAdminMenu">
+                            <span class="bi bi-shield-lock" aria-hidden="true"></span> Gestión Admin
+                            <i class="bi @(isAdminOpen ? "bi-chevron-up" : "bi-chevron-down") ms-auto"></i>
+                        </button>
+
+                        @if (isAdminOpen)
+                        {
+                            <div class="submenu-dav animate-pop">
+                                <NavLink class="nav-link subitem" href="Proyectos">
+                                    <span class="bi bi-folder"></span> Proyecto
+                                </NavLink>
+                                <NavLink class="nav-link subitem" href="Tarea">
+                                    <span class="bi bi-list-task"></span> Tarea
+                                </NavLink>
+                                <NavLink class="nav-link subitem" href="Usuario">
+                                    <span class="bi bi-people"></span> Usuario
+                                </NavLink>
+                                <NavLink class="nav-link subitem" href="Rol_por_area">
+                                    <span class="bi bi-diagram-3"></span> Roles por Área
+                                </NavLink>
+                                <NavLink class="nav-link subitem" href="Roles">
+                                    <span class="bi bi-person-badge"></span> Roles
+                                </NavLink>
+                            </div>
+                        }
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        </nav>
+    </div>
+
+    @* PIE DE PÁGINA: Cerrar Sesión *@
+    <div class="nav-footer">
+        <button class="nav-link btn-logout" @onclick="CerrarSesion">
+            <span class="bi bi-box-arrow-left" aria-hidden="true"></span> Cerrar Sesión
         </button>
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="home" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Inicio
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="proyectos">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Proyectos
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Asignaciones">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Asignaciones
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Usuario">
-                <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Usuarios
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Roles">
-                <span class="bi bi-shield-lock-nav-menu" aria-hidden="true"></span> Roles
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Rol_por_area">
-                <span class="bi bi-diagram-3-nav-menu" aria-hidden="true"></span> Roles por Área
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="Tarea">
-                <span class="bi bi-list-check-nav-menu" aria-hidden="true"></span> Tareas
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3 mt-auto mb-3">
-            <button class="nav-link btn btn-link text-start w-100 border-0 p-3"
-                    @onclick="CerrarSesion"
-                    style="cursor: pointer;">
-                <span class="bi bi-box-arrow-right-nav-menu text-danger" aria-hidden="true"></span>
-                <span class="text-danger fw-bold">Cerrar Sesión</span>
-            </button>
-        </div>
-    </nav>
-</div>
-
 @code {
-    private bool collapseNavMenu = true;
-    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private bool isAdminOpen = false;
 
-    private void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+    private void ToggleAdminMenu() => isAdminOpen = !isAdminOpen;
 
     private async Task CerrarSesion()
     {
-        // 1. ELIMINACIÓN: Borramos el token para que la sesión deje de ser persistente
+        // 1. Limpiar Token
         await LocalStorage.RemoveItemAsync("authToken");
 
-        // 2. REDIRECCIÓN: Mandamos al usuario de vuelta a la raíz (Login)
-        // Usamos forceLoad: true para asegurar que la aplicación se reinicie limpiamente
-        Nav.NavigateTo("/", forceLoad: true);
+        // 2. Notificar al AuthStateProvider
+        if (AuthStateProvider is CustomAuthStateProvider customProvider)
+        {
+            customProvider.NotifyLogout();
+        }
+
+        // 3. Redirigir al Login principal
+        Navigation.NavigateTo("/");
     }
 }

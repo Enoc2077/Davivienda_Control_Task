@@ -5,8 +5,10 @@ using Davivienda.GraphQL.SDK;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
-// Paso 1: Importar el namespace del paquete instalado
 using Blazored.LocalStorage;
+// NUEVOS USINGS PARA SEGURIDAD
+using Microsoft.AspNetCore.Components.Authorization;
+using Davivienda.FrontEnd.Security;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
@@ -19,14 +21,21 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
 
-// Paso 2: Registrar el servicio de Local Storage en el contenedor de dependencias
+// Registrar el servicio de Local Storage
 builder.Services.AddBlazoredLocalStorage();
+
+// --- CONFIGURACIÓN DE SEGURIDAD (PASO 2) ---
+// 1. Habilita el sistema de autorización principal [cite: 2026-02-10]
+builder.Services.AddAuthorizationCore();
+
+// 2. Vincula tu clase CustomAuthStateProvider como el proveedor oficial [cite: 2026-02-10]
+builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+// -------------------------------------------
 
 // REGISTRO DEL CLIENTE GRAPHQL
 builder.Services.AddDaviviendaGraphQLClient()
     .ConfigureHttpClient(client =>
     {
-        // Asegúrate de que esta URL sea la correcta para tu servidor backend
         client.BaseAddress = new Uri("http://localhost:5098/graphql");
     });
 
