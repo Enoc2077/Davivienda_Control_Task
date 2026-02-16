@@ -483,3 +483,220 @@
 .no-padding-top {
     padding-top: 5px !important;
 }
+
+
+
+
+
+
+
+
+/* --- ESTILOS PARA LAS GRÁFICAS (CUADROS 3, 4 y 5) --- */
+
+.chart-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+/* Contenedor de las barras */
+.bar-chart-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 20px;
+    height: 160px;
+    width: 100%;
+    justify-content: center;
+    padding-bottom: 10px;
+}
+
+.bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+    max-width: 45px;
+}
+
+/* Animación y diseño de la barra */
+.bar {
+    width: 100%;
+    border-radius: 8px 8px 4px 4px;
+    transition: height 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 5px; /* Para que siempre se vea un poco si hay datos */
+}
+
+    /* Colores de las barras */
+    .bar.completada {
+        background: #16a34a;
+    }
+    /* Verde */
+    .bar.pendiente {
+        background: #0033a0;
+    }
+    /* Azul Davivienda */
+    .bar.bloqueada {
+        background: #e11d48;
+    }
+    /* Rojo */
+    .bar.proceso-color {
+        background: #f39c12;
+    }
+    /* Naranja */
+    .bar.area-color {
+        background: #8e44ad;
+    }
+/* Morado */
+
+.bar-lbl {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+/* Estilo para el contador de Proyectos (Cuadro 4) */
+.donut-style-info {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.donut-num {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #0033a0;
+    line-height: 1;
+}
+
+.donut-txt {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-weight: 700;
+    margin-top: 5px;
+}
+
+.project-mini-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-top: 1px solid #f1f5f9;
+    padding-top: 15px;
+}
+
+.proj-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+    .proj-item i {
+        font-size: 8px;
+        color: #0033a0;
+    }
+
+/* Ajuste de espaciado general para limpieza visual */
+.panel-bottom {
+    border: 1px solid #e2e8f0; /* Borde definido para look limpio */
+}
+
+
+
+.container-grafico-circular {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    padding: 15px;
+}
+
+.grafico-donut-tareas {
+    --p: 0;
+    --c: #16a34a;
+    --b: 12px;
+    width: 140px;
+    aspect-ratio: 1;
+    position: relative;
+    display: inline-grid;
+    place-content: center;
+    border-radius: 50%;
+}
+
+    .grafico-donut-tareas:before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: radial-gradient(farthest-side, var(--c) 98%, #0000) top/var(--b) var(--b) no-repeat, conic-gradient(var(--c) calc(var(--p)*1%), #e2e8f0 0);
+        -webkit-mask: radial-gradient(farthest-side, #0000 calc(99% - var(--b)), #000 calc(100% - var(--b)));
+        mask: radial-gradient(farthest-side, #0000 calc(99% - var(--b)), #000 calc(100% - var(--b)));
+    }
+
+.centro-donut {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.numero-total-tareas {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #0A2463;
+    line-height: 1;
+}
+
+.texto-total-tareas {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 1px;
+}
+
+.leyenda-circular-unica {
+    margin-top: 15px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+    width: 100%;
+    padding-left: 20px;
+}
+
+.item-leyenda {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #475569;
+}
+
+.bolita {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+    .bolita.verde {
+        background: #16a34a;
+    }
+
+    .bolita.azul {
+        background: #0033a0;
+    }
+
+    .bolita.roja {
+        background: #e11d48;
+    }
+/* Ajuste de los otros cuadros inferiores para que queden parejos */
+.panel-bottom {
+    height: 380px !important;
+}

@@ -1,135 +1,152 @@
-﻿/* Estructura Principal */
-.nav-container {
+﻿.nav-container {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
     background-color: #ffffff;
-    border-right: 1.5px solid #e2e8f0;
 }
 
-/* Encabezado de Usuario */
+/* Sección del Usuario (Estilo de la imagen) [cite: 2026-02-12] */
 .user-header {
-    border-bottom: 1px solid #f1f5f9;
-    padding: 10px 0;
-    margin-bottom: 10px;
+    padding: 25px 20px;
+    border-bottom: 1.5px solid #f1f5f9;
 }
 
-.user-avatar {
-    width: 38px;
-    height: 38px;
+.user-profile-box {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.user-avatar-circle {
+    width: 42px;
+    height: 42px;
     background-color: #ed1c24;
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    flex-shrink: 0;
+    font-weight: 800;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 10px rgba(237, 28, 36, 0.2);
 }
 
-.user-info {
+    .user-avatar-circle.guest {
+        background-color: #94a3b8;
+    }
+
+.user-details {
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
 
-.user-name {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #0f172a;
+.user-name-text {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0A2463;
     white-space: nowrap;
     text-overflow: ellipsis;
+    overflow: hidden;
 }
 
-.user-role-text {
-    font-size: 0.7rem;
+.user-status-tag {
+    font-size: 0.75rem;
     color: #64748b;
-}
-
-/* Área de Navegación */
-.nav-scrollable {
-    flex: 1;
-    overflow-y: auto;
-}
-
-.nav-item {
-    padding: 2px 12px;
-}
-
-/* Enlaces y Botones [cite: 2026-02-12] */
-.nav-link, .btn-dropdown-dav {
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: 8px; /* Bordes redondeados limpios */
-    color: #334155 !important;
-    font-weight: 500;
-    padding: 10px 14px !important;
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    transition: all 0.2s ease;
-    cursor: pointer;
-    width: 100%;
-}
-
-    .nav-link:hover, .btn-dropdown-dav:hover {
-        background-color: #f8fafc !important;
-        border-color: #e2e8f0;
-        color: #ed1c24 !important;
-    }
-
-    .nav-link.active {
-        background-color: #fff1f2 !important;
-        color: #ed1c24 !important;
-        border-color: #fee2e2;
-    }
-
-/* Submenú Desplegable */
-.submenu-dav {
-    margin-left: 12px;
-    margin-top: 4px;
-    border-left: 2px solid #ed1c24;
-    padding-left: 4px;
-}
-
-.subitem {
-    font-size: 0.85rem !important;
-    margin-bottom: 2px;
-}
-
-/* Iconos */
-.bi {
-    margin-right: 12px;
-    font-size: 1.1rem;
-    color: #64748b;
-}
-
-.nav-link:hover .bi, .btn-dropdown-dav:hover .bi {
-    color: #ed1c24;
-}
-
-/* Footer y Botón Cerrar Sesión */
-.nav-footer {
-    padding: 16px;
-    border-top: 1px solid #f1f5f9;
-}
-
-.btn-logout {
-    background-color: #fef2f2 !important;
-    border: 1px solid #fee2e2 !important;
-    color: #dc2626 !important;
-    justify-content: center;
     font-weight: 600;
 }
 
-    .btn-logout:hover {
-        background-color: #fee2e2 !important;
-        border-color: #fecaca !important;
+/* Enlaces y Navegación [cite: 2026-02-12] */
+.nav-scrollable {
+    flex: 1;
+    padding: 15px 10px;
+}
+
+.nav-link-dav {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    border-radius: 12px;
+    color: #475569;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.2s;
+    border: 1px solid transparent;
+    background: transparent;
+}
+
+    .nav-link-dav:hover, .nav-link-dav.active {
+        background-color: #f8fafc;
+        color: #0A2463;
+        border-color: #e2e8f0;
     }
 
-/* Animaciones */
-.animate-pop {
-    animation: slideDown 0.2s ease-out;
+    .nav-link-dav i {
+        font-size: 1.2rem;
+        margin-right: 12px;
+        color: #0A2463;
+    }
+
+.arrow-icon {
+    margin-left: auto;
+    font-size: 0.8rem;
+}
+
+/* Submenú [cite: 2026-02-10, 2026-02-12] */
+.submenu-dav {
+    padding-left: 15px;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.subitem-link {
+    padding: 10px 15px;
+    font-size: 0.9rem;
+    color: #64748b;
+    text-decoration: none;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .subitem-link:hover {
+        background-color: #f1f5f9;
+        color: #0A2463;
+    }
+
+/* Footer y Logout [cite: 2026-02-12] */
+.nav-footer {
+    padding: 20px;
+    border-top: 1.5px solid #f1f5f9;
+}
+
+.btn-logout-dav {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    border: 1.5px solid #fee2e2;
+    background: #fff;
+    color: #ef4444;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: 0.3s;
+}
+
+    .btn-logout-dav:hover {
+        background: #ef4444;
+        color: white;
+    }
+
+.animate-slide-down {
+    animation: slideDown 0.3s ease-out;
 }
 
 @keyframes slideDown {

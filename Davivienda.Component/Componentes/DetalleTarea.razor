@@ -28,19 +28,41 @@
     <div class="main-grid-container">
         @* --- LADO IZQUIERDO --- *@
         <div class="side-stack">
-            @* Cuadrante 1: Info General *@
+            @* Cuadrante 1: Información Detallada y Estado *@
             <div class="quadrant-card border-accent-wine">
                 <div class="card-header-premium bg-wine-soft">
                     <div class="header-left">
-                        <i class="fas fa-info-circle icon-wine"></i>
-                        <h4>Información General</h4>
+                        <i class="fas fa-sitemap icon-wine"></i>
+                        <h4>Información de Ejecución</h4>
                     </div>
+                    @* Botón de Guardado Rápido *@
+                    <button class="btn-save-quick" @onclick="GuardarEstadoTarea">
+                        <i class="fas fa-save"></i> GUARDAR CAMBIOS
+                    </button>
                 </div>
                 <div class="card-body-premium scroll-dav bg-warm-white">
-                    <h3 class="task-title-display">@Tarea?.TAR_NOM</h3>
-                    <div class="status-pill-row">
-                        <span class="label-tiny">ESTADO ACTUAL</span>
-                        <span class="badge-status-premium">@Tarea?.TAR_EST</span>
+                    <div class="info-execution-grid">
+                        <div class="info-item">
+                            <span class="label-tiny">PROYECTO</span>
+                            <p class="value-text">@NombreProyecto</p>
+                        </div>
+                        <div class="info-item">
+                            <span class="label-tiny">PROCESO ASOCIADO</span>
+                            <p class="value-text">@NombreProceso</p>
+                        </div>
+                        <div class="info-item full-width">
+                            <span class="label-tiny">NOMBRE DE LA TAREA</span>
+                            <h3 class="task-title-display-small">@Tarea?.TAR_NOM</h3>
+                        </div>
+                        <div class="info-item status-editor">
+                            <span class="label-tiny">ACTUALIZAR ESTADO</span>
+                            <select @bind="Tarea.TAR_EST" class="select-status-dav">
+                                <option value="Pendiente">Pendiente</option>
+                                <option value="En Progreso">En Progreso</option>
+                                <option value="Completado">Completado</option>
+                                <option value="Bloqueado">Bloqueado</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
             </div>

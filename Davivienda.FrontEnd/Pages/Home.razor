@@ -1,8 +1,75 @@
 ﻿@page "/home"
 @layout MainLayout
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Davivienda</PageTitle>
 
-<h1>Hello, world!</h1>
+<div class="home-minimal">
+    <div class="card-simple">
+        @* Línea roja y azul superior *@
+        <div class="top-accent"></div>
 
-Welcome to your new app.
+        <div class="content-simple">
+            <h1 class="logo-dav">DAVIVIENDA</h1>
+
+            <div class="action-zone">
+                <a href="/Asignaciones" class="btn-dav">
+                    IR A MIS ASIGNACIONES
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .home-minimal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 70vh;
+        background-color: #f1f5f9;
+    }
+
+    .card-simple {
+        background: white;
+        width: 100%;
+        max-width: 550px;
+        border-radius: 20px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        overflow: hidden;
+        text-align: center;
+        border: 1px solid #e2e8f0; /* Espacio y bordes limpios [cite: 2026-02-12] */
+    }
+
+    .top-accent {
+        height: 5px;
+        background: linear-gradient(90deg, #ed1c24 0%, #002855 100%);
+    }
+
+    .content-simple {
+        padding: 80px 40px;
+    }
+
+    .logo-dav {
+        color: #002855;
+        font-weight: 900;
+        font-size: 4rem;
+        margin: 0 0 50px 0;
+        letter-spacing: -2px;
+    }
+
+    .btn-dav {
+        background-color: #0a2463;
+        color: white !important;
+        padding: 16px 45px;
+        border-radius: 14px; /* Redondeado consistente [cite: 2026-02-12] */
+        font-weight: 800;
+        text-decoration: none;
+        display: inline-block;
+        transition: 0.3s ease;
+    }
+
+        .btn-dav:hover {
+            background-color: #05153a;
+            transform: translateY(-2px);
+        }
+</style>

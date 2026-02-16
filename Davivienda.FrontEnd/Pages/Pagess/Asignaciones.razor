@@ -1,28 +1,23 @@
 ﻿@page "/Asignaciones"
 @inherits Microsoft.AspNetCore.Components.ComponentBase
 @using Davivienda.Component.Componentes
+@using Microsoft.AspNetCore.Components.Authorization
 
 <div class="dashboard-wrapper">
     <div class="asignaciones-grid">
 
-        @* --- CUADRO 1: Mis Tareas Asignadas --- *@
+        @* --- CUADRO 1: Tareas --- *@
         <section class="white-panel-card panel-top-left-large">
             <div class="panel-header-dav">
                 <div class="header-with-filter">
                     <h3 class="panel-title">Mis Tareas Asignadas</h3>
                     <div class="priority-filters">
-                        <button class="filter-pill @(PrioridadSeleccionada == "Todas" ? "active" : "")"
-                                @onclick='() => FiltrarPorPrioridad("Todas")'>
-                            Todas
-                        </button>
+                        <button class="filter-pill @(PrioridadSeleccionada == "Todas" ? "active" : "")" @onclick='() => FiltrarPorPrioridad("Todas")'>Todas</button>
                         @if (Prioridades != null)
                         {
                             @foreach (var p in Prioridades)
                             {
-                                <button class="filter-pill @(PrioridadSeleccionada == p.PRI_NOM ? "active" : "")"
-                                        @onclick="() => FiltrarPorPrioridad(p.PRI_NOM)">
-                                    @p.PRI_NOM
-                                </button>
+                                <button class="filter-pill @(PrioridadSeleccionada == p.PRI_NOM ? "active" : "")" @onclick="() => FiltrarPorPrioridad(p.PRI_NOM)">@p.PRI_NOM</button>
                             }
                         }
                     </div>
@@ -35,13 +30,10 @@
                     {
                         @foreach (var tarea in TareasFiltradas)
                         {
-                            @* Tarjeta individual de tarea: Al tocarla abre DetalleTarea *@
                             <div class="task-card-column" @onclick="() => AbrirDetalleTarea(tarea)" style="cursor: pointer;">
                                 <div class="task-card-inner">
                                     <div class="task-header-prio">
-                                        <span class="badge @GetPrioridadNombre(tarea.PRI_ID).ToLower()">
-                                            @GetPrioridadNombre(tarea.PRI_ID).ToUpper()
-                                        </span>
+                                        <span class="badge @GetPrioridadNombre(tarea.PRI_ID).ToLower()">@GetPrioridadNombre(tarea.PRI_ID).ToUpper()</span>
                                     </div>
                                     <div class="task-body-content">
                                         <strong>@tarea.TAR_NOM</strong>
@@ -57,19 +49,18 @@
                     }
                     else
                     {
-                        <div class="empty-state-msg">No hay tareas asignadas.</div>
+                        <div class="empty-state-msg">No hay tareas para mostrar.</div>
                     }
                 </div>
             </div>
         </section>
 
-        @* --- CUADRO 2: Calendario Mini y Botón de Acción --- *@
+        @* --- CUADRO 2: Calendario --- *@
         <section class="white-panel-card panel-top-right-small">
             <div class="panel-header-dav calendar-mini-header">
                 <h3 class="panel-title-bold">Calendario</h3>
                 <div class="header-icon-orange"><i class="bi bi-calendar3"></i></div>
             </div>
-
             <div class="panel-scroll-content no-padding-top">
                 <div class="mini-cal-container">
                     <div class="cal-nav-row">
@@ -77,9 +68,7 @@
                         <span class="month-label-bold">@FechaCalendario.ToString("MMMM yyyy")</span>
                         <button class="btn-cal-nav" @onclick="MesSiguiente"><i class="bi bi-chevron-right"></i></button>
                     </div>
-                    <div class="cal-days-grid-header">
-                        <span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span>
-                    </div>
+                    <div class="cal-days-grid-header"><span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span></div>
                     <div class="cal-numbers-grid-spacious">
                         @foreach (var dia in DiasDelMesAsignaciones)
                         {
@@ -93,57 +82,78 @@
                         }
                     </div>
                 </div>
-
-                @* BOTÓN INTERACTIVO: Abre el Modal de Agenda Detallada *@
                 @{
                     var proxima = GetProximaTarea();
                 }
                 @if (proxima != null)
                 {
                     <button class="delivery-action-button" @onclick="AbrirModalCalendario" type="button">
-                        <div class="delivery-blue-box">
-                            <span class="day-num-box">@proxima.TAR_FEC_FIN.Value.Day</span>
-                        </div>
-                        <div class="delivery-text">
-                            <strong>@proxima.TAR_NOM</strong>
-                            <span>Faltan @((proxima.TAR_FEC_FIN.Value.Date - DateTime.Today).Days) días (Ver Agenda)</span>
-                        </div>
+                        <div class="delivery-blue-box"><span class="day-num-box">@proxima.TAR_FEC_FIN.Value.Day</span></div>
+                        <div class="delivery-text"><strong>@proxima.TAR_NOM</strong><span>Faltan @((proxima.TAR_FEC_FIN.Value.Date - DateTime.Today).Days) días (Ver Agenda)</span></div>
                         <i class="bi bi-chevron-right arrow-icon"></i>
                     </button>
                 }
             </div>
         </section>
 
-        @* --- CUADROS INFERIORES --- *@
-        <section class="white-panel-card panel-bottom"><div class="panel-header-dav"><h3>Estadísticas</h3></div></section>
-
+        @* --- CUADROS 3, 4, 5: Gráficas --- *@
+        @* --- CUADRO 3: Gráfico Circular de Tareas Totales --- *@
         <section class="white-panel-card panel-bottom">
-            <div class="panel-header-dav user-box-header">
-                <div class="user-profile-vertical">
-                    <div class="avatar-circle-large">@Initials</div>
-                    <div class="user-info-centered">
-                        <h3>@(UsuarioActual?.USU_NOM ?? "Usuario DB")</h3>
-                        <span class="role-badge">Administrador</span>
+            <div class="panel-header-dav">
+                <h3 class="panel-title-bold">Estado de Tareas Totales</h3>
+            </div>
+            <div class="container-grafico-circular">
+                @* El valor de --p es el porcentaje dinámico de tareas completadas *@
+                @{
+                    var total = (Tasks?.Count ?? 0);
+                    var porcentaje = total > 0 ? (TareasCompletadas * 100 / total) : 0;
+                }
+                <div class="grafico-donut-tareas" style="--p:@porcentaje; --c:#16a34a;">
+                    <div class="centro-donut">
+                        <span class="numero-total-tareas">@total</span>
+                        <span class="texto-total-tareas">TOTAL</span>
                     </div>
+                </div>
+
+                <div class="leyenda-circular-unica">
+                    <div class="item-leyenda"><span class="bolita verde"></span> Hechas (@TareasCompletadas)</div>
+                    <div class="item-leyenda"><span class="bolita azul"></span> Pendientes (@TareasPendientes)</div>
+                    <div class="item-leyenda"><span class="bolita roja"></span> Bloqueadas (@TareasBloqueadas)</div>
                 </div>
             </div>
         </section>
 
-        <section class="white-panel-card panel-bottom"><div class="panel-header-dav"><h3>Alertas</h3></div></section>
+        <section class="white-panel-card panel-bottom">
+            <div class="panel-header-dav"><h3>Proyectos Relacionados</h3></div>
+            <div class="chart-content">
+                <div class="donut-style-info"><div class="donut-num">@TotalProyectos</div><div class="donut-txt">Proyectos Activos</div></div>
+                <div class="project-mini-list">
+                    @foreach (var p in ProyectosRelacionados.Take(3))
+                    {
+                        <div class="proj-item"><i class="bi bi-circle-fill"></i> @p.PRO_NOM</div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <section class="white-panel-card panel-bottom">
+            <div class="panel-header-dav"><h3>Procesos</h3></div>
+            <div class="chart-content">
+                <div class="bar-chart-container">
+                    <div class="bar-wrapper"><div class="bar proceso-color" style="height: @(GetPct(TotalProcesos))%;"></div><span class="bar-lbl">Activos</span></div>
+                    <div class="bar-wrapper"><div class="bar area-color" style="height: 50%;"></div><span class="bar-lbl">Meta</span></div>
+                </div>
+            </div>
+        </section>
     </div>
 </div>
 
-@* --- LÓGICA DE MODAL ÚNICA: Calendario o DetalleTarea --- *@
 @if (MostrarModal)
 {
     <div class="modal-backdrop-dav" @onclick="CerrarModal">
         <div class="modal-calendar-content" @onclick:stopPropagation>
             <div class="modal-header-dav">
-                <div class="header-content-left">
-                    <h3 style="font-weight: 800; color: #1e293b; margin: 0;">
-                        @(ModalActual == "CALENDARIO" ? "Agenda de Tareas" : "Detalle de la Tarea")
-                    </h3>
-                </div>
+                <h3 style="font-weight: 800; color: #1e293b; margin: 0;">@(ModalActual == "CALENDARIO" ? "Agenda" : "Detalle")</h3>
                 <button class="close-btn-dav" @onclick="CerrarModal">×</button>
             </div>
             <div class="modal-body-dav">
@@ -153,6 +163,7 @@
                 }
                 else if (ModalActual == "DETALLE" && TareaSeleccionada != null)
                 {
+
                     <Davivienda.Component.Componentes.DetalleTarea Tarea="TareaSeleccionada" OnClose="CerrarModal" />
                 }
             </div>
