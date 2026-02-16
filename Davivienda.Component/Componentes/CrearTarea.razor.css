@@ -1,72 +1,166 @@
-/* --- Overlay con Blur --- */
-.blurred-bg {
+.modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(12px);
-    z-index: 2000;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    z-index: 2500;
 }
 
-/* --- Contenedor Ancho --- */
-.large-modal {
-    max-width: 1100px !important; /* Más ancho */
-    width: 90% !important;
-    background: #fff;
-    border: 3px solid #ED1C24; /* Borde Davivienda */
-    border-radius: 15px;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+.modal-card-premium {
+    background: white;
+    width: 850px;
+    border-radius: 24px;
+    position: relative;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
+    padding: 0;
 }
 
-/* --- Header y Body --- */
-.modal-header-gold {
-    background: #ED1C24;
-    padding: 20px 30px;
-    color: white;
+.modal-top-accent-green {
+    height: 6px;
+    width: 100%;
+    background: linear-gradient(90deg, #2E7D32 0%, #43A047 100%);
 }
 
-.extra-padding {
-    padding: 40px !important;
+.modal-head {
+    padding: 35px 45px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* --- Rejilla de 3 Columnas --- */
-.form-grid-gold.spacious-gap {
+.modal-title-main {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0;
+}
+
+.modal-subtitle {
+    color: #64748b;
+    margin: -5px 45px 25px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.close-x-dav {
+    background: #f1f5f9;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 22px;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .close-x-dav:hover {
+        background: #e2e8f0;
+        color: #64748b;
+    }
+
+.modal-body {
+    padding: 20px 45px 30px;
+}
+
+.form-grid-dav {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* Triple columna */
-    gap: 30px; /* Gran espacio entre campos */
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
 }
 
 .full-width {
-    grid-column: span 3;
+    grid-column: 1 / -1;
 }
 
-/* --- Inputs y Labels --- */
-.label-gold {
-    color: #000; /* Texto negro sólido */
-    font-weight: 800;
-    margin-bottom: 10px;
+.input-container-dav label {
     display: block;
+    font-size: 11px;
+    font-weight: 800;
+    color: #475569;
+    margin-bottom: 8px;
+    letter-spacing: 0.8px;
 }
 
-.form-input-gold {
-    border: 2px solid #ED1C24 !important; /* Borde grueso */
-    padding: 12px 15px !important;
-    border-radius: 8px;
+.input-field-dav {
     width: 100%;
-    color: #000 !important;
-    font-weight: 600;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    font-size: 15px;
+    color: #1e293b;
+    transition: all 0.3s ease;
 }
 
-.modal-footer-gold {
-    padding: 20px 40px;
-    background: #f8f9fa;
+    .input-field-dav:focus {
+        outline: none;
+        border-color: #2E7D32;
+        background-color: white;
+        box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.05);
+    }
+
+.visual-fix {
+    color: #1e293b !important;
+    background-color: white !important;
+    appearance: auto !important;
+}
+
+.modal-foot-dav {
+    padding: 25px 45px 40px;
+    background: #fcfdfe;
     display: flex;
-    justify-content: flex-end;
-    gap: 20px;
+    gap: 15px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.btn-secondary-dav {
+    flex: 1;
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    color: #64748b;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-save-main-dav-green {
+    flex: 2;
+    background: #2E7D32;
+    color: white;
+    border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+}
+
+    .btn-save-main-dav-green:hover {
+        background: #1b5e20;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
+    }
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.animate-pop {
+    animation: popIn 0.3s ease-out;
 }

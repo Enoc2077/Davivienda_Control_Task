@@ -4,53 +4,66 @@
 @using Microsoft.AspNetCore.Components
 @using Microsoft.AspNetCore.Components.Forms
 
-<div class="modal-form-dav">
-    <EditForm Model="@nuevaFriccion" OnValidSubmit="GuardarFriccion">
-        <div class="form-container-dav">
+<div class="modal-premium-overlay">
+    <div class="modal-card-registro animate-pop">
+        @* Franja superior con degradado institucional *@
+        <div class="modal-top-accent-gold"></div>
 
-            @* Grupo: Nombre de la Fricción (Mapeado a FRI_TIP) *@
-            <div class="form-group-dav">
-                <label>NOMBRE DE LA FRICCIÓN</label>
-                <InputText @bind-Value="nuevaFriccion.FRI_TIP"
-                           class="input-dav"
-                           placeholder="Ej: Acceso denegado a base de datos..." />
-            </div>
-
-            @* Grupo: Descripción *@
-            <div class="form-group-dav">
-                <label>DESCRIPCIÓN DEL OBSTÁCULO</label>
-                <InputTextArea @bind-Value="nuevaFriccion.FRI_DES"
-                               class="input-dav textarea-dav"
-                               placeholder="Detalle el problema técnico o administrativo..." />
-            </div>
-
-            @* Fila: Estado e Impacto *@
-            <div class="form-row-dav">
-                <div class="form-group-dav flex-1">
-                    <label>ESTADO INICIAL</label>
-                    <InputSelect @bind-Value="nuevaFriccion.FRI_EST" class="input-dav">
-                        <option value="Abierta">Abierta</option>
-                        <option value="En Análisis">En Análisis</option>
-                        <option value="Mitigada">Mitigada</option>
-                    </InputSelect>
-                </div>
-                <div class="form-group-dav flex-1">
-                    <label>IMPACTO</label>
-                    <InputSelect @bind-Value="nuevaFriccion.FRI_IMP" class="input-dav">
-                        <option value="Bajo">Bajo</option>
-                        <option value="Medio">Medio</option>
-                        <option value="Alto">Alto</option>
-                        <option value="Crítico">Crítico</option>
-                    </InputSelect>
-                </div>
-            </div>
-
-            @* Acciones: Botón Amarillo de Fricción *@
-            <div class="footer-actions-dav">
-                <button type="submit" class="btn-save-dav yellow">
-                    <i class="bi bi-exclamation-triangle-fill"></i> Registrar Fricción y Bitácora
-                </button>
-            </div>
+        <div class="modal-header-registro">
+            <h2 class="modal-title-main">Registrar Fricción</h2>
+            <button class="btn-close-x" @onclick="CerrarModalInterno" id="btn_x_cerrar">×</button>
         </div>
-    </EditForm>
+
+        <div class="modal-body-registro">
+            <EditForm Model="@nuevaFriccion" OnValidSubmit="GuardarFriccion">
+                <div class="form-grid-registro">
+
+                    @* Nombre de la Fricción - Full Width *@
+                    <div class="input-group-registro full-width">
+                        <label for="friccion_nombre">NOMBRE DE LA FRICCIÓN</label>
+                        <InputText id="friccion_nombre"
+                                   @bind-Value="nuevaFriccion.FRI_TIP"
+                                   class="input-field-premium"
+                                   placeholder="Ej: Error de conexión intermitente..." />
+                    </div>
+
+                    @* Descripción Detallada - Espaciada *@
+                    <div class="input-group-registro full-width">
+                        <label for="friccion_descripcion">DESCRIPCIÓN DEL OBSTÁCULO</label>
+                        <InputTextArea id="friccion_descripcion"
+                                       @bind-Value="nuevaFriccion.FRI_DES"
+                                       rows="5"
+                                       class="input-field-premium textarea-premium"
+                                       placeholder="Detalle el problema técnico o administrativo aquí..." />
+                    </div>
+
+                    @* Fila de Selectores con espaciado optimizado *@
+                    <div class="input-group-registro">
+                        <label for="friccion_estado">ESTADO INICIAL</label>
+                        <InputSelect id="friccion_estado" @bind-Value="nuevaFriccion.FRI_EST" class="input-field-premium select-premium">
+                            <option value="Abierta">Abierta</option>
+                            <option value="En Análisis">En Análisis</option>
+                            <option value="Mitigada">Mitigada</option>
+                        </InputSelect>
+                    </div>
+
+                    <div class="input-group-registro">
+                        <label for="friccion_impacto">IMPACTO EN EL PROCESO</label>
+                        <InputSelect id="friccion_impacto" @bind-Value="nuevaFriccion.FRI_IMP" class="input-field-premium select-premium">
+                            <option value="Bajo">Bajo</option>
+                            <option value="Medio">Medio</option>
+                            <option value="Alto">Alto</option>
+                            <option value="Crítico">Crítico</option>
+                        </InputSelect>
+                    </div>
+                </div>
+
+                @* Footer con botones amplios y funcionales *@
+                <div class="modal-footer-registro">
+                    <button type="button" class="btn-cancel-premium" @onclick="CerrarModalInterno" id="btn_cancelar_friccion">Cancelar</button>
+                    <button type="submit" class="btn-save-premium" id="btn_guardar_friccion">Guardar Registro</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
 </div>

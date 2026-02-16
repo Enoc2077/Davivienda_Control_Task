@@ -1,70 +1,287 @@
-.bitacora-global-container {
+.bitacora-premium-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    gap: 20px;
-}
-
-.filters-bar-dav {
-    display: flex;
-    gap: 20px;
-    background: #f8fafc;
+    gap: 40px;
     padding: 20px;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
 }
 
-.fricciones-horizontal-scroll {
+/* BARRA DE FILTROS ESTILO DOCK */
+.toolbar-filters-dav {
     display: flex;
-    flex-direction: row;
-    gap: 20px;
-    overflow-x: auto;
-    padding: 20px 10px;
-    min-height: 400px;
-    width: 100%;
-}
-
-/* Modal Detalle Superior Absolute */
-.sub-modal-top {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 15000 !important;
-    background: rgba(15, 23, 42, 0.75);
-    backdrop-filter: blur(10px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.detail-card {
-    width: 500px !important;
-    border-radius: 28px;
+    gap: 35px;
     background: white;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    padding: 20px 45px;
+    border-radius: 60px;
+    border: 2.5px solid #eef2f6;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+    align-self: flex-start;
+}
+
+.filter-capsule {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border-right: 2px solid #f1f5f9;
+    padding-right: 35px;
+}
+
+    .filter-capsule.no-border {
+        border: none;
+        padding-right: 0;
+    }
+
+.icon-accent {
+    color: #800020;
+    font-size: 18px;
+}
+
+.filter-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+    .filter-text label {
+        font-size: 10px;
+        font-weight: 900;
+        color: #94a3b8;
+        letter-spacing: 1.5px;
+    }
+
+.select-premium {
+    border: none;
+    background: transparent;
+    font-weight: 800;
+    color: #1e293b;
+    outline: none;
+    cursor: pointer;
+    font-size: 15px;
+    min-width: 180px;
+}
+
+/* VIEWPORT Y TARJETAS */
+.horizontal-cards-viewport {
+    display: flex;
+    gap: 35px;
+    overflow-x: auto;
+    padding: 20px 10px 50px;
+}
+
+.card-premium-bitacora {
+    min-width: 380px;
+    background: white;
+    border-radius: 32px;
+    display: flex;
+    overflow: hidden;
+    border: 2.5px solid #f1f5f9;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+    .card-premium-bitacora:hover {
+        transform: translateY(-15px);
+        border-color: #800020;
+        box-shadow: 0 25px 50px rgba(128,0,32,0.1);
+    }
+
+.card-indicator {
+    width: 10px;
+    height: 100%;
+}
+
+.card-inner-content {
+    padding: 35px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* BADGES */
+.badge-tarea {
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 6px 16px;
+    border-radius: 50px;
+    text-transform: uppercase;
+}
+
+.impacto-pill {
+    font-size: 10px;
+    font-weight: 900;
+    padding: 6px 14px;
+    border-radius: 12px;
+}
+
+    .impacto-pill.alto {
+        background: #fff1f2;
+        color: #e11d48;
+        border: 1.5px solid #fda4af;
+    }
+
+    .impacto-pill.medio {
+        background: #fffbeb;
+        color: #d97706;
+        border: 1.5px solid #fcd34d;
+    }
+
+    .impacto-pill.bajo {
+        background: #f0fdf4;
+        color: #16a34a;
+        border: 1.5px solid #86efac;
+    }
+
+.card-main-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #002855;
+    margin: 0;
+}
+
+.card-main-desc {
+    font-size: 15px;
+    color: #64748b;
+    line-height: 1.6;
+    height: 48px;
     overflow: hidden;
 }
 
-.desc-content-box {
-    background: #f8fafc;
-    padding: 20px;
-    border-radius: 18px;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: #334155;
-    border: 1px solid #e2e8f0;
-    max-height: 250px;
-    overflow-y: auto;
+/* MODAL DE DETALLE */
+.modal-overlay-blur {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(15px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
 }
 
-.clickable-card {
-    cursor: pointer;
-    transition: all 0.2s ease;
+.detail-card-premium {
+    background: white;
+    width: 650px;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 50px 100px rgba(0,0,0,0.4);
+    border: 1px solid #eef2f6;
 }
 
-    .clickable-card:hover {
-        transform: scale(1.03) translateY(-5px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+.bg-gold-gradient {
+    height: 10px;
+    width: 100%;
+    background: linear-gradient(90deg, #ca8a04 0%, #facc15 100%);
+}
+
+.detail-head {
+    padding: 50px 55px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+    .detail-head h3 {
+        margin: 10px 0 0;
+        font-size: 32px;
+        font-weight: 900;
+        color: #002855;
     }
+
+.btn-close-circle {
+    background: #f8fafc;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 26px;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    .btn-close-circle:hover {
+        background: #fee2e2;
+        color: #ef4444;
+        transform: rotate(90deg);
+    }
+
+.detail-body {
+    padding: 30px 55px 60px;
+}
+
+.stats-grid-premium {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.stat-box-large {
+    background: #fffdfa;
+    padding: 25px;
+    border-radius: 24px;
+    border: 2.5px solid #fef3c7;
+}
+
+.impacto-display {
+    font-size: 26px;
+    font-weight: 900;
+    margin: 0;
+}
+
+    .impacto-display.alto {
+        color: #e11d48;
+    }
+
+    .impacto-display.medio {
+        color: #d97706;
+    }
+
+.val-display-dark {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0;
+}
+
+.desc-viewport-premium {
+    background: #fafbfc;
+    border: 2.5px solid #f1f5f9;
+    border-radius: 28px;
+    padding: 35px;
+    line-height: 1.8;
+    color: #334155;
+    font-size: 16px;
+}
+
+.desc-section-full {
+    grid-column: 1 / -1;
+}
+
+.detail-footer-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #94a3b8;
+    font-size: 14px;
+    margin-top: 30px;
+    padding-left: 10px;
+}
+
+/* Animaciones */
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

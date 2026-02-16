@@ -12,6 +12,7 @@ namespace Davivienda.Component.Componentes
 
         [Parameter] public Guid TareaId { get; set; }
         [Parameter] public EventCallback OnSuccess { get; set; }
+        [Parameter] public EventCallback OnClose { get; set; } // Esto es lo que permite que el botón cerrar funcione
 
         private FriccionModel nuevaFriccion = new FriccionModel
         {
@@ -19,11 +20,19 @@ namespace Davivienda.Component.Componentes
             FRI_IMP = "Medio"
         };
 
+        // Método para los botones Cancelar y X
+        private async Task CerrarModalInterno()
+        {
+            if (OnClose.HasDelegate)
+            {
+                await OnClose.InvokeAsync();
+            }
+        }
+
         private async Task GuardarFriccion()
         {
             try
             {
-                // Mapeo al Input del SDK. El nombre se guarda en Fri_TIP.
                 var input = new FriccionModelInput
                 {
                     Fri_ID = Guid.NewGuid(),
@@ -32,11 +41,10 @@ namespace Davivienda.Component.Componentes
                     Fri_EST = nuevaFriccion.FRI_EST,
                     Fri_IMP = nuevaFriccion.FRI_IMP,
                     Tar_ID = TareaId,
-                    Usu_ID = Guid.Parse("0BC4DB21-1FFB-46BB-B120-48AE7B0909CD"), // Usuario actual
+                    Usu_ID = Guid.Parse("0BC4DB21-1FFB-46BB-B120-48AE7B0909CD"),
                     Fri_FEC_CRE = DateTimeOffset.Now
                 };
 
-                // El servicio realizará la inserción en FRICCION y BITACORA_FRICCIONES
                 var result = await Client.InsertFriccion.ExecuteAsync(input);
 
                 if (result.Data?.InsertFriccion ?? false)
@@ -46,7 +54,7 @@ namespace Davivienda.Component.Componentes
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al registrar la fricción: {ex.Message}");
+                Console.WriteLine($"Error: {ex.Message}");
             }
         }
     }

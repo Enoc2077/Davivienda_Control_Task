@@ -27,10 +27,7 @@ namespace Davivienda.Component.Componentes
         private Dictionary<Guid, string> ColoresTareas = new();
         private string[] PaletaColores = { "#3b82f6", "#ef4444", "#10b981", "#f59e0b", "#8b5cf6", "#06b6d4" };
 
-        protected override async Task OnInitializedAsync()
-        {
-            await CargarTodo();
-        }
+        protected override async Task OnInitializedAsync() => await CargarTodo();
 
         private async Task CargarTodo()
         {

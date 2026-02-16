@@ -35,19 +35,15 @@ namespace Davivienda.Component.Componentes
         {
             try
             {
-                // 1. Proyectos
                 var resPro = await Client.GetProyectos.ExecuteAsync();
                 ProyectosList = resPro.Data?.Proyectos?.Select(p => new ProyectosModel { PRO_ID = p.Pro_ID, PRO_NOM = p.Pro_NOM }).ToList() ?? new();
 
-                // 2. Procesos
                 var resPrc = await Client.GetProcesos.ExecuteAsync();
                 ProcesosGlobales = resPrc.Data?.Procesos?.Select(p => new ProcesoModel { PROC_ID = p.Proc_ID, PROC_NOM = p.Proc_NOM, PRO_ID = p.Pro_ID }).ToList() ?? new();
 
-                // 3. Tareas
                 var resTar = await Client.GetTareas.ExecuteAsync();
                 TareasGlobales = resTar.Data?.Tareas?.Select(t => new TareaModel { TAR_ID = t.Tar_ID, TAR_NOM = t.Tar_NOM, PROC_ID = t.Proc_ID }).ToList() ?? new();
 
-                // 4. Fricciones
                 var resFri = await Client.GetFricciones.ExecuteAsync();
                 FriccionesGlobales = resFri.Data?.Fricciones?.Select(f => new FriccionModel
                 {
@@ -60,7 +56,6 @@ namespace Davivienda.Component.Componentes
                     FRI_FEC_CRE = f.Fri_FEC_CRE.DateTime
                 }).ToList() ?? new();
 
-                // Colores
                 int i = 0;
                 foreach (var t in TareasGlobales)
                 {

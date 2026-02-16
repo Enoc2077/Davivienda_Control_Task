@@ -1,216 +1,298 @@
-/* --- CONTENEDOR GENERAL DE BITÁCORA --- */
-.bitacora-global-container {
+.bitacora-premium-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
-    gap: 20px;
-}
-
-/* --- BARRA DE FILTROS SUPERIOR --- */
-.filters-bar-dav {
-    display: flex;
-    gap: 20px;
-    background: #f8fafc;
+    gap: 40px;
     padding: 20px;
-    border-radius: 16px;
-    border: 1.5px solid #cbd5e1; /* Bordes claros y definidos [cite: 2026-02-12] */
 }
 
-.filter-item {
+/* BARRA DE FILTROS "DOCK" */
+.toolbar-filters-dav {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
-    flex: 1;
-}
-
-    .filter-item label {
-        font-weight: 800;
-        font-size: 0.7rem;
-        color: #64748b;
-        text-transform: uppercase;
-    }
-
-/* --- ÁREA DE DESPLAZAMIENTO HORIZONTAL (FILA) --- */
-.fricciones-horizontal-scroll {
-    display: flex;
-    flex-direction: row;
-    gap: 20px;
-    overflow-x: auto;
-    padding: 10px 5px 25px 5px;
-    min-height: 400px;
-    width: 100%;
-}
-
-/* --- TARJETAS DE BITÁCORA (Fricción y Solución) --- */
-.card-friccion-bitacora, .clickable-card {
-    min-width: 320px;
-    max-width: 320px;
+    gap: 35px;
     background: white;
-    border-radius: 20px;
-    padding: 24px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 20px 45px;
+    border-radius: 60px;
+    border: 2.5px solid #eef2f6;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.04);
+    align-self: flex-start;
 }
 
-    .clickable-card:hover {
-        transform: scale(1.03) translateY(-8px);
-        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+.filter-capsule {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    border-right: 2px solid #f1f5f9;
+    padding-right: 35px;
+}
+
+    .filter-capsule.no-border {
+        border: none;
+        padding-right: 0;
     }
 
-/* --- ELEMENTOS INTERNOS DE LA TARJETA --- */
-.card-fri-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+.icon-accent-blue {
+    color: #004b93;
+    font-size: 18px;
 }
 
-.tarea-tag {
-    color: white;
-    font-size: 0.65rem;
+.filter-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+    .filter-text label {
+        font-size: 10px;
+        font-weight: 900;
+        color: #94a3b8;
+        letter-spacing: 1.5px;
+    }
+
+.select-premium {
+    border: none;
+    background: transparent;
     font-weight: 800;
-    padding: 4px 10px;
-    border-radius: 20px;
+    color: #1e293b;
+    outline: none;
+    cursor: pointer;
+    font-size: 15px;
+    min-width: 180px;
+}
+
+/* TARJETAS HORIZONTALES ESPACIOSAS */
+.horizontal-cards-viewport {
+    display: flex;
+    gap: 35px;
+    overflow-x: auto;
+    padding: 20px 10px 50px;
+}
+
+.card-premium-bitacora {
+    min-width: 380px;
+    background: white;
+    border-radius: 32px;
+    display: flex;
+    overflow: hidden;
+    border: 2.5px solid #f1f5f9;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+    .card-premium-bitacora:hover {
+        transform: translateY(-15px);
+        border-color: #004b93;
+        box-shadow: 0 25px 50px rgba(0,75,147,0.1);
+    }
+
+.card-indicator {
+    width: 10px;
+    height: 100%;
+}
+
+.card-inner-content {
+    padding: 35px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* BADGES */
+.badge-tarea {
+    color: white;
+    font-size: 11px;
+    font-weight: 900;
+    padding: 6px 16px;
+    border-radius: 50px;
     text-transform: uppercase;
 }
 
-.status-badge-mini {
-    background: #f1f5f9;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 0.65rem;
-    font-weight: 700;
-    color: #475569;
-}
-
-.fri-title {
-    margin: 10px 0;
-    font-weight: 800;
-    color: #1e293b;
-    font-size: 1.05rem;
-}
-
-.fri-desc {
-    font-size: 0.85rem;
+.badge-status-premium {
+    background: #f8fafc;
     color: #64748b;
-    flex-grow: 1;
-    line-height: 1.5;
-    margin-bottom: 15px;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 6px 12px;
+    border-radius: 8px;
 }
 
-.fri-footer-data {
+.card-main-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #002855;
+    margin: 0;
+}
+
+.card-main-desc {
+    font-size: 15px;
+    color: #64748b;
+    line-height: 1.6;
+    height: 48px;
+    overflow: hidden;
+}
+
+/* FOOTER STATS */
+.card-footer-stats {
     margin-top: auto;
-    padding-top: 12px;
-    border-top: 1px dashed #e2e8f0;
     display: flex;
     justify-content: space-between;
-    font-size: 0.75rem;
-    color: #94a3b8;
+    padding-top: 20px;
+    border-top: 1.5px solid #f8fafc;
 }
 
-/* --- ESTADOS DE IMPACTO (Fricciones) --- */
-.impacto-badge {
-    padding: 2px 8px;
-    border-radius: 5px;
-    font-size: 0.7rem;
-    font-weight: bold;
-}
-
-    .impacto-badge.alto {
-        background: #fee2e2;
-        color: #ef4444;
-    }
-
-    .impacto-badge.medio {
-        background: #fefce8;
-        color: #eab308;
-    }
-
-    .impacto-badge.bajo {
-        background: #f0fdf4;
-        color: #22c55e;
-    }
-
-/* --- MODAL DE DETALLE (CAPA SUPERIOR ABSOLUTA) --- */
-.sub-modal-top, .sub-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 15000 !important; /* Prioridad máxima sobre otros modales [cite: 2026-02-10] */
-    background: rgba(15, 23, 42, 0.8);
-    backdrop-filter: blur(12px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.detail-card {
-    width: 520px !important;
-    background: white;
-    border-radius: 30px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    overflow: hidden;
-    padding: 25px;
-}
-
-.detail-grid-container {
+.stat-group {
     display: flex;
     flex-direction: column;
-    gap: 20px;
 }
 
-.detail-item label {
-    font-size: 0.65rem;
+.stat-label {
+    font-size: 9px;
     font-weight: 900;
     color: #94a3b8;
-    letter-spacing: 0.05em;
-    margin-bottom: 5px;
-    display: block;
+    letter-spacing: 0.5px;
 }
 
-.val-highlight {
-    font-size: 1.1rem;
+.stat-value {
+    font-size: 14px;
     font-weight: 700;
     color: #1e293b;
-}
-
-.detail-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-/* --- CUADRO DE TEXTO PARA DESCRIPCIONES LARGAS --- */
-.desc-content-box {
-    background: #f8fafc;
-    padding: 20px;
-    border-radius: 18px;
-    font-size: 0.95rem;
-    line-height: 1.6;
-    color: #334155;
-    border: 1.5px solid #e2e8f0;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-/* --- UTILIDADES DE COLOR --- */
-.text-blue {
-    color: #2563eb !important;
 }
 
 .text-green {
-    color: #16a34a !important;
+    color: #10b981;
 }
 
-.empty-state-container {
+/* MODAL DE DETALLE */
+.modal-overlay-blur {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(15px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.detail-card-premium {
+    background: white;
+    width: 650px;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 50px 100px rgba(0,0,0,0.4);
+    border: 1px solid #eef2f6;
+}
+
+.bg-blue-gradient {
+    height: 10px;
     width: 100%;
-    text-align: center;
-    padding: 60px;
+    background: linear-gradient(90deg, #002855 0%, #004b93 100%);
+}
+
+.detail-head {
+    padding: 50px 55px 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.label-premium {
+    font-size: 10px;
+    font-weight: 900;
     color: #94a3b8;
-    font-style: italic;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.detail-head h3 {
+    margin: 10px 0 0;
+    font-size: 32px;
+    font-weight: 900;
+    color: #002855;
+}
+
+.btn-close-circle {
+    background: #f8fafc;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    font-size: 26px;
+    color: #94a3b8;
+    cursor: pointer;
+}
+
+.detail-body {
+    padding: 30px 55px 60px;
+}
+
+.stats-grid-premium {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 40px;
+}
+
+.stat-box-large {
+    background: #f8fbff;
+    padding: 25px;
+    border-radius: 24px;
+    border: 2.5px solid #ebf4ff;
+}
+
+.stat-display {
+    font-size: 26px;
+    font-weight: 900;
+    margin: 0;
+}
+
+.desc-viewport-premium {
+    background: #fafbfc;
+    border: 2.5px solid #f1f5f9;
+    border-radius: 28px;
+    padding: 35px;
+    line-height: 1.8;
+    color: #334155;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.desc-section-full {
+    grid-column: 1 / -1;
+}
+
+.detail-footer-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #94a3b8;
+    font-size: 14px;
+    margin-top: 30px;
+}
+
+/* Custom Scroll */
+.custom-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

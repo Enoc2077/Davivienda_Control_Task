@@ -1,136 +1,167 @@
-/* ==========================================================================
-   MODAL EDITAR TAREA - DISEÑO ANCHO Y ESPACIADO (DAVIVIENDA)
-   ========================================================================== */
-
-/* Fondo Difuminado */
-.modal-overlay-gold.blurred-bg {
+.modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(10px); /* Difuminado más intenso */
-    z-index: 1500;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    z-index: 2500;
 }
 
-/* Contenedor: Más Ancho y Menos Largo */
-.modal-container-gold.large-modal {
-    background: #FFFFFF;
-    border: 3px solid #ED1C24; /* Borde rojo Davivienda */
-    border-radius: 12px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-    width: 95%;
-    max-width: 1100px; /* Incrementamos el ancho máximo */
-    max-height: 90vh;
-    display: flex;
-    flex-direction: column;
+.modal-card-premium {
+    background: white;
+    width: 850px;
+    border-radius: 24px;
+    position: relative;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
     overflow: hidden;
+    padding: 0;
 }
 
-/* Header Compacto */
-.modal-header-gold {
-    background-color: #ED1C24;
-    padding: 15px 25px;
+.modal-top-accent-green {
+    height: 6px;
+    width: 100%;
+    background: linear-gradient(90deg, #2E7D32 0%, #43A047 100%);
+}
+
+.modal-head {
+    padding: 35px 45px 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid #C41E3A;
 }
 
-/* Cuerpo con Rejilla de 3 Columnas */
-.modal-body-gold.extra-padding {
-    padding: 35px 45px;
-    overflow-y: auto;
-}
-
-.form-grid-gold.spacious-gap {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 Columnas iguales */
-    gap: 30px; /* Mucho espacio entre inputs */
-}
-
-/* Inputs que ocupan todo el ancho (Nombre y Descripción) */
-.full-width {
-    grid-column: span 3; /* Ocupa las 3 columnas */
-}
-
-/* Etiquetas (Labels) Negras y Gruesas */
-.label-gold {
-    color: #000000; /* Negro sólido solicitado */
+.modal-title-main {
+    font-size: 24px;
     font-weight: 800;
-    margin-bottom: 10px;
-    display: block;
-    font-size: 0.95rem;
-    text-transform: none;
+    color: #1e293b;
+    margin: 0;
 }
 
-/* Inputs más robustos y espaciosos */
-.form-input-gold {
+.modal-subtitle {
+    color: #64748b;
+    margin: -5px 45px 25px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.close-x-dav {
+    background: #f1f5f9;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 22px;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+    .close-x-dav:hover {
+        background: #e2e8f0;
+        color: #64748b;
+    }
+
+.modal-body {
+    padding: 20px 45px 30px;
+}
+
+.form-grid-dav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+}
+
+.full-width {
+    grid-column: 1 / -1;
+}
+
+.input-container-dav label {
+    display: block;
+    font-size: 11px;
+    font-weight: 800;
+    color: #475569;
+    margin-bottom: 8px;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+}
+
+.input-field-dav {
     width: 100%;
     padding: 14px 18px;
-    background-color: #FFFFFF;
-    border: 2px solid #ED1C24; /* Bordes de 2px */
-    border-radius: 8px;
-    color: #000000 !important;
-    font-size: 1rem;
-    font-weight: 600;
-    outline: none;
-    transition: all 0.2s ease-in-out;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    font-size: 15px;
+    color: #1e293b;
+    transition: all 0.3s ease;
 }
 
-    .form-input-gold:focus {
-        border-color: #C41E3A;
-        box-shadow: 0 0 10px rgba(237, 28, 36, 0.2);
-        transform: translateY(-1px); /* Efecto sutil al escribir */
+    .input-field-dav:focus {
+        outline: none;
+        border-color: #2E7D32;
+        background-color: white;
+        box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.05);
     }
 
-/* Textarea ajustado */
-textarea.form-input-gold {
-    resize: none;
-    min-height: 100px;
+.visual-fix {
+    color: #1e293b !important;
+    background-color: white !important;
+    appearance: auto !important;
 }
 
-/* Footer Espaciado */
-.modal-footer-gold {
-    background-color: #F9F9F9;
-    padding: 20px 45px;
-    border-top: 1px solid #E0E0E0;
+.modal-foot-dav {
+    padding: 25px 45px 40px;
+    background: #fcfdfe;
     display: flex;
-    justify-content: flex-end;
-    gap: 20px;
+    gap: 15px;
+    border-top: 1px solid #f1f5f9;
 }
 
-/* Botones Grandes */
-.btn-gold-primary.large-btn {
-    background-color: #ED1C24;
-    color: #FFFFFF;
-    padding: 14px 35px;
-    border-radius: 8px;
+.btn-secondary-dav {
+    flex: 1;
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    color: #64748b;
+    padding: 14px;
+    border-radius: 12px;
     font-weight: 700;
-    font-size: 1rem;
+    cursor: pointer;
+}
+
+.btn-save-main-dav-green {
+    flex: 2;
+    background: #2E7D32;
+    color: white;
     border: none;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 15px;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
 }
 
-    .btn-gold-primary.large-btn:hover {
-        background-color: #C41E3A;
+    .btn-save-main-dav-green:hover {
+        background: #1b5e20;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(46, 125, 50, 0.3);
     }
 
-.btn-gold-secondary {
-    background-color: #FFFFFF;
-    color: #444;
-    padding: 14px 35px;
-    border-radius: 8px;
-    border: 2px solid #ED1C24;
-    font-weight: 700;
-    cursor: pointer;
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
 
-    .btn-gold-secondary:hover {
-        background-color: #FFF5F5;
-    }
+.animate-pop {
+    animation: popIn 0.3s ease-out;
+}

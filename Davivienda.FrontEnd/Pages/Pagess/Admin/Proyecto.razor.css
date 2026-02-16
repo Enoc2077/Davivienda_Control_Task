@@ -340,12 +340,12 @@
 }
 
 .btn-view-details {
-    background-color: #f3f4f6;
+    background-color: #ffffff;
     color: var(--dav-blue);
     border: 1px solid var(--border-color);
-    width: 45px; /* Un poco más ancho para que el texto quepa cómodo */
+    width: 45px;
     height: 38px;
-    border-radius: 20px; /* Estilo cápsula para el texto largo */
+    border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -354,7 +354,7 @@
     font-size: 0.9rem;
     font-weight: bold;
     line-height: 1;
-    padding-bottom: 2px; /* Ajuste visual fino para centrar el texto */
+    padding-bottom: 2px;
 }
 
     .btn-view-details:hover {
