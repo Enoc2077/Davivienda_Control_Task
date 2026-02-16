@@ -1,6 +1,4 @@
-﻿/* =========================================
-   MODAL ESTRUCTURA (PROCESO)
-   ========================================= */
+﻿/* --- TUS ESTILOS ORIGINALES MANTENIDOS --- [cite: 2026-02-12] */
 .modal-backdrop-warm {
     position: fixed;
     inset: 0;
@@ -24,33 +22,9 @@
     border: 1px solid #fceaea;
 }
 
-/* --- BOTÓN VOLVER --- */
-.btn-modal-back-red {
-    background: #fff5f5;
-    border: 1px solid rgba(237, 28, 36, 0.2);
-    color: #ed1c24;
-    font-weight: 700;
-    cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 50px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    font-size: 0.75rem;
-}
-
-    .btn-modal-back-red:hover {
-        background: #ed1c24;
-        color: white;
-        transform: translateX(-5px);
-    }
-
-/* --- GRID DE 3 COLUMNAS --- */
 .proceso-grid-layout {
     display: grid;
-    grid-template-columns: 300px 1fr 320px;
+    grid-template-columns: 300px 1fr 340px;
     gap: 20px;
     flex-grow: 1;
     overflow: hidden;
@@ -67,7 +41,6 @@
     overflow: hidden;
 }
 
-/* --- LÍNEAS DE COLOR SUPERIOR --- */
 .panel-top-line {
     height: 5px;
     width: 100%;
@@ -83,11 +56,10 @@
     background: #007bff;
 }
 
-.line-yellow {
-    background: #ffc107;
+.line-green {
+    background: #28a745;
 }
 
-/* --- COLUMNA 1: PROCESOS (Cuadros Blancos) --- */
 .process-card {
     background: #ffffff;
     border-radius: 10px;
@@ -95,7 +67,7 @@
     margin-bottom: 8px;
     border: 1px solid #e2e8f0;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: 0.2s;
     box-shadow: 0 2px 4px rgba(0,0,0,0.03);
 }
 
@@ -105,49 +77,13 @@
         font-weight: bold;
     }
 
-/* --- COLUMNA 2: CONFIGURACIÓN (Clean Form) --- */
-.warm-form-modal {
-    padding: 10px;
-}
-
-.label-form {
-    font-weight: bold;
-    display: block;
-    margin-bottom: 8px;
-    color: #4a5568;
-    font-size: 0.85rem;
-}
-
 .input-warm, .select-warm-input {
     width: 100%;
     padding: 12px;
-    border: 1.5px solid #e2e8f0; /* Borde definido solicitado */
+    border: 2.5px solid #e2e8f0;
     border-radius: 8px;
-    margin-bottom: 20px; /* Espacio entre inputs */
-    outline: none;
-    transition: border-color 0.3s;
-}
-
-    .input-warm:focus {
-        border-color: #ed1c24;
-    }
-
-.form-row-split {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-    align-items: center;
     margin-bottom: 20px;
-}
-
-.status-switch-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    background: #f1f5f9;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
-    height: 48px;
+    outline: none;
 }
 
 .btn-save-pill {
@@ -158,29 +94,10 @@
     border-radius: 25px;
     font-weight: bold;
     cursor: pointer;
-    transition: all 0.2s;
-    margin-left: 79%;
+    margin-left: auto;
+    display: block;
 }
 
-    .btn-save-pill:hover {
-        background-color: #004b93;
-        color: white;
-    }
-
-/* --- COLUMNA 3: TAREAS (Cuadros Blancos) --- */
-.task-entry-card-white {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 15px;
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.07);
-    border: 1px solid #edf2f7;
-}
-
-/* --- SWITCH --- */
 .switch {
     position: relative;
     display: inline-block;
@@ -223,169 +140,500 @@ input:checked + .slider {
         transform: translateX(20px);
     }
 
-
-/* --- HEADER LAYOUT --- */
-.modal-top-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+.scrollable-content-inner {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 10px;
 }
 
-.header-left {
+.modal-overlay-secondary {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 25px;
+    z-index: 2000;
 }
 
-/* --- BARRA DE BUSQUEDA DERECHA --- */
-.modal-search-bar-horizontal {
+/* --- AJUSTES SOLICITADOS EN LA CABECERA --- */
+.btn-modal-back-red-small {
+    background: white;
+    border: 1.5px solid #800020;
+    color: #800020;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+}
+
+    .btn-modal-back-red-small:hover {
+        background: #FFF1F2;
+        transform: translateX(-5px);
+        box-shadow: 0 4px 10px rgba(128, 0, 32, 0.1);
+    }
+
+.title-project-premium {
+    font-size: 34px;
+    font-weight: 900;
+    color: #800020;
+    margin: 0;
+    letter-spacing: -1px;
+    font-family: 'Poppins', sans-serif;
+
+}
+
+.modal-search-bar-horizontal-long {
     display: flex;
     background: #f8fafc;
     border: 1.5px solid #e2e8f0;
     border-radius: 50px;
     padding: 10px 25px;
-    width: 56%;
-    margin-right: 10px;
-    margin-top: 19px;
-
+    width: 500px;
+    align-items: center;
+    gap: 10px;
 }
 
-    .modal-search-bar-horizontal:focus-within {
-        border-color: #ed1c24;
-        box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.1);
-        background: white;
+/* --- DISEÑO DEL CUADRO VERDE (TAREAS) --- */
+.btn-new-task-capsule-green {
+    background: #43A047;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(67, 160, 71, 0.3);
+}
+
+    .btn-new-task-capsule-green:hover {
+        transform: translateY(-2px);
+        background: #2E7D32;
     }
 
-.modal-input-long {
-    border: none;
-    background: transparent;
-    outline: none;
-    flex-grow: 1;
-    font-size: 0.9rem;
+.task-card-visual-premium {
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 20px 24px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* --- ESTILO DE LOS INPUTS (Borders y Spacing) --- */
-.input-warm, .select-warm-input {
-    border: 1.5px solid #e2e8f0 !important; /* Bordes marcados solicitado */
-    padding: 12px 15px;
+    .task-card-visual-premium:hover {
+        border-color: #43A047;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        transform: translateY(-3px);
+    }
+
+.task-indicator-bar {
+    width: 5px;
+    height: 45px;
+    border-radius: 10px;
+    margin-right: 18px;
+}
+
+    .task-indicator-bar.green {
+        background: #43A047;
+    }
+
+    .task-indicator-bar.orange {
+        background: #F39C12;
+    }
+
+.task-body-content {
+    flex: 1;
+}
+
+.task-name-text {
+    font-weight: 700;
+    color: #1E293B;
+    margin: 0;
+    font-size: 15px;
+}
+
+.task-status-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: #94A3B8;
+    letter-spacing: 0.5px;
     margin-top: 5px;
-    margin-bottom: 20px; /* Espacio entre inputs */
     display: block;
 }
 
-/* --- PLACEHOLDER DE CONFIGURACIÓN --- */
-.no-selection-placeholder {
+.task-edit-pencil-icon {
+    color: #CBD5E1;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+.task-card-visual-premium:hover .task-edit-pencil-icon {
+    color: #43A047;
+    transform: scale(1.2);
+}
+
+
+/* Contenedor principal de la cabecera */
+.modal-top-section {
     display: flex;
-    flex-direction: column;
+    flex-direction: row; /* Fuerza la alineación en línea */
+    justify-content: space-between; /* Separa el título de la búsqueda */
+    align-items: center; /* Centra verticalmente todos los elementos */
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #E2E8F0;
+    width: 100%;
+}
+
+/* Agrupador de Botón + Título */
+.header-left {
+    display: flex;
+    flex-direction: row; /* Alinea botón y texto en la misma línea */
     align-items: center;
-    justify-content: center;
-    height: 100%;
-    color: #cbd5e0;
-    text-align: center;
-    padding: 40px;
+    gap: 30px; /* Espacio entre el botón y el título */
 }
 
-    .no-selection-placeholder i {
-        font-size: 4rem;
-        margin-bottom: 15px;
-    }
+/* Título imponente en línea */
+.title-project-premium {
+    font-size: 34px;
+    font-weight: 900;
+    color: #800020;
+    margin: 0;
+    letter-spacing: -1px;
+    font-family: 'Poppins', sans-serif;
+    line-height: 2; /* Evita que el título ocupe espacio extra arriba/abajo */
+}
 
-/* --- AJUSTE DE ALTURA DEL MODAL --- */
-.modal-window-proceso {
-    background: #fff;
-    width: 96%;
-    max-height: 95vh; /* Evita que se salga de la pantalla */
-    height: auto;
-    border-radius: 25px;
-    padding: 25px;
+/* Barra de búsqueda horizontal larga */
+.modal-search-bar-horizontal-long {
     display: flex;
-    flex-direction: column;
-    overflow: hidden; /* El scroll lo maneja el contenido interno */
-}
-
-/* --- GRID Y SCROLL INTERNO --- */
-.proceso-grid-layout {
-    display: grid;
-    grid-template-columns: 300px 1fr 320px;
-    gap: 20px;
-    flex-grow: 1;
-    overflow-y: auto; /* Permite bajar si el contenido de las columnas es muy alto */
-    padding-right: 5px;
-}
-
-.scrollable-content-inner {
-    overflow-y: auto;
-    max-height: 60vh; /* Ajuste para que los paneles tengan su propio scroll */
-    padding: 10px;
-}
-
-/* --- BARRA DE BUSQUEDA LIMPIA --- */
-.modal-search-bar-horizontal {
-    display: flex;
+    flex-direction: row; /* Asegura que el icono y el input estén alineados */
     background: #f8fafc;
     border: 1.5px solid #e2e8f0;
     border-radius: 50px;
-    padding: 10px 25px; /* Más padding para compensar la falta de botón */
-    width: 450px;
+    padding: 10px 25px;
+    width: 500px; /* Tamaño largo solicitado */
+    align-items: center;
+    gap: 10px;
 }
 
+/* Input sin bordes internos para que parezca una sola cápsula */
 .modal-input-long {
-    width: 100%;
-    border: none;
+    border: none !important;
     background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 15px;
+}
+
+/* Botón pequeño y estilizado */
+.btn-modal-back-red-small {
+    background: white;
+    border: 1.5px solid #800020;
+    color: #800020;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 10px;
+    cursor: pointer;
+    transition: 0.3s;
+    text-transform: uppercase;
+    white-space: nowrap; /* Evita que el texto del botón se rompa en dos líneas */
+}
+
+/* --- ESTILOS EXCLUSIVOS PARA EL CUADRO DE TAREAS --- */
+.line-green {
+    background: #43A047 !important;
+}
+
+.title-bold-task {
+    font-weight: 800;
+    color: #1E293B;
+    font-size: 19px;
+    margin: 0;
+}
+
+/* Botón NUEVA estilo cápsula */
+.btn-new-task-capsule {
+    background: #43A047;
+    color: white;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 50px;
+    margin-left: 68%;
+    font-weight: 800;
+    font-size: 11px;
+    cursor: pointer;
+    transition: 0.3s;
+    box-shadow: 0 4px 10px rgba(67, 160, 71, 0.3);
+}
+
+    .btn-new-task-capsule:hover {
+        background: #2E7D32;
+        transform: translateY(-2px);
+    }
+
+/* Tarjetas de tareas con indicador lateral */
+.task-card-premium-v2 {
+    background: white;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 20px;
+    padding: 22px 25px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+    .task-card-premium-v2:hover {
+        border-color: #43A047;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+        transform: translateY(-4px);
+    }
+
+/* Barra lateral de estado */
+.task-status-bar {
+    width: 5px;
+    height: 50px;
+    border-radius: 10px;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+.status-green {
+    background: #43A047;
+}
+
+.status-orange {
+    background: #F39C12;
+}
+
+/* Contenido de la tarea */
+.task-content-v2 {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.task-title-v2 {
+    font-weight: 700;
+    color: #1E293B;
+    margin: 0;
+    font-size: 16px;
+    line-height: 1.2;
+}
+
+.task-label-v2 {
+    font-size: 11px;
+    font-weight: 800;
+    color: #94A3B8;
+    letter-spacing: 0.5px;
+}
+
+/* Icono de lápiz a la derecha */
+.task-edit-icon {
+    color: #CBD5E1;
+    font-size: 15px;
+    opacity: 0.7;
+    transition: 0.3s;
+}
+
+.task-card-premium-v2:hover .task-edit-icon {
+    color: #43A047;
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+
+
+/* --- ESTILOS EXCLUSIVOS PARA EL PRIMER CUADRO (PROCESOS) --- */
+.title-bold-proc {
+    font-weight: 800;
+    color: #1E293B;
+    font-size: 19px;
+    margin: 0;
+    padding-bottom: 10px;
+}
+
+.process-card-visual {
+    background: white;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 20px;
+    padding: 18px 25px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+    /* Efecto Hover */
+    .process-card-visual:hover {
+        border-color: #800020; /* Color vino de la línea superior */
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+/* Estado Seleccionado (Exactamente como la imagen) */
+.active-selection {
+    background-color: #FFF1F2 !important; /* Fondo rosado muy suave */
+    border: 1.5px solid #800020 !important; /* Borde color vino */
+}
+
+/* Contenido del Texto */
+.proc-body-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.proc-title-main {
+    font-weight: 800;
+    color: #1E293B;
+    font-size: 16px;
+    font-family: 'Poppins', sans-serif;
+}
+
+.proc-freq-sub {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94A3B8;
+    letter-spacing: 0.5px;
+}
+
+/* Icono de Flecha */
+.proc-arrow-icon {
+    color: #1E293B;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.process-card-visual:hover .proc-arrow-icon {
+    transform: translateX(3px);
+    color: #800020;
+}
+
+/* --- ESTILOS EXCLUSIVOS PARA EL CUADRO CENTRAL (CONFIGURACIÓN) --- */
+.line-blue {
+    background: #8B6F47 !important;
+}
+/* Color café suave de la línea superior */
+.title-bold-config {
+    font-weight: 800;
+    color: #1E293B;
+    font-size: 20px;
+    margin: 0;
+}
+
+.header-split-premium {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding-bottom: 15px;
+}
+
+/* Botón con sombra degradada exactamente como la imagen */
+.btn-save-premium-shadow {
+    background: linear-gradient(135deg, #9B1D3F 0%, #C72D57 100%);
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 10px 20px rgba(155, 29, 63, 0.2);
+    text-transform: uppercase;
+}
+
+    .btn-save-premium-shadow:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 25px rgba(155, 29, 63, 0.3);
+    }
+
+/* Formulario Premium */
+.form-container-visual {
+    padding: 10px 5px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group-premium {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-row-premium {
+    display: flex;
+    gap: 25px;
+    align-items: flex-end;
+}
+
+.label-premium {
+    font-size: 11px;
+    font-weight: 800;
+    color: #475569;
+    letter-spacing: 0.5px;
+}
+
+/* Inputs con estilo Poppins */
+.input-field-premium, .select-field-premium, .textarea-field-premium {
+    width: 100%;
+    padding: 14px 20px;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 15px;
+    background-color: white;
+    font-size: 15px;
+    color: #1E293B;
+    transition: 0.3s;
     outline: none;
 }
 
-/* --- TARJETA DE PROCESO (COLUMNA 1) --- */
-.process-card {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 12px 16px;
-    margin-bottom: 10px;
-    border: 1px solid #e2e8f0;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    .input-field-premium:focus, .textarea-field-premium:focus {
+        border-color: #8B6F47;
+        box-shadow: 0 0 0 4px rgba(139, 111, 71, 0.05);
+    }
+
+/* Cápsula de Estado Activo/Inactivo */
+.status-badge-capsule {
+    background: white;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 15px;
+    height: 50px;
+    min-width: 180px;
     display: flex;
-    flex-direction: column; /* Alineación vertical */
-    gap: 4px; /* Espacio entre nombre y frecuencia */
-    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
 }
 
-    .process-card:hover {
-        border-color: #ed1c24;
-        background: #fffafa;
-    }
-
-    .process-card.active {
-        border-left: 5px solid #ed1c24;
-        background: #fff5f5;
-        border-top-color: #fceaea;
-        border-right-color: #fceaea;
-        border-bottom-color: #fceaea;
-    }
-
-/* Estilo para el nombre */
-.process-title-text {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: #2d3748;
+.text-active-green {
+    color: #43A047;
+    font-weight: 800;
+    font-size: 16px;
 }
 
-/* Estilo para la frecuencia (visible debajo) */
-.process-freq-text {
-    font-size: 0.75rem;
-    color: #718096;
-    font-weight: 400;
-    display: block; /* Asegura que tome su propia línea */
-}
-
-/* Cambio de color cuando está activo */
-.process-card.active .process-title-text {
-    color: #ed1c24;
-}
-
-.process-card.active .process-freq-text {
-    color: #e53e3e;
-    opacity: 0.8;
+.text-inactive-red {
+    color: #9B1D3F;
+    font-weight: 800;
+    font-size: 16px;
 }

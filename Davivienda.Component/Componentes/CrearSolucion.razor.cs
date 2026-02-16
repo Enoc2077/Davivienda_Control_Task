@@ -12,15 +12,23 @@ namespace Davivienda.Component.Componentes
 
         [Parameter] public Guid FriccionId { get; set; }
         [Parameter] public EventCallback OnSuccess { get; set; }
+        [Parameter] public EventCallback OnClose { get; set; } // Parámetro para habilitar el cierre
 
         private SolucionesModel nuevaSolucion = new SolucionesModel();
+
+        // Método para los botones Cancelar y X
+        private async Task CerrarModalInterno()
+        {
+            if (OnClose.HasDelegate)
+            {
+                await OnClose.InvokeAsync();
+            }
+        }
 
         private async Task GuardarSolucion()
         {
             try
             {
-                // Mapeo manual al objeto de entrada del SDK
-                // Se genera un nuevo ID y se asigna la fecha actual para cumplir con el esquema
                 var input = new SolucionesModelInput
                 {
                     Sol_ID = Guid.NewGuid(),
@@ -37,13 +45,12 @@ namespace Davivienda.Component.Componentes
 
                 if (result.Data?.InsertSolucion ?? false)
                 {
-                    // Notifica al componente padre para cerrar el modal y refrescar la lista
                     await OnSuccess.InvokeAsync();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error crítico al guardar la solución: {ex.Message}");
+                Console.WriteLine($"Error al registrar la solución: {ex.Message}");
             }
         }
     }

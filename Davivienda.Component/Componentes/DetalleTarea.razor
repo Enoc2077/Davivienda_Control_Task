@@ -3,150 +3,163 @@
 @using Davivienda.GraphQL.SDK
 
 <div class="detalle-tarea-fullscreen">
-
-    @* --- TOOLBAR: Selector de Bitácoras --- *@
-    <div class="toolbar-dav">
-        <div class="selector-container">
-            <label>VER HISTORIAL:</label>
-            @* Agregamos @bind para controlar el valor desde el CS *@
-            <select class="input-dav select-mini" @onchange="ManejarCambioBitacora">
-                <option value="">-- Seleccionar Historial --</option>
-                <option value="BIT_SOL">Bitácora de Soluciones</option>
-                <option value="BIT_FRI">Bitácora de Fricciones</option>
-            </select>
+    @* --- TOOLBAR PREMIUM --- *@
+    <div class="toolbar-dav animate-slide-down">
+        <div class="header-main-info">
+            <h2 class="main-page-title">Gestión de Tarea: <span class="text-wine">@Tarea?.TAR_NOM</span></h2>
         </div>
-        <div class="actions-right">
-            <button class="btn-close-minimal" @onclick="Cerrar">Cerrar Detalle ×</button>
+
+        <div class="toolbar-actions">
+            <div class="selector-container-premium">
+                <i class="fas fa-history icon-blue"></i>
+                <label>VER HISTORIAL:</label>
+                <select class="select-dav-mini" @onchange="ManejarCambioBitacora" id="sel_bitacora_global">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="BIT_SOL">Bitácora de Soluciones</option>
+                    <option value="BIT_FRI">Bitácora de Fricciones</option>
+                </select>
+            </div>
+            <button class="btn-close-dav-pill" @onclick="Cerrar" id="btn_cerrar_detalle_fullscreen">
+                CERRAR DETALLE <i class="fas fa-times"></i>
+            </button>
         </div>
     </div>
 
-    <div class="main-white-container">
-        @* --- LADO IZQUIERDO: Info General y Notas --- *@
-        <div class="left-stack-container">
-            <div class="info-card-sector-stack">
-                <div class="card-with-borders border-general">
-                    <div class="card-header-simple">
+    <div class="main-grid-container">
+        @* --- LADO IZQUIERDO --- *@
+        <div class="side-stack">
+            @* Cuadrante 1: Info General *@
+            <div class="quadrant-card border-accent-wine">
+                <div class="card-header-premium bg-wine-soft">
+                    <div class="header-left">
+                        <i class="fas fa-info-circle icon-wine"></i>
                         <h4>Información General</h4>
                     </div>
-                    <div class="card-body-simple">
-                        <p class="task-title-detail">@Tarea?.TAR_NOM</p>
-                        <div class="status-row">
-                            <span class="label-mini">ESTADO:</span>
-                            <span class="status-badge">@Tarea?.TAR_EST</span>
-                        </div>
+                </div>
+                <div class="card-body-premium scroll-dav bg-warm-white">
+                    <h3 class="task-title-display">@Tarea?.TAR_NOM</h3>
+                    <div class="status-pill-row">
+                        <span class="label-tiny">ESTADO ACTUAL</span>
+                        <span class="badge-status-premium">@Tarea?.TAR_EST</span>
                     </div>
                 </div>
             </div>
 
-            <div class="info-card-sector-stack">
-                <div class="card-with-borders border-comments">
-                    <div class="card-header-simple">
+            @* Cuadrante 2: Comentarios *@
+            <div class="quadrant-card border-accent-green">
+                <div class="card-header-premium bg-green-soft">
+                    <div class="header-left">
+                        <i class="fas fa-comments icon-green"></i>
                         <h4>Comentarios / Notas</h4>
                     </div>
-                    <div class="yoopta-integration-wrapper custom-scroll">
+                </div>
+                <div class="card-body-premium scroll-dav no-padding bg-warm-white">
+                    <div class="yoopta-wrapper">
                         <Yoopta></Yoopta>
                     </div>
                 </div>
             </div>
         </div>
 
-        @* --- LADO DERECHO: Soluciones y Fricciones --- *@
-        <div class="right-stack-container">
-            <div class="info-card-sector-stack">
-                <div class="card-with-borders border-solucion-blue">
-                    <div class="card-header-simple">
+        @* --- LADO DERECHO --- *@
+        <div class="side-stack">
+            @* Cuadrante 3: Soluciones *@
+            <div class="quadrant-card border-accent-blue">
+                <div class="card-header-premium bg-blue-soft">
+                    <div class="header-left">
+                        <i class="fas fa-lightbulb icon-blue"></i>
                         <h4>Soluciones Propuestas</h4>
-                        <button class="btn-action-add add-blue" @onclick="AbrirModalCrearSolucion">Crear</button>
                     </div>
-                    <div class="cards-scroll-area custom-scroll">
-                        @if (SolucionesList?.Any() == true)
+                    @* BOTÓN CORREGIDO: Visible y estilizado *@
+                    <button class="btn-add-mini-pill add-blue" @onclick="AbrirModalCrearSolucion" id="btn_crear_solucion_quadrant">
+                        <i class="fas fa-plus"></i> CREAR
+                    </button>
+                </div>
+                <div class="card-body-premium scroll-dav bg-warm-white">
+                    @if (SolucionesList?.Any() == true)
+                    {
+                        @foreach (var sol in SolucionesList)
                         {
-                            @foreach (var sol in SolucionesList)
-                            {
-                                <div class="card-mini-item clickable-card" @onclick="() => AbrirModalEditarSolucion(sol)">
-                                    <div class="card-header-data">
-                                        <span class="card-label">@sol.SOL_NOM</span>
-                                        <span class="status-tag-mini">@sol.SOL_EST</span>
-                                    </div>
-                                    <p class="card-text">@sol.SOL_DES</p>
-                                    <div class="card-footer-actions">
-                                        <button class="btn-delete-card-bottom" @onclick:stopPropagation @onclick="() => EliminarSolucion(sol.SOL_ID)">
-                                            <i class="bi bi-trash3-fill"></i> Eliminar
-                                        </button>
-                                    </div>
+                            <div class="item-card-mini" @onclick="() => AbrirModalEditarSolucion(sol)">
+                                <div class="item-top-row">
+                                    <span class="item-name">@sol.SOL_NOM</span>
+                                    <span class="item-tag tag-blue">@sol.SOL_EST</span>
                                 </div>
-                            }
+                                <p class="item-desc">@sol.SOL_DES</p>
+                                <button class="btn-item-delete" @onclick:stopPropagation @onclick="() => EliminarSolucion(sol.SOL_ID)">
+                                    <i class="fas fa-trash-alt"></i> ELIMINAR
+                                </button>
+                            </div>
                         }
-                    </div>
+                    }
                 </div>
             </div>
 
-            <div class="info-card-sector-stack">
-                <div class="card-with-borders border-friccion-yellow">
-                    <div class="card-header-simple">
+            @* Cuadrante 4: Fricciones *@
+            <div class="quadrant-card border-accent-gold">
+                <div class="card-header-premium bg-gold-soft">
+                    <div class="header-left">
+                        <i class="fas fa-exclamation-triangle icon-gold"></i>
                         <h4>Fricciones Detectadas</h4>
-                        <button class="btn-action-add add-yellow" @onclick="AbrirModalCrearFriccion">Crear</button>
                     </div>
-                    <div class="cards-scroll-area custom-scroll">
-                        @if (FriccionesList?.Any() == true)
+                    @* BOTÓN CORREGIDO: Visible y estilizado *@
+                    <button class="btn-add-mini-pill add-gold" @onclick="AbrirModalCrearFriccion" id="btn_crear_friccion_quadrant">
+                        <i class="fas fa-plus"></i> CREAR
+                    </button>
+                </div>
+                <div class="card-body-premium scroll-dav bg-warm-white">
+                    @if (FriccionesList?.Any() == true)
+                    {
+                        @foreach (var fri in FriccionesList)
                         {
-                            @foreach (var fri in FriccionesList)
-                            {
-                                <div class="card-mini-item clickable-card" @onclick="() => AbrirModalEditarFriccion(fri)">
-                                    <div class="card-header-data">
-                                        <span class="card-label">@fri.FRI_TIP</span>
-                                        <span class="impacto-tag-mini @fri.FRI_IMP?.ToLower()">@fri.FRI_IMP</span>
-                                    </div>
-                                    <p class="card-text">@fri.FRI_DES</p>
-                                    <div class="card-footer-actions">
-                                        <button class="btn-delete-card-bottom" @onclick:stopPropagation @onclick="() => EliminarFriccion(fri.FRI_ID)">
-                                            <i class="bi bi-trash3-fill"></i> Eliminar
-                                        </button>
-                                    </div>
+                            <div class="item-card-mini" @onclick="() => AbrirModalEditarFriccion(fri)">
+                                <div class="item-top-row">
+                                    <span class="item-name">@fri.FRI_TIP</span>
+                                    <span class="item-tag tag-gold">@fri.FRI_IMP</span>
                                 </div>
-                            }
+                                <p class="item-desc">@fri.FRI_DES</p>
+                                <button class="btn-item-delete" @onclick:stopPropagation @onclick="() => EliminarFriccion(fri.FRI_ID)">
+                                    <i class="fas fa-trash-alt"></i> ELIMINAR
+                                </button>
+                            </div>
                         }
-                    </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@* --- MODAL DINÁMICO --- *@
+@* --- MODAL INTEGRADO CORREGIDO (LÓGICA DE CIERRE) --- *@
 @if (MostrarModalCrear)
 {
-    <div class="modal-backdrop-dav" @onclick="CerrarModalInterno">
-        <div class="@(TipoModal.StartsWith("HISTORIAL") ? "modal-content-large" : "modal-content-centered")" @onclick:stopPropagation>
+    <div class="modal-backdrop-premium" @onclick="CerrarModalInterno">
+        <div class="modal-window-dav @(TipoModal.StartsWith("HISTORIAL") ? "size-xl" : "size-md")" @onclick:stopPropagation>
             <div class="modal-header-dav">
                 <h3>@TituloModal</h3>
-                <button class="close-btn-dav" @onclick="CerrarModalInterno">×</button>
+                <button class="modal-close-x" @onclick="CerrarModalInterno" id="btn_x_cerrar_modal_detalle">×</button>
             </div>
-            <div class="modal-body-dav">
+            <div class="modal-body-dav scroll-dav">
+                @* Se añade OnClose a cada componente hijo para habilitar el cierre *@
                 @if (TipoModal == "FRICCION_NUEVA" && Tarea != null)
                 {
-                    <CrearFriccion TareaId="@Tarea.TAR_ID" OnSuccess="AlCrearExitoso" />
+                    <CrearFriccion TareaId="@Tarea.TAR_ID" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
                 }
-                else if (TipoModal == "FRICCION_EDITAR" && FriccionSeleccionada != null)
-                {
-                    <EditarFriccion FriccionOriginal="@FriccionSeleccionada" OnSuccess="AlCrearExitoso" />
-                }
+
                 else if (TipoModal == "SOLUCION_NUEVA")
                 {
-                    <CrearSolucion FriccionId="@(FriccionesList.FirstOrDefault()?.FRI_ID ?? Guid.Empty)" OnSuccess="AlCrearExitoso" />
+
+                    <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
                 }
-                else if (TipoModal == "SOLUCION_EDITAR" && SolucionSeleccionada != null)
-                {
-                    <EditarSolucion SolucionOriginal="@SolucionSeleccionada" OnSuccess="AlCrearExitoso" />
-                }
+
                 else if (TipoModal == "HISTORIAL_SOLUCIONES")
                 {
-                    @* No pasamos TareaId para que cargue todas con filtros *@
+
                     <BitacoraSolucion />
                 }
                 else if (TipoModal == "HISTORIAL_FRICCIONES")
                 {
-                    @* No pasamos TareaId para que cargue todas con filtros *@
+
                     <BitacoraFriccion />
                 }
             </div>

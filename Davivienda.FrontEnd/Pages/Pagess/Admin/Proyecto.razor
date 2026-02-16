@@ -14,7 +14,7 @@
 
         <div class="select-pill-container">
             <select @onchange="OnAreaFilterChanged" class="select-pill">
-                <option value="">📂 Todas las Áreas</option>
+                <option value=""> Áreas</option>
                 @foreach (var area in ListaAreas)
                 {
                     <option value="@area.ARE_ID">@area.ARE_NOM</option>
@@ -54,7 +54,7 @@
                             <button class="btn-view-details"
                                     @onclick:stopPropagation="true"
                                     @onclick="() => AbrirModalProcesos(proy)">
-                                ⌐■_■
+                                 ■
                             </button>
                             <i class="fas fa-chevron-right arrow-icon"></i>
                         </div>

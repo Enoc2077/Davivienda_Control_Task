@@ -2,91 +2,105 @@
 @using Davivienda.Models
 
 <div class="page-container">
+    @* 1. Título Superior *@
+    <div class="header-section">
+        <h2 class="page-title">Gestión de Roles</h2>
+    </div>
+
+    @* 2. Barra de herramientas *@
     <div class="search-bar-wrapper">
         <div class="search-input-box">
-            @* Filtrado en tiempo real usando @oninput *@
+            <i class="bi bi-search"></i>
             <input type="text"
-                   value="@Busqueda"
-                   @oninput="OnSearchChanged"
-                   placeholder="Buscar por nombre..." />
+                   placeholder="Buscar por nombre de rol..."
+                   @bind="Busqueda"
+                   @bind:event="oninput"
+                   @onkeyup="FiltrarRoles" />
         </div>
         <button class="btn-primary-blue" @onclick="AbrirModalNuevo">
-            Nuevo Rol
+            + Nuevo Rol
         </button>
     </div>
 
-    <div class="main-card">
-        <div class="card-header">
-            <h3>Gestión de Roles</h3>
-        </div>
+    @* 3. Listado de Roles como Cuadros Blancos *@
+    <div class="roles-list-container">
+        @if (RolesFiltrados == null || !RolesFiltrados.Any())
+        {
+            <div class="empty-state-card">
+                <p>No se encontraron roles disponibles.</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var rol in RolesFiltrados)
+            {
+                <div class="role-item-card animate-pop">
+                    <div class="role-main-info">
+                        @* Avatar con la inicial del Rol *@
+                        <div class="role-avatar">
+                            <span>@(string.IsNullOrWhiteSpace(rol.ROL_NOM) ? "R" : rol.ROL_NOM.Substring(0, 1).ToUpper())</span>
+                        </div>
+                        <div class="role-details">
+                            <span class="role-name-text">@rol.ROL_NOM</span>
+                            <span class="role-id-text">Identificador: @rol.ROL_ID.ToString().Substring(0, 8)...</span>
+                        </div>
+                    </div>
 
-        <div class="table-container">
-            <table class="dav-table">
-                <thead>
-                    <tr>
-                        <th>NOMBRE DEL ROL</th>
-                        <th class="text-center">ESTADO</th>
-                        <th class="text-center">ACCIONES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (RolesFiltrados == null || !RolesFiltrados.Any())
-                    {
-                        <tr><td colspan="3" class="text-center py-4">No se encontraron roles disponibles.</td></tr>
-                    }
-                    else
-                    {
-                        @foreach (var rol in RolesFiltrados)
-                        {
-                            <tr>
-                                <td class="rol-name-cell">@rol.ROL_NOM</td>
-                                <td class="text-center">
-                                    <span class="status-badge-blue">
-                                        @(rol.ROL_EST ? "Activo" : "Inactivo")
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="action-flex">
-                                        <button class="btn-action-edit" @onclick="() => AbrirModalEditar(rol)">Editar</button>
-                                        <button class="btn-action-delete" @onclick="() => EliminarRol(rol.ROL_ID)">Eliminar</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        }
-                    }
-                </tbody>
-            </table>
-        </div>
+                    <div class="role-meta-info">
+                        <span class="dept-badge">Acceso Institucional</span>
+                        <span class="status-pill @(rol.ROL_EST ? "active" : "inactive")">
+                            @(rol.ROL_EST ? "Activo" : "Inactivo")
+                        </span>
+                    </div>
+
+                    <div class="role-card-actions">
+                        <button class="btn-action-edit-min" @onclick="() => AbrirModalEditar(rol)">Editar</button>
+                        <button class="btn-action-delete-min" @onclick="() => EliminarRol(rol.ROL_ID)">Eliminar</button>
+                    </div>
+                </div>
+            }
+        }
     </div>
 </div>
 
+@* 4. Modal Premium de Registro *@
 @if (MostrarModal)
 {
-    <div class="modal-backdrop">
-        <div class="modal-card-warm animate-fade-in">
-            <div class="modal-header-simple">
-                <h2 class="modal-title">@(Editando ? "Actualizar Rol" : "Nuevo Rol")</h2>
+    <div class="modal-overlay">
+        <div class="modal-card-premium animate-pop">
+            <div class="modal-top-accent"></div>
+
+            <div class="modal-head">
+                <h2 class="modal-title-main">@(Editando ? "Actualizar Rol" : "Nuevo Rol")</h2>
+                <button class="close-x-dav" @onclick="() => MostrarModal = false">×</button>
             </div>
 
             <div class="modal-body">
-                <div class="form-field">
-                    <label>Nombre del Rol</label>
-                    <input type="text" @bind="RolForm.ROL_NOM" class="input-warm" placeholder="Nombre del rol" />
-                </div>
-                <div class="form-field">
-                    <label>Descripción</label>
-                    <textarea @bind="RolForm.ROL_DES" class="input-warm" rows="3" placeholder="Descripción breve..."></textarea>
-                </div>
-                <div class="form-check-custom" style="margin-top: 15px; display: flex; align-items: center;">
-                    <input type="checkbox" id="chkActivo" @bind="RolForm.ROL_EST" style="width: auto;" />
-                    <label for="chkActivo" style="margin-left: 8px; cursor: pointer; margin-bottom: 0;">Rol Activo</label>
+                <div class="form-grid-dav">
+                    <div class="input-container-dav">
+                        <label>NOMBRE DEL ROL</label>
+                        <input @bind="RolForm.ROL_NOM" placeholder="Ej: Administrador" class="input-field-dav" />
+                    </div>
+
+                    <div class="input-container-dav">
+                        <label>DESCRIPCIÓN</label>
+                        <textarea @bind="RolForm.ROL_DES" placeholder="Describa las funciones del rol..." class="input-field-dav" rows="3"></textarea>
+                    </div>
+
+                    <div class="input-container-dav">
+                        <label>ESTADO ACTUAL</label>
+                        <select @bind="RolForm.ROL_EST" class="input-field-dav select-dav visual-fix">
+                            <option value="true">Activo</option>
+                            <option value="false">Inactivo</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <div class="modal-footer-flex">
-                <button class="btn-cancel-warm" @onclick="() => MostrarModal = false">Cancelar</button>
-                <button class="btn-save-warm" @onclick="GuardarCambios">
-                    @(Editando ? "Confirmar" : "Registrar")
+            <div class="modal-foot-dav">
+                <button class="btn-secondary-dav" @onclick="() => MostrarModal = false">Cancelar</button>
+                <button class="btn-save-main-dav" @onclick="GuardarCambios">
+                    @(Editando ? "Confirmar" : "Guardar Rol")
                 </button>
             </div>
         </div>
