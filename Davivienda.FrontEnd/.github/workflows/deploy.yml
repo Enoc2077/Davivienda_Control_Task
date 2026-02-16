@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    # Se agregaron comillas y punto y coma para evitar el error MSB1006
+    # Se agregaron comillas, punto y coma y se corrigió la sangría (2 espacios antes de run)
     - name: Publish
       run: dotnet publish Davivienda.FrontEnd/Davivienda.FrontEnd.csproj -c Release -o release --nologo /p:NoWarn="CS8600;CS8602;CS8603;CS8604;CS8618"
     
