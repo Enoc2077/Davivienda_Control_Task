@@ -1,3 +1,6 @@
+# --- CONSULTAS (QUERIES) ---
+
+# 1. Obtener listado completo de usuarios
 query GetUsuarios {
   usuarios {
     usu_ID
@@ -7,23 +10,24 @@ query GetUsuarios {
     usu_TEL
     usu_EST
     rol_ID
-    are_ID  # <--- AGREGADO PARA EL CAMBIO DE ÁREA
+    are_ID
     usu_FEC_CRE
     usu_FEC_MOD
   }
 }
 
-# 2. Obtener usuario por email (ACTIVADA)
+# 2. Obtener un usuario específico por su Email
 query GetUsuarioByEmail($email: String!) {
   usuarioByEmail(email: $email) {
     usu_ID
     usu_NOM
     usu_COR
     rol_ID
+    are_ID
   }
 }
 
-# 3. Obtener usuario por ID (INCLUYENDO ARE_ID)
+# 3. Obtener un usuario específico por su ID
 query GetUsuarioById($id: UUID!) {
   usuarioById(usu_id: $id) {
     usu_ID
@@ -33,6 +37,22 @@ query GetUsuarioById($id: UUID!) {
     usu_TEL
     usu_EST
     rol_ID
-    are_ID  # <--- AGREGADO PARA EL CAMBIO DE ÁREA
+    are_ID
+  }
+}
+
+mutation IniciarSesion($input: LoginInput!) {
+  login(input: $input) {
+    exito
+    mensaje
+    token
+    usuario {
+      usu_ID
+      usu_NOM
+      usu_NUM
+      usu_COR
+      rol_ID
+      are_ID
+    }
   }
 }

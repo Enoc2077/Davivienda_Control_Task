@@ -1,6 +1,10 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Blazored.LocalStorage
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager Nav
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorApp1</a>
+        <a class="navbar-brand" href="home">Portal Gestión</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -10,50 +14,73 @@
 <div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
     <nav class="flex-column">
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            <NavLink class="nav-link" href="home" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Inicio
             </NavLink>
         </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="proyectos">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Proyectos
+            </NavLink>
+        </div>
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Asignaciones">
                 <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Asignaciones
             </NavLink>
         </div>
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Usuario">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Usuario
+                <span class="bi bi-person-badge-nav-menu" aria-hidden="true"></span> Usuarios
             </NavLink>
         </div>
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Roles">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Roles
+                <span class="bi bi-shield-lock-nav-menu" aria-hidden="true"></span> Roles
             </NavLink>
         </div>
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Rol_por_area">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Rol_por_area
+                <span class="bi bi-diagram-3-nav-menu" aria-hidden="true"></span> Roles por Área
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="proyectos">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> proyectos
-            </NavLink>
-        </div>
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="Tarea">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Tarea
+                <span class="bi bi-list-check-nav-menu" aria-hidden="true"></span> Tareas
             </NavLink>
+        </div>
+
+        <div class="nav-item px-3 mt-auto mb-3">
+            <button class="nav-link btn btn-link text-start w-100 border-0 p-3"
+                    @onclick="CerrarSesion"
+                    style="cursor: pointer;">
+                <span class="bi bi-box-arrow-right-nav-menu text-danger" aria-hidden="true"></span>
+                <span class="text-danger fw-bold">Cerrar Sesión</span>
+            </button>
         </div>
     </nav>
 </div>
 
 @code {
     private bool collapseNavMenu = true;
-
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task CerrarSesion()
+    {
+        // 1. ELIMINACIÓN: Borramos el token para que la sesión deje de ser persistente
+        await LocalStorage.RemoveItemAsync("authToken");
+
+        // 2. REDIRECCIÓN: Mandamos al usuario de vuelta a la raíz (Login)
+        // Usamos forceLoad: true para asegurar que la aplicación se reinicie limpiamente
+        Nav.NavigateTo("/", forceLoad: true);
     }
 }

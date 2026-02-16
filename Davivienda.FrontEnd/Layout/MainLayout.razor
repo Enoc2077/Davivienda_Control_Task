@@ -1,4 +1,7 @@
 ﻿@inherits LayoutComponentBase
+@using Blazored.LocalStorage
+@inject ILocalStorageService LocalStorage
+@inject NavigationManager Nav
 
 <div class="page">
     <div class="sidebar">
@@ -6,8 +9,27 @@
     </div>
 
     <main>
+        <div class="top-row px-4">
+            <span class="text-muted">Portal Administrativo Davivienda</span>
+            <button class="btn btn-link text-danger" >Cerrar Sesión</button>
+        </div>
+
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        // Seguridad: Si intentan entrar a una ruta interna sin token, regresan al login
+        var token = await LocalStorage.GetItemAsync<string>("authToken");
+
+        if (string.IsNullOrEmpty(token))
+        {
+            Nav.NavigateTo("/");
+        }
+    }
+
+}

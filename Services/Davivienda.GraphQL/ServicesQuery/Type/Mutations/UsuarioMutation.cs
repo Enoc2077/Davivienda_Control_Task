@@ -7,17 +7,17 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Mutation
     [ExtendObjectType("Mutation")]
     public class UsuarioMutation
     {
-        // Genera un token de acceso delegando toda la lógica al servicio
-        // Esto soluciona los errores de tipos (string/int) que tenías aquí
-        public async Task<string> Login(
-            int usuNum,
-            string password,
+        // --- AUTENTICACIÓN ---
+
+        // Esta versión es la correcta porque usa el DTO LoginInput
+        public async Task<LoginModel.LoginResponse> Login(
             [Service] UsuarioServices usuarioServices,
-            IResolverContext context)
+            LoginModel.LoginInput input)
         {
-            // El servicio ahora maneja las conversiones de UsuarioModel (string/Guid) a tipos simples
-            return await usuarioServices.Login(context, usuNum, password);
+            return await usuarioServices.LoginAsync(input);
         }
+
+        // --- GESTIÓN DE USUARIOS ---
 
         // Registra un nuevo usuario en la plataforma
         public async Task<bool> InsertUsuario(

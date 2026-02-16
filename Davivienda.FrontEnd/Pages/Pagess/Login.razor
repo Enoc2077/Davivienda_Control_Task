@@ -1,1 +1,81 @@
-﻿@page "/login"
+﻿@page "/"  
+@layout LoginLayout
+@using Davivienda.FrontEnd.Layout
+@using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
+
+<div class="login-page-container">
+    <div class="login-card-dav">
+        <div class="login-header">
+            <img src="images/logo-dav.png" alt="Davivienda" class="logo-dav" />
+            <h2 class="title-dav">Gestión de Proyectos</h2>
+            <p class="subtitle-dav">Bienvenido al portal administrativo</p>
+        </div>
+
+        <EditForm Model="@loginModel" OnValidSubmit="ProcesarLogin">
+            <div class="form-body">
+                @if (!string.IsNullOrEmpty(errorMsg))
+                {
+                    <div class="alert-error-dav">
+                        <span class="error-icon">⚠️</span> @errorMsg
+                    </div>
+                }
+
+                <div class="form-group-dav">
+                    <label>NÚMERO DE EMPLEADO</label>
+                    <input type="text" 
+                           class="input-dav" 
+                           @bind="loginModel.UsuNum" 
+                           placeholder="Ingrese su número" 
+                           required />
+                </div>
+
+                <div class="form-group-dav">
+                    <label>CONTRASEÑA</label>
+                    <input type="password" 
+                           class="input-dav" 
+                           @bind="loginModel.Password" 
+                           placeholder="••••••••" 
+                           required />
+                </div>
+
+                <button type="submit" class="btn-login-dav" disabled="@cargando">
+                    @if (cargando)
+                    {
+                        <span class="spinner"></span> <span>AUTENTICANDO...</span>
+                    }
+                    else
+                    {
+                        <span>INICIAR SESIÓN</span>
+                    }
+                </button>
+            </div>
+        </EditForm>
+
+        <div class="login-footer">
+            <button class="btn-link-dav" @onclick="() => mostrarRecuperar = true">
+                ¿Olvidó su contraseña o número de empleado?
+            </button>
+        </div>
+    </div>
+</div>
+
+@if (mostrarRecuperar)
+{
+    <div class="modal-backdrop-dav" @onclick="() => mostrarRecuperar = false">
+        <div class="modal-content-centered" @onclick:stopPropagation>
+            <div class="modal-header-dav">
+                <h4>Recuperar Acceso</h4>
+                <button class="close-btn-dav" @onclick="() => mostrarRecuperar = false">×</button>
+            </div>
+            <div class="modal-body-dav">
+                <p class="modal-instruction">Ingrese su correo institucional para recibir sus datos de acceso.</p>
+                <div class="form-group-dav">
+                    <label>CORREO ELECTRÓNICO</label>
+                    <input type="email" class="input-dav" @bind="correoRecuperar" placeholder="usuario@davivienda.com" />
+                </div>
+                <button class="btn-save-dav full-width" @onclick="EnviarCorreo">ENVIAR INFORMACIÓN</button>
+            </div>
+        </div>
+    </div>
+}
