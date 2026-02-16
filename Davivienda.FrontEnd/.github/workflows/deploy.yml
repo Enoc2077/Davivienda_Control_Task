@@ -21,8 +21,9 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
+    # Se agregaron comillas y punto y coma para evitar el error MSB1006
     - name: Publish
-      run: dotnet publish -c Release -o release --nologo
+      run: dotnet publish Davivienda.FrontEnd/Davivienda.FrontEnd.csproj -c Release -o release --nologo /p:NoWarn="CS8600;CS8602;CS8603;CS8604;CS8618"
     
     - name: Add .nojekyll
       run: touch release/wwwroot/.nojekyll
