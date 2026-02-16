@@ -1,29 +1,26 @@
-﻿/* =========================================
-   1. ESTRUCTURA DE CUADRANTES (LAYOUT)
-   ========================================= */
+﻿/* --- ESTRUCTURA DE CUADRANTES (NO TOCAR POSICIONES) --- */
 .cuadrantes-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1fr;
+    grid-template-rows: 1fr 1.1fr;
     grid-template-areas:
         "top-left right-side"
         "bottom-left right-side";
     gap: 25px;
-    height: 92vh;
+    height: 90vh;
     padding: 20px;
-    background-color: #f4f7f9;
+    background-color: #f1f5f9;
 }
 
-/* Tarjetas Base */
 .cuadro-blanco {
     background: #ffffff;
-    border-radius: 16px;
-    padding: 25px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.04);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #eef2f6;
 }
 
 .q-90-180 {
@@ -36,205 +33,241 @@
 
 .q-270-90 {
     grid-area: right-side;
-    border-right: 6px solid #ed1c24; /* Acento Davivienda */
+    border-right: 6px solid #ed1c24; /* Acento Rojo Corporativo */
 }
 
-/* =========================================
-   2. FORMULARIOS, INPUTS Y BORDES
-   ========================================= */
-/* Unificación total para que el formulario se vea "libre" y limpio */
-.form-control-dv,
-.form-creacion-full input,
-.form-creacion-full textarea,
-.form-creacion-full select,
-.modal-content-small input,
-.modal-content-small textarea {
-    width: 100%;
-    padding: 14px 18px;
-    margin-bottom: 22px; /* Espacio amplio entre inputs */
-    border: 2px solid #e2e8f0; /* Borde visible y limpio */
-    border-radius: 12px; /* Bordes redondeados */
-    background-color: #f8fafc;
-    color: #1e293b;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    box-sizing: border-box;
-    outline: none;
+/* --- ESTILOS DE TEXTO Y TÍTULOS --- */
+.title-dav-red {
+    color: #334155;
+    font-weight: 800;
+    font-size: 1.4rem;
+    margin-bottom: 20px;
 }
 
-    /* Efecto Focus para resaltar el redondeado */
-    .form-control-dv:focus,
-    .form-creacion-full input:focus,
-    .form-creacion-full textarea:focus,
-    .form-creacion-full select:focus,
-    .modal-content-small input:focus,
-    .modal-content-small textarea:focus {
-        border-color: #ed1c24;
-        box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.1);
-        background-color: #ffffff;
+    .title-dav-red i {
+        color: #ed1c24;
+        margin-right: 10px;
     }
 
-.input-group-dv label {
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: #475569;
-    margin-bottom: 8px;
-    display: block;
-    margin-left: 4px;
-}
-
-/* =========================================
-   3. LISTADO DE TAREAS Y ACCIONES
-   ========================================= */
+/* --- TARJETAS DE TAREA (LISTADO) --- */
 .tareas-scroll-area {
     flex: 1;
     overflow-y: auto;
-    padding-right: 8px;
+    padding-right: 10px;
 }
 
-.tarea-card-simple {
+.tarea-item-card {
+    background: white;
+    border-radius: 15px;
+    padding: 18px 22px;
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 16px;
-    background: #fff;
-    border: 1px solid #f1f5f9;
-    border-radius: 12px;
-    margin-bottom: 12px;
-    transition: transform 0.2s, border-color 0.2s;
-}
-
-    .tarea-card-simple:hover {
-        transform: translateX(5px);
-        border-color: #cbd5e1;
-    }
-
-.tarea-info {
+    align-items: center;
+    border: 2px solid transparent;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
     cursor: pointer;
-    flex: 1;
 }
 
-    .tarea-info strong {
-        display: block;
-        color: #1e293b;
-        font-size: 1rem;
+    .tarea-item-card:hover {
+        transform: translateX(8px);
+        border-color: #ed1c24;
+        box-shadow: 0 8px 20px rgba(237, 28, 36, 0.08);
     }
 
-    .tarea-info p {
-        margin: 4px 0 0;
-        font-size: 0.85rem;
-        color: #64748b;
-    }
+.tarea-name-text {
+    font-weight: 800;
+    color: #1e293b;
+    font-size: 1.05rem;
+    display: block;
+}
 
-.tarea-actions {
+.tarea-desc-text {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.tarea-actions-min {
     display: flex;
-    gap: 12px;
+    gap: 10px;
+    opacity: 0.3;
+    transition: 0.3s;
 }
 
-.btn-action {
+.tarea-item-card:hover .tarea-actions-min {
+    opacity: 1;
+}
+
+.btn-action-edit {
+    color: #475569;
     border: none;
-    background: transparent;
-    cursor: pointer;
-    font-size: 1.2rem;
-    padding: 5px;
+    background: #f1f5f9;
+    padding: 8px;
     border-radius: 8px;
-    transition: background 0.2s;
 }
 
-    .btn-action.edit:hover {
-        background: #eef2ff;
-        color: #0033a0;
+.btn-action-delete {
+    color: #ed1c24;
+    border: none;
+    background: #fff1f2;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+/* --- FORMULARIO Y INPUTS (BORDES DEFINIDOS) --- */
+.input-container-dav {
+    margin-bottom: 20px;
+}
+
+    .input-container-dav label {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        color: #64748b;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
     }
 
-    .btn-action.delete:hover {
-        background: #fff1f2;
-        color: #ed1c24;
+.input-field-dav {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0; /* Borde visible [cite: 2026-02-12] */
+    border-radius: 12px;
+    background-color: #f8fafc;
+    font-size: 15px;
+    transition: all 0.3s ease;
+}
+
+    .input-field-dav:focus {
+        outline: none;
+        border-color: #ed1c24;
+        background-color: white;
+        box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.05);
     }
 
-/* =========================================
-   4. DISEÑO DE MODAL (EDICIÓN)
-   ========================================= */
+.select-dav {
+    cursor: pointer;
+    appearance: auto !important;
+}
+
+/* --- BOTONES ROJOS --- */
+.btn-save-main-dav-red {
+    width: 100%;
+    background: #ed1c24; /* Rojo Davivienda */
+    color: white;
+    border: none;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(237, 28, 36, 0.2);
+}
+
+    .btn-save-main-dav-red:hover:not(:disabled) {
+        background: #c7151b;
+        transform: translateY(-2px);
+    }
+
+/* --- RESUMEN (ESTADÍSTICAS) --- */
+.stats-premium {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: 1.5px solid #f8fafc;
+}
+
+.stat-label {
+    font-weight: 600;
+    color: #64748b;
+}
+
+.stat-value {
+    font-weight: 900;
+    color: #ed1c24;
+    font-size: 1.3rem;
+}
+
+/* --- MODAL ROJO --- */
 .modal-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    inset: 0;
     background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(8px);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
-    backdrop-filter: blur(4px);
+    z-index: 2000;
 }
 
-.modal-content-small {
+.modal-card-premium {
     background: white;
-    padding: 30px;
-    border-radius: 20px; /* Modal muy redondeado */
-    width: 420px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    width: 500px;
+    border-radius: 24px;
+    position: relative;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
 }
 
-.modal-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 10px;
+.modal-top-accent-red {
+    height: 6px;
+    width: 100%;
+    background: #ed1c24;
 }
 
-/* =========================================
-   5. BOTONES Y ESTADÍSTICAS
-   ========================================= */
-.btn-primary-dv {
-    background: #0033a0;
-    color: white;
-    border: none;
-    padding: 16px;
-    border-radius: 12px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-top: 10px;
-}
-
-    .btn-primary-dv:hover:not(:disabled) {
-        background: #00267a;
-    }
-
-    .btn-primary-dv:disabled {
-        background: #cbd5e1;
-        cursor: not-allowed;
-    }
-
-.btn-save {
-    background: #0033a0;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.btn-cancel {
-    background: #f1f5f9;
-    color: #475569;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-}
-
-.stat-row {
+.modal-head {
+    padding: 30px 40px 10px;
     display: flex;
     justify-content: space-between;
-    padding: 15px 0;
-    border-bottom: 1px solid #f1f5f9;
+    align-items: center;
 }
 
-    .stat-row strong {
-        color: #0033a0;
-        font-size: 1.1rem;
+.modal-title-main {
+    font-size: 24px;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0;
+}
+
+.modal-foot-dav {
+    padding: 25px 40px 40px;
+    display: flex;
+    gap: 15px;
+}
+
+.btn-secondary-dav {
+    flex: 1;
+    background: white;
+    border: 2px solid #e2e8f0;
+    color: #64748b;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* --- ANIMACIONES --- */
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
     }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.animate-pop {
+    animation: popIn 0.3s ease-out;
+}

@@ -1,179 +1,363 @@
-﻿.page-container {
-    padding: 40px;
-    background-color: #f1f4f9;
+﻿/* --- LAYOUT GENERAL --- */
+.page-container {
+    padding: 35px 55px;
+    background-color: #f1f5f9;
     min-height: 100vh;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-.search-bar-wrapper {
-    background: white;
-    padding: 15px 25px;
-    border-radius: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.header-section {
     margin-bottom: 25px;
 }
 
-.search-input-box input {
-    border: 1px solid #dce1e9;
-    padding: 10px 15px;
-    border-radius: 8px;
-    width: 300px;
+.page-title {
+    font-weight: 900;
+    color: #0A2463;
+    font-size: 30px;
+    letter-spacing: -0.5px;
 }
+
+/* --- BARRA DE BUSQUEDA --- */
+.search-bar-wrapper {
+    background: white;
+    padding: 18px 28px;
+    border-radius: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    border: 1px solid #eef2f6;
+}
+
+.search-input-box {
+    position: relative;
+    width: 400px;
+}
+
+    .search-input-box i {
+        position: absolute;
+        left: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #94a3b8;
+    }
+
+    .search-input-box input {
+        width: 100%;
+        padding: 12px 15px 12px 48px;
+        border-radius: 12px;
+        border: 2px solid #e2e8f0;
+        outline: none;
+        transition: 0.3s;
+    }
+
+        .search-input-box input:focus {
+            border-color: #0052FF;
+        }
 
 .btn-primary-blue {
-    background-color: #002d9c;
+    background: #0A2463;
     color: white;
     border: none;
-    padding: 10px 25px;
-    border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.main-card {
-    background: white;
+    padding: 12px 25px;
     border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    font-weight: 700;
+    cursor: pointer;
 }
 
-.card-header {
-    padding: 25px;
-    border-bottom: 1px solid #f0f2f5;
-}
-
-    .card-header h3 {
-        font-weight: 700;
-        margin: 0;
-        color: #1a1a1a;
-    }
-
-.dav-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-    .dav-table th {
-        padding: 15px 25px;
-        text-align: left;
-        color: #8a94a6;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        border-bottom: 1px solid #f0f2f5;
-    }
-
-    .dav-table td {
-        padding: 15px 25px;
-        border-bottom: 1px solid #f8f9fb;
-        font-size: 0.9rem;
-    }
-
-.status-badge-blue {
-    background-color: #e6f0ff;
-    color: #0056d2;
-    padding: 5px 15px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.8rem;
-}
-
-.action-flex {
+/* --- TARJETAS (CUADROS BLANCOS) --- */
+.roles-list-container {
     display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.role-item-card {
+    background: white;
+    border-radius: 20px;
+    padding: 22px 35px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+    /* Animación de Selección Lateral */
+    .role-item-card:hover {
+        transform: translateX(12px);
+        border-color: #0052FF;
+        box-shadow: 0 10px 25px rgba(0, 82, 255, 0.1);
+    }
+
+.role-main-info {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.role-avatar {
+    width: 58px;
+    height: 58px;
+    background: #0052FF;
+    color: white;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    font-weight: 900;
+    font-size: 26px;
+    box-shadow: 0 5px 15px rgba(0, 82, 255, 0.2);
 }
 
-.btn-action-edit {
-    background-color: #f0f2f8;
-    color: #4e5d78;
-    border: none;
-    padding: 8px 18px;
-    border-radius: 6px;
+.role-name-text {
+    font-weight: 800;
+    color: #1e293b;
+    font-size: 18px;
+    display: block;
+}
+
+.role-id-text {
+    color: #94a3b8;
+    font-size: 14px;
     font-weight: 600;
+}
+
+.role-meta-info {
+    display: flex;
+    align-items: center;
+    gap: 25px;
+}
+
+.dept-badge {
+    color: #ED1C24;
+    background: #FFF5F5;
+    padding: 7px 18px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.status-pill {
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+    .status-pill.active {
+        background: #E6F4EA;
+        color: #15803d;
+    }
+
+    .status-pill.inactive {
+        background: #fee2e2;
+        color: #b91c1c;
+    }
+
+.role-card-actions {
+    display: flex;
+    gap: 12px;
+    opacity: 0.2;
+    transition: 0.3s;
+}
+
+.role-item-card:hover .role-card-actions {
+    opacity: 1;
+}
+
+.btn-action-edit-min {
+    background: #f1f5f9;
+    color: #475569;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 700;
     cursor: pointer;
 }
 
-.btn-action-delete {
-    background-color: #fff1f1;
-    color: #ff5c5c;
+.btn-action-delete-min {
+    background: #FFF5F5;
+    color: #ED1C24;
     border: none;
-    padding: 8px 18px;
-    border-radius: 6px;
-    font-weight: 600;
+    padding: 10px 18px;
+    border-radius: 10px;
+    font-weight: 700;
     cursor: pointer;
 }
 
-/* Modal Estilos */
-.modal-backdrop {
+/* --- MODAL --- */
+.modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.4);
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 2000;
 }
 
-.modal-card-warm {
+.modal-card-premium {
     background: white;
-    width: 480px;
-    border-radius: 28px;
-    padding: 35px;
+    width: 540px;
+    border-radius: 24px;
     position: relative;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+    overflow: hidden;
 }
 
-.modal-header-nav {
+.modal-top-accent {
+    height: 6px;
+    width: 100%;
+    background: linear-gradient(90deg, #ED1C24 0%, #0A2463 100%);
+}
+
+.modal-head {
+    padding: 35px 45px 15px;
     display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.modal-close-x {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    background: none;
+.modal-title-main {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0A2463;
+    margin: 0;
+}
+
+.close-x-dav {
+    background: #f1f5f9;
     border: none;
-    font-size: 1.5rem;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 22px;
+    color: #94a3b8;
     cursor: pointer;
-    color: #888;
 }
 
-.modal-footer-flex {
+.modal-body {
+    padding: 20px 45px 30px;
+}
+
+.form-grid-dav {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+}
+
+.input-container-dav label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #64748b;
+    margin-bottom: 8px;
+}
+
+.input-field-dav {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    font-size: 15px;
+    color: #1e293b !important;
+}
+
+/* Fix del Select */
+.select-dav {
+    cursor: pointer;
+    appearance: auto !important;
+    background-color: white !important;
+}
+
+.status-select-fix {
+    font-weight: 700;
+    color: #0A2463 !important;
+}
+
+.modal-foot-dav {
+    padding: 25px 45px 40px;
     display: flex;
     gap: 15px;
-    margin-top: 30px;
+    background: #fcfdfe;
 }
 
-.btn-cancel-warm {
+.btn-secondary-dav {
     flex: 1;
-    background: #f0f2f5;
-    color: #4e5d78;
-    border: none;
-    padding: 15px;
-    border-radius: 15px;
-    font-weight: bold;
+    background: white;
+    border: 2px solid #e2e8f0;
+    color: #64748b;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 700;
     cursor: pointer;
 }
 
-.btn-save-warm {
+.btn-save-main-dav {
     flex: 2;
-    background: #002d9c;
+    background: #0A2463;
     color: white;
     border: none;
-    padding: 15px;
-    border-radius: 15px;
-    font-weight: bold;
+    padding: 14px;
+    border-radius: 12px;
+    font-weight: 800;
     cursor: pointer;
 }
 
-.input-warm {
-    width: 100%;
-    border: 1px solid #dce1e9;
-    border-radius: 12px;
-    padding: 12px;
-    margin-top: 8px;
+/* Animaciones */
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
 }
+
+.animate-pop {
+    animation: popIn 0.3s ease-out;
+}
+
+.empty-state-card {
+    background: white;
+    padding: 60px;
+    text-align: center;
+    border-radius: 20px;
+    color: #94a3b8;
+    font-weight: 600;
+    border: 2px dashed #e2e8f0;
+}
+
+
+/* --- SOLUCIÓN AL SELECT INVISIBLE --- */
+
+/* 1. Forzamos el color del texto y fondo del select */
+.visual-fix {
+    color: #0A2463 !important; /* Azul oscuro para que sea visible */
+    background-color: #ffffff !important; /* Fondo blanco sólido */
+    appearance: auto !important; /* Muestra la flecha nativa para evitar bugs de click */
+    cursor: pointer;
+}
+
+    /* 2. Forzamos el color de las opciones dentro del desplegable */
+    .visual-fix option {
+        color: #1e293b !important; /* Gris oscuro/negro para las letras */
+        background-color: #ffffff !important;
+        padding: 10px;
+    }
+
+    /* 3. Evitamos que el navegador oculte el texto al estar enfocado */
+    .visual-fix:focus {
+        color: #0A2463 !important;
+        background-color: #ffffff !important;
+        border-color: #0052FF !important; /* Azul vibrante de selección */
+    }
