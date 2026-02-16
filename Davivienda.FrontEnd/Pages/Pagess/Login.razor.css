@@ -1,0 +1,137 @@
+﻿/* Contenedor Principal */
+.login-page-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f8fafc; /* Fondo gris muy tenue */
+}
+
+/* Tarjeta de Login */
+.login-card-dav {
+    background: white;
+    width: 420px;
+    padding: 50px 40px;
+    border-radius: 24px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.logo-dav {
+    width: 200px;
+    margin-bottom: 20px;
+}
+
+.title-dav {
+    color: #1e293b;
+    font-weight: 800;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.subtitle-dav {
+    color: #64748b;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+/* Formulario */
+.form-group-dav {
+    margin-bottom: 22px; /* Espaciado entre inputs [cite: 2026-02-12] */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .form-group-dav label {
+        font-size: 0.7rem;
+        font-weight: 900;
+        color: #64748b;
+        letter-spacing: 0.05em;
+    }
+
+.input-dav {
+    padding: 14px;
+    border: 1.5px solid #cbd5e1; /* Bordes claros y definidos [cite: 2026-02-12] */
+    border-radius: 12px;
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+    .input-dav:focus {
+        outline: none;
+        border-color: #ed1c24; /* Rojo Davivienda */
+        box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.1);
+    }
+
+/* Botón de Ingreso */
+.btn-login-dav {
+    width: 100%;
+    background: #ed1c24;
+    color: white;
+    padding: 16px;
+    border: none;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+    .btn-login-dav:hover {
+        background: #c11219;
+    }
+
+    .btn-login-dav:disabled {
+        background: #f87171;
+        cursor: not-allowed;
+    }
+
+/* Footer y Links */
+.login-footer {
+    text-align: center;
+    margin-top: 25px;
+}
+
+.btn-link-dav {
+    background: none;
+    border: none;
+    color: #64748b;
+    font-size: 0.85rem;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* Alertas de Error */
+.alert-error-dav {
+    background: #fef2f2;
+    color: #ef4444;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    border: 1px solid #fee2e2;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.modal-instruction {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 15px;
+}

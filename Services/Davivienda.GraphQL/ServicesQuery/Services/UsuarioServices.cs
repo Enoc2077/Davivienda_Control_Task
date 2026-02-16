@@ -1,10 +1,11 @@
 ﻿using Dapper;
 using Davivienda.GraphQL.DataBases;
+using Davivienda.GraphQL.Security;
 using Davivienda.Models.Modelos;
 using Davivienda.QueryBuilder.Builder;
-using Davivienda.GraphQL.Security; // Asegúrate de tener este using
 using HotChocolate.Language;
 using HotChocolate.Resolvers;
+using Microsoft.Extensions.Configuration;
 
 namespace Davivienda.GraphQL.ServicesQuery.Services
 {
@@ -12,7 +13,7 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
     {
         private readonly DataBase dataBase;
         private readonly UsuarioQueryBuilder usuBuilder;
-        private readonly JwtProvider jwtProvider; // Añadido para manejar el token
+        private readonly JwtProvider jwtProvider; // Ya está inyectado aquí
 
         public UsuarioServices(DataBase dataBase, UsuarioQueryBuilder builder, JwtProvider jwtProvider)
         {
@@ -21,44 +22,72 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             this.jwtProvider = jwtProvider;
         }
 
-        // --- NUEVO MÉTODO DE LOGIN (CON LÓGICA INTEGRADA) ---
-        public async Task<string> Login(IResolverContext context, int usuNum, string password)
+        // --- MÉTODO DE LOGIN PRINCIPAL (CORREGIDO) ---
+        public async Task<LoginModel.LoginResponse> LoginAsync(LoginModel.LoginInput input)
         {
             try
             {
-                // 1. Buscamos al usuario por su número de empleado
-                var usuario = await GetUsuarioByEmpleadoNum(usuNum);
+                await dataBase.ConnectAsync();
 
-                // 2. Validaciones de credenciales
-                if (usuario == null || usuario.USU_CON != password)
+                // 1. Buscamos al usuario por número de empleado y contraseña (USU_CON)
+                // Nota: Asegúrate de que el nombre de la tabla sea USUARIO o USUARIOS según tu DB
+                string sql = @"SELECT * FROM dbo.USUARIO 
+                               WHERE USU_NUM = @UsuNum 
+                               AND USU_CON = @Password 
+                               AND USU_EST = 1";
+
+                var usuario = await dataBase.Connection.QueryFirstOrDefaultAsync<UsuarioModel>(sql, new
                 {
-                    throw new GraphQLException("Número de empleado o contraseña incorrectos.");
+                    UsuNum = input.UsuNum,
+                    Password = input.Password
+                });
+
+                if (usuario == null)
+                {
+                    return new LoginModel.LoginResponse
+                    {
+                        Exito = false,
+                        Mensaje = "Número de empleado o contraseña incorrectos."
+                    };
                 }
 
-                // 3. Validación de estado
-                if (usuario.USU_EST == false)
-                {
-                    throw new GraphQLException("El usuario se encuentra inactivo.");
-                }
+                // 2. Generar el Token JWT usando la instancia inyectada (jwtProvider)
+                // Convertimos el USU_NUM (string) a int para el token
+                string token = jwtProvider.GenerarToken(
+                    int.TryParse(usuario.USU_NUM, out int num) ? num : 0,
+                    usuario.USU_NOM ?? "Usuario",
+                    0 // Aquí puedes poner un ID de rol si lo manejas numérico
+                );
 
-                // 4. Generación del Token (Aquí manejamos los nulos como pediste)
-                return jwtProvider.GenerarToken(
-                        int.TryParse(usuario.USU_NUM, out int num) ? num : 0, // Convierte string a int
-                        usuario.USU_NOM ?? "Usuario",                        // Maneja el nombre
-                        0                                                    // ROL_ID es Guid, aquí debes decidir si 
-                                                                             // envías el GUID como string o un ID entero
-                    );
+                return new LoginModel.LoginResponse
+                {
+                    Exito = true,
+                    Token = token,
+                    Mensaje = "Bienvenido al sistema",
+                    Usuario = usuario
+                };
             }
             catch (Exception ex)
             {
-                throw new GraphQLException(ex.Message);
+                return new LoginModel.LoginResponse
+                {
+                    Exito = false,
+                    Mensaje = $"Error en el servidor: {ex.Message}"
+                };
+            }
+            finally
+            {
+                await dataBase.DisconnectAsync();
             }
         }
 
 
 
 
-        // --- CONSULTAS ---
+
+
+
+        // --- CONSULTAS EXISTENTES ---
 
         public async Task<IEnumerable<UsuarioModel>> GetUsuarios(IResolverContext context)
         {
@@ -87,10 +116,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                 await dataBase.ConnectAsync();
                 return await dataBase.Connection.QueryFirstOrDefaultAsync<UsuarioModel>(sqlQuery, new { email });
             }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error en GetUsuarioByEmail: {ex.Message}", ex);
-            }
             finally { await dataBase.DisconnectAsync(); }
         }
 
@@ -101,21 +126,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                 string sqlQuery = "SELECT u.* FROM dbo.USUARIO u WHERE u.USU_ID = @usu_id";
                 await dataBase.ConnectAsync();
                 return await dataBase.Connection.QueryFirstOrDefaultAsync<UsuarioModel>(sqlQuery, new { usu_id });
-            }
-            finally { await dataBase.DisconnectAsync(); }
-        }
-
-        public async Task<UsuarioModel?> GetUsuarioByEmpleadoNum(int usu_num)
-        {
-            try
-            {
-                string sqlQuery = "SELECT u.* FROM dbo.USUARIO u WHERE u.USU_NUM = @usu_num";
-                await dataBase.ConnectAsync();
-                return await dataBase.Connection.QueryFirstOrDefaultAsync<UsuarioModel>(sqlQuery, new { usu_num });
-            }
-            catch (Exception ex)
-            {
-                throw new Exception($"Error en GetUsuarioByEmpleadoNum: {ex.Message}", ex);
             }
             finally { await dataBase.DisconnectAsync(); }
         }
@@ -168,7 +178,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                     USU_TEL = usuario.USU_TEL ?? existing.USU_TEL,
                     USU_EST = usuario.USU_EST ?? existing.USU_EST,
                     ROL_ID = usuario.ROL_ID ?? existing.ROL_ID,
-                    // AGREGAMOS LA LÓGICA PARA EL ÁREA
                     ARE_ID = usuario.ARE_ID ?? existing.ARE_ID,
                     USU_FEC_MOD = DateTimeOffset.Now
                 };
