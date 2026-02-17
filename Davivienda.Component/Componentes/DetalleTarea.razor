@@ -2,189 +2,151 @@
 @using Davivienda.Models.Modelos
 @using Davivienda.GraphQL.SDK
 
-<div class="detalle-tarea-fullscreen">
-    @* --- TOOLBAR PREMIUM --- *@
-    <div class="toolbar-dav animate-slide-down">
-        <div class="header-main-info">
-            <h2 class="main-page-title">Gestión de Tarea: <span class="text-wine">@Tarea?.TAR_NOM</span></h2>
-        </div>
-
+<div class="modal-fullscreen-overlay">
+    @* --- TOOLBAR SUPERIOR --- *@
+    <div class="toolbar-dav-top">
         <div class="toolbar-actions">
             <div class="selector-container-premium">
                 <i class="fas fa-history icon-blue"></i>
-                <label>VER HISTORIAL:</label>
-                <select class="select-dav-mini" @onchange="ManejarCambioBitacora" id="sel_bitacora_global">
+                <label>Gestion de Tareas</label>
+                <label>Ver Historial:</label>
+                <select class="select-dav-mini" @onchange="ManejarCambioBitacora">
                     <option value="">-- Seleccionar --</option>
                     <option value="BIT_SOL">Bitácora de Soluciones</option>
                     <option value="BIT_FRI">Bitácora de Fricciones</option>
                 </select>
             </div>
-            <button class="btn-close-dav-pill" @onclick="Cerrar" id="btn_cerrar_detalle_fullscreen">
-                CERRAR DETALLE <i class="fas fa-times"></i>
-            </button>
+            <button type="button" class="btn-close-fullscreen" @onclick="Cerrar">×</button>
         </div>
     </div>
 
-    <div class="main-grid-container">
-        @* --- LADO IZQUIERDO --- *@
-        <div class="side-stack">
-            @* Cuadrante 1: Información Detallada y Estado *@
-            <div class="quadrant-card border-accent-wine">
-                <div class="card-header-premium bg-wine-soft">
-                    <div class="header-left">
-                        <i class="fas fa-sitemap icon-wine"></i>
-                        <h4>Información de Ejecución</h4>
-                    </div>
-                    @* Botón de Guardado Rápido *@
-                    <button class="btn-save-quick" @onclick="GuardarEstadoTarea">
-                        <i class="fas fa-save"></i> GUARDAR CAMBIOS
-                    </button>
+    <div class="modal-content-container">
+        @* SECTOR 1: EJECUCIÓN (Título y Botón Guardar aquí) *@
+        <div class="sector sector-1">
+            <div class="sector-accent-line"></div>
+            <div class="sector-header">
+                <div class="title-group">
+                    <h3 class="sector-title">@Tarea?.TAR_NOM</h3>
+                    <span class="sector-subtitle">Información de Ejecución</span>
                 </div>
-                <div class="card-body-premium scroll-dav bg-warm-white">
-                    <div class="info-execution-grid">
-                        <div class="info-item">
-                            <span class="label-tiny">PROYECTO</span>
-                            <p class="value-text">@NombreProyecto</p>
-                        </div>
-                        <div class="info-item">
-                            <span class="label-tiny">PROCESO ASOCIADO</span>
-                            <p class="value-text">@NombreProceso</p>
-                        </div>
-                        <div class="info-item full-width">
-                            <span class="label-tiny">NOMBRE DE LA TAREA</span>
-                            <h3 class="task-title-display-small">@Tarea?.TAR_NOM</h3>
-                        </div>
-                        <div class="info-item status-editor">
-                            <span class="label-tiny">ACTUALIZAR ESTADO</span>
+                <button type="button" class="btn-save-top-right" @onclick="GuardarEstadoTarea">
+                    <i class="fas fa-save"></i> GUARDAR
+                </button>
+            </div>
+            <div class="sector-content">
+                <div class="info-execution-grid">
+                    <div class="info-item"><span class="label-tiny">PROYECTO</span><p class="value-text">@NombreProyecto</p></div>
+                    <div class="info-item"><span class="label-tiny">PROCESO</span><p class="value-text">@NombreProceso</p></div>
+                    @if (Tarea != null)
+                    {
+                        <div class="status-editor">
+                            <label>ACTUALIZAR ESTADO</label>
                             <select @bind="Tarea.TAR_EST" class="select-status-dav">
                                 <option value="Pendiente">Pendiente</option>
                                 <option value="En Progreso">En Progreso</option>
                                 <option value="Completado">Completado</option>
-                                <option value="Bloqueado">Bloqueado</option>
                             </select>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            @* Cuadrante 2: Comentarios *@
-            <div class="quadrant-card border-accent-green">
-                <div class="card-header-premium bg-green-soft">
-                    <div class="header-left">
-                        <i class="fas fa-comments icon-green"></i>
-                        <h4>Comentarios / Notas</h4>
-                    </div>
-                </div>
-                <div class="card-body-premium scroll-dav no-padding bg-warm-white">
-                    <div class="yoopta-wrapper">
-                        <Yoopta></Yoopta>
-                    </div>
+                    }
                 </div>
             </div>
         </div>
 
-        @* --- LADO DERECHO --- *@
-        <div class="side-stack">
-            @* Cuadrante 3: Soluciones *@
-            <div class="quadrant-card border-accent-blue">
-                <div class="card-header-premium bg-blue-soft">
-                    <div class="header-left">
-                        <i class="fas fa-lightbulb icon-blue"></i>
-                        <h4>Soluciones Propuestas</h4>
-                    </div>
-                    @* BOTÓN CORREGIDO: Visible y estilizado *@
-                    <button class="btn-add-mini-pill add-blue" @onclick="AbrirModalCrearSolucion" id="btn_crear_solucion_quadrant">
-                        <i class="fas fa-plus"></i> CREAR
-                    </button>
-                </div>
-                <div class="card-body-premium scroll-dav bg-warm-white">
-                    @if (SolucionesList?.Any() == true)
-                    {
-                        @foreach (var sol in SolucionesList)
-                        {
-                            <div class="item-card-mini" @onclick="() => AbrirModalEditarSolucion(sol)">
-                                <div class="item-top-row">
-                                    <span class="item-name">@sol.SOL_NOM</span>
-                                    <span class="item-tag tag-blue">@sol.SOL_EST</span>
-                                </div>
-                                <p class="item-desc">@sol.SOL_DES</p>
-                                <button class="btn-item-delete" @onclick:stopPropagation @onclick="() => EliminarSolucion(sol.SOL_ID)">
-                                    <i class="fas fa-trash-alt"></i> ELIMINAR
-                                </button>
-                            </div>
-                        }
-                    }
-                </div>
+        @* SECTOR 2: NOTAS *@
+        <div class="sector sector-2">
+            <div class="sector-accent-line"></div>
+            <div class="sector-icon"><i class="fas fa-comments"></i></div>
+            <div class="sector-header">
+                <h3 class="sector-title">Notas</h3>
+                <span class="sector-subtitle">Comentarios de Equipo</span>
             </div>
+            <div class="sector-content"><div class="yoopta-wrapper"><Yoopta /></div></div>
+        </div>
 
-            @* Cuadrante 4: Fricciones *@
-            <div class="quadrant-card border-accent-gold">
-                <div class="card-header-premium bg-gold-soft">
-                    <div class="header-left">
-                        <i class="fas fa-exclamation-triangle icon-gold"></i>
-                        <h4>Fricciones Detectadas</h4>
-                    </div>
-                    @* BOTÓN CORREGIDO: Visible y estilizado *@
-                    <button class="btn-add-mini-pill add-gold" @onclick="AbrirModalCrearFriccion" id="btn_crear_friccion_quadrant">
-                        <i class="fas fa-plus"></i> CREAR
-                    </button>
+        @* SECTOR 3: SOLUCIONES *@
+        <div class="sector sector-3">
+            <div class="sector-accent-line"></div>
+            <div class="sector-header">
+                <div class="title-group">
+                    <h3 class="sector-title">Soluciones</h3>
+                    <span class="sector-subtitle">Propuestas Activas</span>
                 </div>
-                <div class="card-body-premium scroll-dav bg-warm-white">
-                    @if (FriccionesList?.Any() == true)
+                @* Botón con símbolo + estilizado *@
+                <button type="button" class="btn-add-mini-pill" @onclick="AbrirModalCrearSolucion" title="Añadir Solución">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="sector-content scroll-dav">
+                @if (SolucionesList?.Any() == true)
+                {
+                    @foreach (var sol in SolucionesList)
                     {
-                        @foreach (var fri in FriccionesList)
-                        {
-                            <div class="item-card-mini" @onclick="() => AbrirModalEditarFriccion(fri)">
-                                <div class="item-top-row">
-                                    <span class="item-name">@fri.FRI_TIP</span>
-                                    <span class="item-tag tag-gold">@fri.FRI_IMP</span>
-                                </div>
-                                <p class="item-desc">@fri.FRI_DES</p>
-                                <button class="btn-item-delete" @onclick:stopPropagation @onclick="() => EliminarFriccion(fri.FRI_ID)">
-                                    <i class="fas fa-trash-alt"></i> ELIMINAR
-                                </button>
-                            </div>
-                        }
+                        <div class="item-card-mini" @onclick="() => AbrirModalEditarSolucion(sol)">
+                            <span>@sol.SOL_NOM</span>
+                            <button type="button" class="btn-del" @onclick:stopPropagation @onclick="() => EliminarSolucion(sol.SOL_ID)">×</button>
+                        </div>
                     }
+                }
+            </div>
+        </div>
+
+        @* SECTOR 4: FRICCIONES *@
+        <div class="sector sector-4">
+            <div class="sector-accent-line"></div>
+            <div class="sector-header">
+                <div class="title-group">
+                    <h3 class="sector-title">Fricciones</h3>
+                    <span class="sector-subtitle">Obstáculos Detectados</span>
                 </div>
+                @* Botón con símbolo + estilizado *@
+                <button type="button" class="btn-add-mini-pill" @onclick="AbrirModalCrearFriccion" title="Reportar Fricción">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <div class="sector-content scroll-dav">
+                @if (FriccionesList?.Any() == true)
+                {
+                    @foreach (var fri in FriccionesList)
+                    {
+                        <div class="item-card-mini" @onclick="() => AbrirModalEditarFriccion(fri)">
+                            <span>@fri.FRI_TIP</span>
+                            <button type="button" class="btn-del" @onclick:stopPropagation @onclick="() => EliminarFriccion(fri.FRI_ID)">×</button>
+                        </div>
+                    }
+                }
             </div>
         </div>
     </div>
+
+    @* MODALES INTERNOS ACTUALIZADOS *@
+    @if (MostrarModalCrear)
+    {
+        <div class="modal-backdrop-premium" @onclick="CerrarModalInterno">
+            <div class="modal-window-dav @(TipoModal.StartsWith("HISTORIAL") ? "size-xl" : "size-md")" @onclick:stopPropagation>
+                <div class="modal-header-dav">
+                    <h3>@TituloModal</h3>
+                    <button type="button" class="modal-close-x" @onclick="CerrarModalInterno">×</button>
+                </div>
+                <div class="modal-body-dav">
+                    @if (TipoModal == "FRICCION_NUEVA" && Tarea != null)
+                    {
+                        <CrearFriccion TareaId="@Tarea.TAR_ID" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                    }
+                    else if (TipoModal == "SOLUCION_NUEVA")
+                    {
+                        @* Se pasa el ID de la primera fricción si existe, o Guid vacío *@
+                        <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                    }
+                    else if (TipoModal == "HISTORIAL_SOLUCIONES")
+                    {
+                        <BitacoraSolucion OnClose="CerrarModalInterno" />
+                    }
+                    else if (TipoModal == "HISTORIAL_FRICCIONES")
+                    {
+                        <BitacoraFriccion OnClose="CerrarModalInterno" />
+                    }
+                </div>
+            </div>
+        </div>
+    }
 </div>
-
-@* --- MODAL INTEGRADO CORREGIDO (LÓGICA DE CIERRE) --- *@
-@if (MostrarModalCrear)
-{
-    <div class="modal-backdrop-premium" @onclick="CerrarModalInterno">
-        <div class="modal-window-dav @(TipoModal.StartsWith("HISTORIAL") ? "size-xl" : "size-md")" @onclick:stopPropagation>
-            <div class="modal-header-dav">
-                <h3>@TituloModal</h3>
-                <button class="modal-close-x" @onclick="CerrarModalInterno" id="btn_x_cerrar_modal_detalle">×</button>
-            </div>
-            <div class="modal-body-dav scroll-dav">
-                @* Se añade OnClose a cada componente hijo para habilitar el cierre *@
-                @if (TipoModal == "FRICCION_NUEVA" && Tarea != null)
-                {
-                    <CrearFriccion TareaId="@Tarea.TAR_ID" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
-                }
-
-                else if (TipoModal == "SOLUCION_NUEVA")
-                {
-
-                    <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
-                }
-
-                else if (TipoModal == "HISTORIAL_SOLUCIONES")
-                {
-
-                    <BitacoraSolucion />
-                }
-                else if (TipoModal == "HISTORIAL_FRICCIONES")
-                {
-
-                    <BitacoraFriccion />
-                }
-            </div>
-        </div>
-    </div>
-}
