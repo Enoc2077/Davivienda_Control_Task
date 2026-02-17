@@ -1,0 +1,357 @@
+﻿.home-data-analysis {
+    min-height: 102vh;
+    background: linear-gradient(135deg, #e8eaf6 0%, #f3e5f5 50%, #f8f9ff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* padding: 40px 20px; */
+    position: relative;
+    overflow: hidden;
+    margin-top: -2%;
+    margin-left: -2.23%;
+    min-width: 104%;
+}
+
+.container-home {
+    max-width: 1400px;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 80px;
+    align-items: center;
+}
+
+.content-left {
+    padding: 40px;
+}
+
+.title-analysis {
+    font-size: 64px;
+    font-weight: 800;
+    color: #2d3561;
+    margin: 0 0 24px 0;
+    line-height: 1.1;
+    letter-spacing: -1px;
+}
+
+.description-analysis {
+    font-size: 16px;
+    color: #5a5a7d;
+    line-height: 1.8;
+    margin: 0 0 32px 0;
+    max-width: 480px;
+}
+
+.btn-learn-more {
+    background: linear-gradient(135deg, #ff5252 0%, #ff4081 100%);
+    color: white;
+    border: none;
+    padding: 16px 40px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 8px 24px rgba(255, 64, 129, 0.35);
+    transition: all 0.3s ease;
+    text-transform: capitalize;
+}
+
+    .btn-learn-more:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(255, 64, 129, 0.45);
+    }
+
+    .btn-learn-more:active {
+        transform: translateY(-1px);
+    }
+
+.pagination-dots {
+    display: flex;
+    gap: 10px;
+    margin-top: 40px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #cbd5e0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .dot.active {
+        background: #2d3561;
+        width: 32px;
+        border-radius: 6px;
+    }
+
+    .dot:hover:not(.active) {
+        background: #a0aec0;
+    }
+
+.content-right {
+    position: relative;
+    height: 500px;
+}
+
+.illustration-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.decoration-circle {
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    opacity: 0.6;
+}
+
+    .decoration-circle.top-left {
+        top: -40px;
+        left: 80px;
+    }
+
+.decoration-icon {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chart-icon {
+    top: 20px;
+    right: 100px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.bar-icon {
+    bottom: 80px;
+    right: 40px;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.decoration-gear {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    animation: rotate-gear 8s linear infinite;
+}
+
+    .decoration-gear::before {
+        content: '⚙️';
+        font-size: 40px;
+        display: block;
+    }
+
+.gear-1 {
+    top: 180px;
+    left: 20px;
+}
+
+.gear-2 {
+    bottom: 120px;
+    right: 200px;
+    animation-duration: 6s;
+    animation-direction: reverse;
+}
+
+@keyframes rotate-gear {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.chart-bars {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    z-index: 1;
+}
+
+.bar {
+    width: 60px;
+    border-radius: 12px 12px 0 0;
+    transition: all 0.5s ease;
+    animation: barGrow 1s ease-out;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+    .bar:hover {
+        transform: translateY(-10px);
+        filter: brightness(1.1);
+    }
+
+@keyframes barGrow {
+    from {
+        height: 0 !important;
+    }
+}
+
+.bar-red {
+    background: linear-gradient(180deg, #ff5252 0%, #ff1744 100%);
+}
+
+.bar-orange {
+    background: linear-gradient(180deg, #ffa726 0%, #ff9800 100%);
+}
+
+.bar-primary {
+    background: linear-gradient(180deg, #ef5350 0%, #e53935 100%);
+}
+
+.bar-purple {
+    background: linear-gradient(180deg, #ab47bc 0%, #8e24aa 100%);
+}
+
+.bar-blue {
+    background: linear-gradient(180deg, #42a5f5 0%, #1e88e5 100%);
+}
+
+.person {
+    position: absolute;
+    z-index: 2;
+}
+
+.person-head {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 0 auto 8px;
+}
+
+.person-body {
+    width: 60px;
+    height: 80px;
+    border-radius: 12px;
+}
+
+.person-1 {
+    top: 60px;
+    right: 180px;
+}
+
+    .person-1 .person-head {
+        background: linear-gradient(135deg, #ffd1dc 0%, #ffb6c1 100%);
+    }
+
+    .person-1 .person-body {
+        background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+    }
+
+.person-2 {
+    bottom: 240px;
+    left: 120px;
+}
+
+    .person-2 .person-head {
+        background: linear-gradient(135deg, #ffccbc 0%, #ffab91 100%);
+    }
+
+    .person-2 .person-body {
+        background: linear-gradient(135deg, #ce93d8 0%, #ba68c8 100%);
+    }
+
+.person-3 {
+    bottom: 260px;
+    right: 220px;
+}
+
+    .person-3 .person-head {
+        background: linear-gradient(135deg, #ffe0b2 0%, #ffcc80 100%);
+    }
+
+    .person-3 .person-body {
+        background: linear-gradient(135deg, #f48fb1 0%, #ec407a 100%);
+    }
+
+.person-4 {
+    bottom: 60px;
+    right: 80px;
+}
+
+    .person-4 .person-head {
+        background: linear-gradient(135deg, #c5cae9 0%, #9fa8da 100%);
+    }
+
+    .person-4 .person-body {
+        background: linear-gradient(135deg, #ffffff 0%, #f5f5f5 100%);
+        border: 2px solid #5e72e4;
+    }
+
+@media (max-width: 1024px) {
+    .container-home {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+
+    .content-left {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .description-analysis {
+        max-width: 100%;
+    }
+
+    .pagination-dots {
+        justify-content: center;
+    }
+
+    .content-right {
+        height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .title-analysis {
+        font-size: 42px;
+    }
+
+    .description-analysis {
+        font-size: 15px;
+    }
+
+    .btn-learn-more {
+        padding: 14px 32px;
+        font-size: 14px;
+    }
+
+    .chart-bars {
+        gap: 12px;
+    }
+
+    .bar {
+        width: 40px;
+    }
+
+    .person-head {
+        width: 32px;
+        height: 32px;
+    }
+
+    .person-body {
+        width: 48px;
+        height: 64px;
+    }
+
+    .content-right {
+        height: 350px;
+    }
+}

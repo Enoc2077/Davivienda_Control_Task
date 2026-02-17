@@ -1,137 +1,341 @@
-﻿/* Contenedor Principal */
-.login-page-container {
-    height: 100vh;
+﻿.login-page-container {
+    min-height: 66vh;
+    min-width: 140vh;
     display: flex;
-    justify-content: center;
     align-items: center;
-    background: #f8fafc; /* Fondo gris muy tenue */
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    /* padding: 20px; */
+    position: relative;
+    overflow: hidden;
 }
 
-/* Tarjeta de Login */
+    .login-page-container::before {
+        content: '';
+        position: absolute;
+        bottom: -100px;
+        left: -100px;
+        width: 500px;
+        height: 500px;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border-radius: 50%;
+        opacity: 0.3;
+        transform: rotate(-45deg);
+    }
+
+    .login-page-container::after {
+        content: '';
+        position: absolute;
+        bottom: 50px;
+        left: 100px;
+        width: 300px;
+        height: 300px;
+        background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        border-radius: 50%;
+        opacity: 0.4;
+        transform: rotate(25deg);
+    }
+
 .login-card-dav {
-    background: white;
-    width: 420px;
-    padding: 50px 40px;
-    border-radius: 24px;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
-    border: 1px solid #e2e8f0;
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 450px;
+    width: 100%;
+    padding: 40px;
+    position: relative;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+    margin-left: 60%;
 }
 
 .login-header {
     text-align: center;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
 }
 
 .logo-dav {
-    width: 200px;
+    width: 120px;
+    height: auto;
     margin-bottom: 20px;
 }
 
 .title-dav {
-    color: #1e293b;
-    font-weight: 800;
-    font-size: 1.5rem;
-    margin: 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 0 0 10px 0;
+    letter-spacing: -0.5px;
 }
 
 .subtitle-dav {
-    color: #64748b;
-    font-size: 0.9rem;
-    margin-top: 5px;
+    font-size: 14px;
+    color: #718096;
+    margin: 0;
+    font-weight: 400;
 }
 
-/* Formulario */
+.form-body {
+    margin-bottom: 20px;
+}
+
 .form-group-dav {
-    margin-bottom: 22px; /* Espaciado entre inputs [cite: 2026-02-12] */
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
+    margin-bottom: 20px;
 }
 
     .form-group-dav label {
-        font-size: 0.7rem;
-        font-weight: 900;
-        color: #64748b;
-        letter-spacing: 0.05em;
+        display: block;
+        font-size: 11px;
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 8px;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
     }
 
 .input-dav {
-    padding: 14px;
-    border: 1.5px solid #cbd5e1; /* Bordes claros y definidos [cite: 2026-02-12] */
-    border-radius: 12px;
-    font-size: 1rem;
-    transition: all 0.2s;
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 15px;
+    color: #2d3748;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    outline: none;
 }
 
     .input-dav:focus {
-        outline: none;
-        border-color: #ed1c24; /* Rojo Davivienda */
-        box-shadow: 0 0 0 3px rgba(237, 28, 36, 0.1);
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
     }
 
-/* Botón de Ingreso */
+    .input-dav::placeholder {
+        color: #a0aec0;
+        font-size: 14px;
+    }
+
 .btn-login-dav {
     width: 100%;
-    background: #ed1c24;
-    color: white;
-    padding: 16px;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border: none;
-    border-radius: 12px;
-    font-weight: 800;
-    font-size: 1rem;
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(102,126,234,0.4);
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
     gap: 10px;
 }
 
     .btn-login-dav:hover {
-        background: #c11219;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102,126,234,0.5);
+    }
+
+    .btn-login-dav:active {
+        transform: translateY(0);
     }
 
     .btn-login-dav:disabled {
-        background: #f87171;
+        opacity: 0.7;
         cursor: not-allowed;
+        transform: none;
     }
 
-/* Footer y Links */
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.alert-error-dav {
+    background: #fff5f5;
+    border: 1px solid #fc8181;
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    color: #c53030;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.error-icon {
+    font-size: 18px;
+}
+
 .login-footer {
     text-align: center;
-    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 1px solid #e2e8f0;
 }
 
 .btn-link-dav {
     background: none;
     border: none;
-    color: #64748b;
-    font-size: 0.85rem;
-    text-decoration: underline;
+    color: #667eea;
+    font-size: 13px;
     cursor: pointer;
+    text-decoration: none;
+    transition: color 0.3s ease;
+    font-weight: 500;
 }
 
-/* Alertas de Error */
-.alert-error-dav {
-    background: #fef2f2;
-    color: #ef4444;
-    padding: 14px;
-    border-radius: 12px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    margin-bottom: 25px;
-    border: 1px solid #fee2e2;
+    .btn-link-dav:hover {
+        color: #764ba2;
+        text-decoration: underline;
+    }
+
+.modal-backdrop-dav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.6);
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
 }
 
-.full-width {
-    width: 100%;
+.modal-content-centered {
+    background: white;
+    border-radius: 16px;
+    max-width: 450px;
+    width: 90%;
+    box-shadow: 0 25px 500px rgba(0,0,0,0.3);
+    animation: modalFadeIn 0.3s ease;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-header-dav {
+    padding: 24px 30px;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .modal-header-dav h4 {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 600;
+        color: #2d3748;
+    }
+
+.close-btn-dav {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #a0aec0;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    line-height: 1;
+}
+
+    .close-btn-dav:hover {
+        background: #f7fafc;
+        color: #2d3748;
+    }
+
+.modal-body-dav {
+    padding: 30px;
 }
 
 .modal-instruction {
-    font-size: 0.9rem;
-    color: #64748b;
-    margin-bottom: 15px;
+    font-size: 14px;
+    color: #718096;
+    margin: 0 0 24px 0;
+    line-height: 1.6;
+}
+
+.btn-save-dav {
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(102,126,234,0.3);
+}
+
+    .btn-save-dav:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+    }
+
+    .btn-save-dav:active {
+        transform: translateY(0);
+    }
+
+    .btn-save-dav.full-width {
+        width: 100%;
+    }
+
+@media (max-width: 480px) {
+    .login-card-dav {
+        padding: 30px 24px;
+    }
+
+    .title-dav {
+        font-size: 24px;
+    }
+
+    .subtitle-dav {
+        font-size: 13px;
+    }
+
+    .logo-dav {
+        width: 100px;
+    }
+
+    .modal-content-centered {
+        margin: 20px;
+    }
+
+    .modal-header-dav, .modal-body-dav {
+        padding: 20px;
+    }
 }

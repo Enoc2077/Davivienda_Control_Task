@@ -1,75 +1,51 @@
 ﻿@page "/home"
 @layout MainLayout
 
-<PageTitle>Davivienda</PageTitle>
+<PageTitle>Davivienda - Análisis</PageTitle>
 
-<div class="home-minimal">
-    <div class="card-simple">
-        @* Línea roja y azul superior *@
-        <div class="top-accent"></div>
+<div class="home-data-analysis">
+    <div class="container-home">
+        @* Contenido Izquierdo: Texto y Acción *@
+        <div class="content-left">
+            <h1 class="title-analysis">Bienvenidos Davivienda</h1>
+            <p class="description-analysis">
+                Bienvenidos a control de asignaciones de Davivienda
+            </p>
+            <button class="btn-learn-more">Learn more</button>
 
-        <div class="content-simple">
-            <h1 class="logo-dav">DAVIVIENDA</h1>
+            <div class="pagination-dots">
+                <span class="dot active"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+            </div>
+        </div>
 
-            <div class="action-zone">
-                <a href="/Asignaciones" class="btn-dav">
-                    IR A MIS ASIGNACIONES
-                </a>
+        @* Contenido Derecho: Ilustraciones y Gráficas *@
+        <div class="content-right">
+            <div class="illustration-container">
+                @* Círculos y Decoraciones *@
+                <div class="decoration-circle top-left"></div>
+                <div class="decoration-icon chart-icon"></div>
+                <div class="decoration-icon bar-icon"></div>
+                <div class="decoration-gear gear-1"></div>
+                <div class="decoration-gear gear-2"></div>
+
+                @* Gráficas de Barras *@
+                <div class="chart-bars">
+                    <div class="bar bar-red" style="height: 180px;"></div>
+                    <div class="bar bar-orange" style="height: 240px;"></div>
+                    <div class="bar bar-primary" style="height: 320px;"></div>
+                    <div class="bar bar-purple" style="height: 280px;"></div>
+                    <div class="bar bar-blue" style="height: 200px;"></div>
+                </div>
+
+                @* Personas Representativas (Basado en la imagen) *@
+                <div class="person person-1"><div class="person-head"></div><div class="person-body"></div></div>
+                <div class="person person-2"><div class="person-head"></div><div class="person-body"></div></div>
+                <div class="person person-3"><div class="person-head"></div><div class="person-body"></div></div>
+                <div class="person person-4"><div class="person-head"></div><div class="person-body"></div></div>
             </div>
         </div>
     </div>
 </div>
-
-<style>
-    .home-minimal {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 70vh;
-        background-color: #f1f5f9;
-    }
-
-    .card-simple {
-        background: white;
-        width: 100%;
-        max-width: 550px;
-        border-radius: 20px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.05);
-        overflow: hidden;
-        text-align: center;
-        border: 1px solid #e2e8f0; /* Espacio y bordes limpios [cite: 2026-02-12] */
-    }
-
-    .top-accent {
-        height: 5px;
-        background: linear-gradient(90deg, #ed1c24 0%, #002855 100%);
-    }
-
-    .content-simple {
-        padding: 80px 40px;
-    }
-
-    .logo-dav {
-        color: #002855;
-        font-weight: 900;
-        font-size: 4rem;
-        margin: 0 0 50px 0;
-        letter-spacing: -2px;
-    }
-
-    .btn-dav {
-        background-color: #0a2463;
-        color: white !important;
-        padding: 16px 45px;
-        border-radius: 14px; /* Redondeado consistente [cite: 2026-02-12] */
-        font-weight: 800;
-        text-decoration: none;
-        display: inline-block;
-        transition: 0.3s ease;
-    }
-
-        .btn-dav:hover {
-            background-color: #05153a;
-            transform: translateY(-2px);
-        }
-</style>

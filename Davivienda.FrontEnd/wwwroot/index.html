@@ -1,32 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Davivienda.FrontEnd</title>
-    <base href="/Davivienda_Control_Task/" />
+    <title>Davivienda - Gestión de Proyectos</title>
+
+    <script>
+        var base = document.createElement('base');
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            base.href = '/';
+        } else {
+            base.href = '/Davivienda_Control_Task/';
+        }
+        document.getElementsByTagName('head')[0].appendChild(base);
+    </script>
+
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
-    <link href="/css/Calendario.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/Calendario.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
-    <link href="Davivienda.FrontEnd.styles.css" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Davivienda.FrontEnd.styles.css" />
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 
 <body>
     <div id="app">
+        <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; font-family:'Inter', sans-serif;">
+            <div style="width:50px; height:50px; border:5px solid #f3f3f3; border-top:5px solid #e30613; border-radius:50%; animation:spin 1s linear infinite;"></div>
+            <p style="margin-top:20px; color:#4a5568; font-weight:600;">Cargando plataforma...</p>
+        </div>
     </div>
 
+    <style>
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+
     <script>
-        // Usamos una función autoejecutable para asegurar el registro
+        // Función autoejecutable para scroll horizontal (Asignaciones/Calendario)
         (function () {
             window.setupHorizontalScroll = (elementId) => {
                 const element = document.getElementById(elementId);
                 if (element) {
                     element.addEventListener("wheel", (evt) => {
                         evt.preventDefault();
-                        // Ajuste para scroll suave
                         element.scrollLeft += evt.deltaY;
                     }, { passive: false });
                     console.log("Scroll horizontal configurado para: " + elementId);
@@ -38,7 +67,10 @@
     </script>
 
     <script src="_framework/blazor.webassembly.js"></script>
-    <script>navigator.serviceWorker.register('service-worker.js');</script>
+    <script>
+        // Registro de Service Worker para PWA
+        navigator.serviceWorker.register('service-worker.js').catch(err => console.error("SW error:", err));
+    </script>
 </body>
 
 </html>
