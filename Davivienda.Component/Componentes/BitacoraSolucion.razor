@@ -1,134 +1,163 @@
 ﻿@namespace Davivienda.Component.Componentes
+@inherits Microsoft.AspNetCore.Components.ComponentBase
 @using Davivienda.Models.Modelos
-@using Davivienda.GraphQL.SDK
 
-<div class="bitacora-premium-container animate-fade-in">
-    @* --- BARRA DE FILTROS TIPO DOCK --- *@
-    <div class="toolbar-filters-dav">
-        <div class="filter-capsule">
-            <i class="fas fa-project-diagram icon-accent-blue"></i>
-            <div class="filter-text">
-                <label>PROYECTO</label>
-                <select class="select-premium" @onchange="OnProyectoChanged">
-                    <option value="">Todos los Proyectos</option>
-                    @foreach (var pro in ProyectosList)
-                    {
-                        <option value="@pro.PRO_ID">@pro.PRO_NOM</option>
-                    }
-                </select>
-            </div>
-        </div>
+@* SECCIÓN 0: CAPA MAESTRA *@
+<div class="modal-fixed-backdrop">
+    <div class="master-modal-container" @onclick:stopPropagation>
+        <div class="dav-modal-art-bg">
 
-        <div class="filter-capsule">
-            <i class="fas fa-sync-alt icon-accent-blue"></i>
-            <div class="filter-text">
-                <label>PROCESO</label>
-                <select class="select-premium" @onchange="OnProcesoChanged">
-                    <option value="">Todos los Procesos</option>
-                    @foreach (var proc in ProcesosFiltrados)
-                    {
-                        <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
-                    }
-                </select>
-            </div>
-        </div>
+            @* SECCIÓN 1: BOTÓN DE CIERRE *@
+            <button type="button" class="btn-close-modal" @onclick="Regresar" title="Cerrar" style="z-index: 9999;">
+                <i class="bi bi-x-lg"></i>
+            </button>
 
-        <div class="filter-capsule no-border">
-            <i class="fas fa-tasks icon-accent-blue"></i>
-            <div class="filter-text">
-                <label>TAREA</label>
-                <select class="select-premium" @onchange="OnTareaChanged">
-                    <option value="">Todas las Tareas</option>
-                    @foreach (var tar in TareasFiltradas)
-                    {
-                        <option value="@tar.TAR_ID">@tar.TAR_NOM</option>
-                    }
-                </select>
-            </div>
-        </div>
-    </div>
+            @* SECCIÓN 2: DECORACIÓN *@
+            <div class="bg-blob blob-red-top"></div>
+            <div class="bg-blob blob-red-bottom"></div>
 
-    @* --- VIEWPORT DE TARJETAS HORIZONTALES --- *@
-    <div class="horizontal-cards-viewport custom-scroll">
-        @if (SolucionesFiltradas != null && SolucionesFiltradas.Any())
-        {
-            @foreach (var sol in SolucionesFiltradas)
-            {
-                <div class="card-premium-bitacora animate-pop" @onclick="() => AbrirDetalle(sol)">
-                    <div class="card-indicator" style="background-color: @ObtenerColorTarea(sol.FRI_ID)"></div>
+            @* SECCIÓN 3: CONTENEDORES DE TRABAJO *@
+            <div class="content-sectors-container">
 
-                    <div class="card-inner-content">
-                        <div class="card-top-row">
-                            <span class="badge-tarea" style="background-color: @ObtenerColorTarea(sol.FRI_ID)">
-                                @ObtenerNombreTareaPorFriccion(sol.FRI_ID)
-                            </span>
-                            <span class="badge-status-premium">@sol.SOL_EST.ToUpper()</span>
-                        </div>
+                @* --- SECTOR 1: LISTADO DE SOLUCIONES --- *@
+                <div class="sector-white-card sector-large">
+                    <div class="sector-label">Historial de Soluciones</div>
 
-                        <h4 class="card-main-title">@sol.SOL_NOM</h4>
-                        <p class="card-main-desc">@sol.SOL_DES</p>
-
-                        <div class="card-footer-stats">
-                            <div class="stat-group">
-                                <span class="stat-label">EFECTIVIDAD</span>
-                                <span class="stat-value text-green">@sol.SOL_NIV_EFE%</span>
-                            </div>
-                            <div class="stat-group">
-                                <span class="stat-label">REGISTRO</span>
-                                <span class="stat-value">@sol.SOL_FEC_CRE.ToString("dd MMM yyyy")</span>
+                    <div class="sector-banner-header">
+                        <div class="banner-waves"></div>
+                        <div class="banner-content">
+                            <div class="banner-icon"><i class="bi bi-pencil-square"></i> Bitácora de Gestión Activa</div>
+                            <div class="banner-charts-mockup">
+                                <div class="mock-pie"></div>
+                                <div class="mock-bars"><span></span><span></span><span></span></div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="solution-main-viewport custom-scroll">
+                        @if (SolucionesFiltradas != null && SolucionesFiltradas.Any())
+                        {
+                            @foreach (var sol in SolucionesFiltradas)
+                            {
+                                <div class="solution-item-card animate-pop" @onclick="() => SeleccionarSolucion(sol)">
+                                    <div class="sol-card-info">
+                                        <span class="sol-name">@sol.SOL_NOM</span>
+                                        <p class="sol-desc-short">@sol.SOL_DES</p>
+                                    </div>
+                                    <div class="sol-card-metrics">
+                                        <div class="metric-badge status"><i class="bi bi-info-circle"></i> @sol.SOL_EST</div>
+                                        <div class="metric-badge effectiveness"><i class="bi bi-graph-up-arrow"></i> @sol.SOL_NIV_EFE%</div>
+                                    </div>
+                                    <div class="sol-arrow-action"><i class="bi bi-chevron-right"></i></div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="empty-results-msg">
+                                <i class="bi bi-search"></i>
+                                <p>No hay soluciones para los filtros aplicados. Seleccione una tarea específica.</p>
+                            </div>
+                        }
+                    </div>
                 </div>
-            }
-        }
-        else
-        {
-            <div class="empty-state-dav">
-                <i class="fas fa-search"></i>
-                <p>No se encontraron soluciones para los filtros seleccionados.</p>
+
+                @* --- SECTOR 2: FILTROS JERÁRQUICOS (FUNCIONALIDAD COPIADA) --- *@
+                <div class="sector-white-card sector-small">
+                    <div class="sector-label">Filtros Avanzados</div>
+                    <div class="filters-container-vertical">
+
+                        <div class="filter-item-group">
+                            <label class="filter-group-label">Búsqueda Rápida</label>
+                            <div class="search-input-wrapper">
+                                <i class="bi bi-search"></i>
+                                <input type="text" class="input-filter-text" placeholder="Nombre..." @bind-value="BusquedaNombre" @bind-value:event="oninput" />
+                            </div>
+                        </div>
+
+                        <div class="filter-item-group">
+                            <label class="filter-group-label">1. PROYECTO</label>
+                            <select class="select-filter-premium" @onchange="OnProyectoChanged">
+                                <option value="">Todos los Proyectos</option>
+                                @foreach (var pro in ProyectosList)
+                                {
+                                    <option value="@pro.PRO_ID">@pro.PRO_NOM</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="filter-item-group">
+                            <label class="filter-group-label">2. PROCESO</label>
+                            <select class="select-filter-premium" @onchange="OnProcesoChanged">
+                                <option value="">Todos los Procesos</option>
+                                @foreach (var proc in ProcesosFiltrados)
+                                {
+                                    <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="filter-item-group">
+                            <label class="filter-group-label">3. TAREA (FILTRA LISTA)</label>
+                            <select class="select-filter-premium" @onchange="OnTareaChanged">
+                                <option value="">Todas las Tareas</option>
+                                @foreach (var tar in TareasFiltradas)
+                                {
+                                    <option value="@tar.TAR_ID">@tar.TAR_NOM</option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="button" class="btn-clear-filters" @onclick="LimpiarFiltros">
+                            <i class="bi bi-arrow-counterclockwise"></i> Restablecer Filtros
+                        </button>
+                    </div>
+                </div>
             </div>
-        }
+
+            @* ILUSTRACIÓN ESCENA *@
+            <div class="illustration-scene">
+                <div class="device-monitor">
+                    <div class="device-screen"><div class="screen-ui-lines"></div></div>
+                </div>
+                <div class="vector-person person-standing"></div>
+                <div class="vector-person person-climbing"></div>
+                <div class="vector-person person-sitting"></div>
+                <div class="floating-element element-1"></div>
+                <div class="floating-element element-2"></div>
+            </div>
+        </div>
     </div>
 </div>
 
-@* --- MODAL DE DETALLE ESPACIOSO --- *@
-@if (MostrarDetalle && SolucionSeleccionada != null)
+@* --- MODAL DE DETALLE --- *@
+@if (SolucionSeleccionada != null)
 {
-    <div class="modal-overlay-blur" @onclick="CerrarDetalle">
-        <div class="detail-card-premium animate-zoom" @onclick:stopPropagation>
-            <div class="bg-blue-gradient"></div>
-
-            <div class="detail-head">
-                <div class="head-title-group">
-                    <span class="label-premium text-blue">DETALLE TÉCNICO</span>
-                    <h3>@SolucionSeleccionada.SOL_NOM</h3>
+    <div class="modal-detail-overlay" @onclick:stopPropagation>
+        <div class="detail-card-premium animate-pop">
+            <div class="detail-header-red">
+                <div class="header-info">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <h3>Detalle de Solución</h3>
                 </div>
-                <button class="btn-close-circle" @onclick="CerrarDetalle">×</button>
+                <button type="button" class="btn-close-white" @onclick="() => SolucionSeleccionada = null">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
+            <div class="detail-body custom-scroll">
+                <div class="detail-section"><label>Nombre</label><p class="main-text">@SolucionSeleccionada.SOL_NOM</p></div>
+                <div class="detail-section"><label>Descripción</label><p class="desc-text">@SolucionSeleccionada.SOL_DES</p></div>
 
-            <div class="detail-body">
-                <div class="stats-grid-premium">
-                    <div class="stat-box-large">
-                        <label class="label-premium">NIVEL DE ÉXITO</label>
-                        <p class="stat-display text-green">@SolucionSeleccionada.SOL_NIV_EFE%</p>
-                    </div>
-                    <div class="stat-box-large">
-                        <label class="label-premium">ESTADO OPERATIVO</label>
-                        <p class="stat-display text-dark">@SolucionSeleccionada.SOL_EST</p>
-                    </div>
-
-                    <div class="desc-section-full">
-                        <label class="label-premium">ANÁLISIS DE LA PROPUESTA IMPLEMENTADA</label>
-                        <div class="desc-viewport-premium bg-light-blue">
-                            @SolucionSeleccionada.SOL_DES
-                        </div>
-                    </div>
+                <div class="metrics-grid-detail">
+                    <div class="metric-item"><label>Tiempo</label><span>@SolucionSeleccionada.SOL_TIE_RES?.ToString("HH:mm")</span></div>
+                    <div class="metric-item"><label>Efectividad</label><span class="eff-highlight">@SolucionSeleccionada.SOL_NIV_EFE%</span></div>
+                    <div class="metric-item"><label>Estado</label><span class="status-badge-detail">@SolucionSeleccionada.SOL_EST</span></div>
                 </div>
 
-                <div class="detail-footer-info">
-                    <i class="far fa-calendar-check"></i>
-                    <span>Creado el @SolucionSeleccionada.SOL_FEC_CRE.ToString("f")</span>
+                <div class="audit-footer-detail">
+                    <div class="audit-item"><strong>Responsable:</strong> @ObtenerNombreUsuario(SolucionSeleccionada.USU_ID)</div>
+                    <div class="audit-item"><strong>Tarea:</strong> @ObtenerNombreFriccion(SolucionSeleccionada.FRI_ID)</div>
+                    <div class="audit-item"><i class="bi bi-calendar"></i> Creado: @SolucionSeleccionada.SOL_FEC_CRE.ToString("dd/MM/yyyy")</div>
                 </div>
             </div>
         </div>
