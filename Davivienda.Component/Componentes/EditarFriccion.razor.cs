@@ -9,6 +9,7 @@ namespace Davivienda.Componentes
     public partial class EditarFriccion
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
+
         [Parameter] public FriccionModel Friccion { get; set; } = default!;
         [Parameter] public EventCallback OnSuccess { get; set; }
         [Parameter] public EventCallback OnClose { get; set; }
@@ -19,7 +20,6 @@ namespace Davivienda.Componentes
         {
             if (Friccion != null)
             {
-                // Clonamos para trabajar sobre una copia temporal
                 fricEdit = new FriccionModel
                 {
                     FRI_ID = Friccion.FRI_ID,
@@ -47,12 +47,12 @@ namespace Davivienda.Componentes
                     Fri_EST = fricEdit.FRI_EST,
                     Fri_IMP = fricEdit.FRI_IMP,
                     Tar_ID = fricEdit.TAR_ID,
+                    Fri_FEC_CRE = fricEdit.FRI_FEC_CRE, // Campo requerido por tu API
                     Fri_FEC_MOD = DateTimeOffset.Now
                 };
 
                 var result = await Client.UpdateFriccion.ExecuteAsync(input);
 
-                // Si la actualización es exitosa, notificamos al padre para refrescar la lista
                 if (result.Data?.UpdateFriccion ?? false)
                 {
                     await OnSuccess.InvokeAsync();

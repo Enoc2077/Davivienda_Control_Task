@@ -176,14 +176,37 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // NOTA: Si BITACORA_SOLUCIONES tiene una FK hacia SOLUCIONES, 
-                // primero deberías borrar la bitácora o usar ON DELETE CASCADE en SQL.
-                string sqlQuery = "DELETE FROM dbo.SOLUCIONES WHERE SOL_ID = @sol_id";
                 await dataBase.ConnectAsync();
-                var exec = await dataBase.Connection.ExecuteAsync(sqlQuery, new { sol_id });
-                return exec > 0;
+
+                // Iniciamos una transacción para asegurar que se borre todo o nada
+                using (var transaction = dataBase.Connection.BeginTransaction())
+                {
+                    try
+                    {
+                        // 1. Borrar primero las dependencias en la tabla BITACORA_SOLUCIONES
+                        string sqlBitacora = "DELETE FROM dbo.BITACORA_SOLUCIONES WHERE SOL_ID = @sol_id";
+                        await dataBase.Connection.ExecuteAsync(sqlBitacora, new { sol_id }, transaction);
+
+                        // 2. Ahora borrar el registro principal en SOLUCIONES
+                        string sqlSolucion = "DELETE FROM dbo.SOLUCIONES WHERE SOL_ID = @sol_id";
+                        var exec = await dataBase.Connection.ExecuteAsync(sqlSolucion, new { sol_id }, transaction);
+
+                        // Si todo salió bien, confirmamos los cambios
+                        transaction.Commit();
+                        return exec > 0;
+                    }
+                    catch (Exception ex)
+                    {
+                        // Si algo falla (ej. error de red), deshacemos los cambios
+                        transaction.Rollback();
+                        throw new Exception($"Error al eliminar la solución y sus bitácoras: {ex.Message}");
+                    }
+                }
             }
-            finally { await dataBase.DisconnectAsync(); }
+            finally
+            {
+                await dataBase.DisconnectAsync();
+            }
         }
     }
 }

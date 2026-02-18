@@ -8,7 +8,7 @@
         <div class="toolbar-actions">
             <div class="selector-container-premium">
                 <i class="fas fa-history icon-blue"></i>
-                <label>Gestion de Tareas</label>
+                <label>Gestión de Tareas</label>
                 <label>Ver Historial:</label>
                 <select class="select-dav-mini" @onchange="ManejarCambioBitacora">
                     <option value="">-- Seleccionar --</option>
@@ -21,7 +21,7 @@
     </div>
 
     <div class="modal-content-container">
-        @* SECTOR 1: EJECUCIÓN (Título y Botón Guardar aquí) *@
+        @* SECTOR 1: INFORMACIÓN DE EJECUCIÓN (CUADRANTE SUPERIOR) *@
         <div class="sector sector-1">
             <div class="sector-accent-line"></div>
             <div class="sector-header">
@@ -33,14 +33,25 @@
                     <i class="fas fa-save"></i> GUARDAR
                 </button>
             </div>
+
             <div class="sector-content">
                 <div class="info-execution-grid">
-                    <div class="info-item"><span class="label-tiny">PROYECTO</span><p class="value-text">@NombreProyecto</p></div>
-                    <div class="info-item"><span class="label-tiny">PROCESO</span><p class="value-text">@NombreProceso</p></div>
+                    @* Visualización del Proyecto *@
+                    <div class="info-item">
+                        <span class="label-tiny">PROYECTO ASOCIADO</span>
+                        <p class="value-text highlight-blue">@NombreProyecto</p>
+                    </div>
+
+                    @* Visualización del Proceso *@
+                    <div class="info-item">
+                        <span class="label-tiny">PROCESO ACTUAL</span>
+                        <p class="value-text highlight-dark">@NombreProceso</p>
+                    </div>
+
                     @if (Tarea != null)
                     {
                         <div class="status-editor">
-                            <label>ACTUALIZAR ESTADO</label>
+                            <label class="label-tiny">ACTUALIZAR ESTADO</label>
                             <select @bind="Tarea.TAR_EST" class="select-status-dav">
                                 <option value="Pendiente">Pendiente</option>
                                 <option value="En Progreso">En Progreso</option>
@@ -71,7 +82,6 @@
                     <h3 class="sector-title">Soluciones</h3>
                     <span class="sector-subtitle">Propuestas Activas</span>
                 </div>
-                @* Botón con símbolo + estilizado *@
                 <button type="button" class="btn-add-mini-pill" @onclick="AbrirModalCrearSolucion" title="Añadir Solución">
                     <i class="fas fa-plus"></i>
                 </button>
@@ -83,7 +93,11 @@
                     {
                         <div class="item-card-mini" @onclick="() => AbrirModalEditarSolucion(sol)">
                             <span>@sol.SOL_NOM</span>
-                            <button type="button" class="btn-del" @onclick:stopPropagation @onclick="() => EliminarSolucion(sol.SOL_ID)">×</button>
+                            <button type="button" class="btn-del"
+                                    @onclick:stopPropagation
+                                    @onclick="() => EliminarSolucion(sol.SOL_ID)">
+                                ×
+                            </button>
                         </div>
                     }
                 }
@@ -98,7 +112,6 @@
                     <h3 class="sector-title">Fricciones</h3>
                     <span class="sector-subtitle">Obstáculos Detectados</span>
                 </div>
-                @* Botón con símbolo + estilizado *@
                 <button type="button" class="btn-add-mini-pill" @onclick="AbrirModalCrearFriccion" title="Reportar Fricción">
                     <i class="fas fa-plus"></i>
                 </button>
@@ -110,7 +123,11 @@
                     {
                         <div class="item-card-mini" @onclick="() => AbrirModalEditarFriccion(fri)">
                             <span>@fri.FRI_TIP</span>
-                            <button type="button" class="btn-del" @onclick:stopPropagation @onclick="() => EliminarFriccion(fri.FRI_ID)">×</button>
+                            <button type="button" class="btn-del"
+                                    @onclick:stopPropagation
+                                    @onclick="() => EliminarFriccion(fri.FRI_ID)">
+                                ×
+                            </button>
                         </div>
                     }
                 }
@@ -118,48 +135,42 @@
         </div>
     </div>
 
-</div>
-@* ... (Todo el código anterior de los sectores se mantiene igual) ... *@
-
-@if (MostrarModalCrear)
-{
-    <div class="modal-backdrop-premium" @onclick="CerrarModalInterno">
-        <div class="modal-window-dav @(TipoModal.StartsWith("HISTORIAL") ? "size-xl" : "size-md")" @onclick:stopPropagation>
-            <div class="modal-header-dav">
-                <h3>@TituloModal</h3>
-                <button type="button" class="modal-close-x" @onclick="CerrarModalInterno">×</button>
-            </div>
-            <div class="modal-body-dav">
-                @* --- CASOS PARA NUEVOS REGISTROS --- *@
-                @if (TipoModal == "FRICCION_NUEVA" && Tarea != null)
-                {
-                    <CrearFriccion TareaId="@Tarea.TAR_ID" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
-                }
-                else if (TipoModal == "SOLUCION_NUEVA")
-                {
-                    <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
-                }
-
-                @* --- CASOS PARA EDICIÓN (ESTOS FALTABAN) --- *@
-                else if (TipoModal == "SOLUCION_EDITAR" && SolucionSeleccionada != null)
-                {
-                    <EditarSolucion Solucion="@SolucionSeleccionada" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
-                }
-                else if (TipoModal == "FRICCION_EDITAR" && FriccionSeleccionada != null)
-                {
-                    <Davivienda.Componentes.EditarFriccion Friccion="@FriccionSeleccionada" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno"></Davivienda.Componentes.EditarFriccion>
-                }
-
-                @* --- CASOS PARA HISTORIALES --- *@
-                else if (TipoModal == "HISTORIAL_SOLUCIONES")
-                {
-                    <BitacoraSolucion OnClose="CerrarModalInterno" />
-                }
-                else if (TipoModal == "HISTORIAL_FRICCIONES")
-                {
-                    <BitacoraFriccion OnClose="CerrarModalInterno" />
-                }
+    @* --- MODALES INTERNOS --- *@
+    @if (MostrarModalCrear)
+    {
+        <div class="modal-backdrop-premium" @onclick="CerrarModalInterno">
+            <div class="modal-window-dav @(TipoModal.StartsWith("HISTORIAL") ? "size-xl" : "size-md")" @onclick:stopPropagation>
+                <div class="modal-header-dav">
+                    <h3>@TituloModal</h3>
+                    <button type="button" class="modal-close-x" @onclick="CerrarModalInterno">×</button>
+                </div>
+                <div class="modal-body-dav">
+                    @if (TipoModal == "FRICCION_NUEVA" && Tarea != null)
+                    {
+                        <CrearFriccion TareaId="@Tarea.TAR_ID" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                    }
+                    else if (TipoModal == "SOLUCION_NUEVA")
+                    {
+                        <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                    }
+                    else if (TipoModal == "SOLUCION_EDITAR" && SolucionSeleccionada != null)
+                    {
+                        <EditarSolucion Solucion="@SolucionSeleccionada" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                    }
+                    else if (TipoModal == "FRICCION_EDITAR" && FriccionSeleccionada != null)
+                    {
+                        <Davivienda.Componentes.EditarFriccion Friccion="@FriccionSeleccionada" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                    }
+                    else if (TipoModal == "HISTORIAL_SOLUCIONES")
+                    {
+                        <BitacoraSolucion OnClose="CerrarModalInterno" />
+                    }
+                    else if (TipoModal == "HISTORIAL_FRICCIONES")
+                    {
+                        <BitacoraFriccion OnClose="CerrarModalInterno" />
+                    }
+                </div>
             </div>
         </div>
-    </div>
-}
+    }
+</div>
