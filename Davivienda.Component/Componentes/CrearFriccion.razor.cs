@@ -12,7 +12,7 @@ namespace Davivienda.Component.Componentes
 
         [Parameter] public Guid TareaId { get; set; }
         [Parameter] public EventCallback OnSuccess { get; set; }
-        [Parameter] public EventCallback OnClose { get; set; } // Esto es lo que permite que el botón cerrar funcione
+        [Parameter] public EventCallback OnClose { get; set; }
 
         private FriccionModel nuevaFriccion = new FriccionModel
         {
@@ -20,7 +20,6 @@ namespace Davivienda.Component.Componentes
             FRI_IMP = "Medio"
         };
 
-        // Método para los botones Cancelar y X
         private async Task CerrarModalInterno()
         {
             if (OnClose.HasDelegate)
@@ -33,6 +32,9 @@ namespace Davivienda.Component.Componentes
         {
             try
             {
+                // Validación básica manual ya que no usamos EditForm
+                if (string.IsNullOrWhiteSpace(nuevaFriccion.FRI_TIP)) return;
+
                 var input = new FriccionModelInput
                 {
                     Fri_ID = Guid.NewGuid(),
@@ -54,7 +56,7 @@ namespace Davivienda.Component.Componentes
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Error insertando fricción: {ex.Message}");
             }
         }
     }

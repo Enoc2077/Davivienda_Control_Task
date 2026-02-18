@@ -1,4 +1,4 @@
-/* Calendar Wrapper */
+/* ESTRUCTURA Y CONTENEDORES PRINCIPALES */
 .calendar-wrapper {
     width: 100%;
     height: 100vh;
@@ -17,7 +17,6 @@
     margin: 0 auto;
 }
 
-/* Sidebar */
 .calendar-sidebar {
     background: white;
     border-radius: 20px;
@@ -29,6 +28,24 @@
     gap: 30px;
 }
 
+.calendar-main {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+/* MINI CALENDARIO (SIDEBAR) */
 .mini-calendar-header {
     display: flex;
     justify-content: space-between;
@@ -42,22 +59,6 @@
         color: #1a1a1a;
         margin: 0;
         text-transform: capitalize;
-    }
-
-.nav-btn {
-    background: transparent;
-    border: none;
-    font-size: 24px;
-    color: #666;
-    cursor: pointer;
-    padding: 5px 10px;
-    border-radius: 8px;
-    transition: all 0.2s;
-}
-
-    .nav-btn:hover {
-        background: #f5f5f5;
-        color: #1a1a1a;
     }
 
 .mini-calendar-grid {
@@ -84,6 +85,8 @@
     cursor: pointer;
     transition: all 0.2s;
     color: #1a1a1a;
+    transition: all 0.2s ease;
+    position: relative;
 }
 
     .mini-day.other-month {
@@ -97,17 +100,17 @@
     }
 
     .mini-day.selected {
-        background: #5B7FF5;
-        color: white;
+        background: #5B7FF5 !important;
+        color: white !important;
+        border: none;
     }
 
     .mini-day:hover:not(.selected):not(.today) {
         background: #f0f0f0;
     }
 
-/* Categories Section */
-.categories-section h4,
-.prioritize-section h4 {
+/* SECCIONES DE CATEGORÍAS Y PRIORIDADES */
+.categories-section h4, .prioritize-section h4 {
     font-size: 1rem;
     font-weight: 700;
     color: #1a1a1a;
@@ -134,23 +137,6 @@
     flex-shrink: 0;
 }
 
-/* Clases de Colores para Categorías */
-.cat-product {
-    background: #81C784;
-}
-
-.cat-software {
-    background: #7986CB;
-}
-
-.cat-research {
-    background: #BA68C8;
-}
-
-.cat-marketing {
-    background: #F06292;
-}
-
 .category-name {
     flex: 1;
     font-size: 0.9rem;
@@ -162,7 +148,6 @@
     color: #999;
 }
 
-/* Prioritize Section */
 .priority-list {
     display: flex;
     flex-direction: column;
@@ -189,28 +174,33 @@
     font-size: 1.2rem;
 }
 
-.chevron {
-    color: #999;
-    font-size: 1.2rem;
-}
-
-/* Main Calendar */
-.calendar-main {
-    background: white;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
+.priority-info {
     display: flex;
     flex-direction: column;
 }
 
-.calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 30px;
+.priority-name {
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: #1a1a1a;
 }
+
+/* NAVEGACIÓN Y BOTONES */
+.nav-btn {
+    background: transparent;
+    border: none;
+    font-size: 24px;
+    color: #666;
+    cursor: pointer;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+    .nav-btn:hover {
+        background: #f5f5f5;
+        color: #1a1a1a;
+    }
 
 .week-navigation {
     display: flex;
@@ -241,7 +231,12 @@
     transition: all 0.2s;
 }
 
-/* Week Days Header */
+.chevron {
+    color: #999;
+    font-size: 1.2rem;
+}
+
+/* GRILLA SEMANAL Y HORARIOS */
 .week-days {
     display: grid;
     grid-template-columns: 60px repeat(7, 1fr);
@@ -283,14 +278,15 @@
         color: white;
     }
 
-/* Time Grid */
 .time-grid {
     display: grid;
     grid-template-columns: 60px repeat(7, 1fr);
-    gap: 10px;
+    gap: 0;
     flex: 1;
     overflow-y: auto;
     position: relative;
+    /* Cada celda mide 60px, por 24 horas = 1440px */
+    min-height: 1440px;
 }
 
 .time-slot {
@@ -304,39 +300,118 @@
 
 .day-column {
     position: relative;
-    border-left: 1px solid #f0f0f0;
+    border-left: 1px solid #f1f5f9;
+    /* Importante: quitar el overflow:hidden previo para permitir que el hover se vea bien */
+    min-height: 1440px;
+    background-clip: content-box;
 }
 
 .hour-cell {
     height: 60px;
-    border-bottom: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f1f5f9;
+    box-sizing: border-box
 }
 
-/* Events */
+/* 2. OCULTAR NOMBRE Y MOSTRAR EN HOVER */
+.event-title-hidden {
+    display: none; /* Oculto por defecto */
+    font-weight: 800;
+    font-size: 0.8rem;
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+/* EVENTOS Y TAREAS (ESTILOS GENERALES) */
 .event {
     position: absolute;
-    left: 5px;
-    right: 5px;
-    border-radius: 8px;
-    padding: 8px;
+    left: 10px;
+    right: 10px;
+    border-radius: 12px;
+    padding: 12px;
     font-size: 0.85rem;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    border: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
+    .event:hover {
+        z-index: 200 !important; /* Salta al frente de todas las demás */
+        transform: scale(1.05); /* Se agranda un poco */
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        min-width: 140px;
+    }
+
+        .event:hover .event-title-hidden {
+            display: block; /* Se revela el nombre al poner el cursor */
+            animation: fadeIn 0.2s ease-in;
+        }
+
 .event-title {
-    font-weight: 600;
-    margin-bottom: 4px;
+    font-weight: 800;
+    text-align: center;
     color: #1a1a1a;
+    margin-bottom: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .event-time {
-    font-size: 0.75rem;
-    color: #666;
+    font-size: 0.7rem;
+    text-align: center;
+    opacity: 0.7;
+    font-weight: 600;
 }
 
-/* Clases de Estilos para Eventos (Posicionamiento y Color) */
+.empty-msg {
+    font-size: 0.8rem;
+    color: #999;
+    text-align: center;
+}
+
+/* COLORES POR PRIORIDAD (DAVIVIENDA STYLE) */
+.event-alta {
+    background: rgba(237, 28, 36, 0.1) !important;
+    border-left: 6px solid #ed1c24 !important;
+    color: #b91c1c !important;
+}
+
+.event-media {
+    background: rgba(255, 193, 7, 0.1) !important;
+    border-left: 6px solid #ffc107 !important;
+    color: #92400e !important;
+}
+
+.event-baja {
+    background: rgba(34, 197, 94, 0.1) !important;
+    border-left: 6px solid #22c55e !important;
+    color: #166534 !important;
+}
+
+/* CLASES DE COLORES CATEGORÍAS (LEGACY) */
+.cat-product {
+    background: #81C784;
+}
+
+.cat-software {
+    background: #7986CB;
+}
+
+.cat-research {
+    background: #BA68C8;
+}
+
+.cat-marketing {
+    background: #F06292;
+}
+
+/* EVENTOS ESPECÍFICOS (LEGACY) */
 .event-product-design {
     top: 60px;
     height: 180px;
@@ -372,225 +447,110 @@
     border-left: 4px solid #81C784;
 }
 
-/* Scrollbar Styling */
-.calendar-sidebar::-webkit-scrollbar,
-.time-grid::-webkit-scrollbar {
+/* SCROLLBAR Y OTROS */
+.calendar-sidebar::-webkit-scrollbar, .time-grid::-webkit-scrollbar {
     width: 8px;
 }
 
-.calendar-sidebar::-webkit-scrollbar-thumb,
-.time-grid::-webkit-scrollbar-thumb {
+.calendar-sidebar::-webkit-scrollbar-thumb, .time-grid::-webkit-scrollbar-thumb {
     background: #ccc;
     border-radius: 10px;
 }
 
-
-/* ... (Se mantienen todos los estilos anteriores intactos) ... */
-
-/* CLASES DE COLORES POR PRIORIDAD */
-
-.event-alta {
-    background: rgba(237, 28, 36, 0.15); /* Rojo Davivienda traslúcido */
-    border-left: 5px solid #ed1c24;
-    color: #ed1c24;
-}
-
-.event-media {
-    background: rgba(255, 193, 7, 0.15); /* Amarillo traslúcido */
-    border-left: 5px solid #ffc107;
-    color: #856404;
-}
-
-.event-baja {
-    background: rgba(40, 167, 69, 0.15); /* Verde traslúcido */
-    border-left: 5px solid #28a745;
-    color: #155724;
-}
-
-/* Ajustes generales de eventos para visibilidad */
-.event {
-    position: absolute;
-    left: 4px;
-    right: 4px;
-    border-radius: 6px;
-    padding: 10px;
-    font-size: 0.8rem;
-    z-index: 10;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    transition: transform 0.2s;
-}
-
-    .event:hover {
-        transform: scale(1.02);
-        z-index: 20;
-    }
-
-/* ... Conservar todos tus estilos de Layout anteriores ... */
-
-/* ESTILOS DE EVENTOS POR PRIORIDAD */
-
-.event {
-    position: absolute;
-    left: 8px;
-    right: 8px;
-    border-radius: 12px;
-    padding: 12px;
-    font-size: 0.85rem;
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+.task-animate {
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 1px solid rgba(0,0,0,0.05);
-    overflow: hidden;
+    cursor: pointer;
+    position: absolute;
 }
 
-    .event:hover {
-        transform: scale(1.03);
-        z-index: 50;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+.event-selected {
+    border: 2px solid #5B7FF5 !important;
+    box-shadow: 0 0 15px rgba(91, 127, 245, 0.4);
+    z-index: 150 !important;
+}
+
+
+/* 4. ANIMACIÓN DE ENTRADA Y REVELACIÓN */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
     }
 
-/* Colores Dinámicos */
-
-.event-alta {
-    background: rgba(237, 28, 36, 0.08); /* Fondo Rojo tenue */
-    border-left: 6px solid #ed1c24; /* Borde Rojo Davivienda */
-    color: #b91c1c;
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-.event-media {
-    background: rgba(255, 193, 7, 0.08); /* Fondo Amarillo tenue */
-    border-left: 6px solid #ffc107;
-    color: #92400e;
-}
 
-.event-baja {
-    background: rgba(34, 197, 94, 0.08); /* Fondo Verde tenue */
-    border-left: 6px solid #22c55e;
-    color: #166534;
-}
 
-.event-title {
-    font-weight: 800;
-    margin-bottom: 5px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.event-time {
-    font-size: 0.75rem;
-    font-weight: 600;
+/* 5. MINI TEXTO DE HORA PARA TAREAS PEQUEÑAS */
+.event-time-mini {
+    font-size: 0.65rem;
+    text-align: center;
+    font-weight: 700;
     opacity: 0.8;
 }
 
-.event-alta {
-    background: rgba(237, 28, 36, 0.1);
-    border-left: 5px solid #ed1c24; /* Rojo Davivienda */
-    color: #b91c1c;
-}
-
-.event-media {
-    background: rgba(255, 193, 7, 0.1);
-    border-left: 5px solid #ffc107; /* Amarillo */
-    color: #92400e;
-}
-
-.event-baja {
-    background: rgba(34, 197, 94, 0.1);
-    border-left: 5px solid #22c55e; /* Verde */
-    color: #166534;
-}
-
-/* ... Estilos base de layout ya definidos ... */
-
-/* ESTILO DINÁMICO DE EVENTOS */
-.event {
-    position: absolute;
-    left: 6px;
-    right: 6px;
-    border-radius: 10px;
-    padding: 10px;
-    font-size: 0.85rem;
-    z-index: 10;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-    border: 1px solid rgba(0,0,0,0.03);
-    overflow: hidden;
-}
-
-    .event:hover {
-        transform: translateY(-2px) scale(1.02);
-        z-index: 100;
-        box-shadow: 0 8px 15px rgba(0,0,0,0.1);
-    }
-
-/* Prioridad Alta (Rojo Davivienda) */
-.event-alta {
-    background: rgba(237, 28, 36, 0.08);
-    border-left: 6px solid #ed1c24;
-    color: #b91c1c;
-}
-
-/* Prioridad Media (Amarillo) */
-.event-media {
-    background: rgba(255, 193, 7, 0.08);
-    border-left: 6px solid #ffc107;
-    color: #92400e;
-}
-
-/* Prioridad Baja (Verde) */
-.event-baja {
-    background: rgba(34, 197, 94, 0.08);
-    border-left: 6px solid #22c55e;
-    color: #166534;
-}
-
-.event-title {
-    font-weight: 800;
-    margin-bottom: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.event-time {
-    font-size: 0.75rem;
-    opacity: 0.7;
-    font-weight: 600;
-}
-
-.day-column {
-    position: relative;
-    border-left: 1px solid #f0f0f0;
-    min-width: 120px; /* Asegura espacio horizontal para que la tarea no se vea pegada */
-}
-
-.event {
-    position: absolute;
-    /* Centramos el bloque dejando márgenes a los lados */
-    left: 10px;
-    right: 10px;
-    border-radius: 12px;
-    padding: 10px;
-    font-size: 0.85rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+/* Contenedor del rango de horas */
+.event-time-range {
     display: flex;
-    flex-direction: column;
-    justify-content: center; /* Centra el texto internamente en el bloque */
-    overflow: hidden;
-    transition: all 0.2s ease;
-}
-
-/* Estilo para que el título destaque al centro del bloque */
-.event-title {
-    font-weight: 800;
-    text-align: center;
-    color: #1a1a1a;
-    margin-bottom: 2px;
-}
-
-.event-time {
+    flex-direction: column; /* Una hora sobre la otra para ahorrar espacio horizontal */
+    align-items: center;
+    justify-content: center;
     font-size: 0.7rem;
-    text-align: center;
+    font-weight: 700;
+    line-height: 1;
+    gap: 2px;
+}
+
+.time-start {
+    opacity: 0.9;
+}
+
+.time-separator {
+    font-size: 0.6rem;
+    opacity: 0.5;
+    margin: -2px 0;
+}
+
+.time-end {
     opacity: 0.7;
 }
+
+/* Ajuste para que el título no empuje las horas fuera del cuadro en Hover */
+.event:hover .event-time-range {
+    margin-top: 5px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    padding-top: 5px;
+}
+
+/* Si la tarea es muy corta (menos de 30 min), mostramos las horas en una sola línea */
+.event[style*="height: 30px"] .event-time-range,
+.event[style*="height: 20px"] .event-time-range {
+    flex-direction: row;
+    gap: 4px;
+}
+
+
+
+
+
+
+/* Día donde inicia una tarea (Verde suave) */
+.task-starting {
+    background-color: rgba(34, 197, 94, 0.2) !important; /* Verde */
+    border: 1px solid #22c55e;
+    color: #166534 !important;
+    font-weight: 700;
+}
+
+/* Día donde finaliza una tarea (Rojo Davivienda suave) */
+.task-ending {
+    background-color: rgba(237, 28, 36, 0.15) !important; /* Rojo */
+    border: 1px solid #ed1c24;
+    color: #b91c1c !important;
+    font-weight: 700;
+}
+

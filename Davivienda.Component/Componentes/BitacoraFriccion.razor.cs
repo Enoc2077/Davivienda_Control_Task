@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace Davivienda.Component.Componentes
 {
-    public partial class BitacoraFriccion
+    public partial class BitacoraFriccion : ComponentBase
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
+        [Parameter] public EventCallback OnClose { get; set; }
 
         private List<FriccionModel> FriccionesGlobales = new();
         private List<FriccionModel> FriccionesFiltradas = new();
@@ -21,15 +22,12 @@ namespace Davivienda.Component.Componentes
         private List<ProcesoModel> ProcesosFiltrados = new();
         private List<TareaModel> TareasFiltradas = new();
 
-        private bool MostrarDetalle = false;
+        public string BusquedaNombre { get; set; } = "";
         private FriccionModel? FriccionSeleccionada;
         private Dictionary<Guid, string> ColoresTareas = new();
         private string[] PaletaColores = { "#ef4444", "#3b82f6", "#10b981", "#f59e0b", "#8b5cf6" };
 
-        protected override async Task OnInitializedAsync()
-        {
-            await CargarDatos();
-        }
+        protected override async Task OnInitializedAsync() => await CargarDatos();
 
         private async Task CargarDatos()
         {
@@ -56,12 +54,9 @@ namespace Davivienda.Component.Componentes
                     FRI_FEC_CRE = f.Fri_FEC_CRE.DateTime
                 }).ToList() ?? new();
 
+                // Asignar colores a tareas
                 int i = 0;
-                foreach (var t in TareasGlobales)
-                {
-                    if (!ColoresTareas.ContainsKey(t.TAR_ID))
-                        ColoresTareas[t.TAR_ID] = PaletaColores[i++ % PaletaColores.Length];
-                }
+                foreach (var t in TareasGlobales) { if (!ColoresTareas.ContainsKey(t.TAR_ID)) ColoresTareas[t.TAR_ID] = PaletaColores[i++ % PaletaColores.Length]; }
 
                 ProcesosFiltrados = ProcesosGlobales;
                 TareasFiltradas = TareasGlobales;
@@ -69,18 +64,13 @@ namespace Davivienda.Component.Componentes
 
                 StateHasChanged();
             }
-            catch (Exception ex) { Console.WriteLine($"Error en Bitácora: {ex.Message}"); }
+            catch (Exception ex) { Console.WriteLine($"Error Fricciones: {ex.Message}"); }
         }
 
         private void OnProyectoChanged(ChangeEventArgs e)
         {
             var val = e.Value?.ToString();
-            if (string.IsNullOrEmpty(val))
-            {
-                ProcesosFiltrados = ProcesosGlobales;
-                TareasFiltradas = TareasGlobales;
-                FriccionesFiltradas = FriccionesGlobales;
-            }
+            if (string.IsNullOrEmpty(val)) { LimpiarFiltros(); }
             else
             {
                 var proId = Guid.Parse(val);
@@ -89,7 +79,6 @@ namespace Davivienda.Component.Componentes
                 TareasFiltradas = TareasGlobales.Where(t => procIds.Contains(t.PROC_ID ?? Guid.Empty)).ToList();
                 AplicarFiltroFinal();
             }
-            StateHasChanged();
         }
 
         private void OnProcesoChanged(ChangeEventArgs e)
@@ -102,7 +91,6 @@ namespace Davivienda.Component.Componentes
                 TareasFiltradas = TareasGlobales.Where(t => t.PROC_ID == prcId).ToList();
                 AplicarFiltroFinal();
             }
-            StateHasChanged();
         }
 
         private void OnTareaChanged(ChangeEventArgs e)
@@ -114,7 +102,6 @@ namespace Davivienda.Component.Componentes
                 var tarId = Guid.Parse(val);
                 FriccionesFiltradas = FriccionesGlobales.Where(f => f.TAR_ID == tarId).ToList();
             }
-            StateHasChanged();
         }
 
         private void AplicarFiltroFinal()
@@ -123,9 +110,19 @@ namespace Davivienda.Component.Componentes
             FriccionesFiltradas = FriccionesGlobales.Where(f => f.TAR_ID.HasValue && idsTareas.Contains(f.TAR_ID.Value)).ToList();
         }
 
-        private void AbrirDetalle(FriccionModel fri) { FriccionSeleccionada = fri; MostrarDetalle = true; StateHasChanged(); }
-        private void CerrarDetalle() { MostrarDetalle = false; FriccionSeleccionada = null; StateHasChanged(); }
+        private void LimpiarFiltros()
+        {
+            ProcesosFiltrados = ProcesosGlobales;
+            TareasFiltradas = TareasGlobales;
+            FriccionesFiltradas = FriccionesGlobales;
+            BusquedaNombre = "";
+            StateHasChanged();
+        }
+
+        private void SeleccionarFriccion(FriccionModel fri) { FriccionSeleccionada = fri; StateHasChanged(); }
+        private void CerrarDetalle() { FriccionSeleccionada = null; StateHasChanged(); }
         private string ObtenerColorTarea(Guid? id) => (id.HasValue && ColoresTareas.ContainsKey(id.Value)) ? ColoresTareas[id.Value] : "#cbd5e1";
         private string ObtenerNombreTarea(Guid? id) => TareasGlobales.FirstOrDefault(t => t.TAR_ID == id)?.TAR_NOM ?? "Sin Tarea";
+        private async Task Regresar() => await OnClose.InvokeAsync();
     }
 }

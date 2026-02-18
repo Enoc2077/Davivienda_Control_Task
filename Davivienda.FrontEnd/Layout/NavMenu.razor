@@ -6,59 +6,77 @@
 @inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 @inject DaviviendaGraphQLClient Client
 
-<div class="nav-container">
-    @* ENCABEZADO: Perfil Dinámico *@
-    <div class="user-header">
-        <AuthorizeView>
-            <Authorized>
-                <div class="user-profile-box">
-                    <div class="user-avatar-circle">
-                        @(string.IsNullOrEmpty(NombreUsuario) ? "?" : NombreUsuario.Substring(0, 1).ToUpper())
-                    </div>
-                    <div class="user-details">
-                        @* Mostramos el nombre real obtenido de la base de datos *@
-                        <span class="user-name-text">@(string.IsNullOrEmpty(NombreUsuario) ? context.User.Identity?.Name : NombreUsuario)</span>
-                        <span class="user-status-tag">Conectado</span>
-                    </div>
+<div class="sidebar-modern">
+    @* HEADER: Perfil con Gradiente y Decoración *@
+    <div class="sidebar-header-profile">
+        <div class="header-decoration-pattern"></div>
+        <div class="profile-card-modern">
+            <div class="profile-avatar-container">
+                <div class="avatar-circle-modern @(string.IsNullOrEmpty(NombreUsuario) ? "guest" : "")">
+                    <span class="avatar-initial">@(string.IsNullOrEmpty(NombreUsuario) ? "?" : NombreUsuario.Substring(0, 1).ToUpper())</span>
                 </div>
-            </Authorized>
-            <NotAuthorized>
-                <div class="user-profile-box">
-                    <div class="user-avatar-circle guest">?</div>
-                    <div class="user-details">
-                        <span class="user-name-text">Invitado</span>
-                        <span class="user-status-tag">Inicie Sesión</span>
-                    </div>
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
+                @if (!string.IsNullOrEmpty(NombreUsuario))
+                {
+                    <div class="status-indicator-online"></div>
+                }
+            </div>
+            <div class="profile-info-modern">
+                <p class="profile-name-modern">@(string.IsNullOrEmpty(NombreUsuario) ? "Invitado" : NombreUsuario)</p>
+                <p class="profile-email-modern">@(string.IsNullOrEmpty(EmailUsuario) ? "Inicie Sesión" : EmailUsuario)</p>
+            </div>
+        </div>
     </div>
 
-    @* CUERPO: Navegación *@
-    <div class="nav-scrollable">
-        <nav class="flex-column">
-            <div class="nav-item-dav">
-                <NavLink class="nav-link-dav" href="Asignaciones">
-                    <i class="bi bi-clipboard-check"></i> <span>Asignaciones</span>
+    @* CUERPO: Navegación Principal *@
+    <div class="sidebar-navigation-area">
+        <nav class="navigation-menu-modern">
+            <div class="menu-item-modern">
+                <NavLink class="menu-link-modern" href="Home">
+                    <i class="bi bi-clipboard-check menu-icon-modern"></i>
+                    <span class="menu-text-modern">Home</span>
+                </NavLink>
+                <NavLink class="menu-link-modern" href="Asignaciones">
+                    <i class="bi bi-clipboard-check menu-icon-modern"></i>
+                    <span class="menu-text-modern">Asignaciones</span>
                 </NavLink>
             </div>
 
-            <AuthorizeView Roles="Administrador,LiderTecnico">
+            <AuthorizeView Roles="Administrador,LiderTecnico,Gerente,Director,Subdirector">
                 <Authorized>
-                    <div class="nav-item-dav">
-                        <button class="nav-link-dav btn-dropdown-dav" @onclick="ToggleAdminMenu">
-                            <i class="bi bi-shield-lock"></i>
-                            <span>Gestión Admin</span>
-                            <i class="bi @(isAdminOpen ? "bi-chevron-up" : "bi-chevron-down") arrow-icon"></i>
+                    <div class="menu-item-modern">
+                        <button class="menu-link-modern menu-button-modern" @onclick="ToggleAdminMenu">
+                            <i class="bi bi-shield-lock menu-icon-modern"></i>
+                            <span class="menu-text-modern">Administracion</span>
+                            <i class="bi @(isAdminOpen ? "bi-chevron-up" : "bi-chevron-down") chevron-icon-modern"></i>
                         </button>
                         @if (isAdminOpen)
                         {
-                            <div class="submenu-dav animate-slide-down">
-                                <NavLink class="subitem-link" href="Proyectos"><i class="bi bi-folder2-open"></i> Proyectos</NavLink>
-                                <NavLink class="subitem-link" href="Tarea"><i class="bi bi-list-task"></i> Tareas</NavLink>
-                                <NavLink class="subitem-link" href="Usuario"><i class="bi bi-person-gear"></i> Usuarios</NavLink>
-                                <NavLink class="subitem-link" href="Rol_por_area"><i class="bi bi-diagram-3"></i> Roles por Área</NavLink>
-                                <NavLink class="subitem-link" href="Roles"><i class="bi bi-person-badge"></i> Roles</NavLink>
+                            <div class="submenu-wrapper">
+                                <div class="nav-sub-container">
+                                    <NavLink class="submenu-link-modern" href="Proyectos">
+                                        <i class="bi bi-folder2-open"></i> <span>Proyectos</span>
+                                    </NavLink>
+                                </div>
+                                <div class="nav-sub-container">
+                                    <NavLink class="submenu-link-modern" href="Tarea">
+                                        <i class="bi bi-list-task"></i> <span>Tareas</span>
+                                    </NavLink>
+                                </div>
+                                <div class="nav-sub-container">
+                                    <NavLink class="submenu-link-modern" href="Usuario">
+                                        <i class="bi bi-person-gear"></i> <span>Usuarios</span>
+                                    </NavLink>
+                                </div>
+                                <div class="nav-sub-container">
+                                    <NavLink class="submenu-link-modern" href="Rol_por_area">
+                                        <i class="bi bi-diagram-3"></i> <span>Roles / Área</span>
+                                    </NavLink>
+                                </div>
+                                <div class="nav-sub-container">
+                                    <NavLink class="submenu-link-modern" href="Roles">
+                                        <i class="bi bi-person-badge"></i> <span>Roles</span>
+                                    </NavLink>
+                                </div>
                             </div>
                         }
                     </div>
@@ -67,9 +85,11 @@
         </nav>
     </div>
 
-    <div class="nav-footer">
-        <button class="btn-logout-dav" @onclick="CerrarSesion">
-            <i class="bi bi-box-arrow-left"></i> <span>Cerrar Sesión</span>
+    @* FOOTER: Botón de Salida *@
+    <div class="sidebar-footer-modern">
+        <button class="logout-button-modern" @onclick="CerrarSesion">
+            <i class="bi bi-box-arrow-left logout-icon-modern"></i>
+            <span class="logout-text-modern">Cerrar Sesión</span>
         </button>
     </div>
 </div>
@@ -77,11 +97,9 @@
 @code {
     private bool isAdminOpen = false;
     private string NombreUsuario = "";
+    private string EmailUsuario = "";
 
-    protected override async Task OnInitializedAsync()
-    {
-        await ObtenerInfoUsuario();
-    }
+    protected override async Task OnInitializedAsync() => await ObtenerInfoUsuario();
 
     private async Task ObtenerInfoUsuario()
     {
@@ -89,26 +107,17 @@
         {
             var authState = await AuthStateProvider.GetAuthenticationStateAsync();
             var user = authState.User;
-
             if (user.Identity != null && user.Identity.IsAuthenticated)
             {
-                // Usamos el claim del nombre (que suele ser el email) para buscar en la BD
-                var email = user.Identity.Name;
-                if (!string.IsNullOrEmpty(email))
+                EmailUsuario = user.Identity.Name ?? "";
+                if (!string.IsNullOrEmpty(EmailUsuario))
                 {
-                    // Ejecutamos tu query GetUsuarioByEmail
-                    var res = await Client.GetUsuarioByEmail.ExecuteAsync(email);
-                    if (res.Data?.UsuarioByEmail != null)
-                    {
-                        NombreUsuario = res.Data.UsuarioByEmail.Usu_NOM; // Asignamos el nombre real
-                    }
+                    var res = await Client.GetUsuarioByEmail.ExecuteAsync(EmailUsuario);
+                    if (res.Data?.UsuarioByEmail != null) NombreUsuario = res.Data.UsuarioByEmail.Usu_NOM;
                 }
             }
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error al obtener nombre de usuario: {ex.Message}");
-        }
+        catch (Exception ex) { Console.WriteLine($"Error: {ex.Message}"); }
     }
 
     private void ToggleAdminMenu() => isAdminOpen = !isAdminOpen;
@@ -116,10 +125,7 @@
     private async Task CerrarSesion()
     {
         await LocalStorage.RemoveItemAsync("authToken");
-        if (AuthStateProvider is CustomAuthStateProvider customProvider)
-        {
-            customProvider.NotifyLogout();
-        }
+        if (AuthStateProvider is CustomAuthStateProvider cp) cp.NotifyLogout();
         Navigation.NavigateTo("/");
     }
 }

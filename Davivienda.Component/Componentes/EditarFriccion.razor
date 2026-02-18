@@ -1,52 +1,59 @@
 ﻿@namespace Davivienda.Componentes
 @using Davivienda.Models.Modelos
-@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components
 
-<div class="contenedor-gestion-friccion">
-    <EditForm Model="@fricEdit" OnValidSubmit="ActualizarFriccion">
-        <div class="cuerpo-formulario-friccion">
+<div class="modal-premium-overlay" @onclick="Cerrar">
+    @* Contenedor de la tarjeta con animación de entrada *@
+    <div class="modal-card-registro animate-pop" @onclick:stopPropagation>
 
-            @* Tipo de Fricción *@
-            <div class="seccion-tipo-friccion">
-                <label class="etiqueta-friccion-unica">TIPO DE FRICCIÓN</label>
-                <InputText @bind-Value="fricEdit.FRI_TIP" class="input-friccion-tipo-directo" placeholder="Ej: Error de servidor, Retraso en aprobación" />
-            </div>
+        @* Franja superior dorada para resaltar que es un obstáculo/fricción *@
+        <div class="modal-top-accent-gold"></div>
 
-            @* Descripción *@
-            <div class="seccion-descripcion-friccion">
-                <label class="etiqueta-friccion-unica">DESCRIPCIÓN DEL BLOQUEO</label>
-                <InputTextArea @bind-Value="fricEdit.FRI_DES" class="textarea-friccion-descripcion-directa" placeholder="Detalle el impacto y el origen de la fricción..." />
-            </div>
+        <div class="modal-header-registro">
+            <h2 class="modal-title-main">Editar Fricción</h2>
+            <button type="button" class="btn-close-x" @onclick="Cerrar">×</button>
+        </div>
 
-            <div class="grid-friccion-doble">
-                @* Estado *@
-                <div class="seccion-estado-friccion">
-                    <label class="etiqueta-friccion-unica">ESTADO ACTUAL</label>
-                    <InputSelect @bind-Value="fricEdit.FRI_EST" class="select-friccion-estado-directo">
+        <div class="modal-body-registro">
+            <div class="form-grid-registro">
+
+                @* Campo Tipo de Fricción *@
+                <div class="input-group-registro full-width">
+                    <label>TIPO DE FRICCIÓN</label>
+                    <input type="text" @bind="fricEdit.FRI_TIP" class="input-field-premium" placeholder="Ej: Error de servidor, Retraso en aprobación" />
+                </div>
+
+                @* Campo Descripción *@
+                <div class="input-group-registro full-width">
+                    <label>DESCRIPCIÓN DEL BLOQUEO</label>
+                    <textarea @bind="fricEdit.FRI_DES" rows="4" class="input-field-premium textarea-premium" placeholder="Detalle el impacto y el origen de la fricción..."></textarea>
+                </div>
+
+                @* Fila Doble: Estado e Impacto *@
+                <div class="input-group-registro">
+                    <label>ESTADO ACTUAL</label>
+                    <select @bind="fricEdit.FRI_EST" class="input-field-premium select-premium">
                         <option value="Activa">Activa</option>
                         <option value="Mitigada">Mitigada</option>
                         <option value="Resuelta">Resuelta</option>
-                    </InputSelect>
+                    </select>
                 </div>
 
-                @* Impacto *@
-                <div class="seccion-impacto-friccion">
-                    <label class="etiqueta-friccion-unica">NIVEL DE IMPACTO</label>
-                    <InputSelect @bind-Value="fricEdit.FRI_IMP" class="select-friccion-impacto-directo">
+                <div class="input-group-registro">
+                    <label>NIVEL DE IMPACTO</label>
+                    <select @bind="fricEdit.FRI_IMP" class="input-field-premium select-premium">
                         <option value="Bajo">Bajo</option>
                         <option value="Medio">Medio</option>
                         <option value="Alto">Alto</option>
                         <option value="Crítico">Crítico</option>
-                    </InputSelect>
+                    </select>
                 </div>
             </div>
 
-            <div class="acciones-finales-friccion">
-                <button type="button" class="boton-friccion-cancelar" @onclick="Cerrar">Cancelar</button>
-                <button type="submit" class="boton-friccion-guardar">
-                    <i class="bi bi-shield-check"></i> Actualizar Fricción
-                </button>
+            <div class="modal-footer-registro">
+                <button type="button" class="btn-cancel-premium" @onclick="Cerrar">Cancelar</button>
+                <button type="button" class="btn-save-premium" @onclick="ActualizarFriccion">Actualizar Registro</button>
             </div>
         </div>
-    </EditForm>
+    </div>
 </div>

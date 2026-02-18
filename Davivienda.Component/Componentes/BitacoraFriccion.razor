@@ -1,135 +1,184 @@
 ﻿@namespace Davivienda.Component.Componentes
+@inherits Microsoft.AspNetCore.Components.ComponentBase
 @using Davivienda.Models.Modelos
-@using Davivienda.GraphQL.SDK
 
-<div class="bitacora-premium-container animate-fade-in">
-    @* --- BARRA DE FILTROS ESPACIOSA --- *@
-    <div class="toolbar-filters-dav">
-        <div class="filter-capsule">
-            <i class="fas fa-project-diagram icon-accent"></i>
-            <div class="filter-text">
-                <label>PROYECTO</label>
-                <select class="select-premium" @onchange="OnProyectoChanged">
-                    <option value="">Todos los Proyectos</option>
-                    @foreach (var pro in ProyectosList)
-                    {
-                        <option value="@pro.PRO_ID">@pro.PRO_NOM</option>
-                    }
-                </select>
-            </div>
-        </div>
+@* SECCIÓN 0: CAPA MAESTRA *@
+<div class="modal-fixed-backdrop">
+    <div class="master-modal-container" @onclick:stopPropagation>
+        <div class="dav-modal-art-bg">
 
-        <div class="filter-capsule">
-            <i class="fas fa-sync-alt icon-accent"></i>
-            <div class="filter-text">
-                <label>PROCESO</label>
-                <select class="select-premium" @onchange="OnProcesoChanged">
-                    <option value="">Todos los Procesos</option>
-                    @foreach (var proc in ProcesosFiltrados)
-                    {
-                        <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
-                    }
-                </select>
-            </div>
-        </div>
+            @* SECCIÓN 1: BOTÓN DE CIERRE *@
+            <button type="button" class="btn-close-modal" @onclick="Regresar" title="Cerrar" style="z-index: 9999;">
+                <i class="bi bi-x-lg"></i>
+            </button>
 
-        <div class="filter-capsule no-border">
-            <i class="fas fa-tasks icon-accent"></i>
-            <div class="filter-text">
-                <label>TAREA</label>
-                <select class="select-premium" @onchange="OnTareaChanged">
-                    <option value="">Todas las Tareas</option>
-                    @foreach (var tar in TareasFiltradas)
-                    {
-                        <option value="@tar.TAR_ID">@tar.TAR_NOM</option>
-                    }
-                </select>
-            </div>
-        </div>
-    </div>
+            @* SECCIÓN 2: DECORACIÓN *@
+            <div class="bg-blob blob-red-top"></div>
+            <div class="bg-blob blob-red-bottom"></div>
 
-    @* --- CONTENEDOR DE TARJETAS CON MAYOR ESPACIADO --- *@
-    <div class="horizontal-cards-viewport custom-scroll">
-        @if (FriccionesFiltradas != null && FriccionesFiltradas.Any())
-        {
-            @foreach (var fri in FriccionesFiltradas)
-            {
-                <div class="card-premium-bitacora animate-pop" @onclick="() => AbrirDetalle(fri)">
-                    <div class="card-indicator" style="background-color: @ObtenerColorTarea(fri.TAR_ID)"></div>
+            @* SECCIÓN 3: CONTENEDORES DE TRABAJO *@
+            <div class="content-sectors-container">
 
-                    <div class="card-inner-content">
-                        <div class="card-top-row">
-                            <span class="badge-tarea" style="background-color: @ObtenerColorTarea(fri.TAR_ID)">
-                                @ObtenerNombreTarea(fri.TAR_ID)
-                            </span>
-                            <span class="impacto-pill @fri.FRI_IMP?.ToLower()">@fri.FRI_IMP?.ToUpper()</span>
-                        </div>
+                @* --- SECTOR 1: LISTADO DE FRICCIONES (ESTILO SOLUCIONES) --- *@
+                <div class="sector-white-card sector-large">
+                    <div class="sector-label">Historial de Obstáculos</div>
 
-                        <h4 class="card-main-title">@fri.FRI_TIP</h4>
-                        <p class="card-main-desc">@fri.FRI_DES</p>
-
-                        <div class="card-footer-stats">
-                            <div class="stat-group">
-                                <span class="stat-label">ESTADO</span>
-                                <span class="stat-value text-accent">@fri.FRI_EST</span>
-                            </div>
-                            <div class="stat-group">
-                                <span class="stat-label">REGISTRO</span>
-                                <span class="stat-value">@fri.FRI_FEC_CRE.ToString("dd MMM yyyy")</span>
+                    <div class="sector-banner-header">
+                        <div class="banner-waves"></div>
+                        <div class="banner-content">
+                            <div class="banner-icon"><i class="bi bi-exclamation-triangle"></i> Gestión de Fricciones Activa</div>
+                            <div class="banner-charts-mockup">
+                                <div class="mock-pie" style="background: conic-gradient(#ef4444 0% 70%, #f59e0b 70% 90%, #f1f5f9 90% 100%);"></div>
+                                <div class="mock-bars"><span></span><span></span><span></span></div>
                             </div>
                         </div>
                     </div>
+
+                    <div class="solution-main-viewport custom-scroll">
+                        @if (FriccionesFiltradas != null && FriccionesFiltradas.Any())
+                        {
+                            @foreach (var fri in FriccionesFiltradas)
+                            {
+                                <div class="solution-item-card animate-pop" @onclick="() => SeleccionarFriccion(fri)">
+                                    @* Indicador de color por Tarea *@
+                                    <div style="width: 6px; height: 40px; border-radius: 3px; background: @ObtenerColorTarea(fri.TAR_ID); margin-right: -5px;"></div>
+
+                                    <div class="sol-card-info">
+                                        <span class="sol-name">@fri.FRI_TIP</span>
+                                        <p class="sol-desc-short">@fri.FRI_DES</p>
+                                    </div>
+
+                                    <div class="sol-card-metrics">
+                                        <div class="metric-badge status">
+                                            <i class="bi bi-shield-exclamation"></i> @fri.FRI_IMP
+                                        </div>
+                                        <div class="metric-badge effectiveness" style="background: #fff7ed; color: #c2410c;">
+                                            <i class="bi bi-activity"></i> @fri.FRI_EST
+                                        </div>
+                                    </div>
+                                    <div class="sol-arrow-action"><i class="bi bi-chevron-right"></i></div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="empty-results-msg">
+                                <i class="bi bi-wind"></i>
+                                <p>No se encontraron fricciones. Ajuste los filtros de navegación.</p>
+                            </div>
+                        }
+                    </div>
                 </div>
-            }
-        }
-        else
-        {
-            <div class="empty-state-dav">
-                <i class="fas fa-search-minus"></i>
-                <p>No se encontraron fricciones con los filtros aplicados.</p>
+
+                @* --- SECTOR 2: FILTROS JERÁRQUICOS --- *@
+                <div class="sector-white-card sector-small">
+                    <div class="sector-label">Navegación Técnica</div>
+                    <div class="filters-container-vertical">
+
+                        <div class="filter-item-group">
+                            <label class="filter-group-label">1. PROYECTO</label>
+                            <select class="select-filter-premium" @onchange="OnProyectoChanged">
+                                <option value="">Todos los Proyectos</option>
+                                @foreach (var pro in ProyectosList)
+                                {
+                                    <option value="@pro.PRO_ID">@pro.PRO_NOM</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="filter-item-group">
+                            <label class="filter-group-label">2. PROCESO</label>
+                            <select class="select-filter-premium" @onchange="OnProcesoChanged" disabled="@(!ProcesosFiltrados.Any())">
+                                <option value="">Todos los Procesos</option>
+                                @foreach (var proc in ProcesosFiltrados)
+                                {
+                                    <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="filter-item-group">
+                            <label class="filter-group-label">3. TAREA (FILTRA FRICCIONES)</label>
+                            <select class="select-filter-premium" @onchange="OnTareaChanged" disabled="@(!TareasFiltradas.Any())">
+                                <option value="">Todas las Tareas</option>
+                                @foreach (var tar in TareasFiltradas)
+                                {
+                                    <option value="@tar.TAR_ID">@tar.TAR_NOM</option>
+                                }
+                            </select>
+                        </div>
+
+                        <button type="button" class="btn-clear-filters" @onclick="LimpiarFiltros">
+                            <i class="bi bi-arrow-counterclockwise"></i> Restablecer
+                        </button>
+                    </div>
+                </div>
             </div>
-        }
+
+            @* ILUSTRACIÓN ESCENA *@
+            <div class="illustration-scene">
+                <div class="device-monitor">
+                    <div class="device-screen"><div class="screen-ui-lines"></div></div>
+                </div>
+                <div class="vector-person person-standing"></div>
+                <div class="vector-person person-climbing"></div>
+                <div class="vector-person person-sitting"></div>
+                <div class="floating-element element-1"></div>
+                <div class="floating-element element-2"></div>
+            </div>
+        </div>
     </div>
 </div>
 
-@* --- MODAL DE DETALLE ESPACIOSO --- *@
-@if (MostrarDetalle && FriccionSeleccionada != null)
+@* --- MODAL SOBREPUESTO DE DETALLE --- *@
+@if (FriccionSeleccionada != null)
 {
-    <div class="modal-overlay-blur" @onclick="CerrarDetalle">
-        <div class="detail-card-premium animate-zoom" @onclick:stopPropagation>
-            <div class="bg-gold-gradient"></div>
-
-            <div class="detail-head">
-                <div class="head-title-group">
-                    <span class="label-premium text-gold">DETALLE DE OBSTÁCULO</span>
-                    <h3>@FriccionSeleccionada.FRI_TIP</h3>
+    <div class="modal-detail-overlay" @onclick:stopPropagation>
+        <div class="detail-card-premium animate-pop">
+            <div class="detail-header-red" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
+                <div class="header-info">
+                    <i class="bi bi-search"></i>
+                    <h3>Análisis de Fricción</h3>
                 </div>
-                <button class="btn-close-circle" @onclick="CerrarDetalle">×</button>
+                <button type="button" class="btn-close-white" @onclick="CerrarDetalle"><i class="bi bi-x-lg"></i></button>
             </div>
 
-            <div class="detail-body">
-                <div class="stats-grid-premium">
-                    <div class="stat-box-large">
-                        <label class="label-premium">IMPACTO EN OPERACIÓN</label>
-                        <p class="impacto-display @FriccionSeleccionada.FRI_IMP?.ToLower()">@FriccionSeleccionada.FRI_IMP</p>
-                    </div>
-                    <div class="stat-box-large">
-                        <label class="label-premium">ESTADO ACTUAL</label>
-                        <p class="val-display-dark">@FriccionSeleccionada.FRI_EST</p>
-                    </div>
+            <div class="detail-body custom-scroll">
+                <div class="detail-section">
+                    <label>Tipo de Obstáculo</label>
+                    <p class="main-text">@FriccionSeleccionada.FRI_TIP</p>
+                </div>
+                <div class="detail-section">
+                    <label>Descripción del Problema</label>
+                    <p class="desc-text">@FriccionSeleccionada.FRI_DES</p>
+                </div>
 
-                    <div class="desc-section-full">
-                        <label class="label-premium">DESCRIPCIÓN TÉCNICA DEL PROBLEMA</label>
-                        <div class="desc-viewport-premium warm-bg-accent">
-                            @FriccionSeleccionada.FRI_DES
-                        </div>
+                <div class="metrics-grid-detail">
+                    <div class="metric-item">
+                        <label>Impacto</label>
+                        <span class="eff-highlight" style="color: #ef4444;">@FriccionSeleccionada.FRI_IMP</span>
+                    </div>
+                    <div class="metric-item">
+                        <label>Estado</label>
+                        <span class="status-badge-detail" style="background: #334155;">@FriccionSeleccionada.FRI_EST</span>
+                    </div>
+                    <div class="metric-item">
+                        <label>Tarea Origen</label>
+                        <span>@ObtenerNombreTarea(FriccionSeleccionada.TAR_ID)</span>
                     </div>
                 </div>
 
-                <div class="detail-footer-info">
-                    <i class="far fa-calendar-alt"></i>
-                    <span>Registrado el @FriccionSeleccionada.FRI_FEC_CRE.ToString("f")</span>
+                <div class="audit-footer-detail">
+                    <div class="audit-item">
+                        <i class="bi bi-calendar-event"></i>
+                        <strong>Registrado:</strong> @FriccionSeleccionada.FRI_FEC_CRE.ToString("f")
+                    </div>
                 </div>
+            </div>
+
+            <div class="detail-footer-actions">
+                <button class="btn-action-outline" @onclick="CerrarDetalle">Cerrar</button>
+                <button class="btn-action-red" style="background: #1e293b;">Ver Tarea Padre</button>
             </div>
         </div>
     </div>
