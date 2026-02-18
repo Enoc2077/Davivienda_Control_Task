@@ -1,49 +1,54 @@
 ﻿@namespace Davivienda.Component.Componentes
 @using Davivienda.Models.Modelos
-@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components
 
-<div class="contenedor-principal-solucion">
-    <EditForm Model="@solEdit" OnValidSubmit="ActualizarSolucion">
-        <div class="seccion-formulario-limpio">
-            <div class="cuadricula-individualizada">
+<div class="modal-premium-overlay" @onclick="Cerrar">
+    @* Contenedor de la tarjeta con animación *@
+    <div class="modal-card-registro animate-pop" @onclick:stopPropagation>
+
+        @* Franja superior de acento azul para Soluciones *@
+        <div class="modal-top-accent-blue"></div>
+
+        <div class="modal-header-registro">
+            <h2 class="modal-title-main">Editar Solución</h2>
+            <button type="button" class="btn-close-x" @onclick="Cerrar">×</button>
+        </div>
+
+        <div class="modal-body-registro">
+            <div class="form-grid-registro">
 
                 @* Campo Nombre *@
-                <div class="grupo-campo-nombre-sol">
-                    <label class="etiqueta-exclusiva">NOMBRE DE LA SOLUCIÓN</label>
-                    <InputText @bind-Value="solEdit.SOL_NOM" class="input-unico-sol-nombre" placeholder="Ej: Ajuste de índices en BD" />
+                <div class="input-group-registro full-width">
+                    <label>NOMBRE DE LA SOLUCIÓN</label>
+                    <input type="text" @bind="solEdit.SOL_NOM" class="input-field-premium" placeholder="Ej: Ajuste de índices en BD" />
                 </div>
 
                 @* Campo Descripción *@
-                <div class="grupo-campo-descripcion-sol">
-                    <label class="etiqueta-exclusiva">DESCRIPCIÓN TÉCNICA</label>
-                    <InputTextArea @bind-Value="solEdit.SOL_DES" class="input-unico-sol-descripcion" placeholder="Detalle del procedimiento..." />
+                <div class="input-group-registro full-width">
+                    <label>DESCRIPCIÓN TÉCNICA</label>
+                    <textarea @bind="solEdit.SOL_DES" rows="4" class="input-field-premium textarea-premium" placeholder="Detalle del procedimiento..."></textarea>
                 </div>
 
-                <div class="fila-doble-especifica">
-                    @* Campo Estado *@
-                    <div class="grupo-campo-estado-sol">
-                        <label class="etiqueta-exclusiva">ESTADO ACTUAL</label>
-                        <InputSelect @bind-Value="solEdit.SOL_EST" class="input-unico-sol-estado">
-                            <option value="Pendiente">Pendiente</option>
-                            <option value="En Progreso">En Progreso</option>
-                            <option value="Completada">Completada</option>
-                        </InputSelect>
-                    </div>
+                @* Fila Doble: Estado y Efectividad *@
+                <div class="input-group-registro">
+                    <label>ESTADO ACTUAL</label>
+                    <select @bind="solEdit.SOL_EST" class="input-field-premium select-premium">
+                        <option value="Pendiente">Pendiente</option>
+                        <option value="En Progreso">En Progreso</option>
+                        <option value="Completada">Completada</option>
+                    </select>
+                </div>
 
-                    @* Campo Efectividad *@
-                    <div class="grupo-campo-efectividad-sol">
-                        <label class="etiqueta-exclusiva">EFECTIVIDAD (%)</label>
-                        <InputNumber @bind-Value="solEdit.SOL_NIV_EFE" class="input-unico-sol-efectividad" />
-                    </div>
+                <div class="input-group-registro">
+                    <label>EFECTIVIDAD (%)</label>
+                    <input type="number" @bind="solEdit.SOL_NIV_EFE" class="input-field-premium" min="0" max="100" />
                 </div>
             </div>
 
-            <div class="barra-acciones-solucion">
-                <button type="button" class="boton-cancelar-sol-fina" @onclick="Cerrar">Cancelar</button>
-                <button type="submit" class="boton-guardar-sol-fina">
-                    <i class="bi bi-save2"></i> Guardar Registro
-                </button>
+            <div class="modal-footer-registro">
+                <button type="button" class="btn-cancel-premium" @onclick="Cerrar">Cancelar</button>
+                <button type="button" class="btn-save-premium" @onclick="ActualizarSolucion">Actualizar Registro</button>
             </div>
         </div>
-    </EditForm>
+    </div>
 </div>

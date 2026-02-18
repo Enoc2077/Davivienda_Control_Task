@@ -1,6 +1,8 @@
 ﻿using Davivienda.Models.Modelos;
 using Microsoft.AspNetCore.Components;
 using Davivienda.GraphQL.SDK;
+using System;
+using System.Threading.Tasks;
 
 namespace Davivienda.Componentes
 {
@@ -17,6 +19,7 @@ namespace Davivienda.Componentes
         {
             if (Friccion != null)
             {
+                // Clonamos para trabajar sobre una copia temporal
                 fricEdit = new FriccionModel
                 {
                     FRI_ID = Friccion.FRI_ID,
@@ -32,18 +35,33 @@ namespace Davivienda.Componentes
 
         private async Task ActualizarFriccion()
         {
-            var input = new FriccionModelInput
+            try
             {
-                Fri_ID = fricEdit.FRI_ID,
-                Fri_TIP = fricEdit.FRI_TIP,
-                Fri_DES = fricEdit.FRI_DES,
-                Fri_EST = fricEdit.FRI_EST,
-                Fri_IMP = fricEdit.FRI_IMP,
-                Tar_ID = fricEdit.TAR_ID,
-                Fri_FEC_MOD = DateTimeOffset.Now
-            };
-            await Client.UpdateFriccion.ExecuteAsync(input);
-            await OnSuccess.InvokeAsync();
+                if (string.IsNullOrWhiteSpace(fricEdit.FRI_TIP)) return;
+
+                var input = new FriccionModelInput
+                {
+                    Fri_ID = fricEdit.FRI_ID,
+                    Fri_TIP = fricEdit.FRI_TIP,
+                    Fri_DES = fricEdit.FRI_DES,
+                    Fri_EST = fricEdit.FRI_EST,
+                    Fri_IMP = fricEdit.FRI_IMP,
+                    Tar_ID = fricEdit.TAR_ID,
+                    Fri_FEC_MOD = DateTimeOffset.Now
+                };
+
+                var result = await Client.UpdateFriccion.ExecuteAsync(input);
+
+                // Si la actualización es exitosa, notificamos al padre para refrescar la lista
+                if (result.Data?.UpdateFriccion ?? false)
+                {
+                    await OnSuccess.InvokeAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al actualizar fricción: {ex.Message}");
+            }
         }
 
         private async Task Cerrar() => await OnClose.InvokeAsync();

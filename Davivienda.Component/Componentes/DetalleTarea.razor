@@ -118,35 +118,48 @@
         </div>
     </div>
 
-    @* MODALES INTERNOS ACTUALIZADOS *@
-    @if (MostrarModalCrear)
-    {
-        <div class="modal-backdrop-premium" @onclick="CerrarModalInterno">
-            <div class="modal-window-dav @(TipoModal.StartsWith("HISTORIAL") ? "size-xl" : "size-md")" @onclick:stopPropagation>
-                <div class="modal-header-dav">
-                    <h3>@TituloModal</h3>
-                    <button type="button" class="modal-close-x" @onclick="CerrarModalInterno">×</button>
-                </div>
-                <div class="modal-body-dav">
-                    @if (TipoModal == "FRICCION_NUEVA" && Tarea != null)
-                    {
-                        <CrearFriccion TareaId="@Tarea.TAR_ID" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
-                    }
-                    else if (TipoModal == "SOLUCION_NUEVA")
-                    {
-                        @* Se pasa el ID de la primera fricción si existe, o Guid vacío *@
-                        <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
-                    }
-                    else if (TipoModal == "HISTORIAL_SOLUCIONES")
-                    {
-                        <BitacoraSolucion OnClose="CerrarModalInterno" />
-                    }
-                    else if (TipoModal == "HISTORIAL_FRICCIONES")
-                    {
-                        <BitacoraFriccion OnClose="CerrarModalInterno" />
-                    }
-                </div>
+</div>
+@* ... (Todo el código anterior de los sectores se mantiene igual) ... *@
+
+@if (MostrarModalCrear)
+{
+    <div class="modal-backdrop-premium" @onclick="CerrarModalInterno">
+        <div class="modal-window-dav @(TipoModal.StartsWith("HISTORIAL") ? "size-xl" : "size-md")" @onclick:stopPropagation>
+            <div class="modal-header-dav">
+                <h3>@TituloModal</h3>
+                <button type="button" class="modal-close-x" @onclick="CerrarModalInterno">×</button>
+            </div>
+            <div class="modal-body-dav">
+                @* --- CASOS PARA NUEVOS REGISTROS --- *@
+                @if (TipoModal == "FRICCION_NUEVA" && Tarea != null)
+                {
+                    <CrearFriccion TareaId="@Tarea.TAR_ID" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                }
+                else if (TipoModal == "SOLUCION_NUEVA")
+                {
+                    <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                }
+
+                @* --- CASOS PARA EDICIÓN (ESTOS FALTABAN) --- *@
+                else if (TipoModal == "SOLUCION_EDITAR" && SolucionSeleccionada != null)
+                {
+                    <EditarSolucion Solucion="@SolucionSeleccionada" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                }
+                else if (TipoModal == "FRICCION_EDITAR" && FriccionSeleccionada != null)
+                {
+                    <Davivienda.Componentes.EditarFriccion Friccion="@FriccionSeleccionada" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno"></Davivienda.Componentes.EditarFriccion>
+                }
+
+                @* --- CASOS PARA HISTORIALES --- *@
+                else if (TipoModal == "HISTORIAL_SOLUCIONES")
+                {
+                    <BitacoraSolucion OnClose="CerrarModalInterno" />
+                }
+                else if (TipoModal == "HISTORIAL_FRICCIONES")
+                {
+                    <BitacoraFriccion OnClose="CerrarModalInterno" />
+                }
             </div>
         </div>
-    }
-</div>
+    </div>
+}

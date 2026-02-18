@@ -96,7 +96,26 @@ namespace Davivienda.Component.Componentes
         }
 
         // Dentro de ManejarCambioBitacora, forzamos el renderizado
+        // Debes tener estas variables declaradas en tu .cs
+        private SolucionesModel? SolucionSeleccionada;
+        private FriccionModel? FriccionSeleccionada;
 
+        // Actualiza estos métodos para capturar el objeto a editar
+        private void AbrirModalEditarSolucion(SolucionesModel sol)
+        {
+            SolucionSeleccionada = sol; // Asignamos la solución seleccionada
+            TipoModal = "SOLUCION_EDITAR";
+            MostrarModalCrear = true;
+            StateHasChanged();
+        }
+
+        private void AbrirModalEditarFriccion(FriccionModel fri)
+        {
+            FriccionSeleccionada = fri; // Asignamos la fricción seleccionada
+            TipoModal = "FRICCION_EDITAR";
+            MostrarModalCrear = true;
+            StateHasChanged();
+        }
 
         // Asegurarse de que al crear algo exitoso se recarguen las listas
         private async Task AlCrearExitoso()
@@ -108,8 +127,7 @@ namespace Davivienda.Component.Componentes
 
         private void AbrirModalCrearFriccion() { TipoModal = "FRICCION_NUEVA"; MostrarModalCrear = true; }
         private void AbrirModalCrearSolucion() { TipoModal = "SOLUCION_NUEVA"; MostrarModalCrear = true; }
-        private void AbrirModalEditarSolucion(SolucionesModel sol) { TipoModal = "SOLUCION_EDITAR"; MostrarModalCrear = true; }
-        private void AbrirModalEditarFriccion(FriccionModel fri) { TipoModal = "FRICCION_EDITAR"; MostrarModalCrear = true; }
+       
         private void CerrarModalInterno() => MostrarModalCrear = false;
         private async Task EliminarSolucion(Guid id) { await Client.DeleteSolucion.ExecuteAsync(id); await CargarDatosTarea(); }
         private async Task EliminarFriccion(Guid id) { await Client.DeleteFriccion.ExecuteAsync(id); await CargarDatosTarea(); }
