@@ -192,9 +192,14 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                string sqlQuery = "DELETE FROM dbo.USUARIO WHERE USU_ID = @usu_id";
                 await dataBase.ConnectAsync();
-                var exec = await dataBase.Connection.ExecuteAsync(sqlQuery, new { usu_id });
+                // 1. Primero ponemos en NULL o borramos las tareas del usuario
+                string sqlTareas = "UPDATE dbo.TAREA SET USU_ID = NULL WHERE USU_ID = @usu_id";
+                await dataBase.Connection.ExecuteAsync(sqlTareas, new { usu_id });
+
+                // 2. Ahora sí borramos al usuario
+                string sqlUsuario = "DELETE FROM dbo.USUARIO WHERE USU_ID = @usu_id";
+                var exec = await dataBase.Connection.ExecuteAsync(sqlUsuario, new { usu_id });
                 return exec > 0;
             }
             finally { await dataBase.DisconnectAsync(); }

@@ -271,3 +271,68 @@
 .animate-pop {
     animation: popIn 0.3s ease-out;
 }
+
+
+/* Agrupación de inputs en el formulario rápido */
+.input-group-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.area-filter-top {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.min-select {
+    padding: 8px 12px;
+    font-size: 13px;
+    width: auto;
+}
+
+.tarea-badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.badge-min {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+/* Colores de Prioridad */
+.prio-alta {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.prio-media {
+    background: #fef3c7;
+    color: #f59e0b;
+}
+
+.prio-baja {
+    background: #f0fdf4;
+    color: #10b981;
+}
+
+.wide-modal {
+    width: 650px;
+}
+
+.form-grid-dav-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.full-width {
+    grid-column: span 2;
+}

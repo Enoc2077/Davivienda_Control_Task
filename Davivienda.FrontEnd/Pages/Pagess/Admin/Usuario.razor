@@ -7,7 +7,7 @@
         <h2 class="page-title">Gestión de Usuarios</h2>
     </div>
 
-    @* 2. Barra de herramientas Arreglada *@
+    @* 2. Barra de herramientas *@
     <div class="search-bar-wrapper">
         <div class="search-input-box">
             <i class="bi bi-search"></i>
@@ -18,7 +18,7 @@
         </button>
     </div>
 
-    @* 3. Listado de Usuarios (Tarjetas) *@
+    @* 3. Listado de Usuarios *@
     <div class="users-list-container">
         @if (UsuariosFiltrados == null || !UsuariosFiltrados.Any())
         {
@@ -73,12 +73,12 @@
                 <div class="form-grid-dav">
                     <div class="input-container-dav">
                         <label>NOMBRE COMPLETO</label>
-                        <input @bind="UsuarioForm.USU_NOM" placeholder="Nombre completo" class="input-field-dav" />
+                        <input @bind="UsuarioForm.USU_NOM" placeholder="Ej. Juan Pérez" class="input-field-dav" />
                     </div>
 
                     <div class="input-container-dav">
-                        <label>N° EMPLEADO</label>
-                        <input @bind="UsuarioForm.USU_NUM" placeholder="12345" class="input-field-dav" />
+                        <label>N° EMPLEADO (5 DÍGITOS)</label>
+                        <input @bind="UsuarioForm.USU_NUM" readonly class="input-field-dav disabled-input" />
                     </div>
 
                     <div class="input-container-dav">
@@ -91,32 +91,33 @@
                         <input @bind="UsuarioForm.USU_TEL" placeholder="+504 9999-9999" class="input-field-dav" />
                     </div>
 
-                    <div class="input-container-dav">
-                        <label>ROL ASIGNADO</label>
-                        <select @bind="UsuarioForm.ROL_ID" class="input-field-dav select-dav">
-                            <option value="">Seleccionar Rol...</option>
-                            @foreach (var rol in Roles)
-                            {
-                                <option value="@rol.ROL_ID">@rol.ROL_NOM</option>
-                            }
-                        </select>
-                    </div>
+                    @if (Editando)
+                    {
+                        <div class="input-container-dav full-width-input">
+                            <label>ESTADO ACTUAL</label>
+                            <select @bind="UsuarioForm.USU_EST" class="input-field-dav select-dav status-select-fix">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                        </div>
+                    }
 
-                    <div class="input-container-dav">
-                        <label>ESTADO ACTUAL</label>
-                        @* FIX: Select con visibilidad garantizada *@
-                        <select @bind="UsuarioForm.USU_EST" class="input-field-dav select-dav status-select-fix">
-                            <option value="true">Activo</option>
-                            <option value="false">Inactivo</option>
-                        </select>
+                    @* CAMPO DE CONTRASEÑA CON VALIDACIÓN *@
+                    <div class="input-container-dav full-width-input">
+                        <label>@(Editando ? "CONFIRMAR CONTRASEÑA PARA GUARDAR" : "CONTRASEÑA INICIAL")</label>
+                        <input type="password" @bind="PasswordCheck" placeholder="••••••••" class="input-field-dav @(ErrorPass ? "input-error" : "")" />
+                        @if (ErrorPass)
+                        {
+                            <span class="error-text">@(Editando ? "La contraseña no coincide con la registrada." : "La contraseña es obligatoria.")</span>
+                        }
                     </div>
                 </div>
             </div>
 
             <div class="modal-foot-dav">
                 <button class="btn-secondary-dav" @onclick="() => MostrarModal = false">Cancelar</button>
-                <button class="btn-save-main-dav" @onclick="GuardarCambios">
-                    @(Editando ? "Actualizar" : "Guardar Registro")
+                <button class="btn-save-main-dav" @onclick="ValidarYGuardar">
+                    @(Editando ? "Actualizar Cambios" : "Finalizar Registro")
                 </button>
             </div>
         </div>
