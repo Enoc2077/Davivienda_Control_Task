@@ -556,26 +556,73 @@
 }
 
 .detail-card-premium {
-    width: 500px;
+    width: 750px; /* Ancho idéntico al de Fricciones */
+    min-height: 600px; /* Altura idéntica */
+    max-height: 90vh;
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 28px;
     overflow: hidden;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    display: flex;
+    flex-direction: column;
 }
 
 .detail-header-red {
-    background: #1e293b;
-    padding: 20px;
+    background: #e30613; /* Rojo institucional para Soluciones */
+    padding: 30px 40px;
     color: white;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-shrink: 0;6
+}
+/* MODIFICADO: Etiquetas y textos con mejor legibilidad */
+.detail-section label {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+/* NUEVO: Contenedor sombreado para descripción técnica */
+.desc-text {
+    font-size: 16px;
+    color: #475569;
+    line-height: 1.6;
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
+    margin: 0;
+}
+
+.main-text {
+    font-size: 22px;
+    color: #1e293b;
+    font-weight: 700;
+    margin: 0
+}
+
+.desc-text {
+    font-size: 16px; /* Cuerpo de texto legible */
+    color: #475569;
+    line-height: 1.6;
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid #f1f5f9;
 }
 
 .detail-body {
-    padding: 30px;
-    max-height: 450px;
+    padding: 40px;
+    flex-grow: 1;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 }
 
 .info-row {
@@ -600,14 +647,23 @@
 .metrics-grid-detail {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    background: #f8fafc;
-    padding: 15px;
-    border-radius: 12px;
-    margin: 20px 0;
-    border: 1px solid #edf2f7;
+    gap: 30px;
+    background: #f1f5f9;
+    padding: 25px;
+    border-radius: 18px;
+    margin: 10px 0;
 }
-
+/* NUEVO: Badge de estado rojo (según imagen de referencia) */
+.status-badge-detail {
+    background: #e30613;
+    color: white !important;
+    padding: 4px 12px;
+    border-radius: 8px;
+    font-size: 12px !important;
+    font-weight: 700;
+    text-align: center;
+    display: inline-block;
+}
 .metric-item {
     display: flex;
     flex-direction: column;
@@ -657,12 +713,13 @@
 }
 
 .detail-footer-actions {
-    padding: 20px;
+    padding: 25px 40px;
     display: flex;
     justify-content: flex-end;
-    gap: 12px;
-    background: #f8fafc;
+    gap: 15px;
+    background: #ffffff;
     border-top: 1px solid #f1f5f9;
+    flex-shrink: 0;
 }
 
 .btn-action-outline {
@@ -684,3 +741,56 @@
     font-weight: 700;
     cursor: pointer;
 }
+
+/* MODIFICADO: Grilla de métricas más espaciada */
+.metrics-grid-detail {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px; /* Más separación entre columnas */
+    background: #f1f5f9;
+    padding: 25px;
+    border-radius: 18px;
+    margin: 10px 0;
+}
+
+/* MODIFICADO: Botones de acción más grandes */
+.detail-footer-actions {
+    padding: 25px 40px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    background: #ffffff;
+    border-top: 1px solid #f1f5f9;
+    flex-shrink: 0;
+}
+
+.btn-action-outline, .btn-action-red {
+    padding: 14px 28px; /* Botones más robustos */
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+    /* NUEVO: Efecto hover para botones */
+    .btn-action-outline:hover {
+        background: #f1f5f9;
+        transform: translateY(-2px);
+    }
+
+    .btn-action-red:hover {
+        background: #334155;
+        box-shadow: 0 4px 12px rgba(30, 41, 59, 0.2);
+        transform: translateY(-2px);
+    }
+.btn-action-outline {
+    padding: 14px 28px;
+    border: 1px solid #cbd5e1;
+    background: white;
+    border-radius: 12px;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+
