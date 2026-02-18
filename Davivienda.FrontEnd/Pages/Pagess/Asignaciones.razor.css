@@ -753,13 +753,14 @@
 .device-monitor {
     position: absolute;
     bottom: 40px;
-    left: 20%; /* Ajustado para estar más centrado en el cuadro derecho */
+    left: 85%; /* Ajustado para estar más centrado en el cuadro derecho */
     width: 180px;
     height: 120px;
     background: #475569;
     border-radius: 12px;
     padding: 8px;
     box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1);
+    top: 75%;
 }
 
 .device-screen {
@@ -788,6 +789,8 @@
     bottom: 30px;
     right: 15%;
     background: #ed1c24;
+    margin-top: 43%;
+    margin-left: 50%;
 }
 
 .person-climbing {
@@ -796,6 +799,8 @@
     bottom: 100px;
     left: 15%;
     background: #0033a0;
+    margin-top: -30%;
+    margin-left: 158%;
 }
 
 .person-sitting {
@@ -804,6 +809,8 @@
     bottom: 30px;
     left: 45%;
     background: #f59e0b;
+    margin-top: -21%;
+    margin-left: 41%;
 }
 
 .floating-element {
