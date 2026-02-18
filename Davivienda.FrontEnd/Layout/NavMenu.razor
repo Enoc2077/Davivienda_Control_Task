@@ -31,14 +31,20 @@
     <div class="sidebar-navigation-area">
         <nav class="navigation-menu-modern">
             <div class="menu-item-modern">
-                <NavLink class="menu-link-modern" href="Home">
-                    <i class="bi bi-clipboard-check menu-icon-modern"></i>
-                    <span class="menu-text-modern">Home</span>
-                </NavLink>
-                <NavLink class="menu-link-modern" href="Asignaciones">
-                    <i class="bi bi-clipboard-check menu-icon-modern"></i>
-                    <span class="menu-text-modern">Asignaciones</span>
-                </NavLink>
+                <div class="menu-item-modern">
+                    <NavLink class="menu-link-modern" href="home">
+                        <i class="bi bi-clipboard-check menu-icon-modern"></i>
+                        <span class="menu-text-modern">Home</span>
+                    </NavLink>
+                </div>
+            </div>
+            <div class="menu-item-modern">
+                <div class="menu-item-modern">
+                    <NavLink class="menu-link-modern" href="Asignaciones">
+                        <i class="bi bi-clipboard-check menu-icon-modern"></i>
+                        <span class="menu-text-modern">Asignaciones</span>
+                    </NavLink>
+                </div>
             </div>
 
             <AuthorizeView Roles="Administrador,LiderTecnico,Gerente,Director,Subdirector">
