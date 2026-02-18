@@ -16,15 +16,20 @@ namespace Davivienda.Component.Componentes
 
         private List<FriccionModel> FriccionesList = new();
         private List<SolucionesModel> SolucionesList = new();
-        private string NombreProceso = "Cargando...";
-        private string NombreProyecto = "Cargando...";
+        private string NombreProceso = "CARGANDO...";
+        private string NombreProyecto = "CARGANDO...";
         private bool MostrarModalCrear = false;
         private string TipoModal = "";
+
+        private SolucionesModel? SolucionSeleccionada;
+        private FriccionModel? FriccionSeleccionada;
 
         private string TituloModal => TipoModal switch
         {
             "FRICCION_NUEVA" => "Nueva Fricción",
             "SOLUCION_NUEVA" => "Nueva Solución",
+            "SOLUCION_EDITAR" => "Editar Solución",
+            "FRICCION_EDITAR" => "Editar Fricción",
             "HISTORIAL_SOLUCIONES" => "Bitácora Global de Soluciones",
             "HISTORIAL_FRICCIONES" => "Bitácora Global de Fricciones",
             _ => "Detalle"
@@ -48,17 +53,21 @@ namespace Davivienda.Component.Componentes
                     var resProc = await Client.GetProcesoById.ExecuteAsync(Tarea.PROC_ID.Value);
                     if (resProc.Data?.ProcesoById != null)
                     {
-                        NombreProceso = resProc.Data.ProcesoById.Proc_NOM;
+                        NombreProceso = resProc.Data.ProcesoById.Proc_NOM.ToUpper();
                         var proId = resProc.Data.ProcesoById.Pro_ID;
                         if (proId.HasValue)
                         {
                             var resProy = await Client.GetProyectoById.ExecuteAsync(proId.Value);
-                            NombreProyecto = resProy.Data?.ProyectoById?.Pro_NOM ?? "Desconocido";
+                            NombreProyecto = resProy.Data?.ProyectoById?.Pro_NOM.ToUpper() ?? "PROYECTO NO ENCONTRADO";
                         }
                     }
                 }
             }
-            catch { NombreProceso = "Error"; NombreProyecto = "Error"; }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error Jerarquía: {ex.Message}");
+                NombreProceso = "ERROR"; NombreProyecto = "ERROR";
+            }
             StateHasChanged();
         }
 
@@ -67,13 +76,36 @@ namespace Davivienda.Component.Componentes
             try
             {
                 var resFri = await Client.GetFricciones.ExecuteAsync();
-                FriccionesList = resFri.Data?.Fricciones?.Where(f => f.Tar_ID == Tarea?.TAR_ID).Select(f => new FriccionModel { FRI_ID = f.Fri_ID, FRI_TIP = f.Fri_TIP }).ToList() ?? new();
+                FriccionesList = resFri.Data?.Fricciones?
+                    .Where(f => f.Tar_ID == Tarea?.TAR_ID)
+                    .Select(f => new FriccionModel
+                    {
+                        FRI_ID = f.Fri_ID,
+                        FRI_TIP = f.Fri_TIP,
+                        FRI_DES = f.Fri_DES,
+                        FRI_EST = f.Fri_EST,
+                        FRI_IMP = f.Fri_IMP,
+                        TAR_ID = f.Tar_ID,
+                        FRI_FEC_CRE = f.Fri_FEC_CRE.DateTime
+                    }).ToList() ?? new();
 
                 var resSol = await Client.GetSoluciones.ExecuteAsync();
                 var idsFricciones = FriccionesList.Select(f => f.FRI_ID).ToList();
-                SolucionesList = resSol.Data?.Soluciones?.Where(s => s.Fri_ID.HasValue && idsFricciones.Contains(s.Fri_ID.Value)).Select(s => new SolucionesModel { SOL_ID = s.Sol_ID, SOL_NOM = s.Sol_NOM }).ToList() ?? new();
+                SolucionesList = resSol.Data?.Soluciones?
+                    .Where(s => s.Fri_ID.HasValue && idsFricciones.Contains(s.Fri_ID.Value))
+                    .Select(s => new SolucionesModel
+                    {
+                        SOL_ID = s.Sol_ID,
+                        SOL_NOM = s.Sol_NOM,
+                        SOL_DES = s.Sol_DES,
+                        SOL_EST = s.Sol_EST,
+                        SOL_NIV_EFE = s.Sol_NIV_EFE,
+                        FRI_ID = s.Fri_ID,
+                        USU_ID = s.Usu_ID,
+                        SOL_FEC_CRE = s.Sol_FEC_CRE.DateTime
+                    }).ToList() ?? new();
             }
-            catch { }
+            catch (Exception ex) { Console.WriteLine($"Error Carga: {ex.Message}"); }
             StateHasChanged();
         }
 
@@ -89,21 +121,14 @@ namespace Davivienda.Component.Componentes
         {
             var val = e.Value?.ToString();
             if (string.IsNullOrEmpty(val)) return;
-
             TipoModal = val == "BIT_SOL" ? "HISTORIAL_SOLUCIONES" : "HISTORIAL_FRICCIONES";
             MostrarModalCrear = true;
-            StateHasChanged(); // Forzar la aparición del modal
+            StateHasChanged();
         }
 
-        // Dentro de ManejarCambioBitacora, forzamos el renderizado
-        // Debes tener estas variables declaradas en tu .cs
-        private SolucionesModel? SolucionSeleccionada;
-        private FriccionModel? FriccionSeleccionada;
-
-        // Actualiza estos métodos para capturar el objeto a editar
         private void AbrirModalEditarSolucion(SolucionesModel sol)
         {
-            SolucionSeleccionada = sol; // Asignamos la solución seleccionada
+            SolucionSeleccionada = sol;
             TipoModal = "SOLUCION_EDITAR";
             MostrarModalCrear = true;
             StateHasChanged();
@@ -111,26 +136,44 @@ namespace Davivienda.Component.Componentes
 
         private void AbrirModalEditarFriccion(FriccionModel fri)
         {
-            FriccionSeleccionada = fri; // Asignamos la fricción seleccionada
+            FriccionSeleccionada = fri;
             TipoModal = "FRICCION_EDITAR";
             MostrarModalCrear = true;
             StateHasChanged();
         }
 
-        // Asegurarse de que al crear algo exitoso se recarguen las listas
         private async Task AlCrearExitoso()
         {
             MostrarModalCrear = false;
-            await CargarDatosTarea(); // Recarga la info de la DB para ver la nueva solución/fricción
+            await CargarDatosTarea();
             StateHasChanged();
         }
 
         private void AbrirModalCrearFriccion() { TipoModal = "FRICCION_NUEVA"; MostrarModalCrear = true; }
         private void AbrirModalCrearSolucion() { TipoModal = "SOLUCION_NUEVA"; MostrarModalCrear = true; }
-       
         private void CerrarModalInterno() => MostrarModalCrear = false;
-        private async Task EliminarSolucion(Guid id) { await Client.DeleteSolucion.ExecuteAsync(id); await CargarDatosTarea(); }
-        private async Task EliminarFriccion(Guid id) { await Client.DeleteFriccion.ExecuteAsync(id); await CargarDatosTarea(); }
+
+        private async Task EliminarSolucion(Guid id)
+        {
+            try
+            {
+                var result = await Client.DeleteSolucion.ExecuteAsync(id);
+                if (result.Errors.Any()) { Console.WriteLine($"Error FK: {result.Errors.First().Message}"); return; }
+                await CargarDatosTarea();
+            }
+            catch (Exception ex) { Console.WriteLine($"Error Delete: {ex.Message}"); }
+        }
+
+        private async Task EliminarFriccion(Guid id)
+        {
+            try
+            {
+                await Client.DeleteFriccion.ExecuteAsync(id);
+                await CargarDatosTarea();
+            }
+            catch (Exception ex) { Console.WriteLine($"Error Delete: {ex.Message}"); }
+        }
+
         private async Task Cerrar() => await OnClose.InvokeAsync();
     }
 }

@@ -574,3 +574,31 @@
     letter-spacing: 1px;
     margin-bottom: 4px;
 }
+
+
+/* Estilo para los textos del cuadrante superior */
+.value-text {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 4px 0 0 0;
+    color: #1e293b;
+    text-transform: uppercase; /* Opcional, para estilo Davivienda */
+}
+
+.highlight-blue {
+    color: #004b93; /* Azul Davivienda */
+}
+
+.label-tiny {
+    font-size: 10px;
+    font-weight: 800;
+    color: #94a3b8;
+    letter-spacing: 1px;
+}
+
+.info-execution-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Divide el espacio para Proyecto y Proceso */
+    gap: 20px;
+    padding: 15px 0;
+}
