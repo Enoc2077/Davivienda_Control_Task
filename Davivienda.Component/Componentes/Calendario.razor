@@ -1,31 +1,24 @@
 ﻿@namespace Davivienda.Component.Componentes
 @using Davivienda.Models.Modelos
 
-@* Referencia a estilos premium *@
-<link href="Calendario.css" rel="stylesheet" />
-
 <div class="calendar-wrapper">
     <div class="calendar-container">
         <div class="calendar-sidebar">
+            @* Mini Calendario *@
             <div class="mini-calendar">
                 <div class="mini-calendar-header">
                     <button class="nav-btn" @onclick="PreviousMonth">‹</button>
                     <h3>@CurrentMonth.ToString("MMMM yyyy")</h3>
                     <button class="nav-btn" @onclick="NextMonth">›</button>
                 </div>
-
                 <div class="mini-calendar-grid">
-                    <div class="weekday-header">Mon</div>
-                    <div class="weekday-header">Tue</div>
-                    <div class="weekday-header">Wed</div>
-                    <div class="weekday-header">Thu</div>
-                    <div class="weekday-header">Fri</div>
-                    <div class="weekday-header">Sat</div>
-                    <div class="weekday-header">Sun</div>
-
                     @foreach (var day in GetMonthDays())
                     {
-                        <div class="mini-day @(day.IsCurrentMonth ? "" : "other-month") @(day.IsSelected ? "selected" : "") @(day.IsToday ? "today" : "")"
+                        @* Prioridad visual: Si finaliza (rojo) tiene prioridad sobre inicia (verde) *@
+                        <div class="mini-day @(day.IsCurrentMonth ? "" : "other-month")
+                             @(day.IsSelected ? "selected" : "")
+                             @(day.IsToday ? "today" : "")
+                             @(day.TieneTareaPorFinalizar ? "task-ending" : (day.TieneTareaPorIniciar ? "task-starting" : ""))"
                              @onclick="() => SelectDay(day)">
                             @day.Day
                         </div>
@@ -33,9 +26,31 @@
                 </div>
             </div>
 
-            @* Prioridades ocultas visualmente según lo solicitado *@
-            <div class="categories-section" style="display: none;">
-                <h4>Prioridades</h4>
+            @* Estadísticas *@
+            <div class="categories-section">
+                <h4>Prioridades Pendientes</h4>
+                <div class="category-list">
+                    <div class="category-item"><div class="category-color" style="background: #ed1c24;"></div><span>Alta: @CountAlta</span></div>
+                    <div class="category-item"><div class="category-color" style="background: #ffc107;"></div><span>Media: @CountMedia</span></div>
+                    <div class="category-item"><div class="category-color" style="background: #28a745;"></div><span>Baja: @CountBaja</span></div>
+                </div>
+            </div>
+
+            @* Prioritize (Foco Actual) *@
+            <div class="prioritize-section">
+                <h4>Prioritize</h4>
+                <div class="priority-list">
+                    @if (TareaEnFoco != null)
+                    {
+                        <div class="priority-item focus-animate active-highlight" @onclick="() => EnfocarTarea(TareaEnFoco)">
+                            <i class="fas fa-thumbtack priority-icon"></i>
+                            <div class="priority-info">
+                                <span class="priority-name">@TareaEnFoco.TAR_NOM</span>
+                                <small>@TareaEnFoco.TAR_FEC_INI.ToString("HH:mm")</small>
+                            </div>
+                        </div>
+                    }
+                </div>
             </div>
         </div>
 
@@ -46,15 +61,13 @@
                     <h2>@GetWeekRange()</h2>
                     <button class="nav-btn" @onclick="NextWeek">›</button>
                 </div>
-                <span class="week-number">Semana @GetWeekNumber()</span>
-                <button class="create-btn">+ Crear</button>
             </div>
 
             <div class="week-days">
                 <div class="spacer-cell"></div>
                 @foreach (var day in GetWeekDays())
                 {
-                    <div class="week-day-header">
+                    <div class="week-day-header @(day.Date == SelectedDate.Date ? "active-day" : "")">
                         <div class="day-name">@day.ToString("ddd").ToUpper()</div>
                         <div class="day-number @(day.Date == DateTime.Today ? "today" : "")">@day.Day</div>
                     </div>
@@ -62,34 +75,43 @@
             </div>
 
             <div class="time-grid">
-                @* Columna de Horas: Ajustada de 8:00 a 16:00 *@
                 <div class="time-column">
-                    @for (int hour = 8; hour <= 16; hour++)
+                    @* Genera las etiquetas de hora de 00:00 a 23:00 *@
+                    @for (int hour = 0; hour <= 23; hour++)
                     {
-                        <div class="time-slot">@hour:00</div>
+                        <div class="time-slot">@hour.ToString("00"):00</div>
                     }
                 </div>
 
                 @foreach (var day in GetWeekDays())
                 {
                     <div class="day-column">
-                        @* Celdas de fondo para la cuadrícula *@
-                        @for (int hour = 8; hour <= 16; hour++)
+                        @* IMPORTANTE: Genera las casillas visuales para todas las horas *@
+                        @for (int hour = 0; hour <= 23; hour++)
                         {
                             <div class="hour-cell"></div>
                         }
 
                         @if (ListaTareas != null)
                         {
-                            @* Renderizado de tareas filtradas por día *@
-                            @foreach (var tarea in ListaTareas.Where(t => t.TAR_FEC_INI.Date == day.Date))
+                            @* Lógica de renderizado de tareas superpuestas con el nombre oculto *@
+                            var tareasDelDia = ListaTareas.Where(t => t.TAR_FEC_INI.Date == day.Date).ToList();
+                            @for (int i = 0; i < tareasDelDia.Count; i++)
                             {
-                                <div class="event @GetEventoClase(tarea.PRI_ID)"
-                                     @* Usamos .DateTime para resolver el error de tipos previo *@
-                                     style="@GetEventoPosicion(tarea.TAR_FEC_INI.DateTime, tarea.TAR_FEC_FIN?.DateTime)">
-                                    <div class="event-title">@tarea.TAR_NOM</div>
-                                    <div class="event-time">
-                                        @tarea.TAR_FEC_INI.ToString("HH:mm") - @(tarea.TAR_FEC_FIN?.ToString("HH:mm") ?? "Límite")
+                                var tarea = tareasDelDia[i];
+                                <div class="event @GetEventoClase(tarea.PRI_ID) task-animate @(TareaEnFoco?.TAR_ID == tarea.TAR_ID ? "event-selected" : "")"
+                                     style="@GetEventoPosicion(tarea.TAR_FEC_INI.DateTime, tarea.TAR_FEC_FIN?.DateTime, i)"
+                                     @onclick="() => EnfocarTarea(tarea)"
+                                     title="@tarea.TAR_NOM">
+
+                                    @* Nombre oculto que aparece en Hover *@
+                                    <span class="event-title-hidden">@tarea.TAR_NOM</span>
+
+                                    @* Contenedor de horas siempre visible *@
+                                    <div class="event-time-range">
+                                        <span class="time-start">@tarea.TAR_FEC_INI.ToString("HH:mm")</span>
+                                        <span class="time-separator">-</span>
+                                        <span class="time-end">@(tarea.TAR_FEC_FIN?.ToString("HH:mm") ?? "--:--")</span>
                                     </div>
                                 </div>
                             }

@@ -1,0 +1,432 @@
+
+:root {
+    --color-rojo: #EF4444;
+    --color-amarillo: #F59E0B;
+    --color-verde: #10B981;
+    --color-azul: #3B82F6;
+    --color-naranja: #F97316;
+    --gray-100: #F3F4F6;
+    --gray-200: #E5E7EB;
+    --gray-400: #9CA3AF;
+    --gray-600: #4B5563;
+    --gray-700: #374151;
+    --gray-900: #111827;
+}
+
+.grafica-container-component {
+    width: 100%;
+    /* Ajusta esta altura según prefieras que se vea el cuadro */
+    max-height: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* Cambiado de center para que el scroll empiece arriba */
+    padding: 20px;
+    /* ACTIVAR SCROLL */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.container-grafico-circular, .chart-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    /* Quitamos height: 100% para que crezca y active el scroll */
+    padding-bottom: 10px;
+}
+
+    /* DISEÑO DE LA BARRA DE SCROLL (Estilo Davivienda) */
+    .grafica-container-component::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .grafica-container-component::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .grafica-container-component::-webkit-scrollbar-thumb {
+        background: #E5E7EB; /* Gris suave */
+        border-radius: 10px;
+    }
+
+        .grafica-container-component::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF; /* Un poco más oscuro al pasar el mouse */
+        }
+
+.chart-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* --- GRÁFICO CIRCULAR (DONUT) --- */
+.container-grafico-circular {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+}
+
+.pie-chart-priorities {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    animation: rotateIn 0.6s ease-out;
+}
+
+    .pie-chart-priorities:hover {
+        transform: scale(1.08);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.18);
+    }
+
+.pie-center-hole {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pie-tooltip {
+    visibility: hidden;
+    position: absolute;
+    top: 50%;
+    left: 110%;
+    transform: translateY(-50%);
+    background: #1e293b;
+    color: white;
+    padding: 12px;
+    border-radius: 10px;
+    z-index: 100;
+    opacity: 0;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    font-size: 12px;
+}
+
+.pie-chart-priorities:hover .pie-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+@keyframes rotateIn {
+    from {
+        opacity: 0;
+        transform: rotate(-180deg) scale(0.5);
+    }
+
+    to {
+        opacity: 1;
+        transform: rotate(0deg) scale(1);
+    }
+}
+
+/* --- LEYENDA --- */
+.leyenda-circular-unica {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 200px;
+}
+
+.item-leyenda {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: var(--gray-100);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .item-leyenda:hover {
+        background: white;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transform: translateX(4px);
+    }
+
+.bolita {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+    .bolita.roja {
+        background: var(--color-rojo);
+    }
+
+    .bolita.amarilla {
+        background: var(--color-amarillo);
+    }
+
+    .bolita.verde {
+        background: var(--color-verde);
+    }
+
+.leyenda-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+}
+
+/* --- PROYECTOS --- */
+.donut-num {
+    font-size: 64px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #0033A0 0%, #0EA5E9 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.donut-txt {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.project-mini-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.proj-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: white;
+    border: 2px solid var(--gray-200);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+    .proj-item:hover {
+        border-color: #0033A0;
+        background: #F0F9FF;
+        transform: translateX(4px);
+        box-shadow: 0 4px 12px rgba(0, 51, 160, 0.1);
+    }
+
+    .proj-item i {
+        font-size: 18px;
+        color: #0033A0;
+        flex-shrink: 0;
+    }
+
+.proj-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--gray-700);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* --- BARRAS --- */
+.bar-chart-container {
+    width: 100%;
+    height: 250px; /* Aumentado de 180px para dar más espacio al crecimiento */
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 32px;
+    padding-bottom: 20px;
+}
+
+
+.bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 70px; /* Un poco más ancho para estabilidad visual */
+}
+
+.bar {
+    width: 100%;
+    border-radius: 12px 12px 0 0;
+    transition: height 1.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    min-height: 20vh;
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+                 
+/* Valor numérico dentro de la barra */
+.bar-value {
+    font-size: 14px;
+    font-weight: 800;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+    z-index: 2;
+}
+
+@keyframes barGrowUp {
+    from {
+        height: 0;
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.bar:hover {
+    filter: brightness(1.15);
+    transform: scaleX(1.1);
+}
+
+.bar-value {
+    font-size: 12px;
+    font-weight: 800;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.bar-azul {
+    background: linear-gradient(180deg, #3B82F6 0%, #2563EB 100%);
+}
+
+.bar-naranja {
+    background: linear-gradient(180deg, #F59E0B 0%, #D97706 100%);
+}
+
+.bar-verde {
+    background: linear-gradient(180deg, #10B981 0%, #059669 100%);
+}
+
+.bar-lbl {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* --- RESPONSIVE & FADE --- */
+@media (max-width: 768px) {
+    .pie-chart-priorities {
+        width: 140px;
+        height: 140px;
+    }
+
+    .donut-num {
+        font-size: 48px;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.item-leyenda, .proj-item {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+    .item-leyenda:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .item-leyenda:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .item-leyenda:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+
+
+
+
+
+/* ESTILO PASTEL EXPLOTADO (SEGÚN IMAGEN) */
+.pie-chart-priorities-exploded {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s ease;
+    cursor: pointer;
+    /* El degradado cónico con separaciones blancas se inyecta desde el CS */
+}
+
+/* Efecto de separación central */
+.pie-center-hole {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px; /* Hueco muy pequeño para que parezca que las piezas se tocan en el centro */
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.pie-chart-priorities-exploded:hover {
+    transform: scale(1.05) rotate(2deg);
+}
+
+/* Ajuste de las barras para que se vean más robustas */
+.bar {
+    width: 100%;
+    border-radius: 12px 12px 4px 4px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+    .bar:active {
+        transform: scale(0.95);
+    }
+
+.item-leyenda {
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+    .item-leyenda:hover {
+        border-color: var(--gray-400);
+        background: white;
+    }
+
