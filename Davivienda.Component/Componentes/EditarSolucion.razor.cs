@@ -1,6 +1,8 @@
 ﻿using Davivienda.Models.Modelos;
 using Microsoft.AspNetCore.Components;
 using Davivienda.GraphQL.SDK;
+using System;
+using System.Threading.Tasks;
 
 namespace Davivienda.Component.Componentes
 {
@@ -17,6 +19,7 @@ namespace Davivienda.Component.Componentes
         {
             if (Solucion != null)
             {
+                // Clonamos el objeto para no afectar la lista original antes de guardar
                 solEdit = new SolucionesModel
                 {
                     SOL_ID = Solucion.SOL_ID,
@@ -33,20 +36,33 @@ namespace Davivienda.Component.Componentes
 
         private async Task ActualizarSolucion()
         {
-            var input = new SolucionesModelInput
+            try
             {
-                Sol_ID = solEdit.SOL_ID,
-                Sol_NOM = solEdit.SOL_NOM,
-                Sol_DES = solEdit.SOL_DES,
-                Sol_EST = solEdit.SOL_EST,
-                Sol_NIV_EFE = solEdit.SOL_NIV_EFE,
-                Fri_ID = solEdit.FRI_ID,
-                Usu_ID = solEdit.USU_ID,
-                Sol_FEC_CRE = solEdit.SOL_FEC_CRE,
-                Sol_FEC_MOD = DateTimeOffset.Now
-            };
-            var result = await Client.UpdateSolucion.ExecuteAsync(input);
-            if (result.Data?.UpdateSolucion ?? false) await OnSuccess.InvokeAsync();
+                if (string.IsNullOrWhiteSpace(solEdit.SOL_NOM)) return;
+
+                var input = new SolucionesModelInput
+                {
+                    Sol_ID = solEdit.SOL_ID,
+                    Sol_NOM = solEdit.SOL_NOM,
+                    Sol_DES = solEdit.SOL_DES,
+                    Sol_EST = solEdit.SOL_EST,
+                    Sol_NIV_EFE = solEdit.SOL_NIV_EFE,
+                    Fri_ID = solEdit.FRI_ID,
+                    Usu_ID = solEdit.USU_ID,
+                    Sol_FEC_CRE = solEdit.SOL_FEC_CRE,
+                    Sol_FEC_MOD = DateTimeOffset.Now
+                };
+
+                var result = await Client.UpdateSolucion.ExecuteAsync(input);
+                if (result.Data?.UpdateSolucion ?? false)
+                {
+                    await OnSuccess.InvokeAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al actualizar solución: {ex.Message}");
+            }
         }
 
         private async Task Cerrar() => await OnClose.InvokeAsync();

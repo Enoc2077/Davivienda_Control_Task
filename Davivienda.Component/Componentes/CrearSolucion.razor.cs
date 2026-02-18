@@ -12,11 +12,14 @@ namespace Davivienda.Component.Componentes
 
         [Parameter] public Guid FriccionId { get; set; }
         [Parameter] public EventCallback OnSuccess { get; set; }
-        [Parameter] public EventCallback OnClose { get; set; } // Parámetro para habilitar el cierre
+        [Parameter] public EventCallback OnClose { get; set; }
 
-        private SolucionesModel nuevaSolucion = new SolucionesModel();
+        private SolucionesModel nuevaSolucion = new SolucionesModel
+        {
+            SOL_EST = "Pendiente",
+            SOL_NIV_EFE = 0
+        };
 
-        // Método para los botones Cancelar y X
         private async Task CerrarModalInterno()
         {
             if (OnClose.HasDelegate)
@@ -29,6 +32,8 @@ namespace Davivienda.Component.Componentes
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(nuevaSolucion.SOL_NOM)) return;
+
                 var input = new SolucionesModelInput
                 {
                     Sol_ID = Guid.NewGuid(),
@@ -50,7 +55,7 @@ namespace Davivienda.Component.Componentes
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error al registrar la solución: {ex.Message}");
+                Console.WriteLine($"Error insertando solución: {ex.Message}");
             }
         }
     }
