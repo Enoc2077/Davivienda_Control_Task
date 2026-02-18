@@ -1,0 +1,94 @@
+﻿@using Davivienda.Models.Modelos
+
+<div class="grafica-container-component">
+    @if (TipoGrafica == "Prioridades")
+    {
+        @* --- GRÁFICA 1: PASTEL SEPARADO DE PRIORIDADES --- *@
+        <div class="container-grafico-circular">
+            @* El evento OnFiltrar permite que al tocar el pastel se limpie el filtro o se aplique uno general *@
+            <div class="pie-chart-priorities-exploded" style="@GetPieStyle()" @onclick='() => OnFiltrar.InvokeAsync("Todas")'>
+                <div class="pie-center-hole"></div>
+                <div class="pie-tooltip">
+                    <span class="p-title"><strong>Desglose Prioridades</strong></span>
+                    <span>Alta: @AltaCount</span>
+                    <span>Media: @MediaCount</span>
+                    <span>Baja: @BajaCount</span>
+                </div>
+            </div>
+
+            <div class="leyenda-circular-unica">
+                <div class="item-leyenda" @onclick='() => OnFiltrar.InvokeAsync("Alta")'>
+                    <span class="bolita roja"></span>
+                    <span class="leyenda-text">Alta (@AltaCount)</span>
+                </div>
+                <div class="item-leyenda" @onclick='() => OnFiltrar.InvokeAsync("Media")'>
+                    <span class="bolita amarilla"></span>
+                    <span class="leyenda-text">Media (@MediaCount)</span>
+                </div>
+                <div class="item-leyenda" @onclick='() => OnFiltrar.InvokeAsync("Baja")'>
+                    <span class="bolita verde"></span>
+                    <span class="leyenda-text">Baja (@BajaCount)</span>
+                </div>
+            </div>
+        </div>
+    }
+    else if (TipoGrafica == "ProyectosAsociados")
+    {
+        @* --- GRÁFICA 2: PROYECTOS VINCULADOS --- *@
+        <div class="chart-content">
+            <div class="donut-style-info">
+                <div class="donut-num">@TotalProyectos</div>
+                <div class="donut-txt">Proyectos Activos</div>
+            </div>
+            <div class="project-mini-list">
+                @if (Proyectos != null && Proyectos.Any())
+                {
+                    @foreach (var p in Proyectos.Take(4))
+                    {
+                        <div class="proj-item">
+                            <i class="bi bi-diagram-3-fill"></i>
+                            <span class="proj-name">@p.PRO_NOM</span>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="empty-state-mini">
+                        <span>No hay proyectos vinculados</span>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    else if (TipoGrafica == "Estados")
+    {
+        @* --- GRÁFICA 3: BARRAS DE ESTADO CON FILTRADO --- *@
+        <div class="chart-content">
+            <div class="bar-chart-container">
+                @* Barra de Pendientes *@
+                <div class="bar-wrapper" @onclick='() => OnFiltrar.InvokeAsync("Pendiente")'>
+                    <div class="bar bar-azul" style="height: @GetBarHeight(Pendientes)%">
+                        <span class="bar-value">@Pendientes</span>
+                    </div>
+                    <span class="bar-lbl">PEN</span>
+                </div>
+
+                @* Barra de En Progreso *@
+                <div class="bar-wrapper" @onclick='() => OnFiltrar.InvokeAsync("En Progreso")'>
+                    <div class="bar bar-naranja" style="height: @GetBarHeight(EnProgreso)%">
+                        <span class="bar-value">@EnProgreso</span>
+                    </div>
+                    <span class="bar-lbl">PROG</span>
+                </div>
+
+                @* Barra de Completadas *@
+                <div class="bar-wrapper" @onclick='() => OnFiltrar.InvokeAsync("Completado")'>
+                    <div class="bar bar-verde" style="height: @GetBarHeight(Completadas)%">
+                        <span class="bar-value">@Completadas</span>
+                    </div>
+                    <span class="bar-lbl">COMP</span>
+                </div>
+            </div>
+        </div>
+    }
+</div>

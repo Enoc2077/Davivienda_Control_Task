@@ -31,18 +31,22 @@
     <div class="sidebar-navigation-area">
         <nav class="navigation-menu-modern">
             <div class="menu-item-modern">
+                <NavLink class="menu-link-modern" href="Home">
+                    <i class="bi bi-clipboard-check menu-icon-modern"></i>
+                    <span class="menu-text-modern">Home</span>
+                </NavLink>
                 <NavLink class="menu-link-modern" href="Asignaciones">
                     <i class="bi bi-clipboard-check menu-icon-modern"></i>
                     <span class="menu-text-modern">Asignaciones</span>
                 </NavLink>
             </div>
 
-            <AuthorizeView Roles="Administrador,LiderTecnico, Gerente">
+            <AuthorizeView Roles="Administrador,LiderTecnico,Gerente,Director,Subdirector">
                 <Authorized>
                     <div class="menu-item-modern">
                         <button class="menu-link-modern menu-button-modern" @onclick="ToggleAdminMenu">
                             <i class="bi bi-shield-lock menu-icon-modern"></i>
-                            <span class="menu-text-modern">Gestión Admin</span>
+                            <span class="menu-text-modern">Administracion</span>
                             <i class="bi @(isAdminOpen ? "bi-chevron-up" : "bi-chevron-down") chevron-icon-modern"></i>
                         </button>
                         @if (isAdminOpen)

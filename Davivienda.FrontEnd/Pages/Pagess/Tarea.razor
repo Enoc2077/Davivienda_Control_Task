@@ -1,11 +1,22 @@
 ﻿@page "/Tarea"
+@using Davivienda.Component.Componentes
 
 <div class="cuadrantes-container">
 
-    @* Cuadrante 1: Tareas Pendientes *@
+    @* Cuadrante 1: Listado con Filtro de Área *@
     <div class="cuadro-blanco q-90-180 animate-pop">
         <div class="panel-header">
-            <h3 class="title-dav-red"><i class="bi bi-list-task"></i> Tareas Pendientes</h3>
+            <h3 class="title-dav-red"><i class="bi bi-list-task"></i> Control de Tareas</h3>
+            <div class="area-filter-top">
+                <label>FILTRAR POR ÁREA:</label>
+                <select class="input-field-dav select-dav min-select" @onchange="OnAreaChanged">
+                    <option value="">Todas las Áreas</option>
+                    @foreach (var area in AreasLista)
+                    {
+                        <option value="@area.ARE_ID">@area.ARE_NOM</option>
+                    }
+                </select>
+            </div>
         </div>
         <div class="tareas-scroll-area">
             @foreach (var tarea in TareasLista)
@@ -14,118 +25,150 @@
                     <div class="tarea-info">
                         <span class="tarea-name-text">@tarea.TAR_NOM</span>
                         <p class="tarea-desc-text">@tarea.TAR_DES</p>
+                        <div class="tarea-badges">
+                            <span class="badge-min @tarea.TAR_EST.ToLower().Replace(" ", "-")">@tarea.TAR_EST</span>
+                            <span class="badge-min prio-@GetPrioridadNombre(tarea.PRI_ID).ToLower()">@GetPrioridadNombre(tarea.PRI_ID)</span>
+                        </div>
                     </div>
                     <div class="tarea-actions-min">
-                        <button class="btn-action-edit" @onclick:stopPropagation="true" @onclick="() => AbrirModalEdicion(tarea)">
-                            <i class="bi bi-pencil-square"></i>
-                        </button>
-                        <button class="btn-action-delete" @onclick:stopPropagation="true" @onclick="() => EliminarTarea(tarea.TAR_ID)">
-                            <i class="bi bi-trash3"></i>
-                        </button>
+                        <button class="btn-action-edit" @onclick:stopPropagation="true" @onclick="() => AbrirModalEdicion(tarea)"><i class="bi bi-pencil-square"></i></button>
+                        <button class="btn-action-delete" @onclick:stopPropagation="true" @onclick="() => EliminarTarea(tarea.TAR_ID)"><i class="bi bi-trash3"></i></button>
                     </div>
                 </div>
             }
         </div>
     </div>
 
-    @* Cuadrante 2: Formulario de Creación *@
+    @* Cuadrante 2: Registro Rápido Completo *@
     <div class="cuadro-blanco q-270-90 animate-pop">
         <div class="panel-header">
-            <h3 class="title-dav-red"><i class="bi bi-plus-circle-fill"></i> Nueva Tarea</h3>
+            <h3 class="title-dav-red"><i class="bi bi-lightning-fill"></i> Registro Rápido</h3>
         </div>
-        <div class="form-creacion-dav">
-            <div class="input-container-dav">
-                <label>PROYECTO</label>
-                <select class="input-field-dav select-dav" @onchange="OnProyectoChanged">
-                    <option value="">-- Seleccionar Proyecto --</option>
-                    @foreach (var proy in ProyectosLista)
-                    {
-                        <option value="@proy.PRO_ID">@proy.PRO_NOM</option>
-                    }
-                </select>
+        <div class="form-creacion-dav grid-form">
+            <div class="input-group-row">
+                <div class="input-container-dav">
+                    <label>PROYECTO</label>
+                    <select class="input-field-dav select-dav" @onchange="OnProyectoChanged">
+                        <option value="">-- Seleccionar --</option>
+                        @foreach (var proy in ProyectosLista)
+                        {
+                            <option value="@proy.PRO_ID">@proy.PRO_NOM</option>
+                        }
+                    </select>
+                </div>
+                <div class="input-container-dav">
+                    <label>PROCESO</label>
+                    <select class="input-field-dav select-dav" @bind="SelectedProcesoId">
+                        <option value="">-- Seleccionar --</option>
+                        @foreach (var proc in ProcesosFiltrados)
+                        {
+                            <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
+                        }
+                    </select>
+                </div>
             </div>
 
             <div class="input-container-dav">
-                <label>PROCESO</label>
-                <select class="input-field-dav select-dav" @bind="SelectedProcesoId" disabled="@(ProcesosFiltrados.Count == 0)">
-                    <option value="">-- Seleccionar Proceso --</option>
-                    @foreach (var proc in ProcesosFiltrados)
-                    {
-                        <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
-                    }
-                </select>
+                <label>TÍTULO</label>
+                <input type="text" @bind="NuevaTareaNombre" class="input-field-dav" placeholder="Nombre de la tarea..." />
             </div>
 
-            <div class="input-container-dav">
-                <label>TÍTULO DE TAREA</label>
-                <input type="text" @bind="NuevaTareaNombre" placeholder="Nombre de la tarea..." class="input-field-dav" />
+            <div class="input-group-row">
+                <div class="input-container-dav">
+                    <label>PRIORIDAD</label>
+                    <select class="input-field-dav select-dav" @bind="NuevaTareaPrioridadId">
+                        @foreach (var prio in PrioridadesLista)
+                        {
+                            <option value="@prio.PRI_ID">@prio.PRI_NOM</option>
+                        }
+                    </select>
+                </div>
+                <div class="input-container-dav">
+                    <label>RESPONSABLE</label>
+                    <select class="input-field-dav select-dav" @bind="NuevaTareaUsuarioId">
+                        <option value="">-- Asignar a --</option>
+                        @foreach (var usu in UsuariosFiltrados)
+                        {
+                            <option value="@usu.USU_ID">@usu.USU_NOM</option>
+                        }
+                    </select>
+                </div>
             </div>
 
-            <div class="input-container-dav">
-                <label>DESCRIPCIÓN DETALLADA</label>
-                <textarea @bind="NuevaTareaDesc" rows="3" placeholder="¿En qué consiste esta tarea?" class="input-field-dav"></textarea>
+            <div class="input-group-row">
+                <div class="input-container-dav">
+                    <label>FECHA INICIO</label>
+                    <input type="date" @bind="NuevaTareaFechaIni" class="input-field-dav" />
+                </div>
+                <div class="input-container-dav">
+                    <label>FECHA ENTREGA</label>
+                    <input type="date" @bind="NuevaTareaFechaFin" class="input-field-dav" />
+                </div>
             </div>
 
             <button class="btn-save-main-dav-red" @onclick="GuardarNuevaTarea" disabled="@IsProcessing">
-                @if (IsProcessing)
-                {
-                    <span class="spinner-border spinner-border-sm"></span> <span>GUARDANDO...</span>
-                }
-                else
-                {
-                    <span>REGISTRAR TAREA</span>
-                }
+                <span>@(IsProcessing ? "PROCESANDO..." : "CREAR TAREA AHORA")</span>
             </button>
         </div>
     </div>
 
     @* Cuadrante 3: Resumen *@
     <div class="cuadro-blanco q-180-270 animate-pop">
-        <div class="panel-header">
-            <h3 class="title-dav-red"><i class="bi bi-graph-up-arrow"></i> Resumen de Actividad</h3>
-        </div>
+        <div class="panel-header"><h3 class="title-dav-red">Resumen</h3></div>
         <div class="stats-premium">
-            <div class="stat-item">
-                <span class="stat-label">Tareas Registradas</span>
-                <span class="stat-value">@TareasLista.Count</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Proyectos Activos</span>
-                <span class="stat-value">@ProyectosLista.Count</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Procesos Totales</span>
-                <span class="stat-value">@TodosLosProcesos.Count</span>
-            </div>
+            <div class="stat-item"><span class="stat-label">Total</span><span class="stat-value">@TareasLista.Count</span></div>
+            <div class="stat-item"><span class="stat-label">Proyectos</span><span class="stat-value">@ProyectosLista.Count</span></div>
+            <div class="stat-item"><span class="stat-label">Usuarios</span><span class="stat-value">@UsuariosFiltrados.Count</span></div>
         </div>
     </div>
 </div>
 
-@* Modal de Edición Premium *@
+@* Modal de Edición Completa *@
 @if (MostrarModal)
 {
     <div class="modal-overlay">
-        <div class="modal-card-premium animate-pop">
+        <div class="modal-card-premium wide-modal animate-pop">
             <div class="modal-top-accent-red"></div>
             <div class="modal-head">
-                <h2 class="modal-title-main">Editar Tarea</h2>
+                <h2 class="modal-title-main">Actualizar Información</h2>
                 <button class="close-x-dav" @onclick="() => MostrarModal = false">×</button>
             </div>
             <div class="modal-body">
-                <div class="form-grid-dav">
+                <div class="form-grid-dav-two-col">
+                    <div class="input-container-dav"><label>TÍTULO</label><input type="text" @bind="TareaEdicion.TAR_NOM" class="input-field-dav" /></div>
                     <div class="input-container-dav">
-                        <label>NOMBRE DE TAREA</label>
-                        <input type="text" @bind="TareaEdicion.TAR_NOM" class="input-field-dav" />
+                        <label>ESTADO</label>
+                        <select @bind="TareaEdicion.TAR_EST" class="input-field-dav select-dav">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En Progreso">En Progreso</option>
+                            <option value="Completado">Completado</option>
+                            <option value="Bloqueado">Bloqueado</option>
+                        </select>
+                    </div>
+                    <div class="input-container-dav full-width"><label>DESCRIPCIÓN</label><textarea @bind="TareaEdicion.TAR_DES" rows="2" class="input-field-dav"></textarea></div>
+                    <div class="input-container-dav">
+                        <label>RESPONSABLE</label>
+                        <select @bind="TareaEdicion.USU_ID" class="input-field-dav select-dav">
+                            @foreach (var usu in UsuariosGlobales)
+                            {
+                                <option value="@usu.USU_ID">@usu.USU_NOM</option>
+                            }
+                        </select>
                     </div>
                     <div class="input-container-dav">
-                        <label>DESCRIPCIÓN</label>
-                        <textarea @bind="TareaEdicion.TAR_DES" rows="4" class="input-field-dav"></textarea>
+                        <label>PRIORIDAD</label>
+                        <select @bind="TareaEdicion.PRI_ID" class="input-field-dav select-dav">
+                            @foreach (var prio in PrioridadesLista)
+                            {
+                                <option value="@prio.PRI_ID">@prio.PRI_NOM</option>
+                            }
+                        </select>
                     </div>
                 </div>
             </div>
             <div class="modal-foot-dav">
                 <button class="btn-secondary-dav" @onclick="() => MostrarModal = false">Cancelar</button>
-                <button class="btn-save-main-dav-red" @onclick="GuardarEdicion">Guardar Cambios</button>
+                <button class="btn-save-main-dav-red" @onclick="GuardarEdicion">Actualizar Tarea</button>
             </div>
         </div>
     </div>

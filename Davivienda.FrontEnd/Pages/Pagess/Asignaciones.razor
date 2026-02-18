@@ -3,11 +3,11 @@
 @using Davivienda.Component.Componentes
 @using Microsoft.AspNetCore.Components.Authorization
 
-<div class="dashboard-wrapper">
+<div class="dashboard-wrapper warm-theme">
     <div class="asignaciones-grid">
 
-        @* --- CUADRO 1: Tareas --- *@
-        <section class="white-panel-card panel-top-left-large">
+        @* --- CUADRANTE 0° a 180°: Tareas y Calendario (Sin cambios) --- *@
+        <section class="white-panel-card panel-tareas">
             <div class="panel-header-dav">
                 <div class="header-with-filter">
                     <h3 class="panel-title">Mis Tareas Asignadas</h3>
@@ -49,14 +49,13 @@
                     }
                     else
                     {
-                        <div class="empty-state-msg">No hay tareas para mostrar.</div>
+                        <div class="empty-state-msg">No hay tareas.</div>
                     }
                 </div>
             </div>
         </section>
 
-        @* --- CUADRO 2: Calendario --- *@
-        <section class="white-panel-card panel-top-right-small">
+        <section class="white-panel-card panel-calendario">
             <div class="panel-header-dav calendar-mini-header">
                 <h3 class="panel-title-bold">Calendario</h3>
                 <div class="header-icon-orange"><i class="bi bi-calendar3"></i></div>
@@ -74,77 +73,38 @@
                         {
                             <div class="cal-day-cell-spacious @(dia.EsMesActual ? "" : "not-current") @(dia.EsHoy ? "today-highlight" : "") @(dia.TieneTareas ? "has-task-bg" : "")">
                                 <span class="num">@dia.Fecha.Day</span>
-                                @if (dia.TieneTareas)
-                                {
-                                    <span class="blue-dot-small"></span>
-                                }
                             </div>
                         }
                     </div>
                 </div>
-                @{
-                    var proxima = GetProximaTarea();
-                }
-                @if (proxima != null)
-                {
-                    <button class="delivery-action-button" @onclick="AbrirModalCalendario" type="button">
-                        <div class="delivery-blue-box"><span class="day-num-box">@proxima.TAR_FEC_FIN.Value.Day</span></div>
-                        <div class="delivery-text"><strong>@proxima.TAR_NOM</strong><span>Faltan @((proxima.TAR_FEC_FIN.Value.Date - DateTime.Today).Days) días (Ver Agenda)</span></div>
-                        <i class="bi bi-chevron-right arrow-icon"></i>
-                    </button>
-                }
             </div>
         </section>
 
-        @* --- CUADROS 3, 4, 5: Gráficas --- *@
-        @* --- CUADRO 3: Gráfico Circular de Tareas Totales --- *@
-        <section class="white-panel-card panel-bottom">
-            <div class="panel-header-dav">
-                <h3 class="panel-title-bold">Estado de Tareas Totales</h3>
-            </div>
-            <div class="container-grafico-circular">
-                @* El valor de --p es el porcentaje dinámico de tareas completadas *@
-                @{
-                    var total = (Tasks?.Count ?? 0);
-                    var porcentaje = total > 0 ? (TareasCompletadas * 100 / total) : 0;
-                }
-                <div class="grafico-donut-tareas" style="--p:@porcentaje; --c:#16a34a;">
-                    <div class="centro-donut">
-                        <span class="numero-total-tareas">@total</span>
-                        <span class="texto-total-tareas">TOTAL</span>
-                    </div>
-                </div>
-
-                <div class="leyenda-circular-unica">
-                    <div class="item-leyenda"><span class="bolita verde"></span> Hechas (@TareasCompletadas)</div>
-                    <div class="item-leyenda"><span class="bolita azul"></span> Pendientes (@TareasPendientes)</div>
-                    <div class="item-leyenda"><span class="bolita roja"></span> Bloqueadas (@TareasBloqueadas)</div>
-                </div>
-            </div>
+        @* --- CUADRANTE 180° a 270°: Estado de Tareas (AHORA A LA IZQUIERDA) --- *@
+        <section class="white-panel-card panel-grafica-izq">
+            <div class="panel-header-dav"><h3 class="panel-title-bold">Estado de Tareas</h3></div>
+            <Graficas TipoGrafica="Estados"
+                      OnFiltrar="FiltrarPorEstadoGrafica"
+                      TotalTareas="@TotalTareasCount"
+                      Pendientes="@Tasks.Count(t => t.TAR_EST == "Pendiente")"
+                      EnProgreso="@Tasks.Count(t => t.TAR_EST == "En Progreso")"
+                      Completadas="@Tasks.Count(t => t.TAR_EST == "Completado")" />
         </section>
 
-        <section class="white-panel-card panel-bottom">
-            <div class="panel-header-dav"><h3>Proyectos Relacionados</h3></div>
-            <div class="chart-content">
-                <div class="donut-style-info"><div class="donut-num">@TotalProyectos</div><div class="donut-txt">Proyectos Activos</div></div>
-                <div class="project-mini-list">
-                    @foreach (var p in ProyectosRelacionados.Take(3))
-                    {
-                        <div class="proj-item"><i class="bi bi-circle-fill"></i> @p.PRO_NOM</div>
-                    }
+        @* --- CUADRANTE 270° a 360°: Ilustración (AHORA A LA DERECHA) --- *@
+        <div class="illustration-panel">
+            <div class="illustration-scene">
+                <div class="device-monitor">
+                    <div class="device-screen"><div class="screen-ui-lines"></div></div>
                 </div>
+                <div class="vector-person person-standing"></div>
+                <div class="vector-person person-climbing"></div>
+                <div class="vector-person person-sitting"></div>
+                <div class="floating-element element-1"></div>
+                <div class="floating-element element-2"></div>
             </div>
-        </section>
+        </div>
 
-        <section class="white-panel-card panel-bottom">
-            <div class="panel-header-dav"><h3>Procesos</h3></div>
-            <div class="chart-content">
-                <div class="bar-chart-container">
-                    <div class="bar-wrapper"><div class="bar proceso-color" style="height: @(GetPct(TotalProcesos))%;"></div><span class="bar-lbl">Activos</span></div>
-                    <div class="bar-wrapper"><div class="bar area-color" style="height: 50%;"></div><span class="bar-lbl">Meta</span></div>
-                </div>
-            </div>
-        </section>
     </div>
 </div>
 

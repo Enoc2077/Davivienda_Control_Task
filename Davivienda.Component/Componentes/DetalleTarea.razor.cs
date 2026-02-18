@@ -75,6 +75,7 @@ namespace Davivienda.Component.Componentes
         {
             try
             {
+                // Se cargan todos los campos necesarios de las fricciones asociadas
                 var resFri = await Client.GetFricciones.ExecuteAsync();
                 FriccionesList = resFri.Data?.Fricciones?
                     .Where(f => f.Tar_ID == Tarea?.TAR_ID)
@@ -89,6 +90,7 @@ namespace Davivienda.Component.Componentes
                         FRI_FEC_CRE = f.Fri_FEC_CRE.DateTime
                     }).ToList() ?? new();
 
+                // Se cargan todos los campos necesarios de las soluciones asociadas
                 var resSol = await Client.GetSoluciones.ExecuteAsync();
                 var idsFricciones = FriccionesList.Select(f => f.FRI_ID).ToList();
                 SolucionesList = resSol.Data?.Soluciones?
@@ -109,13 +111,51 @@ namespace Davivienda.Component.Componentes
             StateHasChanged();
         }
 
+        // CORRECCIÓN: Se envía la fecha de inicio obligatoria
         private async Task GuardarEstadoTarea()
         {
             if (Tarea == null) return;
-            var input = new TareaModelInput { Tar_ID = Tarea.TAR_ID, Tar_NOM = Tarea.TAR_NOM, Tar_EST = Tarea.TAR_EST, Proc_ID = Tarea.PROC_ID ?? Guid.Empty, Pri_ID = Tarea.PRI_ID ?? Guid.Empty };
-            await Client.UpdateTarea.ExecuteAsync(input);
-            StateHasChanged();
+
+            try
+            {
+                // Validamos la jerarquía de IDs para no violar restricciones de FK
+                // Si la tarea no tiene prioridad asignada, debemos decidir si enviamos null 
+                // o mantenemos la que ya tenía.
+
+                var input = new TareaModelInput
+                {
+                    Tar_ID = Tarea.TAR_ID,
+                    Tar_NOM = Tarea.TAR_NOM,
+                    Tar_EST = Tarea.TAR_EST,
+
+                    // CORRECCIÓN CLAVE: 
+                    // Si Tarea.PRI_ID es Guid.Empty, la base de datos rechazará el UPDATE.
+                    // Asegúrate de que Tarea.PRI_ID tenga el valor original de la DB.
+                    Pri_ID = Tarea.PRI_ID != Guid.Empty ? Tarea.PRI_ID : null,
+                    Proc_ID = Tarea.PROC_ID,
+
+                    Tar_FEC_INI = Tarea.TAR_FEC_INI,
+                    Tar_FEC_CRE = Tarea.TAR_FEC_CRE,
+                    Tar_FEC_MOD = DateTimeOffset.Now
+                };
+
+                var result = await Client.UpdateTarea.ExecuteAsync(input);
+
+                if (result.Errors.Any())
+                {
+                    Console.WriteLine($"Error de integridad: {result.Errors.First().Message}");
+                }
+                else
+                {
+                    Console.WriteLine("Tarea guardada exitosamente.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al guardar: {ex.Message}");
+            }
         }
+
 
         private void ManejarCambioBitacora(ChangeEventArgs e)
         {
@@ -158,7 +198,7 @@ namespace Davivienda.Component.Componentes
             try
             {
                 var result = await Client.DeleteSolucion.ExecuteAsync(id);
-                if (result.Errors.Any()) { Console.WriteLine($"Error FK: {result.Errors.First().Message}"); return; }
+                if (result.Errors.Any()) { Console.WriteLine($"Error integridad: {result.Errors.First().Message}"); return; }
                 await CargarDatosTarea();
             }
             catch (Exception ex) { Console.WriteLine($"Error Delete: {ex.Message}"); }
