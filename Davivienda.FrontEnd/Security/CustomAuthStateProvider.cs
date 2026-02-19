@@ -25,7 +25,7 @@ namespace Davivienda.FrontEnd.Security
             // Aquí normalmente decodificarías el JWT, por ahora seguimos con la simulación
             var identity = new ClaimsIdentity(new[]
             {
-                new Claim(ClaimTypes.Name, "Usuario Davivienda"),
+                new Claim(ClaimTypes.Name, "Usuario Admin"),
                 new Claim(ClaimTypes.Role, "LiderTecnico"),
             }, "ServerAuth");
 
