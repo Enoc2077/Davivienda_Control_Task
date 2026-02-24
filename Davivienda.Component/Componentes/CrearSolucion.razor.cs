@@ -28,6 +28,7 @@ namespace Davivienda.Component.Componentes
             }
         }
 
+        // Ajuste en GuardarSolucion
         private async Task GuardarSolucion()
         {
             try
@@ -41,22 +42,16 @@ namespace Davivienda.Component.Componentes
                     Sol_DES = nuevaSolucion.SOL_DES,
                     Sol_EST = nuevaSolucion.SOL_EST ?? "Pendiente",
                     Sol_NIV_EFE = nuevaSolucion.SOL_NIV_EFE ?? 0,
-                    Fri_ID = FriccionId,
+                    // Si FriccionId es Guid.Empty, pasamos null para que la DB lo entienda
+                    Fri_ID = FriccionId == Guid.Empty ? null : FriccionId,
                     Usu_ID = Guid.Parse("0BC4DB21-1FFB-46BB-B120-48AE7B0909CD"),
                     Sol_FEC_CRE = DateTimeOffset.Now
                 };
 
                 var result = await Client.InsertSolucion.ExecuteAsync(input);
-
-                if (result.Data?.InsertSolucion ?? false)
-                {
-                    await OnSuccess.InvokeAsync();
-                }
+                // ... éxito ...
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error insertando solución: {ex.Message}");
-            }
+            catch (Exception ex) { Console.WriteLine($"Error: {ex.Message}"); }
         }
     }
 }

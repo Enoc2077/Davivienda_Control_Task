@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage; // 🔥 CAMBIO: LocalStorage
+using Davivienda.FrontEnd.Security;
 using Davivienda.GraphQL.SDK;
 using Davivienda.Models.Modelos;
 using System;
 using System.Threading.Tasks;
-using Blazored.LocalStorage;
 using GqlSdk = Davivienda.GraphQL.SDK;
 
 namespace Davivienda.FrontEnd.Pages.Pagess
@@ -12,23 +14,30 @@ namespace Davivienda.FrontEnd.Pages.Pagess
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
         [Inject] private NavigationManager Nav { get; set; } = default!;
-        [Inject] private ILocalStorageService LocalStorage { get; set; } = default!;
+        [Inject] private ILocalStorageService LocalStorage { get; set; } = default!; // 🔥 CAMBIO
+        [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
         private GqlSdk.LoginInput loginModel = new GqlSdk.LoginInput();
-
         private string errorMsg = "";
         private bool cargando = false;
         private bool mostrarRecuperar = false;
         private string correoRecuperar = "";
 
-        // NUEVO: Verificación automática al cargar la página
         protected override async Task OnInitializedAsync()
         {
-            var token = await LocalStorage.GetItemAsync<string>("authToken");
+            var token = await LocalStorage.GetItemAsync<string>("authToken"); // 🔥 CAMBIO
             if (!string.IsNullOrEmpty(token))
             {
-                // Si ya hay token, saltamos directamente al Home
-                Nav.NavigateTo("/home");
+                var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+                if (authState.User.Identity?.IsAuthenticated == true)
+                {
+                    Nav.NavigateTo("/home");
+                }
+                else
+                {
+                    await LocalStorage.RemoveItemAsync("authToken"); // 🔥 CAMBIO
+                    await LocalStorage.RemoveItemAsync("lastActivity"); // 🔥 NUEVO
+                }
             }
         }
 
@@ -36,21 +45,31 @@ namespace Davivienda.FrontEnd.Pages.Pagess
         {
             cargando = true;
             errorMsg = "";
-
             try
             {
                 var result = await Client.IniciarSesion.ExecuteAsync(loginModel);
-
                 if (result.Data?.Login.Exito == true)
                 {
-                    string token = result.Data.Login.Token;
-                    // Guardamos el token para persistencia
-                    await LocalStorage.SetItemAsync("authToken", token);
-                    Nav.NavigateTo("/home");
+                    string? token = result.Data.Login.Token;
+                    if (!string.IsNullOrEmpty(token))
+                    {
+                        await LocalStorage.SetItemAsync("authToken", token); // 🔥 CAMBIO
+
+                        if (AuthStateProvider is CustomAuthStateProvider customAuth)
+                        {
+                            await customAuth.NotifyLogin(token);
+                        }
+
+                        Nav.NavigateTo("/home");
+                    }
+                    else
+                    {
+                        errorMsg = "Error interno: El servidor no proporcionó un token válido.";
+                    }
                 }
                 else
                 {
-                    errorMsg = result.Data?.Login.Mensaje ?? "Error: Credenciales inválidas.";
+                    errorMsg = result.Data?.Login.Mensaje ?? "Credenciales inválidas";
                 }
             }
             catch (Exception ex)
