@@ -2,7 +2,7 @@
 @using System.Security.Claims
 @inject AuthenticationStateProvider AuthStateProvider
 @inject NavigationManager Navigation
-@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
 
 @if (Tipo == "Header")
 {
@@ -35,7 +35,6 @@ else if (Tipo == "MenuAdmin")
             <span class="menu-text-modern">Administración</span>
             <i class="bi @(isAdminOpen ? "bi-chevron-up" : "bi-chevron-down")" style="margin-left: auto; font-size: 12px;"></i>
         </button>
-
         @if (isAdminOpen)
         {
             <div class="submenu-wrapper">
@@ -67,7 +66,6 @@ else if (Tipo == "Footer")
     private bool isAdminOpen = false;
     private string NombreUsuario = "";
     private string RolUsuario = "";
-
     private List<(string Titulo, string Url, string Icono)> subMenuItems = new()
     {
         ("Proyectos", "Proyectos", "bi bi-folder2-open"),
@@ -76,7 +74,6 @@ else if (Tipo == "Footer")
         ("Roles / Área", "Rol_por_area", "bi bi-diagram-3"),
         ("Roles", "Roles", "bi bi-person-badge")
     };
-
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthStateProvider.GetAuthenticationStateAsync();
@@ -87,14 +84,16 @@ else if (Tipo == "Footer")
             RolUsuario = user.FindFirst(ClaimTypes.Role)?.Value ?? "";
         }
     }
-
     private void ToggleAdminMenu() => isAdminOpen = !isAdminOpen;
     private void Navegar(string url) => Navigation.NavigateTo(url);
-
     private async Task CerrarSesion()
     {
-        await SessionStorage.RemoveItemAsync("authToken");
-        if (AuthStateProvider is Davivienda.FrontEnd.Security.CustomAuthStateProvider cp) cp.NotifyLogout();
-        Navigation.NavigateTo("/");
+        await LocalStorage.RemoveItemAsync("authToken");
+        await LocalStorage.RemoveItemAsync("lastActivity");
+        if (AuthStateProvider is Davivienda.FrontEnd.Security.CustomAuthStateProvider cp)
+        {
+            await cp.NotifyLogout();
+        }
+        Navigation.NavigateTo("/", forceLoad: true);
     }
 }

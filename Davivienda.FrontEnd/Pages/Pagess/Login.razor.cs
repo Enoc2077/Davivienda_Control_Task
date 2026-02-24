@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Authorization; // Necesario para el Provider
-using Blazored.SessionStorage; // Cambiamos Local por Session
+using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.LocalStorage; // 🔥 CAMBIO: LocalStorage
 using Davivienda.FrontEnd.Security;
 using Davivienda.GraphQL.SDK;
 using Davivienda.Models.Modelos;
@@ -14,15 +14,10 @@ namespace Davivienda.FrontEnd.Pages.Pagess
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
         [Inject] private NavigationManager Nav { get; set; } = default!;
-
-        // Inyectamos SessionStorage para el requisito de cerrar sesión al cerrar navegador
-        [Inject] private ISessionStorageService SessionStorage { get; set; } = default!;
-
-        // Inyectamos nuestro proveedor de autenticación personalizado
+        [Inject] private ILocalStorageService LocalStorage { get; set; } = default!; // 🔥 CAMBIO
         [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
         private GqlSdk.LoginInput loginModel = new GqlSdk.LoginInput();
-
         private string errorMsg = "";
         private bool cargando = false;
         private bool mostrarRecuperar = false;
@@ -30,11 +25,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess
 
         protected override async Task OnInitializedAsync()
         {
-            var token = await SessionStorage.GetItemAsync<string>("authToken");
-
+            var token = await LocalStorage.GetItemAsync<string>("authToken"); // 🔥 CAMBIO
             if (!string.IsNullOrEmpty(token))
             {
-                // Validamos si el token sigue vigente antes de redirigir
                 var authState = await AuthStateProvider.GetAuthenticationStateAsync();
                 if (authState.User.Identity?.IsAuthenticated == true)
                 {
@@ -42,9 +35,8 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                 }
                 else
                 {
-                    // Si el token estaba ahí pero el Provider dice que no es válido (ej. pasaron las 6 horas),
-                    // lo limpiamos para evitar basura en el almacenamiento.
-                    await SessionStorage.RemoveItemAsync("authToken");
+                    await LocalStorage.RemoveItemAsync("authToken"); // 🔥 CAMBIO
+                    await LocalStorage.RemoveItemAsync("lastActivity"); // 🔥 NUEVO
                 }
             }
         }
@@ -53,22 +45,18 @@ namespace Davivienda.FrontEnd.Pages.Pagess
         {
             cargando = true;
             errorMsg = "";
-
             try
             {
                 var result = await Client.IniciarSesion.ExecuteAsync(loginModel);
-
                 if (result.Data?.Login.Exito == true)
                 {
                     string? token = result.Data.Login.Token;
-
                     if (!string.IsNullOrEmpty(token))
                     {
-                        await SessionStorage.SetItemAsync("authToken", token);
+                        await LocalStorage.SetItemAsync("authToken", token); // 🔥 CAMBIO
 
                         if (AuthStateProvider is CustomAuthStateProvider customAuth)
                         {
-                            // Usamos await porque ahora NotifyLogin devuelve un Task (para evitar advertencia CS1998)
                             await customAuth.NotifyLogin(token);
                         }
 
@@ -78,6 +66,10 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     {
                         errorMsg = "Error interno: El servidor no proporcionó un token válido.";
                     }
+                }
+                else
+                {
+                    errorMsg = result.Data?.Login.Mensaje ?? "Credenciales inválidas";
                 }
             }
             catch (Exception ex)
@@ -94,7 +86,6 @@ namespace Davivienda.FrontEnd.Pages.Pagess
 
         private void EnviarCorreo()
         {
-            // Lógica para recuperar contraseña
             mostrarRecuperar = false;
         }
     }

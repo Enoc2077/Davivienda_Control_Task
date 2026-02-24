@@ -1,22 +1,24 @@
-/* Quitamos las restricciones de la plantilla de Blazor */
+/* En MainLayout.razor o app.css */
+
 .page {
-    position: relative;
     display: flex;
-    flex-direction: row;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 280px; /* Ajusta este valor al ancho que quieras */
+    min-width: 280px;
+    background: #ffffff;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+    overflow: hidden;
 }
 
 main {
     flex: 1;
+    overflow-y: auto;
+    background: #f8fafc;
 }
 
-.sidebar {
-    background: none !important; /* Eliminamos el fondo azul oscuro de Blazor */
-    width: 280px;
-}
-
-/* Responsivo básico para que no se rompa en celular */
-@media (max-width: 640.98px) {
-    .page {
-        flex-direction: column;
-    }
+.content {
+    padding: 2rem;
 }

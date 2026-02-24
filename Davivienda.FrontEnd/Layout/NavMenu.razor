@@ -2,25 +2,31 @@
 @inject NavigationManager Navigation
 
 <div class="sidebar-modern">
+
+    @* HEADER: Perfil del Usuario *@
     <SidebarDavivienda Tipo="Header" />
 
+    @* NAVEGACIÓN PRINCIPAL *@
     <div class="sidebar-navigation-area">
         <nav class="navigation-menu-modern">
 
-            <div class="menu-item-modern">
-                <NavLink class="menu-link-modern" href="home" Match="NavLinkMatch.All">
-                    <i class="bi bi-house-door menu-icon-modern"></i>
-                    <span class="menu-text-modern">Home</span>
+            @* Home - Estilo simple como submenú *@
+            <div class="nav-sub-container">
+                <NavLink class="submenu-button-modern" href="home" Match="NavLinkMatch.All">
+                    <i class="bi bi-house-door"></i>
+                    <span>Home</span>
                 </NavLink>
             </div>
 
-            <div class="menu-item-modern">
-                <NavLink class="menu-link-modern" href="Asignaciones">
-                    <i class="bi bi-clipboard-check menu-icon-modern"></i>
-                    <span class="menu-text-modern">Asignaciones</span>
+            @* Asignaciones - Estilo simple como submenú *@
+            <div class="nav-sub-container">
+                <NavLink class="submenu-button-modern" href="Asignaciones">
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asignaciones</span>
                 </NavLink>
             </div>
 
+            @* Menú de Administración - Solo para rol "Enoc" *@
             <AuthorizeView Roles="Enoc">
                 <Authorized>
                     <SidebarDavivienda Tipo="MenuAdmin" />
@@ -30,5 +36,7 @@
         </nav>
     </div>
 
+    @* FOOTER: Cerrar Sesión *@
     <SidebarDavivienda Tipo="Footer" />
+
 </div>

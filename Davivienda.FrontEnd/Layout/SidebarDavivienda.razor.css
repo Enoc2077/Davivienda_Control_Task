@@ -177,6 +177,7 @@
     padding: 20px;
     background: #ffffff;
     border-top: 1px solid #edf2f7;
+    margin-top: auto; /* Empuja al fondo */
 }
 
 .logout-button-modern {
@@ -185,15 +186,16 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 14px;
+    padding: 16px 20px; /* Más padding */
     background: #fff5f5;
-    border: 1px solid #fed7d7;
-    border-radius: 10px;
+    border: none; /* Sin bordes */
+    border-radius: 0; /* Sin border-radius para pegar al borde */
     color: #c53030;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
+    border-top: 1px solid #fed7d7; /* Solo borde superior */
 }
 
     .logout-button-modern:hover {
