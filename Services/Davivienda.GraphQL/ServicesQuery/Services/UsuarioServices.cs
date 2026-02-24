@@ -22,27 +22,40 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             this.jwtProvider = jwtProvider;
         }
 
-        // --- MÉTODO DE LOGIN PRINCIPAL (CORREGIDO) ---
         public async Task<LoginModel.LoginResponse> LoginAsync(LoginModel.LoginInput input)
         {
             try
             {
                 await dataBase.ConnectAsync();
 
-                // 1. Buscamos al usuario por número de empleado y contraseña (USU_CON)
-                // Nota: Asegúrate de que el nombre de la tabla sea USUARIO o USUARIOS según tu DB
-                string sql = @"SELECT * FROM dbo.USUARIO 
-                               WHERE USU_NUM = @UsuNum 
-                               AND USU_CON = @Password 
-                               AND USU_EST = 1";
+                // 🔥 JOIN con dbo.ROLES (plural)
+                string sql = @"
+            SELECT 
+                u.USU_ID,
+                u.USU_NOM,
+                u.USU_NUM,
+                u.USU_COR,
+                u.USU_CON,
+                u.USU_TEL,
+                u.USU_EST,
+                u.ROL_ID,
+                u.ARE_ID,
+                u.USU_FEC_CRE,
+                u.USU_FEC_MOD,
+                r.ROL_NOM
+            FROM dbo.USUARIO u
+            INNER JOIN dbo.ROLES r ON u.ROL_ID = r.ROL_ID
+            WHERE u.USU_NUM = @UsuNum 
+            AND u.USU_CON = @Password 
+            AND u.USU_EST = 1";
 
-                var usuario = await dataBase.Connection.QueryFirstOrDefaultAsync<UsuarioModel>(sql, new
+                var resultado = await dataBase.Connection.QueryFirstOrDefaultAsync<dynamic>(sql, new
                 {
                     UsuNum = input.UsuNum,
                     Password = input.Password
                 });
 
-                if (usuario == null)
+                if (resultado == null)
                 {
                     return new LoginModel.LoginResponse
                     {
@@ -51,13 +64,27 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                     };
                 }
 
-                // 2. Generar el Token JWT usando la instancia inyectada (jwtProvider)
-                // Convertimos el USU_NUM (string) a int para el token
+                string rolNombre = resultado.ROL_NOM ?? "Usuario";
+
                 string token = jwtProvider.GenerarToken(
-                    int.TryParse(usuario.USU_NUM, out int num) ? num : 0,
-                    usuario.USU_NOM ?? "Usuario",
-                    0 // Aquí puedes poner un ID de rol si lo manejas numérico
+                    int.TryParse(resultado.USU_NUM, out int num) ? num : 0,
+                    resultado.USU_NOM ?? "Usuario",
+                    rolNombre  // ✅ Pasará "Enoc"
                 );
+
+                var usuario = new UsuarioModel
+                {
+                    USU_ID = resultado.USU_ID,
+                    USU_NOM = resultado.USU_NOM,
+                    USU_NUM = resultado.USU_NUM,
+                    USU_COR = resultado.USU_COR,
+                    USU_TEL = resultado.USU_TEL,
+                    USU_EST = resultado.USU_EST,
+                    ROL_ID = resultado.ROL_ID,
+                    ARE_ID = resultado.ARE_ID,
+                    USU_FEC_CRE = resultado.USU_FEC_CRE,
+                    USU_FEC_MOD = resultado.USU_FEC_MOD
+                };
 
                 return new LoginModel.LoginResponse
                 {

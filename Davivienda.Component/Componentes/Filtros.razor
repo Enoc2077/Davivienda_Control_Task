@@ -1,0 +1,109 @@
+﻿@namespace Davivienda.Component.Componentes
+@using Davivienda.Models.Modelos
+
+<div class="filtros-panel">
+
+    @* ── TÍTULO DEL PANEL ── *@
+    <div class="filtros-panel-header">
+        <i class="bi bi-funnel-fill"></i>
+        <span>Filtros activos</span>
+        @if (_filtrosActivos.Any())
+        {
+            <span class="badge-count">@_filtrosActivos.Count</span>
+        }
+    </div>
+
+    @* ── SELECTOR DE TIPO ── *@
+    <div class="filtro-row">
+        <select class="select-tipo" @onchange="OnTipoChanged" value="@_tipoActual">
+            <option value="">➕ Agregar filtro...</option>
+            @if (Areas.Any())
+            {
+                <option value="Area">🏢 Área</option>
+            }
+            @if (Proyectos.Any())
+            {
+                <option value="Proyecto">📁 Proyecto</option>
+            }
+            @if (Procesos.Any())
+            {
+                <option value="Proceso">⚙️ Proceso</option>
+            }
+            @if (Tareas.Any())
+            {
+                <option value="Tarea">📋 Tarea</option>
+            }
+            @if (Prioridades.Any())
+            {
+                <option value="Prioridad">🔴 Prioridad</option>
+            }
+            <option value="Nombre">🔍 Nombre</option>
+        </select>
+    </div>
+
+    @* ── SEGUNDA ENTRADA: VALOR DEL FILTRO ── *@
+    @if (!string.IsNullOrEmpty(_tipoActual))
+    {
+        <div class="filtro-row filtro-valor-row animate-slide-down">
+            @if (_tipoActual == "Nombre")
+            {
+                <input type="text"
+                       class="input-nombre-filtro"
+                       placeholder="Escribe y presiona Enter..."
+                       @bind="_textoNombre"
+                       @onkeydown="OnNombreKeyDown" />
+                <button class="btn-agregar-chip" @onclick="AgregarFiltroNombre"
+                        title="Agregar">
+                    <i class="bi bi-plus-lg"></i>
+                </button>
+            }
+            else
+            {
+                <select class="select-valor" @onchange="OnValorSelected">
+                    <option value="">-- Seleccionar --</option>
+                    @foreach (var item in _opcionesActuales)
+                    {
+                        <option value="@item.Id">@item.Etiqueta</option>
+                    }
+                </select>
+            }
+        </div>
+    }
+
+    @* ── CHIPS DE FILTROS ACTIVOS ── *@
+    <div class="chips-area @(_filtrosActivos.Any() ? "" : "chips-empty")">
+        @if (!_filtrosActivos.Any())
+        {
+            <div class="no-filtros-placeholder">
+                <i class="bi bi-filter-circle"></i>
+                <p>Sin filtros aplicados</p>
+            </div>
+        }
+        else
+        {
+            @foreach (var filtro in _filtrosActivos)
+            {
+                <div class="chip chip-@filtro.ColorClase animate-chip" @key="filtro.UniqueKey">
+                    <i class="bi @filtro.Icono chip-icon"></i>
+                    <div class="chip-texto">
+                        <span class="chip-tipo">@filtro.Tipo</span>
+                        <span class="chip-etiqueta">@filtro.Etiqueta</span>
+                    </div>
+                    <button class="chip-btn-remove" @onclick="() => RemoverFiltro(filtro)"
+                            title="Quitar filtro">
+                        ×
+                    </button>
+                </div>
+            }
+        }
+    </div>
+
+    @* ── LIMPIAR TODO ── *@
+    @if (_filtrosActivos.Any())
+    {
+        <button class="btn-limpiar-todo" @onclick="LimpiarTodo">
+            <i class="bi bi-x-circle"></i> Limpiar todos
+        </button>
+    }
+
+</div>

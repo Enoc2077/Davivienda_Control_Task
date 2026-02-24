@@ -1,49 +1,100 @@
-﻿<div class="sidebar-container">
-    <div class="brand-header">
-        <div class="logo-box">
-            <span class="logo-letter">D</span>
+﻿@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+@inject AuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+@inject Blazored.SessionStorage.ISessionStorageService SessionStorage
+
+@if (Tipo == "Header")
+{
+    <div class="sidebar-header-profile">
+        <div class="header-decoration-pattern"></div>
+        <div class="profile-card-modern">
+            <div class="profile-avatar-container">
+                <div class="avatar-circle-modern @(string.IsNullOrEmpty(NombreUsuario) ? "loading-pulse" : "")">
+                    <span class="avatar-initial">@(string.IsNullOrEmpty(NombreUsuario) ? "?" : NombreUsuario.Substring(0, 1).ToUpper())</span>
+                </div>
+                @if (!string.IsNullOrEmpty(NombreUsuario))
+                {
+                    <div class="status-indicator-online"></div>
+                }
+            </div>
+            <div class="profile-info-modern">
+                <p class="profile-name-modern">@(string.IsNullOrEmpty(NombreUsuario) ? "Invitado" : NombreUsuario)</p>
+                <p class="profile-email-modern">@(string.IsNullOrEmpty(RolUsuario) ? "Inicie Sesión" : RolUsuario)</p>
+            </div>
         </div>
-        <span class="brand-name">Davivienda</span>
     </div>
-
-    <nav class="nav-menu">
-        <div class="nav-section-label">Menú Principal</div>
-
-        <NavLink class="nav-item" href="Asignaciones" Match="NavLinkMatch.All">
-            <div class="nav-icon-wrapper">
-                <i class="bi bi-grid-1x2"></i>
-            </div>
-            <span>Dashboard</span>
-        </NavLink>
-
-        <NavLink class="nav-item" href="Asignaciones">
-            <div class="nav-icon-wrapper">
-                <i class="bi bi-list-check"></i>
-            </div>
-            <span>Asignaciones</span>
-        </NavLink>
-
-        <div class="nav-section-label">Administración</div>
-
-        <NavLink class="nav-item" href="Usuario">
-            <div class="nav-icon-wrapper">
-                <i class="bi bi-person-badge"></i>
-            </div>
-            <span>Usuarios</span>
-        </NavLink>
-
-        <NavLink class="nav-item" href="Roles">
-            <div class="nav-icon-wrapper">
+}
+else if (Tipo == "MenuAdmin")
+{
+    <div class="nav-item-container">
+        <button class="menu-button-modern" @onclick="ToggleAdminMenu">
+            <div class="icon-box">
                 <i class="bi bi-shield-lock"></i>
             </div>
-            <span>Roles</span>
-        </NavLink>
+            <span class="menu-text-modern">Administración</span>
+            <i class="bi @(isAdminOpen ? "bi-chevron-up" : "bi-chevron-down")" style="margin-left: auto; font-size: 12px;"></i>
+        </button>
 
-        <NavLink class="nav-item" href="Equipo">
-            <div class="nav-icon-wrapper">
-                <i class="bi bi-people"></i>
+        @if (isAdminOpen)
+        {
+            <div class="submenu-wrapper">
+                @foreach (var item in subMenuItems)
+                {
+                    <div class="nav-sub-container">
+                        <button class="submenu-button-modern" @onclick="() => Navegar(item.Url)">
+                            <i class="@item.Icono"></i>
+                            <span>@item.Titulo</span>
+                        </button>
+                    </div>
+                }
             </div>
-            <span>Equipo</span>
-        </NavLink>
-    </nav>
-</div>
+        }
+    </div>
+}
+else if (Tipo == "Footer")
+{
+    <div class="sidebar-footer-modern">
+        <button class="logout-button-modern" @onclick="CerrarSesion">
+            <i class="bi bi-box-arrow-left"></i>
+            <span>Cerrar Sesión</span>
+        </button>
+    </div>
+}
+
+@code {
+    [Parameter] public string Tipo { get; set; } = "";
+    private bool isAdminOpen = false;
+    private string NombreUsuario = "";
+    private string RolUsuario = "";
+
+    private List<(string Titulo, string Url, string Icono)> subMenuItems = new()
+    {
+        ("Proyectos", "Proyectos", "bi bi-folder2-open"),
+        ("Tareas", "Tarea", "bi bi-list-task"),
+        ("Usuarios", "Usuario", "bi bi-person-gear"),
+        ("Roles / Área", "Rol_por_area", "bi bi-diagram-3"),
+        ("Roles", "Roles", "bi bi-person-badge")
+    };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        if (user.Identity?.IsAuthenticated ?? false)
+        {
+            NombreUsuario = user.FindFirst(ClaimTypes.Name)?.Value ?? "";
+            RolUsuario = user.FindFirst(ClaimTypes.Role)?.Value ?? "";
+        }
+    }
+
+    private void ToggleAdminMenu() => isAdminOpen = !isAdminOpen;
+    private void Navegar(string url) => Navigation.NavigateTo(url);
+
+    private async Task CerrarSesion()
+    {
+        await SessionStorage.RemoveItemAsync("authToken");
+        if (AuthStateProvider is Davivienda.FrontEnd.Security.CustomAuthStateProvider cp) cp.NotifyLogout();
+        Navigation.NavigateTo("/");
+    }
+}
