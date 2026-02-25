@@ -1,137 +1,42 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
-@using Davivienda.FrontEnd.Security
-@using Davivienda.GraphQL.SDK
 @inject NavigationManager Navigation
-@inject AuthenticationStateProvider AuthStateProvider
-@inject Blazored.LocalStorage.ILocalStorageService LocalStorage
-@inject DaviviendaGraphQLClient Client
 
 <div class="sidebar-modern">
-    @* HEADER: Perfil con Gradiente y Decoración *@
-    <div class="sidebar-header-profile">
-        <div class="header-decoration-pattern"></div>
-        <div class="profile-card-modern">
-            <div class="profile-avatar-container">
-                <div class="avatar-circle-modern @(string.IsNullOrEmpty(NombreUsuario) ? "guest" : "")">
-                    <span class="avatar-initial">@(string.IsNullOrEmpty(NombreUsuario) ? "?" : NombreUsuario.Substring(0, 1).ToUpper())</span>
-                </div>
-                @if (!string.IsNullOrEmpty(NombreUsuario))
-                {
-                    <div class="status-indicator-online"></div>
-                }
-            </div>
-            <div class="profile-info-modern">
-                <p class="profile-name-modern">@(string.IsNullOrEmpty(NombreUsuario) ? "Invitado" : NombreUsuario)</p>
-                <p class="profile-email-modern">@(string.IsNullOrEmpty(EmailUsuario) ? "Inicie Sesión" : EmailUsuario)</p>
-            </div>
-        </div>
-    </div>
 
-    @* CUERPO: Navegación Principal *@
+    @* HEADER: Perfil del Usuario *@
+    <SidebarDavivienda Tipo="Header" />
+
+    @* NAVEGACIÓN PRINCIPAL *@
     <div class="sidebar-navigation-area">
         <nav class="navigation-menu-modern">
-            <div class="menu-item-modern">
-                <div class="menu-item-modern">
-                    <NavLink class="menu-link-modern" href="home">
-                        <i class="bi bi-clipboard-check menu-icon-modern"></i>
-                        <span class="menu-text-modern">Home</span>
-                    </NavLink>
-                </div>
-            </div>
-            <div class="menu-item-modern">
-                <div class="menu-item-modern">
-                    <NavLink class="menu-link-modern" href="Asignaciones">
-                        <i class="bi bi-clipboard-check menu-icon-modern"></i>
-                        <span class="menu-text-modern">Asignaciones</span>
-                    </NavLink>
-                </div>
+
+            @* Home - Estilo simple como submenú *@
+            <div class="nav-sub-container">
+                <NavLink class="submenu-button-modern" href="home" Match="NavLinkMatch.All">
+                    <i class="bi bi-house-door"></i>
+                    <span>Home</span>
+                </NavLink>
             </div>
 
-            <AuthorizeView Roles="Administrador,LiderTecnico,Gerente,Director,Subdirector">
+            @* Asignaciones - Estilo simple como submenú *@
+            <div class="nav-sub-container">
+                <NavLink class="submenu-button-modern" href="Asignaciones">
+                    <i class="bi bi-clipboard-check"></i>
+                    <span>Asignaciones</span>
+                </NavLink>
+            </div>
+
+            @* Menú de Administración - Solo para rol "Enoc" *@
+            <AuthorizeView Roles="Gerente,Lider Tecnico">
                 <Authorized>
-                    <div class="menu-item-modern">
-                        <button class="menu-link-modern menu-button-modern" @onclick="ToggleAdminMenu">
-                            <i class="bi bi-shield-lock menu-icon-modern"></i>
-                            <span class="menu-text-modern">Administracion</span>
-                            <i class="bi @(isAdminOpen ? "bi-chevron-up" : "bi-chevron-down") chevron-icon-modern"></i>
-                        </button>
-                        @if (isAdminOpen)
-                        {
-                            <div class="submenu-wrapper">
-                                <div class="nav-sub-container">
-                                    <NavLink class="submenu-link-modern" href="Proyectos">
-                                        <i class="bi bi-folder2-open"></i> <span>Proyectos</span>
-                                    </NavLink>
-                                </div>
-                                <div class="nav-sub-container">
-                                    <NavLink class="submenu-link-modern" href="Tarea">
-                                        <i class="bi bi-list-task"></i> <span>Tareas</span>
-                                    </NavLink>
-                                </div>
-                                <div class="nav-sub-container">
-                                    <NavLink class="submenu-link-modern" href="Usuario">
-                                        <i class="bi bi-person-gear"></i> <span>Usuarios</span>
-                                    </NavLink>
-                                </div>
-                                <div class="nav-sub-container">
-                                    <NavLink class="submenu-link-modern" href="Rol_por_area">
-                                        <i class="bi bi-diagram-3"></i> <span>Roles / Área</span>
-                                    </NavLink>
-                                </div>
-                                <div class="nav-sub-container">
-                                    <NavLink class="submenu-link-modern" href="Roles">
-                                        <i class="bi bi-person-badge"></i> <span>Roles</span>
-                                    </NavLink>
-                                </div>
-                            </div>
-                        }
-                    </div>
+                    <SidebarDavivienda Tipo="MenuAdmin" />
                 </Authorized>
             </AuthorizeView>
+
         </nav>
     </div>
 
-    @* FOOTER: Botón de Salida *@
-    <div class="sidebar-footer-modern">
-        <button class="logout-button-modern" @onclick="CerrarSesion">
-            <i class="bi bi-box-arrow-left logout-icon-modern"></i>
-            <span class="logout-text-modern">Cerrar Sesión</span>
-        </button>
-    </div>
+    @* FOOTER: Cerrar Sesión *@
+    <SidebarDavivienda Tipo="Footer" />
+
 </div>
-
-@code {
-    private bool isAdminOpen = false;
-    private string NombreUsuario = "";
-    private string EmailUsuario = "";
-
-    protected override async Task OnInitializedAsync() => await ObtenerInfoUsuario();
-
-    private async Task ObtenerInfoUsuario()
-    {
-        try
-        {
-            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
-            var user = authState.User;
-            if (user.Identity != null && user.Identity.IsAuthenticated)
-            {
-                EmailUsuario = user.Identity.Name ?? "";
-                if (!string.IsNullOrEmpty(EmailUsuario))
-                {
-                    var res = await Client.GetUsuarioByEmail.ExecuteAsync(EmailUsuario);
-                    if (res.Data?.UsuarioByEmail != null) NombreUsuario = res.Data.UsuarioByEmail.Usu_NOM;
-                }
-            }
-        }
-        catch (Exception ex) { Console.WriteLine($"Error: {ex.Message}"); }
-    }
-
-    private void ToggleAdminMenu() => isAdminOpen = !isAdminOpen;
-
-    private async Task CerrarSesion()
-    {
-        await LocalStorage.RemoveItemAsync("authToken");
-        if (AuthStateProvider is CustomAuthStateProvider cp) cp.NotifyLogout();
-        Navigation.NavigateTo("/");
-    }
-}

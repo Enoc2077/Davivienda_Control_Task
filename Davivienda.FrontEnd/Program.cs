@@ -1,36 +1,37 @@
-using Microsoft.AspNetCore.Components.Web;
+﻿using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Davivienda.FrontEnd;
 using Davivienda.GraphQL.SDK;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Net.Http;
-using Blazored.LocalStorage;
-// NUEVOS USINGS PARA SEGURIDAD
+using Blazored.LocalStorage; // 🔥 CAMBIO: LocalStorage en lugar de SessionStorage
 using Microsoft.AspNetCore.Components.Authorization;
 using Davivienda.FrontEnd.Security;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
-
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-// HttpClient para llamadas convencionales
+// HttpClient base
 builder.Services.AddScoped(sp => new HttpClient
 {
     BaseAddress = new Uri(builder.HostEnvironment.BaseAddress)
 });
 
-// Registrar el servicio de Local Storage
+// 🔥 CAMBIO: LocalStorage para que la sesión persista al cerrar navegador
+// La expiración por inactividad se maneja en CustomAuthStateProvider
 builder.Services.AddBlazoredLocalStorage();
 
-// --- CONFIGURACI�N DE SEGURIDAD (PASO 2) ---
-// 1. Habilita el sistema de autorizaci�n principal [cite: 2026-02-10]
+// --- CONFIGURACIÓN DE SEGURIDAD .NET 8 ---
 builder.Services.AddAuthorizationCore();
 
-// 2. Vincula tu clase CustomAuthStateProvider como el proveedor oficial [cite: 2026-02-10]
+// Vinculamos el CustomAuthStateProvider como el proveedor de estado oficial
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
-// -------------------------------------------
+
+// Permite usar NotifyLogin/NotifyLogout directamente desde el código del Login
+builder.Services.AddScoped<CustomAuthStateProvider>(sp =>
+    (CustomAuthStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
 
 // REGISTRO DEL CLIENTE GRAPHQL
 builder.Services.AddDaviviendaGraphQLClient()

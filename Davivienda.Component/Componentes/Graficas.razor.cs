@@ -6,45 +6,25 @@ namespace Davivienda.Component.Componentes
 {
     public partial class Graficas
     {
-        [Parameter] public string TipoGrafica { get; set; } = "";
+        [Parameter] public string TipoGrafica { get; set; } = "Estados";
         [Parameter] public int TotalTareas { get; set; }
-
-        // Evento para comunicar el filtro a la página principal
-        [Parameter] public EventCallback<string> OnFiltrar { get; set; }
-
-        [Parameter] public int AltaCount { get; set; }
-        [Parameter] public int MediaCount { get; set; }
-        [Parameter] public int BajaCount { get; set; }
-
-        [Parameter] public int TotalProyectos { get; set; }
-        [Parameter] public List<ProyectosModel>? Proyectos { get; set; }
-
         [Parameter] public int Pendientes { get; set; }
         [Parameter] public int EnProgreso { get; set; }
         [Parameter] public int Completadas { get; set; }
+        [Parameter] public EventCallback<string> OnFiltrar { get; set; }
 
-        private string GetPieStyle()
+        private double CalcularAltura(int cantidad)
         {
-            if (TotalTareas == 0)
-                return "background: #E5E7EB;";
-
-            double pAlta = (AltaCount * 100.0) / TotalTareas;
-            double pMedia = (MediaCount * 100.0) / TotalTareas;
-
-            // CRÍTICO: Usar colores HEX directos, NO variables CSS
-            return $"background: conic-gradient(" +
-                   $"#EF4444 0% {pAlta}%, " +                    // Rojo
-                   $"white {pAlta}% {pAlta + 0.5}%, " +          // Separador
-                   $"#F59E0B {pAlta + 0.5}% {pAlta + pMedia}%, " + // Amarillo
-                   $"white {pAlta + pMedia}% {pAlta + pMedia + 0.5}%, " + // Separador
-                   $"#10B981 {pAlta + pMedia + 0.5}% 100%);";   // Verde
+            if (TotalTareas == 0) return 0;
+            double porcentaje = ((double)cantidad / TotalTareas) * 100;
+            // Mínimo 15% para que siempre se vea algo
+            return Math.Max(porcentaje, cantidad > 0 ? 15 : 0);
         }
 
-        private double GetBarHeight(int count)
+        private int CalcularPorcentaje(int cantidad)
         {
-            const double META_VISUAL = 20.0;
-            double altura = (count / META_VISUAL) * 100;
-            return altura > 100 ? 100 : (altura < 15 ? 15 : altura);
+            if (TotalTareas == 0) return 0;
+            return (int)Math.Round(((double)cantidad / TotalTareas) * 100);
         }
     }
 }

@@ -70,6 +70,12 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                 // 1. Preparación de datos
                 if (solucion.SOL_ID == Guid.Empty) solucion.SOL_ID = Guid.NewGuid();
                 if (solucion.SOL_FEC_CRE == default) solucion.SOL_FEC_CRE = DateTimeOffset.Now;
+                // Si no viene un ID de fricción, asignamos el GUID vacío por defecto
+                if (solucion.FRI_ID == null || solucion.FRI_ID == Guid.Empty)
+                {
+                    // Usamos Guid.Empty (00000000-0000-0000-0000-000000000000)
+                    solucion.FRI_ID = Guid.Empty;
+                }
 
                 var bitacora = new BitacoraSolucionesModel
                 {

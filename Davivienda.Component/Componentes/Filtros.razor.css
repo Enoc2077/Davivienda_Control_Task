@@ -1,0 +1,239 @@
+﻿.filtros-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+.filtros-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    padding-bottom: 6px;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+    .filtros-panel-header i {
+        color: #e30613;
+        font-size: 14px;
+    }
+
+.badge-count {
+    margin-left: auto;
+    background: #e30613;
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 20px;
+}
+
+.filtro-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.select-tipo {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 2px solid #f1f5f9;
+    background: #f8fafc;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    outline: none;
+    transition: 0.2s;
+}
+
+    .select-tipo:focus {
+        border-color: #e30613;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(227, 6, 19, 0.08);
+    }
+
+.select-valor {
+    width: 100%;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 2px dashed #e30613;
+    background: #fff5f5;
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    cursor: pointer;
+    outline: none;
+}
+
+.input-nombre-filtro {
+    flex: 1;
+    padding: 11px 14px;
+    border-radius: 12px;
+    border: 2px dashed #64748b;
+    background: #f8fafc;
+    font-size: 13px;
+    color: #334155;
+    outline: none;
+}
+
+.btn-agregar-chip {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: none;
+    background: #e30613;
+    color: white;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.2s;
+}
+
+.chips-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    overflow-y: auto;
+    padding: 4px 2px;
+    min-height: 60px;
+}
+
+.no-filtros-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: #cbd5e1;
+    text-align: center;
+    padding: 16px 0;
+}
+
+.chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    border-left: 4px solid transparent;
+    font-size: 12px;
+    transition: 0.15s;
+    border: 1px solid #f1f5f9;
+}
+
+    .chip:hover {
+        transform: translateX(3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+.chip-texto {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 0;
+}
+
+.chip-tipo {
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    opacity: 0.65;
+}
+
+.chip-etiqueta {
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chip-btn-remove {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    background: transparent;
+    opacity: 0.5;
+}
+
+.chip-morado {
+    background: #faf5ff;
+    border-left-color: #7c3aed;
+    color: #5b21b6;
+}
+
+.chip-azul {
+    background: #eff6ff;
+    border-left-color: #3b82f6;
+    color: #1d4ed8;
+}
+
+.chip-verde {
+    background: #f0fdf4;
+    border-left-color: #16a34a;
+    color: #15803d;
+}
+
+.chip-naranja {
+    background: #fff7ed;
+    border-left-color: #f97316;
+    color: #c2410c;
+}
+
+.chip-rojo {
+    background: #fff1f2;
+    border-left-color: #e30613;
+    color: #be0010;
+}
+
+.chip-gris {
+    background: #f8fafc;
+    border-left-color: #64748b;
+    color: #334155;
+}
+
+.btn-limpiar-todo {
+    width: 100%;
+    padding: 9px;
+    border: 1.5px solid #fecdd3;
+    background: white;
+    color: #e30613;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+@keyframes chipEntrada {
+    from {
+        opacity: 0;
+        transform: translateX(-12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-chip {
+    animation: chipEntrada 0.22s ease both;
+}

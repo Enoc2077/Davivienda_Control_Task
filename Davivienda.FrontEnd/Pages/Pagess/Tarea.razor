@@ -3,7 +3,7 @@
 
 <div class="cuadrantes-container">
 
-    @* Cuadrante 1: Listado con Filtro de Área *@
+    @* Cuadrante 1: Listado con Filtro de Área (MÁS ALTO) *@
     <div class="cuadro-blanco q-90-180 animate-pop">
         <div class="panel-header">
             <h3 class="title-dav-red"><i class="bi bi-list-task"></i> Control de Tareas</h3>
@@ -39,7 +39,7 @@
         </div>
     </div>
 
-    @* Cuadrante 2: Registro Rápido Completo *@
+    @* Cuadrante 2: Registro Rápido Completo CON DESCRIPCIÓN *@
     <div class="cuadro-blanco q-270-90 animate-pop">
         <div class="panel-header">
             <h3 class="title-dav-red"><i class="bi bi-lightning-fill"></i> Registro Rápido</h3>
@@ -71,6 +71,12 @@
             <div class="input-container-dav">
                 <label>TÍTULO</label>
                 <input type="text" @bind="NuevaTareaNombre" class="input-field-dav" placeholder="Nombre de la tarea..." />
+            </div>
+
+            @* 🔥 NUEVO CAMPO: DESCRIPCIÓN *@
+            <div class="input-container-dav">
+                <label>DESCRIPCIÓN</label>
+                <textarea @bind="NuevaTareaDesc" rows="2" class="input-field-dav" placeholder="Detalles de la tarea..."></textarea>
             </div>
 
             <div class="input-group-row">
@@ -112,7 +118,7 @@
         </div>
     </div>
 
-    @* Cuadrante 3: Resumen *@
+    @* Cuadrante 3: Resumen (MÁS BAJO) *@
     <div class="cuadro-blanco q-180-270 animate-pop">
         <div class="panel-header"><h3 class="title-dav-red">Resumen</h3></div>
         <div class="stats-premium">
@@ -142,7 +148,6 @@
                             <option value="Pendiente">Pendiente</option>
                             <option value="En Progreso">En Progreso</option>
                             <option value="Completado">Completado</option>
-                            <option value="Bloqueado">Bloqueado</option>
                         </select>
                     </div>
                     <div class="input-container-dav full-width"><label>DESCRIPCIÓN</label><textarea @bind="TareaEdicion.TAR_DES" rows="2" class="input-field-dav"></textarea></div>
