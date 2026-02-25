@@ -7,6 +7,8 @@ query GetProyectos {
     pro_FEC_FIN
     pro_EST
     are_ID
+    pro_FEC_CRE
+    pro_FEC_MOD
   }
 }
 
@@ -26,7 +28,7 @@ query GetProyectoById($pro_id: UUID!) {
     pro_ID
     pro_NOM
     pro_DES
-    pro_FEC_INI
+    are_ID
     pro_EST
   }
 }

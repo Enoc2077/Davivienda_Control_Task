@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Blazored.LocalStorage; // 🔥 CAMBIO: LocalStorage
+using Blazored.LocalStorage;
 using Davivienda.FrontEnd.Security;
 using Davivienda.GraphQL.SDK;
 using Davivienda.Models.Modelos;
@@ -14,7 +14,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
         [Inject] private NavigationManager Nav { get; set; } = default!;
-        [Inject] private ILocalStorageService LocalStorage { get; set; } = default!; // 🔥 CAMBIO
+        [Inject] private ILocalStorageService LocalStorage { get; set; } = default!;
         [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
         private GqlSdk.LoginInput loginModel = new GqlSdk.LoginInput();
@@ -25,18 +25,23 @@ namespace Davivienda.FrontEnd.Pages.Pagess
 
         protected override async Task OnInitializedAsync()
         {
-            var token = await LocalStorage.GetItemAsync<string>("authToken"); // 🔥 CAMBIO
+            // 🔥 VERIFICAR SI YA HAY SESIÓN ACTIVA
+            var token = await LocalStorage.GetItemAsync<string>("authToken");
+
             if (!string.IsNullOrEmpty(token))
             {
                 var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+
                 if (authState.User.Identity?.IsAuthenticated == true)
                 {
+                    Console.WriteLine("✅ Sesión activa encontrada, redirigiendo...");
                     Nav.NavigateTo("/home");
                 }
                 else
                 {
-                    await LocalStorage.RemoveItemAsync("authToken"); // 🔥 CAMBIO
-                    await LocalStorage.RemoveItemAsync("lastActivity"); // 🔥 NUEVO
+                    // Token inválido o expirado
+                    Console.WriteLine("⚠️ Token inválido, limpiando...");
+                    await LocalStorage.RemoveItemAsync("authToken");
                 }
             }
         }
@@ -45,15 +50,26 @@ namespace Davivienda.FrontEnd.Pages.Pagess
         {
             cargando = true;
             errorMsg = "";
+
             try
             {
+                // 🔥 LIMPIAR TOKEN ANTERIOR SI EXISTE
+                await LocalStorage.RemoveItemAsync("authToken");
+
+                Console.WriteLine("🔐 Solicitando nuevo token al backend...");
+
                 var result = await Client.IniciarSesion.ExecuteAsync(loginModel);
+
                 if (result.Data?.Login.Exito == true)
                 {
                     string? token = result.Data.Login.Token;
+
                     if (!string.IsNullOrEmpty(token))
                     {
-                        await LocalStorage.SetItemAsync("authToken", token); // 🔥 CAMBIO
+                        // 🔥 GUARDAR NUEVO TOKEN
+                        await LocalStorage.SetItemAsync("authToken", token);
+
+                        Console.WriteLine("✅ Nuevo token guardado en LocalStorage");
 
                         if (AuthStateProvider is CustomAuthStateProvider customAuth)
                         {
@@ -75,7 +91,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess
             catch (Exception ex)
             {
                 errorMsg = "No se pudo establecer conexión con el servidor.";
-                Console.WriteLine($"Login Error: {ex.Message}");
+                Console.WriteLine($"❌ Login Error: {ex.Message}");
             }
             finally
             {

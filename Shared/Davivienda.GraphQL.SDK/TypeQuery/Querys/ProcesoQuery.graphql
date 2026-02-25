@@ -12,7 +12,7 @@ query GetProcesos {
   }
 }
 
-# 2. Obtener procesos por nombre (ACTIVADA)
+# 2. Obtener procesos por nombre
 query GetProcesosByName($nombre: String!) {
   procesosByName(nombre: $nombre) {
     proc_ID
@@ -22,7 +22,7 @@ query GetProcesosByName($nombre: String!) {
   }
 }
 
-# 3. Obtener proceso por ID
+# 3. Obtener proceso por ID (SIN are_ID porque no existe en el modelo)
 query GetProcesoById($id: UUID!) {
   procesoById(proc_id: $id) {
     proc_ID
@@ -31,5 +31,7 @@ query GetProcesoById($id: UUID!) {
     proc_FRE
     proc_EST
     pro_ID
+    proc_FEC_CRE
+    proc_FEC_MOD
   }
 }
