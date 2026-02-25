@@ -1,8 +1,8 @@
-﻿/* --- ESTRUCTURA DE CUADRANTES (NO TOCAR POSICIONES) --- */
+﻿/* --- ESTRUCTURA DE CUADRANTES CON HEIGHTS AJUSTADOS --- */
 .cuadrantes-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 1fr 1.1fr;
+    grid-template-rows: 2fr 0.8fr;
     grid-template-areas:
         "top-left right-side"
         "bottom-left right-side";
@@ -29,19 +29,24 @@
 
 .q-180-270 {
     grid-area: bottom-left;
+    padding: 15px 20px; /* 🔥 MÁS REDUCIDO: 15px arriba/abajo, 20px lados */
 }
 
 .q-270-90 {
     grid-area: right-side;
-    border-right: 6px solid #ed1c24; /* Acento Rojo Corporativo */
+    border-right: 6px solid #ed1c24;
 }
 
 /* --- ESTILOS DE TEXTO Y TÍTULOS --- */
+.panel-header {
+    margin-bottom: 20px;
+}
+
 .title-dav-red {
     color: #334155;
     font-weight: 800;
     font-size: 1.4rem;
-    margin-bottom: 20px;
+    margin: 0 0 10px 0;
 }
 
     .title-dav-red i {
@@ -49,12 +54,31 @@
         margin-right: 10px;
     }
 
+/* Título más pequeño solo en el cuadro de Resumen */
+.q-180-270 .title-dav-red {
+    font-size: 1.1rem; /* 🔥 REDUCIDO */
+    margin-bottom: 5px; /* 🔥 REDUCIDO */
+}
+
+.q-180-270 .panel-header {
+    margin-bottom: 12px; /* 🔥 REDUCIDO */
+}
+
 /* --- TARJETAS DE TAREA (LISTADO) --- */
 .tareas-scroll-area {
     flex: 1;
     overflow-y: auto;
     padding-right: 10px;
 }
+
+    .tareas-scroll-area::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .tareas-scroll-area::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
 
 .tarea-item-card {
     background: white;
@@ -76,6 +100,10 @@
         box-shadow: 0 8px 20px rgba(237, 28, 36, 0.08);
     }
 
+.tarea-info {
+    flex: 1;
+}
+
 .tarea-name-text {
     font-weight: 800;
     color: #1e293b;
@@ -86,7 +114,53 @@
 .tarea-desc-text {
     color: #64748b;
     font-size: 0.9rem;
-    margin-top: 4px;
+    margin: 4px 0 0 0;
+}
+
+.tarea-badges {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.badge-min {
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+    /* Estados */
+    .badge-min.pendiente {
+        background: #dbeafe;
+        color: #3b82f6;
+    }
+
+    .badge-min.en-progreso {
+        background: #fef3c7;
+        color: #f59e0b;
+    }
+
+    .badge-min.completado {
+        background: #d1fae5;
+        color: #10b981;
+    }
+
+/* Prioridades */
+.prio-alta {
+    background: #fee2e2;
+    color: #ef4444;
+}
+
+.prio-media {
+    background: #fef3c7;
+    color: #f59e0b;
+}
+
+.prio-baja {
+    background: #f0fdf4;
+    color: #10b981;
 }
 
 .tarea-actions-min {
@@ -100,25 +174,41 @@
     opacity: 1;
 }
 
+.btn-action-edit, .btn-action-delete {
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
 .btn-action-edit {
     color: #475569;
-    border: none;
     background: #f1f5f9;
-    padding: 8px;
-    border-radius: 8px;
 }
+
+    .btn-action-edit:hover {
+        background: #e2e8f0;
+    }
 
 .btn-action-delete {
     color: #ed1c24;
-    border: none;
     background: #fff1f2;
-    padding: 8px;
-    border-radius: 8px;
 }
 
-/* --- FORMULARIO Y INPUTS (BORDES DEFINIDOS) --- */
+    .btn-action-delete:hover {
+        background: #fee2e2;
+    }
+
+/* --- FORMULARIO Y INPUTS --- */
+.form-creacion-dav {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
 .input-container-dav {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
     .input-container-dav label {
@@ -133,11 +223,12 @@
 .input-field-dav {
     width: 100%;
     padding: 14px 18px;
-    border: 2px solid #e2e8f0; /* Borde visible [cite: 2026-02-12] */
+    border: 2px solid #e2e8f0;
     border-radius: 12px;
     background-color: #f8fafc;
     font-size: 15px;
     transition: all 0.3s ease;
+    font-family: inherit;
 }
 
     .input-field-dav:focus {
@@ -147,15 +238,49 @@
         box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.05);
     }
 
+    .input-field-dav::placeholder {
+        color: #94a3b8;
+    }
+
+textarea.input-field-dav {
+    resize: vertical;
+    min-height: 60px;
+}
+
 .select-dav {
     cursor: pointer;
     appearance: auto !important;
 }
 
+.input-group-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.area-filter-top {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+    .area-filter-top label {
+        font-size: 11px;
+        font-weight: 800;
+        color: #64748b;
+    }
+
+.min-select {
+    padding: 8px 12px;
+    font-size: 13px;
+    width: auto;
+}
+
 /* --- BOTONES ROJOS --- */
 .btn-save-main-dav-red {
     width: 100%;
-    background: #ed1c24; /* Rojo Davivienda */
+    background: #ed1c24;
     color: white;
     border: none;
     padding: 16px;
@@ -164,6 +289,7 @@
     cursor: pointer;
     transition: all 0.3s;
     box-shadow: 0 4px 12px rgba(237, 28, 36, 0.2);
+    margin-top: 10px;
 }
 
     .btn-save-main-dav-red:hover:not(:disabled) {
@@ -171,30 +297,41 @@
         transform: translateY(-2px);
     }
 
-/* --- RESUMEN (ESTADÍSTICAS) --- */
+    .btn-save-main-dav-red:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+/* --- RESUMEN (ESTADÍSTICAS) - EXTRA COMPACTO --- */
 .stats-premium {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 5px; /* 🔥 MÁS REDUCIDO: de 8px a 5px */
+    flex: 1;
 }
 
 .stat-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 18px 0;
+    padding: 6px 0; /* 🔥 MÁS REDUCIDO: de 10px a 6px */
     border-bottom: 1.5px solid #f8fafc;
 }
+
+    .stat-item:last-child {
+        border-bottom: none;
+    }
 
 .stat-label {
     font-weight: 600;
     color: #64748b;
+    font-size: 0.75rem; /* 🔥 MÁS REDUCIDO: de 0.85rem a 0.75rem */
 }
 
 .stat-value {
     font-weight: 900;
     color: #ed1c24;
-    font-size: 1.3rem;
+    font-size: 1rem; /* 🔥 MÁS REDUCIDO: de 1.2rem a 1rem */
 }
 
 /* --- MODAL ROJO --- */
@@ -218,6 +355,10 @@
     overflow: hidden;
 }
 
+.wide-modal {
+    width: 650px;
+}
+
 .modal-top-accent-red {
     height: 6px;
     width: 100%;
@@ -238,6 +379,34 @@
     margin: 0;
 }
 
+.close-x-dav {
+    background: transparent;
+    border: none;
+    font-size: 2rem;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+    .close-x-dav:hover {
+        color: #ed1c24;
+    }
+
+.modal-body {
+    padding: 20px 40px;
+}
+
+.form-grid-dav-two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.full-width {
+    grid-column: span 2;
+}
+
 .modal-foot-dav {
     padding: 25px 40px 40px;
     display: flex;
@@ -253,7 +422,13 @@
     border-radius: 12px;
     font-weight: 700;
     cursor: pointer;
+    transition: all 0.2s;
 }
+
+    .btn-secondary-dav:hover {
+        border-color: #cbd5e1;
+        background: #f8fafc;
+    }
 
 /* --- ANIMACIONES --- */
 @keyframes popIn {
@@ -272,67 +447,15 @@
     animation: popIn 0.3s ease-out;
 }
 
-
-/* Agrupación de inputs en el formulario rápido */
-.input-group-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-.area-filter-top {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.min-select {
-    padding: 8px 12px;
-    font-size: 13px;
-    width: auto;
-}
-
-.tarea-badges {
-    display: flex;
-    gap: 8px;
-    margin-top: 8px;
-}
-
-.badge-min {
-    font-size: 10px;
-    font-weight: 800;
-    padding: 3px 8px;
-    border-radius: 4px;
-    text-transform: uppercase;
-}
-
-/* Colores de Prioridad */
-.prio-alta {
-    background: #fee2e2;
-    color: #ef4444;
-}
-
-.prio-media {
-    background: #fef3c7;
-    color: #f59e0b;
-}
-
-.prio-baja {
-    background: #f0fdf4;
-    color: #10b981;
-}
-
-.wide-modal {
-    width: 650px;
-}
-
-.form-grid-dav-two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px;
-}
-
-.full-width {
-    grid-column: span 2;
+/* --- RESPONSIVE --- */
+@media (max-width: 1200px) {
+    .cuadrantes-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto;
+        grid-template-areas:
+            "top-left"
+            "right-side"
+            "bottom-left";
+        height: auto;
+    }
 }
