@@ -27,7 +27,7 @@
             </div>
 
             @* Menú de Administración - Solo para rol "Enoc" *@
-            <AuthorizeView Roles="Enoc">
+            <AuthorizeView Roles="Gerente,Lider Tecnico">
                 <Authorized>
                     <SidebarDavivienda Tipo="MenuAdmin" />
                 </Authorized>

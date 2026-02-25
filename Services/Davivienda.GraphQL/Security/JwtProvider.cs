@@ -14,15 +14,15 @@ namespace Davivienda.GraphQL.Security
             _configuration = configuration;
         }
 
-        // 🔥 CAMBIADO: string rolNombre en lugar de int rolId
         public string GenerarToken(int usuNum, string nombre, string rolNombre)
         {
             var claims = new[]
             {
                 new Claim("USU_NUM", usuNum.ToString()),
                 new Claim(ClaimTypes.Name, nombre),
-                new Claim(ClaimTypes.Role, rolNombre), // ✅ "Enoc"
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                new Claim(ClaimTypes.Role, rolNombre),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // 🔥 GUID único por token
+                new Claim("iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()) // 🔥 Timestamp de creación
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
@@ -32,7 +32,7 @@ namespace Davivienda.GraphQL.Security
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(8),
+                expires: DateTime.UtcNow.AddHours(6), // 🔥 6 HORAS DE DURACIÓN
                 signingCredentials: creds
             );
 

@@ -6,7 +6,7 @@
 <div class="dashboard-wrapper warm-theme">
     <div class="asignaciones-grid">
 
-        @* --- CUADRANTE 0° a 180°: Tareas y Calendario (Sin cambios) --- *@
+        @* --- CUADRANTE 0° a 180°: Tareas y Calendario --- *@
         <section class="white-panel-card panel-tareas">
             <div class="panel-header-dav">
                 <div class="header-with-filter">
@@ -55,32 +55,82 @@
             </div>
         </section>
 
+        @* --- CALENDARIO CON INDICADORES DE COLOR --- *@
         <section class="white-panel-card panel-calendario">
             <div class="panel-header-dav calendar-mini-header">
                 <h3 class="panel-title-bold">Calendario</h3>
                 <div class="header-icon-orange"><i class="bi bi-calendar3"></i></div>
             </div>
+
             <div class="panel-scroll-content no-padding-top">
                 <div class="mini-cal-container">
+                    @* Navegación del mes *@
                     <div class="cal-nav-row">
-                        <button class="btn-cal-nav" @onclick="MesAnterior"><i class="bi bi-chevron-left"></i></button>
+                        <button class="btn-cal-nav" @onclick="MesAnterior">
+                            <i class="bi bi-chevron-left"></i>
+                        </button>
                         <span class="month-label-bold">@FechaCalendario.ToString("MMMM yyyy")</span>
-                        <button class="btn-cal-nav" @onclick="MesSiguiente"><i class="bi bi-chevron-right"></i></button>
+                        <button class="btn-cal-nav" @onclick="MesSiguiente">
+                            <i class="bi bi-chevron-right"></i>
+                        </button>
                     </div>
-                    <div class="cal-days-grid-header"><span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span></div>
+
+                    @* Días de la semana *@
+                    <div class="cal-days-grid-header">
+                        <span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span>
+                    </div>
+
+                    @* Grilla de días del mes *@
                     <div class="cal-numbers-grid-spacious">
                         @foreach (var dia in DiasDelMesAsignaciones)
                         {
-                            <div class="cal-day-cell-spacious @(dia.EsMesActual ? "" : "not-current") @(dia.EsHoy ? "today-highlight" : "") @(dia.TieneTareas ? "has-task-bg" : "")">
+                            var clases = $"cal-day-cell-spacious " +
+                            $"{(dia.EsMesActual ? "" : "not-current ")} " +
+                            $"{(dia.EsHoy ? "today-highlight " : "")} " +
+                            $"{(dia.TieneInicio ? "has-inicio-bg " : "")} " +
+                            $"{(dia.TieneFin ? "has-fin-bg " : "")}";
+
+                            <div class="@clases">
                                 <span class="num">@dia.Fecha.Day</span>
                             </div>
                         }
                     </div>
                 </div>
+
+                @* 🔥 BOTÓN PRÓXIMA TAREA A FINALIZAR *@
+                @{
+                    var proximaTarea = GetProximaTareaAFinalizar();
+                }
+
+                @if (proximaTarea != null)
+                {
+                    <div class="delivery-footer-card-v2" @onclick="AbrirModalCalendario" style="cursor: pointer;">
+                        <div class="delivery-blue-box">
+                            <span class="day-num-box">@proximaTarea.TAR_FEC_FIN.Value.Day</span>
+                        </div>
+                        <div class="delivery-text">
+                            <strong>@proximaTarea.TAR_NOM</strong>
+                            <span>Finaliza: @proximaTarea.TAR_FEC_FIN.Value.ToString("MMMM dd")</span>
+                        </div>
+                        <i class="bi bi-arrow-right arrow-icon"></i>
+                    </div>
+                }
+                else
+                {
+                    <div class="delivery-footer-card-v2" style="opacity: 0.5;">
+                        <div class="delivery-blue-box">
+                            <i class="bi bi-calendar-check" style="color: white; font-size: 1.2rem;"></i>
+                        </div>
+                        <div class="delivery-text">
+                            <strong>Sin tareas próximas</strong>
+                            <span>No hay tareas pendientes</span>
+                        </div>
+                    </div>
+                }
             </div>
         </section>
 
-        @* --- CUADRANTE 180° a 270°: Estado de Tareas (AHORA A LA IZQUIERDA) --- *@
+        @* --- CUADRANTE 180° a 270°: Estado de Tareas (GRÁFICO DE BARRAS) --- *@
         <section class="white-panel-card panel-grafica-izq">
             <div class="panel-header-dav"><h3 class="panel-title-bold">Estado de Tareas</h3></div>
             <Graficas TipoGrafica="Estados"
@@ -91,19 +141,22 @@
                       Completadas="@Tasks.Count(t => t.TAR_EST == "Completado")" />
         </section>
 
-        @* --- CUADRANTE 270° a 360°: Ilustración (AHORA A LA DERECHA) --- *@
-                <div class="device-monitor">
-                    <div class="device-screen"><div class="screen-ui-lines"></div></div>
-                </div>
-                <div class="vector-person person-standing"></div>
-                <div class="vector-person person-climbing"></div>
-                <div class="vector-person person-sitting"></div>
-                <div class="floating-element element-1"></div>
-                <div class="floating-element element-2"></div>
+        @* --- CUADRANTE 270° a 360°: Ilustración (FUERA DEL CUADRO) --- *@
+        <div class="illustration-panel">
+            <div class="device-monitor">
+                <div class="device-screen"><div class="screen-ui-lines"></div></div>
+            </div>
+            <div class="vector-person person-standing"></div>
+            <div class="vector-person person-climbing"></div>
+            <div class="vector-person person-sitting"></div>
+            <div class="floating-element element-1"></div>
+            <div class="floating-element element-2"></div>
+        </div>
 
     </div>
 </div>
 
+@* --- MODAL PARA CALENDARIO Y DETALLE DE TAREA --- *@
 @if (MostrarModal)
 {
     <div class="modal-backdrop-dav" @onclick="CerrarModal">
@@ -119,7 +172,6 @@
                 }
                 else if (ModalActual == "DETALLE" && TareaSeleccionada != null)
                 {
-
                     <Davivienda.Component.Componentes.DetalleTarea Tarea="TareaSeleccionada" OnClose="CerrarModal" />
                 }
             </div>

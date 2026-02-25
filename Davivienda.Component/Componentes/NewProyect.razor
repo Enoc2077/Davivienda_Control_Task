@@ -3,9 +3,7 @@
 
 <div class="modal-overlay">
     <div class="modal-card-premium animate-pop">
-        @* Línea superior decorativa Davivienda *@
         <div class="modal-top-accent"></div>
-
         <div class="modal-head">
             <h2 class="modal-title-main">
                 <i class="fas fa-folder-plus"></i>
@@ -15,63 +13,77 @@
         </div>
 
         <div class="modal-body">
-            @if (Proyecto.PRO_ID != Guid.Empty)
+            @if (CargandoDatos)
             {
-                <p class="modal-subtitle">Modificando: <strong>@Proyecto.PRO_NOM</strong></p>
+                <div class="text-center p-5">
+                    <span class="spinner-border"></span> <p>Cargando información...</p>
+                </div>
             }
+            else
+            {
+                @* PANEL DE DEBUG ELIMINADO *@
 
-            <div class="form-grid-dav">
-                <div class="input-container-dav full-width">
-                    <label>NOMBRE DEL PROYECTO</label>
-                    <input type="text" @bind="Proyecto.PRO_NOM" class="input-field-dav" placeholder="Ej: Migración de Core" />
-                </div>
+                <div class="form-grid-dav">
+                    <div class="input-container-dav full-width">
+                        <label>NOMBRE DEL PROYECTO</label>
+                        <input type="text" @bind="Proyecto.PRO_NOM" class="input-field-dav" />
+                    </div>
 
-                <div class="input-container-dav full-width">
-                    <label>DESCRIPCIÓN DETALLADA</label>
-                    <textarea @bind="Proyecto.PRO_DES" rows="3" class="input-field-dav" placeholder="Escriba los detalles del proyecto..."></textarea>
-                </div>
+                    @* CAMPO DE DESCRIPCIÓN AÑADIDO *@
+                    <div class="input-container-dav full-width">
+                        <label>DESCRIPCIÓN DEL PROYECTO</label>
+                        <textarea @bind="Proyecto.PRO_DES" class="input-field-dav" rows="3" placeholder="Detalles del proyecto..."></textarea>
+                    </div>
 
-                <div class="input-container-dav">
-                    <label>FECHA INICIO</label>
-                    <input type="date" @bind-value="Proyecto.PRO_FEC_INI" @bind-value:format="yyyy-MM-dd" class="input-field-dav" />
-                </div>
+                    <div class="input-container-dav">
+                        <label>FECHA INICIO</label>
+                        <input type="date" @bind="Proyecto.PRO_FEC_INI" class="input-field-dav" />
+                    </div>
 
-                <div class="input-container-dav">
-                    <label>FECHA FIN ESTIMADA</label>
-                    <input type="date" @bind-value="Proyecto.PRO_FEC_FIN" @bind-value:format="yyyy-MM-dd" class="input-field-dav" />
-                </div>
+                    @* CAMPO DE FECHA FIN AÑADIDO *@
+                    <div class="input-container-dav">
+                        <label>FECHA FINALIZACIÓN</label>
+                        <input type="date" @bind="Proyecto.PRO_FEC_FIN" class="input-field-dav" />
+                    </div>
 
-                <div class="input-container-dav">
-                    <label>ESTADO DEL PROYECTO</label>
-                    <select @bind="Proyecto.PRO_EST" class="input-field-dav select-dav visual-fix">
-                        <option value="NUEVO">NUEVO</option>
-                        <option value="INICIADO">INICIADO</option>
-                        <option value="EN PROCESO">EN PROCESO</option>
-                        <option value="FINALIZADO">FINALIZADO</option>
-                    </select>
-                </div>
+                    <div class="input-container-dav">
+                        <label>ESTADO</label>
+                        <select @bind="Proyecto.PRO_EST" class="input-field-dav">
+                            <option value="NUEVO">NUEVO</option>
+                            <option value="INICIADO">INICIADO</option>
+                            <option value="EN PROCESO">EN PROCESO</option>
+                            <option value="FINALIZADO">FINALIZADO</option>
+                        </select>
+                    </div>
 
-                <div class="input-container-dav">
-                    <label>ÁREA ORGANIZACIONAL</label>
-                    <select @bind="Proyecto.ARE_ID" class="input-field-dav select-dav visual-fix">
-                        <option value="@Guid.Empty">-- Seleccione Área --</option>
-                        @if (ListaAreas != null)
-                        {
-                            @foreach (var area in ListaAreas)
-                            {
-                                <option value="@area.ARE_ID">@area.ARE_NOM</option>
-                            }
-                        }
-                    </select>
+                    @if (EsUsuarioGerente)
+                    {
+                        <div class="input-container-dav">
+                            <label>ÁREA ORGANIZACIONAL</label>
+                            <select @bind="Proyecto.ARE_ID" class="input-field-dav">
+                                <option value="@Guid.Empty">-- Seleccione Área --</option>
+                                @foreach (var area in ListaAreas)
+                                {
+                                    <option value="@area.ARE_ID">@area.ARE_NOM</option>
+                                }
+                            </select>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="input-container-dav" style="background: #d1fae5; padding: 15px; border-radius: 10px; border: 2px solid #10b981;">
+                            <label style="color: #065f46; font-weight: 800;">✓ ÁREA ASIGNADA</label>
+                            <div style="font-weight: 900; color: #047857;">
+                                @(ListaAreas.FirstOrDefault(a => a.ARE_ID == UserAreaId)?.ARE_NOM ?? "Asignando...")
+                            </div>
+                        </div>
+                    }
                 </div>
-            </div>
+            }
         </div>
-
         <div class="modal-foot-dav">
             <button class="btn-secondary-dav" @onclick="CerrarModal">Cancelar</button>
-            <button class="btn-save-main-dav" @onclick="GuardarProyecto">
-                <i class="fas fa-save"></i> @(Proyecto.PRO_ID == Guid.Empty ? "Guardar Registro" : "Actualizar")
-            </button>
+            <button class="btn-save-main-dav" @onclick="GuardarProyecto" disabled="@CargandoDatos">Guardar</button>
         </div>
     </div>
 </div>
