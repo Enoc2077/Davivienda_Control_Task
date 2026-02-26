@@ -50,9 +50,9 @@ namespace Davivienda.Migrations.DbContext
             // Mapeo específico para AREA
             modelBuilder.Entity<Area>(entity =>
             {
-                entity.ToTable("AREA"); 
+                entity.ToTable("AREA");
                 entity.HasKey(e => e.ARE_ID);
-                entity.Property(e => e.ARE_FEC_MOD).HasColumnName("ARE_FEC_MOD"); 
+                entity.Property(e => e.ARE_FEC_MOD).HasColumnName("ARE_FEC_MOD");
             });
 
 
@@ -64,7 +64,7 @@ namespace Davivienda.Migrations.DbContext
                 entity.Property(e => e.ROL_FEC_CRE)
                     .HasColumnName("ROL_FEC_CRE")
                     .IsRequired()
-                    .HasDefaultValueSql("GETDATE()"); 
+                    .HasDefaultValueSql("GETDATE()");
 
                 entity.Property(e => e.ROL_FEC_MOD)
                     .HasColumnName("ROL_FEC_MOD")
@@ -156,6 +156,54 @@ namespace Davivienda.Migrations.DbContext
             modelBuilder.Entity<BitacoraSoluciones>().ToTable("BITACORA_SOLUCIONES");
             modelBuilder.Entity<BitacoraFriccion>().ToTable("BITACORA_FRICCIONES");
             modelBuilder.Entity<Notificaciones>().ToTable("NOTIFICACIONES");
+
+
+            // ==========================================
+            // 🔥 SECCIÓN DE DATOS SEMILLA (SEED DATA)
+            // ==========================================
+
+            var areaAdminId = Guid.Parse("f9b2d8e4-7c5a-4b2a-8d3f-1a2b3c4d5e6f");
+            var rolGerenteId = Guid.Parse("a1b2c3d4-e5f6-4a5b-bc6d-7e8f9a0b1c2d");
+            var usuarioAdminId = Guid.Parse("d7c8b9a0-1e2f-3a4b-5c6d-7e8f9a0b1c2d");
+
+            // 1. Insertar Área
+            modelBuilder.Entity<Area>().HasData(new Area
+            {
+                ARE_ID = areaAdminId,
+                ARE_NOM = "ADMINISTRACIÓN",
+                ARE_DES = "Área de gestión global",
+                ARE_EST = true,
+                ARE_FEC_CRE = DateTimeOffset.Now,
+                ARE_FEC_MOD = DateTimeOffset.Now
+            });
+
+            // 2. Insertar Rol Gerente
+            modelBuilder.Entity<Roles>().HasData(new Roles
+            {
+                ROL_ID = rolGerenteId,
+                ROL_NOM = "Gerente",
+                ROL_DES = "Acceso administrativo total",
+                ROL_EST = true,
+                ROL_FEC_CRE = DateTimeOffset.Now,
+                ROL_FEC_MOD = DateTimeOffset.Now
+            });
+
+            // 3. Insertar Usuario Admin
+            modelBuilder.Entity<Usuario>().HasData(new Usuario
+            {
+                USU_ID = usuarioAdminId,
+                USU_NOM = "admin",
+                USU_NUM = "00001",
+                USU_COR = "admin@davivienda.com",
+                USU_CON = "Admin123",
+                USU_TEL = "00000000",
+                USU_EST = true,
+                ROL_ID = rolGerenteId,
+                ARE_ID = areaAdminId,
+                USU_FEC_CRE = DateTimeOffset.Now,
+                USU_FEC_MOD = DateTimeOffset.Now
+            });
+
         }
     }
 }
