@@ -5,31 +5,50 @@
 <div class="modal-fixed-backdrop">
     <div class="master-modal-container" @onclick:stopPropagation>
         <div class="dav-modal-art-bg">
-            <button type="button" class="btn-close-modal" @onclick="Regresar"><i class="bi bi-x-lg"></i></button>
+            <button type="button" class="btn-close-modal" @onclick="Regresar">
+                <i class="bi bi-x-lg"></i>
+            </button>
 
             <div class="bg-blob blob-red-top"></div>
             <div class="bg-blob blob-red-bottom"></div>
 
+            @* 🎨 ILUSTRACIÓN DECORATIVA *@
+            <div class="illustration-scene">
+                <div class="device-monitor">
+                    <div class="device-screen">
+                        <div class="screen-ui-lines"></div>
+                    </div>
+                    <div class="device-stand"></div>
+                </div>
+                <div class="vector-person person-standing"></div>
+                <div class="vector-person person-climbing"></div>
+                <div class="vector-person person-sitting"></div>
+                <div class="floating-element element-1"></div>
+                <div class="floating-element element-2"></div>
+            </div>
+
             <div class="content-sectors-container">
-                @* LISTADO *@
-                <div class="sector-white-card sector-large">
+                @* ========== LISTADO DE SOLUCIONES ========== *@
+                <div class="sector-white-card sector-listado">
                     <div class="sector-label">Historial de Soluciones</div>
+
                     <div class="sector-banner-header">
                         <div class="banner-waves"></div>
                         <div class="banner-content">
-                            <div class="banner-icon"><i class="bi bi-pencil-square"></i> Bitácora de Gestión</div>
+                            <div class="banner-icon">
+                                <i class="bi bi-lightbulb-fill"></i> Bitácora de Gestión
+                            </div>
                         </div>
                     </div>
 
-                    <div class="solution-main-viewport custom-scroll">
+                    <div class="solution-main-viewport">
                         @if (SolucionesFiltradas.Any())
                         {
                             @foreach (var sol in SolucionesFiltradas)
                             {
-                                <div class="solution-item-card animate-pop" @onclick="() => SeleccionarSolucion(sol)">
+                                <div class="solution-item-card" @onclick="() => AbrirDetalleSolucion(sol)">
                                     <div class="sol-card-info">
                                         <span class="sol-name">@sol.SOL_NOM</span>
-                                        <p class="sol-desc-short">@sol.SOL_DES</p>
                                     </div>
                                     <div class="sol-card-metrics">
                                         <div class="metric-badge status">@sol.SOL_EST</div>
@@ -40,16 +59,24 @@
                         }
                         else
                         {
-                            <div class="empty-results-msg"><i class="bi bi-search"></i><p>Sin resultados.</p></div>
+                            <div class="empty-results-msg">
+                                <i class="bi bi-search"></i>
+                                <p>Sin resultados.</p>
+                            </div>
                         }
                     </div>
                 </div>
 
-                @* FILTROS DINÁMICOS *@
-                <div class="sector-white-card sector-small">
+                @* ========== PANEL DE FILTROS ========== *@
+                <div class="sector-white-card sector-filtros">
                     <div class="sector-label">Filtros Inteligentes</div>
                     <div class="dynamic-filter-zone">
-                        <Filtros Areas="AreasList" Proyectos="ProyectosList" Procesos="ProcesosList" Tareas="TareasList" Prioridades="PrioridadesList" OnFiltrosChanged="ManejarCambioFiltros" />
+                        <Filtros Areas="AreasList"
+                                 Proyectos="ProyectosList"
+                                 Procesos="ProcesosList"
+                                 Tareas="TareasList"
+                                 Prioridades="PrioridadesList"
+                                 OnFiltrosChanged="ManejarCambioFiltros" />
                     </div>
                 </div>
             </div>
@@ -57,11 +84,69 @@
     </div>
 </div>
 
+@* ========== MODAL DE DETALLE (COMO FRICCIÓN) ========== *@
 @if (SolucionSeleccionada != null)
 {
-    <div class="modal-detail-overlay" @onclick="() => SolucionSeleccionada = null">
-        <div @onclick:stopPropagation>
-            <Davivienda.Component.Componentes.DetalleTarea Tarea="ConvertirASolucionModel(SolucionSeleccionada)" OnClose="() => SolucionSeleccionada = null" />
+    <div class="modal-detalle-overlay" @onclick="CerrarDetalle">
+        <div class="modal-detalle-card" @onclick:stopPropagation>
+            @* HEADER *@
+            <div class="modal-detalle-header">
+                <div class="header-icon">
+                    <i class="bi bi-lightbulb-fill"></i>
+                </div>
+                <h3 class="modal-detalle-title">Análisis de Solución</h3>
+                <button class="btn-cerrar-detalle" @onclick="CerrarDetalle">×</button>
+            </div>
+
+            @* BODY CON 2 COLUMNAS *@
+            <div class="modal-detalle-body">
+                @* COLUMNA IZQUIERDA: INFORMACIÓN *@
+                <div class="detalle-columna-info">
+                    <div class="info-section">
+                        <label>NOMBRE DE LA SOLUCIÓN</label>
+                        <p class="info-value">@SolucionSeleccionada.SOL_NOM</p>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-section">
+                            <label>IMPACTO</label>
+                            <span class="badge-impacto">@SolucionSeleccionada.SOL_NIV_EFE%</span>
+                        </div>
+
+                        <div class="info-section">
+                            <label>ESTADO</label>
+                            <span class="badge-estado">@SolucionSeleccionada.SOL_EST</span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <label>TAREA ORIGEN</label>
+                        <p class="info-value-small">@ObtenerNombreTarea(SolucionSeleccionada.FRI_ID)</p>
+                    </div>
+
+                    <div class="info-footer">
+                        <i class="bi bi-calendar3"></i>
+                        <span>Registrado: @SolucionSeleccionada.SOL_FEC_CRE.ToString("dddd, dd 'de' MMMM 'de' yyyy HH:mm", new System.Globalization.CultureInfo("es-ES"))</span>
+                    </div>
+                </div>
+
+                @* COLUMNA DERECHA: YOOPTA *@
+                <div class="detalle-columna-yoopta">
+                    <div class="yoopta-header-modal">
+                        <label>DESCRIPCIÓN DEL PROBLEMA (YOOPTA)</label>
+                    </div>
+                    <div class="yoopta-content-modal">
+                        <Yoopta Contenido="@SolucionSeleccionada.SOL_DES"
+                                ContenidoChanged="@((valor) => { /* Solo lectura */ })" />
+                    </div>
+                </div>
+            </div>
+
+            @* FOOTER *@
+            <div class="modal-detalle-footer">
+                <button class="btn-modal-cerrar" @onclick="CerrarDetalle">Cerrar</button>
+                <button class="btn-modal-ver-tarea" @onclick="VerTareaPadre">Ver Tarea Padre</button>
+            </div>
         </div>
     </div>
 }
