@@ -19,8 +19,7 @@ namespace Davivienda.Migrations.ModelosEF
         [StringLength(50)]
         public string? FRI_TIP { get; set; } // Tipo de fricción (ej. Técnica, Administrativa)
 
-        [Column("FRI_DES")]
-        [StringLength(255)]
+        [Column(TypeName = "nvarchar(max)")]
         public string? FRI_DES { get; set; }
 
         [Column("FRI_EST")]

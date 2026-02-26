@@ -19,8 +19,7 @@ namespace Davivienda.Migrations.ModelosEF
         [StringLength(100)]
         public string? BIT_FRI_NOM { get; set; }
 
-        [Column("BIT_FRI_DES")]
-        [StringLength(255)]
+        [Column(TypeName = "nvarchar(max)")]
         public string? BIT_FRI_DES { get; set; }
 
         [Column("BIT_FRI_EST")]

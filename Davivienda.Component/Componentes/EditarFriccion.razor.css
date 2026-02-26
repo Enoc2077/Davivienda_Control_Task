@@ -174,3 +174,33 @@
         transform: scale(1) translateY(0);
     }
 }
+
+.yoopta-editor-limiter {
+    width: 100%;
+    min-height: 200px;
+    max-height: 380px;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    overflow-y: auto;
+    transition: border-color 0.3s;
+    position: relative;
+}
+
+    .yoopta-editor-limiter:focus-within {
+        border-color: #ffca00;
+        box-shadow: 0 0 0 4px rgba(255, 202, 0, 0.1);
+    }
+
+    .yoopta-editor-limiter::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .yoopta-editor-limiter::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .yoopta-editor-limiter::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }

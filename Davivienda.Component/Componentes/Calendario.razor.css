@@ -1,17 +1,17 @@
-/* ESTRUCTURA Y CONTENEDORES PRINCIPALES */
+Ôªø/* ESTRUCTURA Y CONTENEDORES PRINCIPALES */
 .calendar-wrapper {
     width: 100%;
-    height: 100vh;
+    height: 90vh;
     background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-    padding: 40px;
+    padding: 20px;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
     box-sizing: border-box;
 }
 
 .calendar-container {
     display: grid;
-    grid-template-columns: 320px 1fr;
-    gap: 20px;
+    grid-template-columns: 280px 1fr;
+    gap: 15px;
     height: 100%;
     max-width: 1600px;
     margin: 0 auto;
@@ -20,41 +20,35 @@
 .calendar-sidebar {
     background: white;
     border-radius: 20px;
-    padding: 30px;
+    padding: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 25px;
 }
 
 .calendar-main {
     background: white;
     border-radius: 20px;
-    padding: 30px;
+    padding: 25px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
     display: flex;
     flex-direction: column;
+    max-height: 100%;
+    overflow: hidden;
 }
 
-.calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 30px;
-}
-
-/* MINI CALENDARIO (SIDEBAR) */
+/* MINI CALENDARIO */
 .mini-calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
     .mini-calendar-header h3 {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 600;
         color: #1a1a1a;
         margin: 0;
@@ -64,15 +58,7 @@
 .mini-calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 8px;
-}
-
-.weekday-header {
-    text-align: center;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: #999;
-    padding: 5px;
+    gap: 6px;
 }
 
 .mini-day {
@@ -80,12 +66,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s;
     color: #1a1a1a;
-    transition: all 0.2s ease;
     position: relative;
 }
 
@@ -102,63 +87,68 @@
     .mini-day.selected {
         background: #5B7FF5 !important;
         color: white !important;
-        border: none;
     }
 
     .mini-day:hover:not(.selected):not(.today) {
         background: #f0f0f0;
     }
 
-/* SECCIONES DE CATEGORÕAS Y PRIORIDADES */
-.categories-section h4, .prioritize-section h4 {
-    font-size: 1rem;
+    /* COLORES PARA D√çAS CON TAREAS */
+    .mini-day.task-starting {
+        background-color: rgba(34, 197, 94, 0.25) !important;
+        border: 2px solid #22c55e;
+        color: #166534 !important;
+        font-weight: 700;
+    }
+
+    .mini-day.task-ending {
+        background-color: rgba(237, 28, 36, 0.2) !important;
+        border: 2px solid #ed1c24;
+        color: #b91c1c !important;
+        font-weight: 700;
+    }
+
+/* CATEGOR√çAS Y PRIORIDADES */
+.categories-section h4,
+.prioritize-section h4 {
+    font-size: 0.95rem;
     font-weight: 700;
     color: #1a1a1a;
-    margin-bottom: 15px;
+    margin-bottom: 12px;
 }
 
 .category-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
 .category-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 8px 0;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 0.85rem;
 }
 
 .category-color {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     border-radius: 4px;
     flex-shrink: 0;
-}
-
-.category-name {
-    flex: 1;
-    font-size: 0.9rem;
-    color: #333;
-}
-
-.category-count {
-    font-size: 0.85rem;
-    color: #999;
 }
 
 .priority-list {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .priority-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px;
+    gap: 8px;
+    padding: 10px;
     background: #f8f9fa;
     border-radius: 10px;
     cursor: pointer;
@@ -169,9 +159,14 @@
         background: #e9ecef;
     }
 
+    .priority-item.active-highlight {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+        border: 2px solid #5B7FF5;
+    }
+
 .priority-icon {
     color: #5B7FF5;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
 }
 
 .priority-info {
@@ -181,18 +176,31 @@
 
 .priority-name {
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     color: #1a1a1a;
+    margin-bottom: 4px;
 }
 
-/* NAVEGACI”N Y BOTONES */
+.priority-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 0.7rem;
+    color: #64748b;
+}
+
+    .priority-dates strong {
+        color: #334155;
+    }
+
+/* NAVEGACI√ìN */
 .nav-btn {
     background: transparent;
     border: none;
-    font-size: 24px;
+    font-size: 20px;
     color: #666;
     cursor: pointer;
-    padding: 5px 10px;
+    padding: 4px 8px;
     border-radius: 8px;
     transition: all 0.2s;
 }
@@ -202,46 +210,34 @@
         color: #1a1a1a;
     }
 
+.calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
 .week-navigation {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px;
 }
 
     .week-navigation h2 {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
         font-weight: 600;
         color: #1a1a1a;
         margin: 0;
     }
 
-.week-number {
-    font-size: 0.9rem;
-    color: #999;
-}
-
-.create-btn {
-    background: #5B7FF5;
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.chevron {
-    color: #999;
-    font-size: 1.2rem;
-}
-
-/* GRILLA SEMANAL Y HORARIOS */
+/* GRILLA SEMANAL */
 .week-days {
     display: grid;
     grid-template-columns: 60px repeat(7, 1fr);
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 10px;
+    flex-shrink: 0;
 }
 
 .spacer-cell {
@@ -250,22 +246,28 @@
 
 .week-day-header {
     text-align: center;
-    padding: 10px;
+    padding: 8px;
+    transition: all 0.2s;
+    border-radius: 8px;
 }
 
+    .week-day-header.active-day {
+        background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    }
+
 .day-name {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: #999;
-    margin-bottom: 5px;
+    margin-bottom: 4px;
 }
 
 .day-number {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     font-weight: 600;
     color: #333;
-    width: 35px;
-    height: 35px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -278,199 +280,145 @@
         color: white;
     }
 
+/* üî• GRILLA DE TIEMPO CON SCROLL */
 .time-grid {
     display: grid;
     grid-template-columns: 60px repeat(7, 1fr);
     gap: 0;
     flex: 1;
-    overflow-y: auto;
+    overflow-y: auto; /* üî• SCROLL HABILITADO */
+    overflow-x: hidden;
     position: relative;
-    /* Cada celda mide 60px, por 24 horas = 1440px */
-    min-height: 1440px;
+    min-height: 0; /* üî• IMPORTANTE para que funcione el scroll */
+}
+
+.time-column {
+    position: sticky;
+    left: 0;
+    background: white;
+    z-index: 5;
 }
 
 .time-slot {
     height: 60px;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: #999;
     padding-top: 5px;
     text-align: right;
-    padding-right: 10px;
+    padding-right: 8px;
 }
 
 .day-column {
     position: relative;
     border-left: 1px solid #f1f5f9;
-    /* Importante: quitar el overflow:hidden previo para permitir que el hover se vea bien */
-    min-height: 1440px;
-    background-clip: content-box;
+    min-height: 1440px; /* 24 horas * 60px */
 }
 
 .hour-cell {
     height: 60px;
     border-bottom: 1px solid #f1f5f9;
-    box-sizing: border-box
+    box-sizing: border-box;
 }
 
-/* 2. OCULTAR NOMBRE Y MOSTRAR EN HOVER */
-.event-title-hidden {
-    display: none; /* Oculto por defecto */
-    font-weight: 800;
-    font-size: 0.8rem;
-    text-align: center;
-    margin-bottom: 2px;
-}
-
-/* EVENTOS Y TAREAS (ESTILOS GENERALES) */
+/* EVENTOS/TAREAS */
 .event {
     position: absolute;
-    left: 10px;
-    right: 10px;
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 12px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     overflow: hidden;
-    z-index: 10;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    width: calc(100% - 10px); /* üî• Ancho completo */
+    left: 5px;
+    right: 5px;
 }
 
     .event:hover {
-        z-index: 200 !important; /* Salta al frente de todas las dem·s */
-        transform: scale(1.05); /* Se agranda un poco */
-        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        min-width: 140px;
+        z-index: 200 !important;
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
     }
 
-        .event:hover .event-title-hidden {
-            display: block; /* Se revela el nombre al poner el cursor */
-            animation: fadeIn 0.2s ease-in;
-        }
+.event-title-visible {
+    font-weight: 800;
+    text-align: center;
+    margin-bottom: 6px;
+    font-size: 0.85rem;
+    opacity: 1; /* üî• Siempre visible */
+    color: inherit;
+}
 
 .event-title {
     font-weight: 800;
     text-align: center;
-    color: #1a1a1a;
     margin-bottom: 3px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    font-size: 0.8rem;
+    opacity: 0;
+    max-height: 0;
+    transition: all 0.2s;
+}
+
+.event:hover .event-title {
+    opacity: 1;
+    max-height: 50px;
 }
 
 .event-time {
     font-size: 0.7rem;
     text-align: center;
-    opacity: 0.7;
-    font-weight: 600;
+    font-weight: 700;
+    opacity: 0.9;
 }
 
-.empty-msg {
-    font-size: 0.8rem;
-    color: #999;
-    text-align: center;
+/* üî• COLORES PARA EVENTOS: INICIO (MORADO) y FIN (ROJO) */
+.event-inicio {
+    background: linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);
+    border-left: 5px solid #9333ea;
+    color: #581c87;
 }
 
-/* COLORES POR PRIORIDAD (DAVIVIENDA STYLE) */
-.event-alta {
-    background: rgba(237, 28, 36, 0.1) !important;
-    border-left: 6px solid #ed1c24 !important;
-    color: #b91c1c !important;
-}
-
-.event-media {
-    background: rgba(255, 193, 7, 0.1) !important;
-    border-left: 6px solid #ffc107 !important;
-    color: #92400e !important;
-}
-
-.event-baja {
-    background: rgba(34, 197, 94, 0.1) !important;
-    border-left: 6px solid #22c55e !important;
-    color: #166534 !important;
-}
-
-/* CLASES DE COLORES CATEGORÕAS (LEGACY) */
-.cat-product {
-    background: #81C784;
-}
-
-.cat-software {
-    background: #7986CB;
-}
-
-.cat-research {
-    background: #BA68C8;
-}
-
-.cat-marketing {
-    background: #F06292;
-}
-
-/* EVENTOS ESPECÕFICOS (LEGACY) */
-.event-product-design {
-    top: 60px;
-    height: 180px;
-    background: rgba(129, 199, 132, 0.3);
-    border-left: 4px solid #81C784;
-}
-
-.event-usability {
-    top: 0;
-    height: 120px;
-    background: rgba(186, 104, 200, 0.3);
-    border-left: 4px solid #BA68C8;
-}
-
-.event-marketing {
-    top: 240px;
-    height: 90px;
-    background: rgba(240, 98, 146, 0.3);
-    border-left: 4px solid #F06292;
-}
-
-.event-software {
-    top: 60px;
-    height: 240px;
-    background: rgba(121, 134, 203, 0.3);
-    border-left: 4px solid #7986CB;
-}
-
-.event-app-design {
-    top: 240px;
-    height: 150px;
-    background: rgba(129, 199, 132, 0.3);
-    border-left: 4px solid #81C784;
-}
-
-/* SCROLLBAR Y OTROS */
-.calendar-sidebar::-webkit-scrollbar, .time-grid::-webkit-scrollbar {
-    width: 8px;
-}
-
-.calendar-sidebar::-webkit-scrollbar-thumb, .time-grid::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 10px;
-}
-
-.task-animate {
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    cursor: pointer;
-    position: absolute;
+.event-fin {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    border-left: 5px solid #ed1c24;
+    color: #991b1b;
 }
 
 .event-selected {
     border: 2px solid #5B7FF5 !important;
-    box-shadow: 0 0 15px rgba(91, 127, 245, 0.4);
+    box-shadow: 0 0 20px rgba(91, 127, 245, 0.5);
     z-index: 150 !important;
 }
 
+/* üî• SCROLLBAR PERSONALIZADO */
+.calendar-sidebar::-webkit-scrollbar,
+.time-grid::-webkit-scrollbar {
+    width: 8px;
+}
 
-/* 4. ANIMACI”N DE ENTRADA Y REVELACI”N */
+.calendar-sidebar::-webkit-scrollbar-track,
+.time-grid::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 10px;
+}
+
+.calendar-sidebar::-webkit-scrollbar-thumb,
+.time-grid::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+    .calendar-sidebar::-webkit-scrollbar-thumb:hover,
+    .time-grid::-webkit-scrollbar-thumb:hover {
+        background: #94a3b8;
+    }
+
+/* ANIMACIONES */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -483,74 +431,17 @@
     }
 }
 
-
-
-/* 5. MINI TEXTO DE HORA PARA TAREAS PEQUE—AS */
-.event-time-mini {
-    font-size: 0.65rem;
-    text-align: center;
-    font-weight: 700;
-    opacity: 0.8;
+.focus-animate {
+    animation: fadeIn 0.3s ease-out;
 }
 
-/* Contenedor del rango de horas */
-.event-time-range {
-    display: flex;
-    flex-direction: column; /* Una hora sobre la otra para ahorrar espacio horizontal */
-    align-items: center;
-    justify-content: center;
-    font-size: 0.7rem;
-    font-weight: 700;
-    line-height: 1;
-    gap: 2px;
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+    .calendar-container {
+        grid-template-columns: 1fr;
+    }
+
+    .calendar-sidebar {
+        display: none;
+    }
 }
-
-.time-start {
-    opacity: 0.9;
-}
-
-.time-separator {
-    font-size: 0.6rem;
-    opacity: 0.5;
-    margin: -2px 0;
-}
-
-.time-end {
-    opacity: 0.7;
-}
-
-/* Ajuste para que el tÌtulo no empuje las horas fuera del cuadro en Hover */
-.event:hover .event-time-range {
-    margin-top: 5px;
-    border-top: 1px solid rgba(0,0,0,0.05);
-    padding-top: 5px;
-}
-
-/* Si la tarea es muy corta (menos de 30 min), mostramos las horas en una sola lÌnea */
-.event[style*="height: 30px"] .event-time-range,
-.event[style*="height: 20px"] .event-time-range {
-    flex-direction: row;
-    gap: 4px;
-}
-
-
-
-
-
-
-/* DÌa donde inicia una tarea (Verde suave) */
-.task-starting {
-    background-color: rgba(34, 197, 94, 0.2) !important; /* Verde */
-    border: 1px solid #22c55e;
-    color: #166534 !important;
-    font-weight: 700;
-}
-
-/* DÌa donde finaliza una tarea (Rojo Davivienda suave) */
-.task-ending {
-    background-color: rgba(237, 28, 36, 0.15) !important; /* Rojo */
-    border: 1px solid #ed1c24;
-    color: #b91c1c !important;
-    font-weight: 700;
-}
-

@@ -4,6 +4,7 @@ using Davivienda.Migrations.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Davivienda.Migrations.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260226053625_Expandir campos")]
+    partial class Expandircampos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,17 +57,6 @@ namespace Davivienda.Migrations.Migrations
                     b.HasKey("ARE_ID");
 
                     b.ToTable("AREA", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            ARE_ID = new Guid("f9b2d8e4-7c5a-4b2a-8d3f-1a2b3c4d5e6f"),
-                            ARE_DES = "Área de gestión global",
-                            ARE_EST = true,
-                            ARE_FEC_CRE = new DateTimeOffset(new DateTime(2026, 2, 26, 0, 33, 32, 225, DateTimeKind.Unspecified).AddTicks(2832), new TimeSpan(0, -6, 0, 0, 0)),
-                            ARE_FEC_MOD = new DateTimeOffset(new DateTime(2026, 2, 26, 0, 33, 32, 225, DateTimeKind.Unspecified).AddTicks(2861), new TimeSpan(0, -6, 0, 0, 0)),
-                            ARE_NOM = "ADMINISTRACIÓN"
-                        });
                 });
 
             modelBuilder.Entity("Davivienda.Migrations.ModelosEF.BitacoraFriccion", b =>
@@ -536,17 +528,6 @@ namespace Davivienda.Migrations.Migrations
                     b.HasKey("ROL_ID");
 
                     b.ToTable("ROLES", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            ROL_ID = new Guid("a1b2c3d4-e5f6-4a5b-bc6d-7e8f9a0b1c2d"),
-                            ROL_DES = "Acceso administrativo total",
-                            ROL_EST = true,
-                            ROL_FEC_CRE = new DateTimeOffset(new DateTime(2026, 2, 26, 0, 33, 32, 225, DateTimeKind.Unspecified).AddTicks(3124), new TimeSpan(0, -6, 0, 0, 0)),
-                            ROL_FEC_MOD = new DateTimeOffset(new DateTime(2026, 2, 26, 0, 33, 32, 225, DateTimeKind.Unspecified).AddTicks(3127), new TimeSpan(0, -6, 0, 0, 0)),
-                            ROL_NOM = "Gerente"
-                        });
                 });
 
             modelBuilder.Entity("Davivienda.Migrations.ModelosEF.Soluciones", b =>
@@ -721,22 +702,6 @@ namespace Davivienda.Migrations.Migrations
                     b.HasIndex("ROL_ID");
 
                     b.ToTable("USUARIO", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            USU_ID = new Guid("d7c8b9a0-1e2f-3a4b-5c6d-7e8f9a0b1c2d"),
-                            ARE_ID = new Guid("f9b2d8e4-7c5a-4b2a-8d3f-1a2b3c4d5e6f"),
-                            ROL_ID = new Guid("a1b2c3d4-e5f6-4a5b-bc6d-7e8f9a0b1c2d"),
-                            USU_CON = "Admin123",
-                            USU_COR = "admin@davivienda.com",
-                            USU_EST = true,
-                            USU_FEC_CRE = new DateTimeOffset(new DateTime(2026, 2, 26, 0, 33, 32, 225, DateTimeKind.Unspecified).AddTicks(3174), new TimeSpan(0, -6, 0, 0, 0)),
-                            USU_FEC_MOD = new DateTimeOffset(new DateTime(2026, 2, 26, 0, 33, 32, 225, DateTimeKind.Unspecified).AddTicks(3176), new TimeSpan(0, -6, 0, 0, 0)),
-                            USU_NOM = "admin",
-                            USU_NUM = "00001",
-                            USU_TEL = "00000000"
-                        });
                 });
 
             modelBuilder.Entity("Davivienda.Migrations.ModelosEF.BitacoraFriccion", b =>
