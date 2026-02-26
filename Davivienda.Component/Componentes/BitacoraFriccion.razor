@@ -2,57 +2,51 @@
 @inherits Microsoft.AspNetCore.Components.ComponentBase
 @using Davivienda.Models.Modelos
 
-@* SECCIÓN 0: CAPA MAESTRA *@
 <div class="modal-fixed-backdrop">
     <div class="master-modal-container" @onclick:stopPropagation>
         <div class="dav-modal-art-bg">
-
-            @* SECCIÓN 1: BOTÓN DE CIERRE *@
-            <button type="button" class="btn-close-modal" @onclick="Regresar" title="Cerrar" style="z-index: 9999;">
+            <button type="button" class="btn-close-modal" @onclick="Regresar">
                 <i class="bi bi-x-lg"></i>
             </button>
 
-            @* SECCIÓN 2: DECORACIÓN *@
             <div class="bg-blob blob-red-top"></div>
             <div class="bg-blob blob-red-bottom"></div>
 
-            @* SECCIÓN 3: CONTENEDORES DE TRABAJO *@
             <div class="content-sectors-container">
-
-                @* --- SECTOR 1: LISTADO DE FRICCIONES --- *@
-                <div class="sector-white-card sector-large">
+                @* ========== LISTADO DE FRICCIONES ========== *@
+                <div class="sector-white-card sector-listado">
                     <div class="sector-label">Historial de Obstáculos</div>
 
                     <div class="sector-banner-header">
                         <div class="banner-waves"></div>
                         <div class="banner-content">
-                            <div class="banner-icon"><i class="bi bi-exclamation-triangle"></i> Gestión de Fricciones Activa</div>
+                            <div class="banner-icon">
+                                <i class="bi bi-exclamation-triangle"></i> Gestión de Fricciones Activa
+                            </div>
                             <div class="banner-charts-mockup">
-                                <div class="mock-pie" style="background: conic-gradient(#ef4444 0% 70%, #f59e0b 70% 90%, #f1f5f9 90% 100%);"></div>
+                                <div class="mock-pie"></div>
                                 <div class="mock-bars"><span></span><span></span><span></span></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="solution-main-viewport custom-scroll">
+                    <div class="solution-main-viewport">
                         @if (FriccionesFiltradas != null && FriccionesFiltradas.Any())
                         {
                             @foreach (var fri in FriccionesFiltradas)
                             {
-                                <div class="solution-item-card animate-pop" @onclick="() => SeleccionarFriccion(fri)">
-                                    @* Indicador de color por Tarea *@
+                                <div class="solution-item-card" @onclick="() => AbrirDetalleFriccion(fri)">
                                     <div style="width: 6px; height: 40px; border-radius: 3px; background: @ObtenerColorTarea(fri.TAR_ID); margin-right: -5px;"></div>
 
                                     <div class="sol-card-info">
                                         <span class="sol-name">@fri.FRI_TIP</span>
-                                        @* Se eliminó la descripción de aquí para limpiar la tarjeta *@
                                     </div>
 
                                     <div class="sol-card-metrics">
                                         <div class="metric-badge status">
                                             <i class="bi bi-shield-exclamation"></i> @fri.FRI_IMP
                                         </div>
-                                        <div class="metric-badge effectiveness" style="background: #fff7ed; color: #c2410c;">
+                                        <div class="metric-badge effectiveness">
                                             <i class="bi bi-activity"></i> @fri.FRI_EST
                                         </div>
                                     </div>
@@ -64,53 +58,22 @@
                         {
                             <div class="empty-results-msg">
                                 <i class="bi bi-wind"></i>
-                                <p>No se encontraron fricciones. Ajuste los filtros de navegación.</p>
+                                <p>Sin resultados.</p>
                             </div>
                         }
                     </div>
                 </div>
 
-                @* --- SECTOR 2: FILTROS JERÁRQUICOS --- *@
-                <div class="sector-white-card sector-small">
-                    <div class="sector-label">Navegación Técnica</div>
-                    <div class="filters-container-vertical">
-
-                        <div class="filter-item-group">
-                            <label class="filter-group-label">1. PROYECTO</label>
-                            <select class="select-filter-premium" @onchange="OnProyectoChanged">
-                                <option value="">Todos los Proyectos</option>
-                                @foreach (var pro in ProyectosList)
-                                {
-                                    <option value="@pro.PRO_ID">@pro.PRO_NOM</option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="filter-item-group">
-                            <label class="filter-group-label">2. PROCESO</label>
-                            <select class="select-filter-premium" @onchange="OnProcesoChanged" disabled="@(!ProcesosFiltrados.Any())">
-                                <option value="">Todos los Procesos</option>
-                                @foreach (var proc in ProcesosFiltrados)
-                                {
-                                    <option value="@proc.PROC_ID">@proc.PROC_NOM</option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="filter-item-group">
-                            <label class="filter-group-label">3. TAREA (FILTRA FRICCIONES)</label>
-                            <select class="select-filter-premium" @onchange="OnTareaChanged" disabled="@(!TareasFiltradas.Any())">
-                                <option value="">Todas las Tareas</option>
-                                @foreach (var tar in TareasFiltradas)
-                                {
-                                    <option value="@tar.TAR_ID">@tar.TAR_NOM</option>
-                                }
-                            </select>
-                        </div>
-
-                        <button type="button" class="btn-clear-filters" @onclick="LimpiarFiltros">
-                            <i class="bi bi-arrow-counterclockwise"></i> Restablecer
-                        </button>
+                @* ========== PANEL DE FILTROS ========== *@
+                <div class="sector-white-card sector-filtros">
+                    <div class="sector-label">Filtros Inteligentes</div>
+                    <div class="dynamic-filter-zone">
+                        <Filtros Areas="AreasList"
+                                 Proyectos="ProyectosList"
+                                 Procesos="ProcesosGlobales"
+                                 Tareas="TareasGlobales"
+                                 Prioridades="PrioridadesList"
+                                 OnFiltrosChanged="ManejarCambioFiltros" />
                     </div>
                 </div>
             </div>
@@ -130,59 +93,70 @@
     </div>
 </div>
 
-@* --- MODAL SOBREPUESTO DE DETALLE CON YOOPTA --- *@
+@* ========== MODAL DE DETALLE (TIPO SOLUCIÓN) ========== *@
 @if (FriccionSeleccionada != null)
 {
-    <div class="modal-detail-overlay" @onclick:stopPropagation>
-        <div class="detail-card-premium animate-pop">
-            <div class="detail-header-red" style="background: linear-gradient(135deg, #1e293b 0%, #334155 100%);">
-                <div class="header-info">
-                    <i class="bi bi-search"></i>
-                    <h3>Análisis de Fricción</h3>
+    <div class="modal-detalle-overlay" @onclick="CerrarDetalle">
+        <div class="modal-detalle-card" @onclick:stopPropagation>
+            @* HEADER *@
+            <div class="modal-detalle-header">
+                <div class="header-icon">
+                    <i class="bi bi-exclamation-triangle"></i>
                 </div>
-                <button type="button" class="btn-close-white" @onclick="CerrarDetalle"><i class="bi bi-x-lg"></i></button>
+                <h3 class="modal-detalle-title">Análisis de Fricción</h3>
+                <button class="btn-cerrar-detalle" @onclick="CerrarDetalle">×</button>
             </div>
 
-            <div class="detail-body custom-scroll">
-                <div class="detail-section">
-                    <label>Tipo de Obstáculo</label>
-                    <p class="main-text">@FriccionSeleccionada.FRI_TIP</p>
+            @* BODY CON 2 COLUMNAS *@
+            <div class="modal-detalle-body">
+                @* COLUMNA IZQUIERDA: INFORMACIÓN *@
+                <div class="detalle-columna-info">
+                    <div class="info-section">
+                        <label>TIPO DE OBSTÁCULO</label>
+                        <p class="info-value">@FriccionSeleccionada.FRI_TIP</p>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-section">
+                            <label>IMPACTO</label>
+                            <span class="badge-impacto">@FriccionSeleccionada.FRI_IMP</span>
+                        </div>
+
+                        <div class="info-section">
+                            <label>ESTADO</label>
+                            <span class="badge-estado">@FriccionSeleccionada.FRI_EST</span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <label>TAREA ORIGEN</label>
+                        <p class="info-value-small">@ObtenerNombreTarea(FriccionSeleccionada.TAR_ID)</p>
+                    </div>
+
+                    <div class="info-footer">
+                        <i class="bi bi-calendar3"></i>
+                        <span>Registrado: @FriccionSeleccionada.FRI_FEC_CRE.ToString("dd/MM/yyyy HH:mm")</span>
+                    </div>
                 </div>
 
-                <div class="detail-section">
-                    <label>Descripción del Problema (Yoopta)</label>
-                    <div class="yoopta-view-container">
-                        @* 🔥 Yoopta en modo visualización para el detalle *@
-                        <Yoopta Contenido="@FriccionSeleccionada.FRI_DES" />
+                @* COLUMNA DERECHA: YOOPTA (SOLO LECTURA) *@
+                <div class="detalle-columna-yoopta">
+                    <div class="yoopta-header-modal">
+                        <label>DESCRIPCIÓN DEL PROBLEMA (SOLO LECTURA)</label>
                     </div>
-                </div>
-
-                <div class="metrics-grid-detail">
-                    <div class="metric-item">
-                        <label>Impacto</label>
-                        <span class="eff-highlight" style="color: #ef4444;">@FriccionSeleccionada.FRI_IMP</span>
-                    </div>
-                    <div class="metric-item">
-                        <label>Estado</label>
-                        <span class="status-badge-detail" style="background: #334155;">@FriccionSeleccionada.FRI_EST</span>
-                    </div>
-                    <div class="metric-item">
-                        <label>Tarea Origen</label>
-                        <span>@ObtenerNombreTarea(FriccionSeleccionada.TAR_ID)</span>
-                    </div>
-                </div>
-
-                <div class="audit-footer-detail">
-                    <div class="audit-item">
-                        <i class="bi bi-calendar-event"></i>
-                        <strong>Registrado:</strong> @FriccionSeleccionada.FRI_FEC_CRE.ToString("f")
+                    <div class="yoopta-content-modal">
+                        @* 🔥 Yoopta en modo SOLO LECTURA - sin edición *@
+                        <Yoopta Contenido="@FriccionSeleccionada.FRI_DES"
+                                ContenidoChanged="@((valor) => { /* Bloqueado - Solo lectura */ })"
+                                SoloLectura="true" />
                     </div>
                 </div>
             </div>
 
-            <div class="detail-footer-actions">
-                <button class="btn-action-outline" @onclick="CerrarDetalle">Cerrar</button>
-                <button class="btn-action-red" style="background: #1e293b;">Ver Tarea Padre</button>
+            @* FOOTER *@
+            <div class="modal-detalle-footer">
+                <button class="btn-modal-cerrar" @onclick="CerrarDetalle">Cerrar</button>
+                <button class="btn-modal-ver-tarea" @onclick="VerTareaPadre">Ver Tarea Padre</button>
             </div>
         </div>
     </div>
