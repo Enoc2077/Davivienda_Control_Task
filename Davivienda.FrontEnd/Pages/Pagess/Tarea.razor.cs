@@ -2,7 +2,10 @@
 using Davivienda.Models;
 using Davivienda.Models.Modelos;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.JSInterop;
+using System.Linq;
+using System.Security.Claims;
 
 namespace Davivienda.FrontEnd.Pages.Pagess
 {
@@ -10,6 +13,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
         [Inject] private IJSRuntime JS { get; set; } = default!;
+        [Inject] private AuthenticationStateProvider AuthStateProvider { get; set; } = default!;
 
         private List<TareaModel> TareasLista { get; set; } = new();
         private List<ProyectosModel> ProyectosLista { get; set; } = new();
@@ -20,7 +24,10 @@ namespace Davivienda.FrontEnd.Pages.Pagess
         private List<UsuarioModel> UsuariosFiltrados { get; set; } = new();
         private List<PrioridadModel> PrioridadesLista { get; set; } = new();
 
-        // Formulario
+        private string UserRole { get; set; } = "";
+        private Guid? UserAreaId { get; set; }
+        private bool EsGerente { get; set; } = false;
+
         private string NuevaTareaNombre = "";
         private string NuevaTareaDesc = "";
         private string SelectedProcesoId = "";
@@ -35,8 +42,31 @@ namespace Davivienda.FrontEnd.Pages.Pagess
 
         protected override async Task OnInitializedAsync()
         {
+            await ObtenerDatosUsuario();
             await CargarCatalogos();
             await CargarTareas();
+        }
+
+        private async Task ObtenerDatosUsuario()
+        {
+            var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+            var user = authState.User;
+
+            if (user?.Identity?.IsAuthenticated == true)
+            {
+                UserRole = user.FindFirst(ClaimTypes.Role)?.Value ?? "";
+                EsGerente = UserRole.Equals("Gerente", StringComparison.OrdinalIgnoreCase) ||
+                            UserRole.Equals("Administrador", StringComparison.OrdinalIgnoreCase) ||
+                            UserRole.Equals("Enoc", StringComparison.OrdinalIgnoreCase);
+
+                var usuNumClaim = user.FindFirst("USU_NUM")?.Value ?? "";
+                if (!string.IsNullOrEmpty(usuNumClaim))
+                {
+                    var resUsuarios = await Client.GetUsuarios.ExecuteAsync();
+                    var usuData = resUsuarios.Data?.Usuarios.FirstOrDefault(u => u.Usu_NUM == usuNumClaim);
+                    if (usuData != null) UserAreaId = usuData.Are_ID;
+                }
+            }
         }
 
         private async Task CargarCatalogos()
@@ -45,7 +75,10 @@ namespace Davivienda.FrontEnd.Pages.Pagess
             AreasLista = resAreas.Data?.Areas.Select(a => new AreasModel { ARE_ID = a.Are_ID, ARE_NOM = a.Are_NOM }).ToList() ?? new();
 
             var resProy = await Client.GetProyectos.ExecuteAsync();
-            ProyectosLista = resProy.Data?.Proyectos.Select(p => new ProyectosModel { PRO_ID = p.Pro_ID, PRO_NOM = p.Pro_NOM }).ToList() ?? new();
+            var proyectosData = resProy.Data?.Proyectos.Select(p => new ProyectosModel { PRO_ID = p.Pro_ID, PRO_NOM = p.Pro_NOM, ARE_ID = p.Are_ID }).ToList() ?? new();
+
+            // FILTRO DE PROYECTOS POR ÁREA
+            ProyectosLista = EsGerente ? proyectosData : proyectosData.Where(p => p.ARE_ID == UserAreaId).ToList();
 
             var resProc = await Client.GetProcesos.ExecuteAsync();
             TodosLosProcesos = resProc.Data?.Procesos.Select(p => new ProcesoModel { PROC_ID = p.Proc_ID, PROC_NOM = p.Proc_NOM, PRO_ID = p.Pro_ID }).ToList() ?? new();
@@ -56,13 +89,15 @@ namespace Davivienda.FrontEnd.Pages.Pagess
 
             var resUsu = await Client.GetUsuarios.ExecuteAsync();
             UsuariosGlobales = resUsu.Data?.Usuarios.Select(u => new UsuarioModel { USU_ID = u.Usu_ID, USU_NOM = u.Usu_NOM, ARE_ID = u.Are_ID }).ToList() ?? new();
-            UsuariosFiltrados = UsuariosGlobales;
+
+            // FILTRO DE USUARIOS POR ÁREA
+            UsuariosFiltrados = EsGerente ? UsuariosGlobales : UsuariosGlobales.Where(u => u.ARE_ID == UserAreaId).ToList();
         }
 
         private async Task CargarTareas()
         {
             var res = await Client.GetTareas.ExecuteAsync();
-            TareasLista = res.Data?.Tareas.Select(t => new TareaModel
+            var todasTareas = res.Data?.Tareas.Select(t => new TareaModel
             {
                 TAR_ID = t.Tar_ID,
                 TAR_NOM = t.Tar_NOM,
@@ -72,14 +107,36 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                 USU_ID = t.Usu_ID,
                 PROC_ID = t.Proc_ID,
                 TAR_FEC_INI = t.Tar_FEC_INI,
-                TAR_FEC_FIN = t.Tar_FEC_FIN
+                TAR_FEC_FIN = t.Tar_FEC_FIN,
+                TAR_FEC_CRE = t.Tar_FEC_CRE
             }).ToList() ?? new();
+
+            if (EsGerente)
+            {
+                TareasLista = todasTareas;
+            }
+            else
+            {
+                // Extraemos IDs de proyectos válidos (sin nulos)
+                var idsMisProyectos = ProyectosLista
+                    .Select(p => p.PRO_ID)
+                    .Where(id => id != Guid.Empty)
+                    .ToList();
+
+                // Filtramos procesos asegurando que PRO_ID tenga valor (.Value)
+                var idsMisProcesos = TodosLosProcesos
+                    .Where(pc => pc.PRO_ID.HasValue && idsMisProyectos.Contains(pc.PRO_ID.Value))
+                    .Select(pc => pc.PROC_ID)
+                    .ToList();
+
+                TareasLista = todasTareas.Where(t => idsMisProcesos.Contains((Guid)t.PROC_ID)).ToList();
+            }
         }
 
         private void OnAreaChanged(ChangeEventArgs e)
         {
             var areaId = e.Value?.ToString();
-            if (string.IsNullOrEmpty(areaId)) UsuariosFiltrados = UsuariosGlobales;
+            if (string.IsNullOrEmpty(areaId)) UsuariosFiltrados = EsGerente ? UsuariosGlobales : UsuariosGlobales.Where(u => u.ARE_ID == UserAreaId).ToList();
             else UsuariosFiltrados = UsuariosGlobales.Where(u => u.ARE_ID.ToString() == areaId).ToList();
         }
 
@@ -120,7 +177,6 @@ namespace Davivienda.FrontEnd.Pages.Pagess
         {
             try
             {
-                // Preparamos el input asegurando que NO falte tar_FEC_CRE
                 var input = new TareaModelInput
                 {
                     Tar_ID = TareaEdicion.TAR_ID,
@@ -132,42 +188,20 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     Proc_ID = TareaEdicion.PROC_ID,
                     Tar_FEC_INI = TareaEdicion.TAR_FEC_INI,
                     Tar_FEC_FIN = TareaEdicion.TAR_FEC_FIN,
-
-                    // SOLUCIÓN AL ERROR: Enviamos la fecha de creación. 
-                    // Si el objeto TareaEdicion ya la trae de la DB, úsala. 
-                    // Si no, enviamos DateTimeOffset.Now para que no truene.
-                    Tar_FEC_CRE = TareaEdicion.TAR_FEC_CRE == default
-                                  ? DateTimeOffset.Now
-                                  : TareaEdicion.TAR_FEC_CRE,
-
-                    Tar_FEC_MOD = DateTimeOffset.Now // Fecha de modificación actual
+                    Tar_FEC_CRE = TareaEdicion.TAR_FEC_CRE == default ? DateTimeOffset.Now : TareaEdicion.TAR_FEC_CRE,
+                    Tar_FEC_MOD = DateTimeOffset.Now
                 };
-
                 var res = await Client.UpdateTarea.ExecuteAsync(input);
-
-                if (res.Errors.Count == 0)
-                {
-                    MostrarModal = false;
-                    await CargarTareas();
-                    StateHasChanged();
-                }
-                else
-                {
-                    // Log para ver si falta algún OTRO campo obligatorio
-                    foreach (var err in res.Errors) { Console.WriteLine($"Error GraphQL: {err.Message}"); }
-                }
+                if (res.Errors.Count == 0) { MostrarModal = false; await CargarTareas(); }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error al editar: {ex.Message}");
-            }
+            catch (Exception ex) { Console.WriteLine($"Error: {ex.Message}"); }
         }
 
         private string GetPrioridadNombre(Guid? id) => PrioridadesLista.FirstOrDefault(p => p.PRI_ID == id)?.PRI_NOM ?? "Baja";
 
         private async Task EliminarTarea(Guid id)
         {
-            if (await JS.InvokeAsync<bool>("confirm", "¿Eliminar tarea?"))
+            if (await JS.InvokeAsync<bool>("confirm", "¿Deseas eliminar esta tarea permanentemente?"))
             {
                 await Client.DeleteTarea.ExecuteAsync(id); await CargarTareas();
             }

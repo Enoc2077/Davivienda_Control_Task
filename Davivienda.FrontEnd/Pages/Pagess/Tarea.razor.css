@@ -29,7 +29,7 @@
 
 .q-180-270 {
     grid-area: bottom-left;
-    padding: 15px 20px; /* 🔥 MÁS REDUCIDO: 15px arriba/abajo, 20px lados */
+    padding: 15px 20px;
 }
 
 .q-270-90 {
@@ -54,14 +54,13 @@
         margin-right: 10px;
     }
 
-/* Título más pequeño solo en el cuadro de Resumen */
 .q-180-270 .title-dav-red {
-    font-size: 1.1rem; /* 🔥 REDUCIDO */
-    margin-bottom: 5px; /* 🔥 REDUCIDO */
+    font-size: 1.1rem;
+    margin-bottom: 5px;
 }
 
 .q-180-270 .panel-header {
-    margin-bottom: 12px; /* 🔥 REDUCIDO */
+    margin-bottom: 12px;
 }
 
 /* --- TARJETAS DE TAREA (LISTADO) --- */
@@ -131,7 +130,6 @@
     text-transform: uppercase;
 }
 
-    /* Estados */
     .badge-min.pendiente {
         background: #dbeafe;
         color: #3b82f6;
@@ -147,7 +145,6 @@
         color: #10b981;
     }
 
-/* Prioridades */
 .prio-alta {
     background: #fee2e2;
     color: #ef4444;
@@ -306,7 +303,7 @@ textarea.input-field-dav {
 .stats-premium {
     display: flex;
     flex-direction: column;
-    gap: 5px; /* 🔥 MÁS REDUCIDO: de 8px a 5px */
+    gap: 5px;
     flex: 1;
 }
 
@@ -314,7 +311,7 @@ textarea.input-field-dav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 0; /* 🔥 MÁS REDUCIDO: de 10px a 6px */
+    padding: 6px 0;
     border-bottom: 1.5px solid #f8fafc;
 }
 
@@ -325,13 +322,13 @@ textarea.input-field-dav {
 .stat-label {
     font-weight: 600;
     color: #64748b;
-    font-size: 0.75rem; /* 🔥 MÁS REDUCIDO: de 0.85rem a 0.75rem */
+    font-size: 0.75rem;
 }
 
 .stat-value {
     font-weight: 900;
     color: #ed1c24;
-    font-size: 1rem; /* 🔥 MÁS REDUCIDO: de 1.2rem a 1rem */
+    font-size: 1rem;
 }
 
 /* --- MODAL ROJO --- */
@@ -430,6 +427,136 @@ textarea.input-field-dav {
         background: #f8fafc;
     }
 
+/* ========================================
+   🔥 CONTENEDOR LIMITADOR SIN BORDES
+   ======================================== */
+
+/* Contenedor invisible que limita el crecimiento */
+.yoopta-limiter-container {
+    width: 100%;
+    max-height: 180px; /* 🔥 ALTURA MÁXIMA ESTRICTA */
+    overflow-y: auto; /* 🔥 SCROLL aquí cuando Yoopta crece mucho */
+    overflow-x: hidden;
+    border: none; /* 🔥 SIN BORDES */
+    background: transparent;
+    padding: 0;
+    margin: 0;
+}
+
+    /* Scroll del contenedor limitador */
+    .yoopta-limiter-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .yoopta-limiter-container::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+    }
+
+    .yoopta-limiter-container::-webkit-scrollbar-track {
+        background: #f8fafc;
+        border-radius: 10px;
+    }
+
+/* ========================================
+   🔥 YOOPTA WRAPPERS DENTRO DEL LIMITADOR
+   ======================================== */
+
+/* Wrapper para Registro Rápido */
+.yoopta-wrapper-limited {
+    width: 100%;
+    height: auto; /* 🔥 AUTO - crece libremente */
+    min-height: 180px; /* 🔥 Mínimo para verse bien */
+    max-height: none; /* 🔥 SIN límite - el limitador controla */
+    overflow: visible; /* 🔥 SIN scroll propio */
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    transition: border-color 0.3s ease;
+}
+
+    .yoopta-wrapper-limited:focus-within {
+        border-color: #ed1c24;
+        box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.05);
+    }
+
+/* Wrapper para Modal de Edición */
+.yoopta-wrapper-modal {
+    width: 100%;
+    height: auto; /* 🔥 AUTO - crece libremente */
+    min-height: 180px;
+    max-height: none; /* 🔥 SIN límite - el limitador controla */
+    overflow: visible; /* 🔥 SIN scroll propio */
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background: white;
+    transition: border-color 0.3s ease;
+}
+
+    .yoopta-wrapper-modal:focus-within {
+        border-color: #ed1c24;
+        box-shadow: 0 0 0 4px rgba(237, 28, 36, 0.05);
+    }
+
+    /* Yoopta container - crece libremente */
+    .yoopta-wrapper-limited .yoopta-container,
+    .yoopta-wrapper-modal .yoopta-container {
+        height: auto;
+        min-height: 100%;
+        background: transparent;
+        overflow: visible;
+    }
+
+    .yoopta-wrapper-limited .yoopta-header,
+    .yoopta-wrapper-modal .yoopta-header {
+        padding: 8px 12px;
+        border-bottom: 1px solid #f1f5f9;
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index: 10;
+        flex-shrink: 0; /* 🔥 No se encoge */
+    }
+
+    .yoopta-wrapper-limited .yoopta-title,
+    .yoopta-wrapper-modal .yoopta-title {
+        font-size: 11px;
+        font-weight: 800;
+        color: #64748b;
+    }
+
+    .yoopta-wrapper-modal .yoopta-content {
+        height: auto;
+        max-height: none; /* 🔥 Puede crecer libremente */
+        overflow: visible;
+        padding: 8px;
+        flex: 1; /* 🔥 Ocupa espacio disponible */
+    }
+
+.yoopta-wrapper-limited .yoopta-content {
+    height: auto;
+    overflow: visible;
+    padding: 8px;
+}
+
+/* Scroll personalizado para Yoopta WRAPPER */
+.yoopta-wrapper-limited::-webkit-scrollbar,
+.yoopta-wrapper-modal::-webkit-scrollbar {
+    width: 6px;
+}
+
+.yoopta-wrapper-limited::-webkit-scrollbar-thumb,
+.yoopta-wrapper-modal::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.yoopta-wrapper-limited::-webkit-scrollbar-track,
+.yoopta-wrapper-modal::-webkit-scrollbar-track {
+    background: #f8fafc;
+    border-radius: 10px;
+}
+
 /* --- ANIMACIONES --- */
 @keyframes popIn {
     from {
@@ -457,5 +584,11 @@ textarea.input-field-dav {
             "right-side"
             "bottom-left";
         height: auto;
+    }
+
+    .yoopta-wrapper-limited,
+    .yoopta-wrapper-modal {
+        height: 180px;
+        max-height: 180px;
     }
 }
