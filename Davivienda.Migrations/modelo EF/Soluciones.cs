@@ -19,8 +19,7 @@ namespace Davivienda.Migrations.ModelosEF
         [StringLength(100)]
         public string? SOL_NOM { get; set; }
 
-        [Column("SOL_DES")]
-        [StringLength(255)]
+        [Column(TypeName = "nvarchar(max)")]
         public string? SOL_DES { get; set; }
 
         [Column("SOL_TIE_RES")]

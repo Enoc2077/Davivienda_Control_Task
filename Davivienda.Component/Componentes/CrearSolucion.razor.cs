@@ -17,7 +17,8 @@ namespace Davivienda.Component.Componentes
         private SolucionesModel nuevaSolucion = new SolucionesModel
         {
             SOL_EST = "Pendiente",
-            SOL_NIV_EFE = 0
+            SOL_NIV_EFE = 50, // Inicializado en Medio
+            SOL_DES = ""
         };
 
         private async Task CerrarModalInterno()
@@ -28,7 +29,6 @@ namespace Davivienda.Component.Componentes
             }
         }
 
-        // Ajuste en GuardarSolucion
         private async Task GuardarSolucion()
         {
             try
@@ -39,19 +39,25 @@ namespace Davivienda.Component.Componentes
                 {
                     Sol_ID = Guid.NewGuid(),
                     Sol_NOM = nuevaSolucion.SOL_NOM,
-                    Sol_DES = nuevaSolucion.SOL_DES,
+                    Sol_DES = nuevaSolucion.SOL_DES, // Captura el JSON de Yoopta
                     Sol_EST = nuevaSolucion.SOL_EST ?? "Pendiente",
                     Sol_NIV_EFE = nuevaSolucion.SOL_NIV_EFE ?? 0,
-                    // Si FriccionId es Guid.Empty, pasamos null para que la DB lo entienda
                     Fri_ID = FriccionId == Guid.Empty ? null : FriccionId,
                     Usu_ID = Guid.Parse("0BC4DB21-1FFB-46BB-B120-48AE7B0909CD"),
                     Sol_FEC_CRE = DateTimeOffset.Now
                 };
 
                 var result = await Client.InsertSolucion.ExecuteAsync(input);
-                // ... éxito ...
+
+                if (result.Errors.Count == 0)
+                {
+                    await OnSuccess.InvokeAsync();
+                }
             }
-            catch (Exception ex) { Console.WriteLine($"Error: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
         }
     }
 }

@@ -84,6 +84,37 @@ namespace Davivienda.Migrations.DbContext
                       .HasColumnType("nvarchar(max)");
             });
 
+            // 1. Configuración para FRICCION
+            modelBuilder.Entity<Friccion>(entity =>
+            {
+                entity.ToTable("FRICCION");
+                entity.Property(e => e.FRI_DES)
+                      .HasColumnType("nvarchar(max)");
+            });
+
+            // 2. Configuración para SOLUCION
+            modelBuilder.Entity<Soluciones>(entity =>
+            {
+                entity.ToTable("SOLUCIONES");
+                entity.Property(e => e.SOL_DES)
+                      .HasColumnType("nvarchar(max)");
+            });
+
+            // 3. Configuración para BITACORA_FRICCION
+            modelBuilder.Entity<BitacoraFriccion>(entity =>
+            {
+                entity.ToTable("BITACORA_FRICCIONES");
+                entity.Property(e => e.BIT_FRI_DES)
+                      .HasColumnType("nvarchar(max)");
+            });
+
+            // 4. Configuración para BITACORA_SOLUCION
+            modelBuilder.Entity<BitacoraSoluciones>(entity =>
+            {
+                entity.ToTable("BITACORA_SOLUCIONES");
+                entity.Property(e => e.BIT_SOL_DES)
+                      .HasColumnType("nvarchar(max)");
+            });
 
 
             // Mapeo USUARIO (Asegura que las llaves foráneas funcionen)
