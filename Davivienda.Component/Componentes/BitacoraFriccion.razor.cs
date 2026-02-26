@@ -47,16 +47,19 @@ namespace Davivienda.Component.Componentes
                 {
                     FRI_ID = f.Fri_ID,
                     FRI_TIP = f.Fri_TIP,
-                    FRI_DES = f.Fri_DES,
+                    FRI_DES = f.Fri_DES, // JSON de Yoopta
                     FRI_EST = f.Fri_EST,
                     FRI_IMP = f.Fri_IMP,
                     TAR_ID = f.Tar_ID,
                     FRI_FEC_CRE = f.Fri_FEC_CRE.DateTime
                 }).ToList() ?? new();
 
-                // Asignar colores a tareas
                 int i = 0;
-                foreach (var t in TareasGlobales) { if (!ColoresTareas.ContainsKey(t.TAR_ID)) ColoresTareas[t.TAR_ID] = PaletaColores[i++ % PaletaColores.Length]; }
+                foreach (var t in TareasGlobales)
+                {
+                    if (!ColoresTareas.ContainsKey(t.TAR_ID))
+                        ColoresTareas[t.TAR_ID] = PaletaColores[i++ % PaletaColores.Length];
+                }
 
                 ProcesosFiltrados = ProcesosGlobales;
                 TareasFiltradas = TareasGlobales;
@@ -73,11 +76,13 @@ namespace Davivienda.Component.Componentes
             if (string.IsNullOrEmpty(val)) { LimpiarFiltros(); }
             else
             {
-                var proId = Guid.Parse(val);
-                ProcesosFiltrados = ProcesosGlobales.Where(p => p.PRO_ID == proId).ToList();
-                var procIds = ProcesosFiltrados.Select(p => p.PROC_ID).ToList();
-                TareasFiltradas = TareasGlobales.Where(t => procIds.Contains(t.PROC_ID ?? Guid.Empty)).ToList();
-                AplicarFiltroFinal();
+                if (Guid.TryParse(val, out Guid proId))
+                {
+                    ProcesosFiltrados = ProcesosGlobales.Where(p => p.PRO_ID == proId).ToList();
+                    var procIds = ProcesosFiltrados.Select(p => p.PROC_ID).ToList();
+                    TareasFiltradas = TareasGlobales.Where(t => procIds.Contains(t.PROC_ID ?? Guid.Empty)).ToList();
+                    AplicarFiltroFinal();
+                }
             }
         }
 
@@ -87,9 +92,11 @@ namespace Davivienda.Component.Componentes
             if (string.IsNullOrEmpty(val)) AplicarFiltroFinal();
             else
             {
-                var prcId = Guid.Parse(val);
-                TareasFiltradas = TareasGlobales.Where(t => t.PROC_ID == prcId).ToList();
-                AplicarFiltroFinal();
+                if (Guid.TryParse(val, out Guid prcId))
+                {
+                    TareasFiltradas = TareasGlobales.Where(t => t.PROC_ID == prcId).ToList();
+                    AplicarFiltroFinal();
+                }
             }
         }
 
@@ -99,8 +106,10 @@ namespace Davivienda.Component.Componentes
             if (string.IsNullOrEmpty(val)) AplicarFiltroFinal();
             else
             {
-                var tarId = Guid.Parse(val);
-                FriccionesFiltradas = FriccionesGlobales.Where(f => f.TAR_ID == tarId).ToList();
+                if (Guid.TryParse(val, out Guid tarId))
+                {
+                    FriccionesFiltradas = FriccionesGlobales.Where(f => f.TAR_ID == tarId).ToList();
+                }
             }
         }
 

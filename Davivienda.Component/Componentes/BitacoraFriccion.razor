@@ -19,7 +19,7 @@
             @* SECCIÓN 3: CONTENEDORES DE TRABAJO *@
             <div class="content-sectors-container">
 
-                @* --- SECTOR 1: LISTADO DE FRICCIONES (ESTILO SOLUCIONES) --- *@
+                @* --- SECTOR 1: LISTADO DE FRICCIONES --- *@
                 <div class="sector-white-card sector-large">
                     <div class="sector-label">Historial de Obstáculos</div>
 
@@ -45,7 +45,7 @@
 
                                     <div class="sol-card-info">
                                         <span class="sol-name">@fri.FRI_TIP</span>
-                                        <p class="sol-desc-short">@fri.FRI_DES</p>
+                                        @* Se eliminó la descripción de aquí para limpiar la tarjeta *@
                                     </div>
 
                                     <div class="sol-card-metrics">
@@ -130,7 +130,7 @@
     </div>
 </div>
 
-@* --- MODAL SOBREPUESTO DE DETALLE --- *@
+@* --- MODAL SOBREPUESTO DE DETALLE CON YOOPTA --- *@
 @if (FriccionSeleccionada != null)
 {
     <div class="modal-detail-overlay" @onclick:stopPropagation>
@@ -148,9 +148,13 @@
                     <label>Tipo de Obstáculo</label>
                     <p class="main-text">@FriccionSeleccionada.FRI_TIP</p>
                 </div>
+
                 <div class="detail-section">
-                    <label>Descripción del Problema</label>
-                    <p class="desc-text">@FriccionSeleccionada.FRI_DES</p>
+                    <label>Descripción del Problema (Yoopta)</label>
+                    <div class="yoopta-view-container">
+                        @* 🔥 Yoopta en modo visualización para el detalle *@
+                        <Yoopta Contenido="@FriccionSeleccionada.FRI_DES" />
+                    </div>
                 </div>
 
                 <div class="metrics-grid-detail">

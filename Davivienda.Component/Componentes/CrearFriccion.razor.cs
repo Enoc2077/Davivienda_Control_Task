@@ -17,7 +17,8 @@ namespace Davivienda.Component.Componentes
         private FriccionModel nuevaFriccion = new FriccionModel
         {
             FRI_EST = "Abierta",
-            FRI_IMP = "Medio"
+            FRI_IMP = "Medio",
+            FRI_DES = "" // Se inicializa vacío para el Yoopta
         };
 
         private async Task CerrarModalInterno()
@@ -32,26 +33,35 @@ namespace Davivienda.Component.Componentes
         {
             try
             {
-                // Validación básica manual ya que no usamos EditForm
+                // Validación básica de título
                 if (string.IsNullOrWhiteSpace(nuevaFriccion.FRI_TIP)) return;
 
                 var input = new FriccionModelInput
                 {
                     Fri_ID = Guid.NewGuid(),
                     Fri_TIP = nuevaFriccion.FRI_TIP,
-                    Fri_DES = nuevaFriccion.FRI_DES,
+                    Fri_DES = nuevaFriccion.FRI_DES, // Aquí se guarda el JSON de Yoopta
                     Fri_EST = nuevaFriccion.FRI_EST,
                     Fri_IMP = nuevaFriccion.FRI_IMP,
                     Tar_ID = TareaId,
+                    // Asegúrate de pasar el ID de usuario real de tu sesión si es necesario
                     Usu_ID = Guid.Parse("0BC4DB21-1FFB-46BB-B120-48AE7B0909CD"),
                     Fri_FEC_CRE = DateTimeOffset.Now
                 };
 
                 var result = await Client.InsertFriccion.ExecuteAsync(input);
 
-                if (result.Data?.InsertFriccion ?? false)
+                // Verificamos si hubo errores en la respuesta de GraphQL
+                if (result.Errors.Count == 0)
                 {
                     await OnSuccess.InvokeAsync();
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        Console.WriteLine($"Error GraphQL: {error.Message}");
+                    }
                 }
             }
             catch (Exception ex)

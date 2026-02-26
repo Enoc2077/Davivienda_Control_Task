@@ -14,11 +14,10 @@
                 <div class="mini-calendar-grid">
                     @foreach (var day in GetMonthDays())
                     {
-                        @* Prioridad visual: Si finaliza (rojo) tiene prioridad sobre inicia (verde) *@
                         <div class="mini-day @(day.IsCurrentMonth ? "" : "other-month")
-                             @(day.IsSelected ? "selected" : "")
-                             @(day.IsToday ? "today" : "")
-                             @(day.TieneTareaPorFinalizar ? "task-ending" : (day.TieneTareaPorIniciar ? "task-starting" : ""))"
+                                 @(day.IsSelected ? "selected" : "")
+                                 @(day.IsToday ? "today" : "")
+                                 @(day.TieneTareaPorFinalizar ? "task-ending" : (day.TieneTareaPorIniciar ? "task-starting" : ""))"
                              @onclick="() => SelectDay(day)">
                             @day.Day
                         </div>
@@ -36,7 +35,7 @@
                 </div>
             </div>
 
-            @* Prioritize (Foco Actual) *@
+            @* Prioritize con Fechas *@
             <div class="prioritize-section">
                 <h4>Prioritize</h4>
                 <div class="priority-list">
@@ -46,7 +45,13 @@
                             <i class="fas fa-thumbtack priority-icon"></i>
                             <div class="priority-info">
                                 <span class="priority-name">@TareaEnFoco.TAR_NOM</span>
-                                <small>@TareaEnFoco.TAR_FEC_INI.ToString("HH:mm")</small>
+                                <small class="priority-dates">
+                                    <div><strong>Inicia:</strong> @TareaEnFoco.TAR_FEC_INI.ToString("dd/MM/yyyy HH:mm")</div>
+                                    @if (TareaEnFoco.TAR_FEC_FIN.HasValue)
+                                    {
+                                        <div><strong>Termina:</strong> @TareaEnFoco.TAR_FEC_FIN.Value.ToString("dd/MM/yyyy HH:mm")</div>
+                                    }
+                                </small>
                             </div>
                         </div>
                     }
@@ -76,7 +81,6 @@
 
             <div class="time-grid">
                 <div class="time-column">
-                    @* Genera las etiquetas de hora de 00:00 a 23:00 *@
                     @for (int hour = 0; hour <= 23; hour++)
                     {
                         <div class="time-slot">@hour.ToString("00"):00</div>
@@ -86,33 +90,23 @@
                 @foreach (var day in GetWeekDays())
                 {
                     <div class="day-column">
-                        @* IMPORTANTE: Genera las casillas visuales para todas las horas *@
                         @for (int hour = 0; hour <= 23; hour++)
                         {
                             <div class="hour-cell"></div>
                         }
 
-                        @if (ListaTareas != null)
+                        @if (EventosCalendario != null)
                         {
-                            @* Lógica de renderizado de tareas superpuestas con el nombre oculto *@
-                            var tareasDelDia = ListaTareas.Where(t => t.TAR_FEC_INI.Date == day.Date).ToList();
-                            @for (int i = 0; i < tareasDelDia.Count; i++)
+                            var eventosDelDia = EventosCalendario.Where(e => e.Fecha.Date == day.Date).ToList();
+                            @foreach (var evento in eventosDelDia)
                             {
-                                var tarea = tareasDelDia[i];
-                                <div class="event @GetEventoClase(tarea.PRI_ID) task-animate @(TareaEnFoco?.TAR_ID == tarea.TAR_ID ? "event-selected" : "")"
-                                     style="@GetEventoPosicion(tarea.TAR_FEC_INI.DateTime, tarea.TAR_FEC_FIN?.DateTime, i)"
-                                     @onclick="() => EnfocarTarea(tarea)"
-                                     title="@tarea.TAR_NOM">
+                                <div class="event @GetEventoClase(evento.TipoEvento) @(TareaEnFoco?.TAR_ID == evento.TareaId ? "event-selected" : "")"
+                                     style="@GetEventoPosicion(evento.Fecha, evento.TipoEvento)"
+                                     @onclick="() => EnfocarTarea(evento.TareaRef!)"
+                                     title="@evento.Nombre">
 
-                                    @* Nombre oculto que aparece en Hover *@
-                                    <span class="event-title-hidden">@tarea.TAR_NOM</span>
-
-                                    @* Contenedor de horas siempre visible *@
-                                    <div class="event-time-range">
-                                        <span class="time-start">@tarea.TAR_FEC_INI.ToString("HH:mm")</span>
-                                        <span class="time-separator">-</span>
-                                        <span class="time-end">@(tarea.TAR_FEC_FIN?.ToString("HH:mm") ?? "--:--")</span>
-                                    </div>
+                                    <div class="event-title-visible">@evento.Nombre</div>
+                                    <div class="event-time">@evento.Hora</div>
                                 </div>
                             }
                         }

@@ -26,13 +26,13 @@
                            placeholder="Ej: Error de conexión intermitente..." />
                 </div>
 
-                @* Descripción Detallada *@
+                @* 🔥 Reemplazo de Textarea por Yoopta *@
                 <div class="input-group-registro full-width">
                     <label>DESCRIPCIÓN DEL OBSTÁCULO</label>
-                    <textarea @bind="nuevaFriccion.FRI_DES"
-                              rows="4"
-                              class="input-field-premium textarea-premium"
-                              placeholder="Detalle el problema técnico o administrativo aquí..."></textarea>
+                    <div class="yoopta-editor-container">
+                        <Yoopta Contenido="@nuevaFriccion.FRI_DES"
+                                ContenidoChanged="@((valor) => { nuevaFriccion.FRI_DES = valor; })" />
+                    </div>
                 </div>
 
                 @* Selectores en fila *@

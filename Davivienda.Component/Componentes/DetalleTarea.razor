@@ -3,9 +3,9 @@
 @using Davivienda.GraphQL.SDK
 
 <div class="modal-fullscreen-overlay">
-    @* --- TOOLBAR SUPERIOR --- *@
+    @* TOOLBAR SUPERIOR *@
     <div class="toolbar-dav-top">
-        <div class="toolbar-actions">
+        <div class="toolbar-content-full">
             <div class="selector-container-premium">
                 <i class="fas fa-history icon-blue"></i>
                 <label>Gestión de Tareas</label>
@@ -21,69 +21,98 @@
     </div>
 
     <div class="modal-content-container">
-        @* SECTOR 1: INFORMACIÓN DE EJECUCIÓN (CUADRANTE SUPERIOR) *@
-        <div class="sector sector-1">
+        @* 90º-180º (TOP-LEFT): DETALLES DE LA TAREA *@
+        <div class="sector sector-detalles">
             <div class="sector-accent-line"></div>
-            <div class="sector-header">
+            <div class="sector-header-with-button">
                 <div class="title-group">
-                    <h3 class="sector-title">@Tarea?.TAR_NOM</h3>
-                    <span class="sector-subtitle">Información de Ejecución</span>
+                    <h3 class="sector-title">Información de Ejecución</h3>
+                    <span class="sector-subtitle">Detalles de la Tarea</span>
                 </div>
-                <button type="button" class="btn-save-top-right" @onclick="GuardarEstadoTarea">
-                    <i class="fas fa-save"></i> GUARDAR
-                </button>
+                
             </div>
-
             <div class="sector-content">
-                <div class="info-execution-grid">
-                    @* Visualización del Proyecto *@
-                    <div class="info-item">
-                        <span class="label-tiny">PROYECTO ASOCIADO</span>
-                        <p class="value-text highlight-blue">@NombreProyecto</p>
-                    </div>
+                @if (Tarea != null)
+                {
+                    <div class="detalles-list">
+                        <div class="detail-row">
+                            <span class="detail-label">Título de la Tarea:</span>
+                            <p class="detail-value">@Tarea.TAR_NOM</p>
+                        </div>
 
-                    @* Visualización del Proceso *@
-                    <div class="info-item">
-                        <span class="label-tiny">PROCESO ACTUAL</span>
-                        <p class="value-text highlight-dark">@NombreProceso</p>
-                    </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Proyecto Asociado:</span>
+                            <p class="detail-value highlight-blue">@NombreProyecto</p>
+                        </div>
 
-                    @if (Tarea != null)
-                    {
-                        <div class="status-editor">
-                            <label class="label-tiny">ACTUALIZAR ESTADO</label>
-                            <select @bind="Tarea.TAR_EST" class="select-status-dav">
+                        <div class="detail-row">
+                            <span class="detail-label">Proceso Actual:</span>
+                            <p class="detail-value">@NombreProceso</p>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Fecha Inicio:</span>
+                            <p class="detail-value highlight-green">@Tarea.TAR_FEC_INI.ToString("dd/MM/yyyy HH:mm")</p>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Fecha Fin:</span>
+                            <p class="detail-value highlight-red">
+                                @if (Tarea.TAR_FEC_FIN.HasValue)
+                                {
+                                    @Tarea.TAR_FEC_FIN.Value.ToString("dd/MM/yyyy HH:mm")
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Sin fecha estimada</span>
+                                }
+                            </p>
+                        </div>
+
+                        <div class="detail-row">
+                            <span class="detail-label">Actualizar Estado:</span>
+                            <select @bind="Tarea.TAR_EST" class="select-status-compact">
                                 <option value="Pendiente">Pendiente</option>
                                 <option value="En Progreso">En Progreso</option>
                                 <option value="Completado">Completado</option>
                             </select>
                         </div>
-                    }
-                </div>
+                    </div>
+                }
             </div>
         </div>
 
-        @* SECTOR 2: NOTAS *@
-        <div class="sector sector-2">
+        @* 0º-90º (TOP-RIGHT): NOTAS CON YOOPTA *@
+        <div class="sector sector-notas">
             <div class="sector-accent-line"></div>
-            <div class="sector-icon"><i class="fas fa-comments"></i></div>
-            <div class="sector-header">
-                <h3 class="sector-title">Notas</h3>
-                <span class="sector-subtitle">Comentarios de Equipo</span>
+            <div class="sector-header-with-button">
+                <div class="title-group">
+                    <h3 class="sector-title">Descripción</h3>
+                    <span class="sector-subtitle">Notas y Documentos</span>
+                </div>
+                <button type="button" class="btn-save-small" @onclick="GuardarDescripcion">
+                    <i class="fas fa-save"></i> GUARDAR
+                </button>
             </div>
-            <div class="sector-content"><div class="yoopta-wrapper"><Yoopta /></div></div>
+            <div class="sector-content-full">
+                @if (Tarea != null)
+                {
+                    <Yoopta Contenido="@Tarea.TAR_DES"
+                            ContenidoChanged="@((valor) => { Tarea.TAR_DES = valor; })" />
+                }
+            </div>
         </div>
 
-        @* SECTOR 3: SOLUCIONES *@
-        <div class="sector sector-3">
+        @* 180º-270º (BOTTOM-LEFT): SOLUCIONES *@
+        <div class="sector sector-soluciones">
             <div class="sector-accent-line"></div>
             <div class="sector-header">
                 <div class="title-group">
                     <h3 class="sector-title">Soluciones</h3>
                     <span class="sector-subtitle">Propuestas Activas</span>
                 </div>
-                <button type="button" class="btn-add-mini-pill" @onclick="AbrirModalCrearSolucion" title="Añadir Solución">
-                    <i class="fas fa-plus"></i>
+                <button type="button" class="btn-add-text" @onclick="AbrirModalCrearSolucion" title="Añadir Solución">
+                    <i class="fas fa-plus"></i> NUEVA
                 </button>
             </div>
             <div class="sector-content scroll-dav">
@@ -93,27 +122,27 @@
                     {
                         <div class="item-card-mini" @onclick="() => AbrirModalEditarSolucion(sol)">
                             <span>@sol.SOL_NOM</span>
-                            <button type="button" class="btn-del"
-                                    @onclick:stopPropagation
-                                    @onclick="() => EliminarSolucion(sol.SOL_ID)">
-                                ×
-                            </button>
+                            <button type="button" class="btn-del" @onclick:stopPropagation @onclick="() => EliminarSolucion(sol.SOL_ID)">×</button>
                         </div>
                     }
+                }
+                else
+                {
+                    <p class="empty-message">No hay soluciones registradas</p>
                 }
             </div>
         </div>
 
-        @* SECTOR 4: FRICCIONES *@
-        <div class="sector sector-4">
+        @* 270º-360º (BOTTOM-RIGHT): FRICCIONES *@
+        <div class="sector sector-fricciones">
             <div class="sector-accent-line"></div>
             <div class="sector-header">
                 <div class="title-group">
                     <h3 class="sector-title">Fricciones</h3>
                     <span class="sector-subtitle">Obstáculos Detectados</span>
                 </div>
-                <button type="button" class="btn-add-mini-pill" @onclick="AbrirModalCrearFriccion" title="Reportar Fricción">
-                    <i class="fas fa-plus"></i>
+                <button type="button" class="btn-add-text" @onclick="AbrirModalCrearFriccion" title="Reportar Fricción">
+                    <i class="fas fa-plus"></i> NUEVA
                 </button>
             </div>
             <div class="sector-content scroll-dav">
@@ -123,23 +152,23 @@
                     {
                         <div class="item-card-mini" @onclick="() => AbrirModalEditarFriccion(fri)">
                             <span>@fri.FRI_TIP</span>
-                            <button type="button" class="btn-del"
-                                    @onclick:stopPropagation
-                                    @onclick="() => EliminarFriccion(fri.FRI_ID)">
-                                ×
-                            </button>
+                            <button type="button" class="btn-del" @onclick:stopPropagation @onclick="() => EliminarFriccion(fri.FRI_ID)">×</button>
                         </div>
                     }
+                }
+                else
+                {
+                    <p class="empty-message">No hay fricciones reportadas</p>
                 }
             </div>
         </div>
     </div>
 
-    @* --- MODALES INTERNOS --- *@
+    @* MODALES INTERNOS *@
     @if (MostrarModalCrear)
     {
         <div class="modal-backdrop-premium" @onclick="CerrarModalInterno">
-            <div class="modal-window-dav @(TipoModal.StartsWith("HISTORIAL") ? "size-xl" : "size-md")" @onclick:stopPropagation>
+            <div class="modal-window-dav" @onclick:stopPropagation>
                 <div class="modal-header-dav">
                     <h3>@TituloModal</h3>
                     <button type="button" class="modal-close-x" @onclick="CerrarModalInterno">×</button>

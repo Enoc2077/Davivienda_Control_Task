@@ -1,1 +1,83 @@
-﻿
+﻿@namespace Davivienda.Component.Componentes
+@using Microsoft.AspNetCore.Components.Forms
+
+<div class="yoopta-container">
+    <div class="yoopta-header">
+        <h4 class="yoopta-title">Descripción</h4>
+    </div>
+
+    <div class="yoopta-content">
+        @foreach (var linea in Lineas)
+        {
+            <div class="yoopta-line" @key="linea.Id" @onclick="() => SeleccionarLinea(linea)">
+                <div class="line-handle @(lineaActiva?.Id == linea.Id ? "visible" : "")">
+                    <button class="dots-btn" @onclick="() => MostrarMenuLinea(linea)" @onclick:stopPropagation>
+                        •••
+                    </button>
+                </div>
+
+                <div class="line-content">
+                    @if (linea.Tipo == TipoLinea.Texto)
+                    {
+                        <textarea class="line-textarea"
+                                  placeholder="Escribe aquí o '/' para opciones..."
+                                  value="@linea.Contenido"
+                                  @oninput="async e => await OnLineaChange(linea, e)"
+                                  @onfocus="() => SeleccionarLinea(linea)"
+                                  rows="1"></textarea>
+                    }
+                    else if (linea.Tipo == TipoLinea.Imagen && string.IsNullOrEmpty(linea.Contenido))
+                    {
+                        <div class="file-upload-zone">
+                            <InputFile OnChange="e => OnArchivoSeleccionado(linea, e)" accept="image/*" class="file-input-hidden" id="@($"img-{linea.Id}")" />
+                            <label for="@($"img-{linea.Id}")" class="file-label">
+                                <i class="fas fa-image"></i> Seleccionar imagen
+                            </label>
+                        </div>
+                    }
+                    else if (linea.Tipo == TipoLinea.Imagen && !string.IsNullOrEmpty(linea.Contenido))
+                    {
+                        <img src="@linea.Contenido" alt="Imagen" class="preview-img" />
+                    }
+                    else if (linea.Tipo == TipoLinea.Documento && string.IsNullOrEmpty(linea.Contenido))
+                    {
+                        <div class="file-upload-zone">
+                            <InputFile OnChange="e => OnArchivoSeleccionado(linea, e)" accept=".pdf,.doc,.docx,.xls,.xlsx" class="file-input-hidden" id="@($"doc-{linea.Id}")" />
+                            <label for="@($"doc-{linea.Id}")" class="file-label">
+                                <i class="fas fa-file-upload"></i> Seleccionar documento
+                            </label>
+                        </div>
+                    }
+                    else if (linea.Tipo == TipoLinea.Documento && !string.IsNullOrEmpty(linea.Contenido))
+                    {
+                        <div class="doc-preview">
+                            <i class="fas fa-file-alt"></i> @linea.NombreArchivo
+                        </div>
+                    }
+                </div>
+
+                <button class="btn-delete-line @(lineaActiva?.Id == linea.Id ? "visible" : "")"
+                        @onclick="() => EliminarLinea(linea)"
+                        @onclick:stopPropagation
+                        title="Eliminar línea">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        }
+    </div>
+
+    @if (mostrarMenu && lineaActiva != null)
+    {
+        <div class="yoopta-menu">
+            <div class="menu-item" @onclick="() => CambiarTipoLinea(TipoLinea.Texto)">
+                <i class="fas fa-paragraph"></i> Texto
+            </div>
+            <div class="menu-item" @onclick="() => CambiarTipoLinea(TipoLinea.Imagen)">
+                <i class="fas fa-image"></i> Imagen
+            </div>
+            <div class="menu-item" @onclick="() => CambiarTipoLinea(TipoLinea.Documento)">
+                <i class="fas fa-file"></i> Documento
+            </div>
+        </div>
+    }
+</div>

@@ -3,10 +3,8 @@
 @using Microsoft.AspNetCore.Components
 
 <div class="modal-premium-overlay" @onclick="Cerrar">
-    @* Contenedor de la tarjeta con animación *@
     <div class="modal-card-registro animate-pop" @onclick:stopPropagation>
 
-        @* Franja superior de acento azul para Soluciones *@
         <div class="modal-top-accent-blue"></div>
 
         <div class="modal-header-registro">
@@ -23,10 +21,13 @@
                     <input type="text" @bind="solEdit.SOL_NOM" class="input-field-premium" placeholder="Ej: Ajuste de índices en BD" />
                 </div>
 
-                @* Campo Descripción *@
+                @* 🔥 DESCRIPCIÓN TÉCNICA CON YOOPTA *@
                 <div class="input-group-registro full-width">
                     <label>DESCRIPCIÓN TÉCNICA</label>
-                    <textarea @bind="solEdit.SOL_DES" rows="4" class="input-field-premium textarea-premium" placeholder="Detalle del procedimiento..."></textarea>
+                    <div class="yoopta-editor-limiter">
+                        <Yoopta Contenido="@solEdit.SOL_DES"
+                                ContenidoChanged="@((valor) => { solEdit.SOL_DES = valor; })" />
+                    </div>
                 </div>
 
                 @* Fila Doble: Estado y Efectividad *@
@@ -39,9 +40,14 @@
                     </select>
                 </div>
 
+                @* 🔥 NIVEL DE EFECTIVIDAD COMO SELECT DE NIVELES *@
                 <div class="input-group-registro">
-                    <label>EFECTIVIDAD (%)</label>
-                    <input type="number" @bind="solEdit.SOL_NIV_EFE" class="input-field-premium" min="0" max="100" />
+                    <label>NIVEL DE EFECTIVIDAD</label>
+                    <select @bind="solEdit.SOL_NIV_EFE" class="input-field-premium select-premium">
+                        <option value="100">Alto (100%)</option>
+                        <option value="50">Medio (50%)</option>
+                        <option value="25">Bajo (25%)</option>
+                    </select>
                 </div>
             </div>
 

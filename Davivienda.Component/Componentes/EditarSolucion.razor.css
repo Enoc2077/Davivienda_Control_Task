@@ -174,3 +174,20 @@
         transform: scale(1) translateY(0);
     }
 }
+
+/* Limitador de crecimiento para el editor Yoopta en el modal de Soluciones */
+.yoopta-editor-limiter {
+    width: 100%;
+    min-height: 200px;
+    max-height: 350px;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    overflow-y: auto;
+    transition: border-color 0.3s ease;
+}
+
+    .yoopta-editor-limiter:focus-within {
+        border-color: #00448d;
+        box-shadow: 0 0 0 4px rgba(0, 68, 141, 0.1);
+    }

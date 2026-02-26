@@ -20,17 +20,17 @@ namespace Davivienda.Component.Componentes
         {
             if (Solucion != null)
             {
-                // Clonamos con TODOS los campos para que el @bind en el HTML tenga qué mostrar
+                // Clonamos el objeto para edición segura
                 solEdit = new SolucionesModel
                 {
                     SOL_ID = Solucion.SOL_ID,
                     SOL_NOM = Solucion.SOL_NOM,
-                    SOL_DES = Solucion.SOL_DES,
+                    SOL_DES = Solucion.SOL_DES, // Carga el JSON de Yoopta
                     SOL_EST = Solucion.SOL_EST,
                     SOL_NIV_EFE = Solucion.SOL_NIV_EFE,
                     FRI_ID = Solucion.FRI_ID,
                     USU_ID = Solucion.USU_ID,
-                    SOL_FEC_CRE = Solucion.SOL_FEC_CRE // Mantiene la fecha original
+                    SOL_FEC_CRE = Solucion.SOL_FEC_CRE
                 };
             }
         }
@@ -41,17 +41,16 @@ namespace Davivienda.Component.Componentes
             {
                 if (string.IsNullOrWhiteSpace(solEdit.SOL_NOM)) return;
 
-                // Creamos el input incluyendo los campos que GraphQL marca como obligatorios
+                // Mapeo al input de GraphQL
                 var input = new SolucionesModelInput
                 {
                     Sol_ID = solEdit.SOL_ID,
                     Sol_NOM = solEdit.SOL_NOM,
-                    Sol_DES = solEdit.SOL_DES,
+                    Sol_DES = solEdit.SOL_DES, // Guarda el nuevo JSON de Yoopta
                     Sol_EST = solEdit.SOL_EST ?? "Pendiente",
                     Sol_NIV_EFE = solEdit.SOL_NIV_EFE ?? 0,
                     Fri_ID = solEdit.FRI_ID,
                     Usu_ID = solEdit.USU_ID,
-                    // Enviamos la fecha original para que no de error de "missing field"
                     Sol_FEC_CRE = solEdit.SOL_FEC_CRE,
                     Sol_FEC_MOD = DateTimeOffset.Now
                 };

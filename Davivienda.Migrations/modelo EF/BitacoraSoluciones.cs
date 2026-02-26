@@ -23,8 +23,7 @@ namespace Davivienda.Migrations.ModelosEF
         [StringLength(50)]
         public string? BIT_SOL_EST { get; set; }
 
-        [Column("BIT_SOL_DES")]
-        [StringLength(255)]
+        [Column(TypeName = "nvarchar(max)")]
         public string? BIT_SOL_DES { get; set; }
 
         [Column("BIT_SOL_TIE_TOT_TRA")]
