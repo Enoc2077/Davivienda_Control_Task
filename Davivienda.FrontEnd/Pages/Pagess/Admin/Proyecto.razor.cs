@@ -21,6 +21,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         public List<AreasModel> ListaAreas { get; set; } = new();
 
         public bool MostrarModalProcesos { get; set; } = false;
+        public bool MostrarBitacoraProyecto { get; set; } = false;
         public string ModalActual { get; set; } = "";
         public string TextoBusqueda { get; set; } = "";
         public Guid? AreaIdFiltro { get; set; }
@@ -71,10 +72,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
             {
                 Console.WriteLine("🔄 [SINCRO] Iniciando recarga de datos por cambio de contexto...");
 
-                // 1. Volvemos a obtener el usuario por si cambió el área en el token o BD
                 await ObtenerDatosUsuario();
-
-                // 2. Limpiamos las listas actuales para forzar el refresco visual
                 ListaProyectos.Clear();
                 ProyectosFiltrados.Clear();
 
@@ -87,19 +85,23 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                     {
                         PRO_ID = p.Pro_ID,
                         PRO_NOM = p.Pro_NOM,
+                        PRO_DES = p.Pro_DES,
                         PRO_EST = p.Pro_EST,
                         ARE_ID = p.Are_ID,
                         PRO_FEC_INI = p.Pro_FEC_INI,
-                        PRO_FEC_FIN = p.Pro_FEC_FIN
+                        PRO_FEC_FIN = p.Pro_FEC_FIN,
+                        PRO_FEC_CRE = p.Pro_FEC_CRE,
+                        PRO_FEC_MOD = p.Pro_FEC_MOD
                     }).ToList();
 
-                    // 🔥 Aquí es donde ocurre la magia del filtro por área
-                    ListaProyectos = FiltrarProyectosPorRol(todosProyectos);
+                    // 🔥 FILTRAR: Solo proyectos NO finalizados
+                    ListaProyectos = FiltrarProyectosPorRol(todosProyectos)
+                        .Where(p => p.PRO_EST != "FINALIZADO")
+                        .ToList();
 
-                    Console.WriteLine($"✅ [SINCRO] Datos actualizados. Área actual: {UserAreaId}. Proyectos visibles: {ListaProyectos.Count}");
+                    Console.WriteLine($"✅ [SINCRO] Proyectos activos: {ListaProyectos.Count}");
                 }
 
-                // Cargar catálogo de áreas para los filtros de la UI
                 var resAreas = await Client.GetAreas.ExecuteAsync();
                 ListaAreas = resAreas.Data?.Areas.Select(a => new AreasModel
                 {
@@ -107,7 +109,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                     ARE_NOM = a.Are_NOM
                 }).ToList() ?? new();
 
-                Filtrar(); // Aplica búsqueda por texto si existe
+                Filtrar();
             }
             catch (Exception ex)
             {
@@ -115,7 +117,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
             }
             finally
             {
-                StateHasChanged(); // Forzamos a Blazor a re-dibujar la pantalla
+                StateHasChanged();
             }
         }
 
@@ -123,14 +125,12 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         {
             Console.WriteLine($"🔍 [FILTRO] Aplicando reglas para Rol: {UserRole} y Área: {UserAreaId}");
 
-            // GERENTE: Ve todo (Administrador, Gerente, Enoc, Admin)
             if (EsGerente(UserRole))
             {
                 Console.WriteLine("🔓 [ROL] Gerencia detectada: Acceso total a proyectos.");
                 return proyectos;
             }
 
-            // CUALQUIER OTRO ROL (Incluido Líder Técnico): Solo los de su área
             if (UserAreaId.HasValue && UserAreaId != Guid.Empty)
             {
                 var filtrados = proyectos.Where(p => p.ARE_ID == UserAreaId.Value).ToList();
@@ -186,10 +186,24 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         {
             MostrarModalProcesos = false;
             ModalActual = "";
-
-            // 🔥 RECARGAR DATOS DESPUÉS DE CERRAR EL MODAL
             await CargarDatos();
-            GenerarCalendario(); // 🔥 REGENERAR CALENDARIO CON NUEVOS DATOS
+            GenerarCalendario();
+        }
+
+        // 🔥 BITÁCORA DE PROYECTOS
+        public void AbrirBitacoraProyecto()
+        {
+            MostrarBitacoraProyecto = true;
+            Console.WriteLine("📖 Abriendo Bitácora de Proyectos");
+        }
+
+        public async Task CerrarBitacoraProyecto()
+        {
+            MostrarBitacoraProyecto = false;
+            await CargarDatos();
+            GenerarCalendario();
+            Console.WriteLine("❌ Cerrando Bitácora de Proyectos");
+            StateHasChanged();
         }
 
         public void OnSearchChanged(ChangeEventArgs e)

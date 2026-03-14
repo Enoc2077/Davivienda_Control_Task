@@ -1,0 +1,124 @@
+﻿@namespace Davivienda.Component.Componentes
+@inherits Microsoft.AspNetCore.Components.ComponentBase
+@using Davivienda.Models.Modelos
+
+
+<div class="modal-fixed-backdrop">
+    <div class="master-modal-container" @onclick:stopPropagation>
+        <div class="dav-modal-art-bg">
+            <button type="button" class="btn-close-modal" @onclick="Regresar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+            <div class="bg-blob blob-red-top"></div>
+            <div class="bg-blob blob-red-bottom"></div>
+
+            @* 🎨 ILUSTRACIÓN DECORATIVA *@
+            <div class="illustration-scene">
+                <div class="device-monitor">
+                    <div class="device-screen">
+                        <div class="screen-ui-lines"></div>
+                    </div>
+                    <div class="device-stand"></div>
+                </div>
+                <div class="vector-person person-standing"></div>
+                <div class="vector-person person-climbing"></div>
+                <div class="vector-person person-sitting"></div>
+                <div class="floating-element element-1"></div>
+                <div class="floating-element element-2"></div>
+            </div>
+
+            <div class="content-sectors-container">
+                @* ========== LISTADO DE PROYECTOS FINALIZADOS ========== *@
+                <div class="sector-white-card sector-listado">
+                    <div class="sector-label">Historial de Proyectos</div>
+
+                    <div class="sector-banner-header">
+                        <div class="banner-waves"></div>
+                        <div class="banner-content">
+                            <div class="banner-icon">
+                                <i class="bi bi-archive-fill"></i> Bitácora de Proyectos Finalizados
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="solution-main-viewport">
+                        @if (ProyectosFiltrados.Any())
+                        {
+                            @foreach (var proyecto in ProyectosFiltrados)
+                            {
+                                <div class="solution-item-card" @onclick="() => AbrirProcesosDelProyecto(proyecto)">
+                                    <div class="sol-card-info">
+                                        <span class="sol-name">@proyecto.PRO_NOM</span>
+                                        <div class="tarea-metadata">
+                                            <span class="metadata-item">
+                                                <i class="bi bi-briefcase"></i> @ObtenerNombreArea(proyecto.ARE_ID)
+                                            </span>
+                                            <span class="metadata-item">
+                                                <i class="bi bi-calendar-check"></i> @proyecto.PRO_FEC_INI.ToString("dd MMM yyyy")
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="sol-card-metrics">
+                                        <div class="metric-badge status-finalizado">FINALIZADO</div>
+                                        <div class="metric-badge effectiveness">@ObtenerCantidadProcesos(proyecto.PRO_ID) Procesos</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="empty-results-msg">
+                                <i class="bi bi-inbox"></i>
+                                <p>No hay proyectos finalizados en el historial.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @* ========== PANEL DE FILTROS ========== *@
+                <div class="sector-white-card sector-filtros">
+                    <div class="sector-label verde">Filtros Inteligentes</div>
+                    <div class="dynamic-filter-zone">
+                        <div class="filtro-grupo">
+                            <label class="filtro-label">BUSCAR POR NOMBRE</label>
+                            <input type="text" 
+                                   class="filtro-input" 
+                                   placeholder="Nombre del proyecto..."
+                                   @oninput="OnBusquedaChanged" />
+                        </div>
+
+                        <div class="filtro-grupo">
+                            <label class="filtro-label">FILTRAR POR ÁREA</label>
+                            <select class="filtro-select" @onchange="OnAreaChanged">
+                                <option value="">Todas las áreas</option>
+                                @foreach (var area in AreasList)
+                                {
+                                    <option value="@area.ARE_ID">@area.ARE_NOM</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="filtro-grupo">
+                            <label class="filtro-label">FILTRAR POR FECHA</label>
+                            <select class="filtro-select" @onchange="OnFechaChanged">
+                                <option value="todos">Todos</option>
+                                <option value="mes">Este mes</option>
+                                <option value="trimestre">Este trimestre</option>
+                                <option value="año">Este año</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ========== MODAL DE PROCESOS ========== *@
+@if (MostrarModalProceso)
+{
+    < ProyectoId="@ProyectoSeleccionadoId" 
+              ProyectoNombre="@ProyectoSeleccionadoNombre" 
+              OnClose="CerrarModalProceso" />
+}

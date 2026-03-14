@@ -3,7 +3,7 @@
 @using Davivienda.Component.Componentes
 @inherits Davivienda.FrontEnd.Pages.Pagess.Admin.Proyectos
 
-<div class="projects-main-container @(MostrarModalProcesos ? "container-blur" : "")">
+<div class="projects-main-container @(MostrarModalProcesos || MostrarBitacoraProyecto ? "container-blur" : "")">
 
     @* --- BARRA DE FILTROS SUPERIOR --- *@
     <div class="header-filter-bar">
@@ -21,6 +21,11 @@
                 }
             </select>
         </div>
+
+        @* 🔥 BOTÓN HISTORIAL *@
+        <button class="btn-historial-proyectos" @onclick="AbrirBitacoraProyecto">
+            <i class="bi bi-clock-history"></i> Historial
+        </button>
 
         <button class="btn-add-role" @onclick="AbrirModalNuevoProyecto">
             <i class="fas fa-plus"></i> Nuevo Proyecto
@@ -204,6 +209,7 @@
     </div>
 </div>
 
+@* ========== MODALES DE EDICIÓN/CREACIÓN ========== *@
 @if (MostrarModalProcesos)
 {
     <div class="modal-overlay">
@@ -220,4 +226,10 @@
             <Procesos ProyectoId="ProyectoSeleccionado.PRO_ID" ProyectoNombre="@ProyectoSeleccionado.PRO_NOM" OnClose="CerrarModalProceso" />
         }
     </div>
+}
+
+@* ========== MODAL BITÁCORA DE PROYECTOS ========== *@
+@if (MostrarBitacoraProyecto)
+{
+    <Bitacoraproyecto OnClose="CerrarBitacoraProyecto" />
 }

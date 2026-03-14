@@ -924,3 +924,31 @@
     background-color: #f0f7ff !important;
     box-shadow: 0 4px 12px rgba(0, 51, 160, 0.1);
 }
+
+/* Botón Historial de Proyectos */
+.btn-historial-proyectos {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    white-space: nowrap;
+}
+
+.btn-historial-proyectos:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-historial-proyectos i {
+    font-size: 14px;
+}
