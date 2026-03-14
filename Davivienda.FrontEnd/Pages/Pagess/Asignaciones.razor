@@ -20,6 +20,9 @@
                                 <button class="filter-pill @(PrioridadSeleccionada == p.PRI_NOM ? "active" : "")" @onclick="() => FiltrarPorPrioridad(p.PRI_NOM)">@p.PRI_NOM</button>
                             }
                         }
+                        <button class="filter-pill historial-btn" @onclick="AbrirBitacoraTarea">
+                            <i class="bi bi-clock-history"></i> Historial
+                        </button>
                     </div>
                 </div>
             </div>
@@ -162,7 +165,7 @@
     <div class="modal-backdrop-dav" @onclick="CerrarModal">
         <div class="modal-calendar-content" @onclick:stopPropagation>
             <div class="modal-header-dav">
-                <h3 style="font-weight: 800; color: #1e293b; margin: 0;">@(ModalActual == "CALENDARIO" ? "Agenda" : "Detalle")</h3>
+                <h3 style="font-weight: 800; color: #1e3a5f; margin: 0;">@(ModalActual == "CALENDARIO" ? "Agenda" : "Detalle")</h3>
                 <button class="close-btn-dav" @onclick="CerrarModal">×</button>
             </div>
             <div class="modal-body-dav">
@@ -177,4 +180,10 @@
             </div>
         </div>
     </div>
+}
+
+@* --- MODAL PARA BITÁCORA DE TAREAS --- *@
+@if (MostrarBitacoraTarea)
+{
+    <BitacoraTarea OnClose="CerrarBitacoraTarea" />
 }
