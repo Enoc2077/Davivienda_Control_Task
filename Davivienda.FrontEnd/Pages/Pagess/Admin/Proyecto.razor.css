@@ -25,7 +25,7 @@
 /* --- CONTENEDOR PRINCIPAL --- */
 .projects-main-container {
     padding: 2rem;
-    background-color: var(--bg-light);
+    background-color: #f9fafb; /* antes era #f4f7f9, ahora más blanco */
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -33,15 +33,22 @@
 /* --- BARRA DE FILTROS --- */
 .header-filter-bar {
     display: flex;
-    gap: 1.5rem;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 1rem;
     margin-bottom: 2rem;
     align-items: center;
+    background: #ffffff;
+    padding: 14px 20px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
+ 
 
-.search-pill-container,
-.select-pill {
-    background: #efebeb;
-    border: 1px solid var(--border-color);
+.search-pill-container {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
     border-radius: 60px;
     padding: 0.6rem 1rem;
     display: flex;
@@ -59,9 +66,14 @@
 }
 
 .select-pill {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 60px;
+    padding: 0.6rem 1rem;
     cursor: pointer;
     min-width: 200px;
     outline: none;
+    transition: all 0.2s;
 }
 
 .btn-add-role {
@@ -340,37 +352,35 @@
 }
 
 .btn-view-details {
-    background-color: #ffffff;
-    color: var(--dav-blue);
-    border: 1px solid var(--border-color);
-    width: 45px;
-    height: 38px;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    width: auto;
+    height: auto;
+    padding: 8px 16px;
     border-radius: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     transition: all 0.2s ease;
-    font-size: 0.9rem;
-    font-weight: bold;
-    line-height: 1;
-    padding-bottom: 2px;
+    box-shadow: 0 3px 8px rgba(59, 130, 246, 0.25);
+    white-space: nowrap;
 }
 
     .btn-view-details:hover {
-        background-color: var(--dav-blue);
-        color: white;
-        border-color: var(--dav-blue);
-        transform: scale(1.05);
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        box-shadow: 0 5px 12px rgba(59, 130, 246, 0.35);
+        transform: translateY(-1px);
     }
+ 
     /* Cuando el filtro está activo, el botón se queda resaltado */
     .btn-view-details.btn-active {
-        background-color: var(--dav-blue);
-        color: white;
-        border-color: var(--dav-blue);
-        box-shadow: 0 0 8px rgba(0, 51, 160, 0.3);
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
     }
-
 
 
 

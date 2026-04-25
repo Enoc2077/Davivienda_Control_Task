@@ -89,7 +89,9 @@
 
                     <div class="input-container-dav">
                         <label>ESTADO ACTUAL</label>
-                        <select @bind="RolForm.ROL_EST" class="input-field-dav select-dav visual-fix">
+                        <select class="input-field-dav select-dav visual-fix"
+                                value="@(RolForm.ROL_EST ? "true" : "false")"
+                                @onchange="OnEstadoChanged">
                             <option value="true">Activo</option>
                             <option value="false">Inactivo</option>
                         </select>

@@ -33,8 +33,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         public List<CalendarDay> DiasDelMes { get; set; } = new();
         public CalendarDay? DiaSeleccionado { get; set; }
 
-        private string UserRole { get; set; } = "";
-        private Guid? UserAreaId { get; set; }
+        // 🔥 PUBLIC para que el .razor pueda acceder
+        public string UserRole { get; set; } = "";
+        public Guid? UserAreaId { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -70,8 +71,6 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         {
             try
             {
-                Console.WriteLine("🔄 [SINCRO] Iniciando recarga de datos por cambio de contexto...");
-
                 await ObtenerDatosUsuario();
                 ListaProyectos.Clear();
                 ProyectosFiltrados.Clear();
@@ -94,12 +93,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                         PRO_FEC_MOD = p.Pro_FEC_MOD
                     }).ToList();
 
-                    // 🔥 FILTRAR: Solo proyectos NO finalizados
                     ListaProyectos = FiltrarProyectosPorRol(todosProyectos)
                         .Where(p => p.PRO_EST != "FINALIZADO")
                         .ToList();
-
-                    Console.WriteLine($"✅ [SINCRO] Proyectos activos: {ListaProyectos.Count}");
                 }
 
                 var resAreas = await Client.GetAreas.ExecuteAsync();
@@ -113,7 +109,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ [ERROR] Fallo al sincronizar áreas: {ex.Message}");
+                Console.WriteLine($"Error al cargar datos: {ex.Message}");
             }
             finally
             {
@@ -123,26 +119,17 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
 
         private List<ProyectosModel> FiltrarProyectosPorRol(List<ProyectosModel> proyectos)
         {
-            Console.WriteLine($"🔍 [FILTRO] Aplicando reglas para Rol: {UserRole} y Área: {UserAreaId}");
-
             if (EsGerente(UserRole))
-            {
-                Console.WriteLine("🔓 [ROL] Gerencia detectada: Acceso total a proyectos.");
                 return proyectos;
-            }
 
             if (UserAreaId.HasValue && UserAreaId != Guid.Empty)
-            {
-                var filtrados = proyectos.Where(p => p.ARE_ID == UserAreaId.Value).ToList();
-                Console.WriteLine($"🔒 [ROL] Usuario restringido: Mostrando {filtrados.Count} proyectos del área {UserAreaId}");
-                return filtrados;
-            }
+                return proyectos.Where(p => p.ARE_ID == UserAreaId.Value).ToList();
 
-            Console.WriteLine("⚠️ [AVISO] Usuario sin área asignada o rol no reconocido. Lista vacía.");
             return new List<ProyectosModel>();
         }
 
-        private bool EsGerente(string rol)
+        // 🔥 PUBLIC para que el .razor pueda usarlo en @if
+        public bool EsGerente(string rol)
         {
             var rolesGerente = new[] { "Gerente", "Administrador", "Enoc", "Admin" };
             return rolesGerente.Any(r => rol.Equals(r, StringComparison.OrdinalIgnoreCase));
@@ -190,11 +177,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
             GenerarCalendario();
         }
 
-        // 🔥 BITÁCORA DE PROYECTOS
         public void AbrirBitacoraProyecto()
         {
             MostrarBitacoraProyecto = true;
-            Console.WriteLine("📖 Abriendo Bitácora de Proyectos");
         }
 
         public async Task CerrarBitacoraProyecto()
@@ -202,7 +187,6 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
             MostrarBitacoraProyecto = false;
             await CargarDatos();
             GenerarCalendario();
-            Console.WriteLine("❌ Cerrando Bitácora de Proyectos");
             StateHasChanged();
         }
 

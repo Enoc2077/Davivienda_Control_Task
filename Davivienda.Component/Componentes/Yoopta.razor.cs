@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -13,6 +14,7 @@ namespace Davivienda.Component.Componentes
     {
         [Parameter] public string? Contenido { get; set; }
         [Parameter] public EventCallback<string> ContenidoChanged { get; set; }
+        [Inject] private IJSRuntime js { get; set; } = default!;
 
         private List<LineaYoopta> Lineas { get; set; } = new();
         private LineaYoopta? lineaActiva;
@@ -106,8 +108,6 @@ namespace Davivienda.Component.Componentes
 
             if (nuevoTipo == TipoLinea.Imagen || nuevoTipo == TipoLinea.Documento)
             {
-                // NO convertir el renglón actual, crear uno nuevo abajo
-                // Renglón para el archivo
                 var nuevoRenglonArchivo = new LineaYoopta
                 {
                     Id = Guid.NewGuid(),
@@ -115,7 +115,6 @@ namespace Davivienda.Component.Componentes
                     Contenido = ""
                 };
 
-                // Renglón para seguir escribiendo
                 var nuevoRenglonTexto = new LineaYoopta
                 {
                     Id = Guid.NewGuid(),
@@ -123,13 +122,11 @@ namespace Davivienda.Component.Componentes
                     Contenido = ""
                 };
 
-                // Insertar ambos renglones abajo del actual
                 Lineas.Insert(index + 1, nuevoRenglonArchivo);
                 Lineas.Insert(index + 2, nuevoRenglonTexto);
             }
             else
             {
-                // Para tipo Texto, solo convertir el actual
                 lineaActiva.Tipo = nuevoTipo;
             }
 
@@ -154,9 +151,11 @@ namespace Davivienda.Component.Componentes
                 if (linea.Tipo == TipoLinea.Imagen)
                 {
                     linea.Contenido = $"data:{archivo.ContentType};base64,{base64}";
+                    linea.TipoMime = archivo.ContentType;
                 }
                 else if (linea.Tipo == TipoLinea.Documento)
                 {
+                    // Guardamos el base64 puro y el mime por separado
                     linea.Contenido = base64;
                     linea.TipoMime = archivo.ContentType;
                 }
@@ -180,6 +179,50 @@ namespace Davivienda.Component.Componentes
                 Lineas.Remove(linea);
                 await GuardarContenido();
                 StateHasChanged();
+            }
+        }
+
+        // ✅ DESCARGA REAL DE DOCUMENTOS vía JS
+        private async Task DescargarDocumento(LineaYoopta linea)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(linea.Contenido)) return;
+
+                var mimeType = string.IsNullOrEmpty(linea.TipoMime)
+                    ? "application/octet-stream"
+                    : linea.TipoMime;
+
+                var dataUrl = $"data:{mimeType};base64,{linea.Contenido}";
+                var nombreArchivo = string.IsNullOrEmpty(linea.NombreArchivo)
+                    ? $"documento_{DateTime.Now:yyyyMMddHHmmss}"
+                    : linea.NombreArchivo;
+
+                await js.InvokeVoidAsync("descargarArchivo", dataUrl, nombreArchivo);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al descargar documento: {ex.Message}");
+            }
+        }
+
+        // ✅ DESCARGA REAL DE IMÁGENES vía JS
+        private async Task DescargarImagen(LineaYoopta linea)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(linea.Contenido)) return;
+
+                var nombreArchivo = string.IsNullOrEmpty(linea.NombreArchivo)
+                    ? $"imagen_{DateTime.Now:yyyyMMddHHmmss}.png"
+                    : linea.NombreArchivo;
+
+                // La imagen ya viene como data URL completo
+                await js.InvokeVoidAsync("descargarArchivo", linea.Contenido, nombreArchivo);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al descargar imagen: {ex.Message}");
             }
         }
 

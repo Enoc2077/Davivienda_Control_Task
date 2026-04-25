@@ -592,3 +592,36 @@ textarea.input-field-dav {
         max-height: 180px;
     }
 }
+
+ 
+/* Fila superior del panel-header: título + botón Historial */
+.panel-header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* Botón Historial — igual al de Proyectos */
+.btn-historial-tarea {
+    background: #0052FF;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    box-shadow: 0 3px 8px rgba(0, 82, 255, 0.2);
+}
+
+    .btn-historial-tarea:hover {
+        background: #003fd6;
+        transform: translateY(-1px);
+        box-shadow: 0 5px 12px rgba(0, 82, 255, 0.3);
+    }

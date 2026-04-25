@@ -7,7 +7,12 @@
     @* Cuadrante 1: Listado de Tareas *@
     <div class="cuadro-blanco q-90-180 animate-pop">
         <div class="panel-header">
-            <h3 class="title-dav-red"><i class="bi bi-list-task"></i> Control de Tareas</h3>
+            <div class="panel-header-top">
+                <h3 class="title-dav-red"><i class="bi bi-list-task"></i> Control de Tareas</h3>
+                <button class="btn-historial-tarea" @onclick="() => MostrarBitacora = true">
+                    <i class="bi bi-clock-history"></i> Historial
+                </button>
+            </div>
 
             @if (EsGerente)
             {
@@ -31,13 +36,13 @@
         </div>
 
         <div class="tareas-scroll-area">
-            @if (!TareasLista.Any())
+            @if (!TareasLista.Where(t => t.TAR_EST != "Completado").Any())
             {
                 <div class="no-data-placeholder">
                     <p>No hay tareas disponibles para mostrar en esta área.</p>
                 </div>
             }
-            @foreach (var tarea in TareasLista)
+            @foreach (var tarea in TareasLista.Where(t => t.TAR_EST != "Completado"))
             {
                 <div class="tarea-item-card" @onclick="() => AbrirModalEdicion(tarea)">
                     <div class="tarea-info">
@@ -48,8 +53,12 @@
                         </div>
                     </div>
                     <div class="tarea-actions-min">
-                        <button class="btn-action-edit" @onclick:stopPropagation="true" @onclick="() => AbrirModalEdicion(tarea)"><i class="bi bi-pencil-square"></i></button>
-                        <button class="btn-action-delete" @onclick:stopPropagation="true" @onclick="() => EliminarTarea(tarea.TAR_ID)"><i class="bi bi-trash3"></i></button>
+                        <button class="btn-action-edit" @onclick:stopPropagation="true" @onclick="() => AbrirModalEdicion(tarea)">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button class="btn-action-delete" @onclick:stopPropagation="true" @onclick="() => EliminarTarea(tarea.TAR_ID)">
+                            <i class="bi bi-trash3"></i>
+                        </button>
                     </div>
                 </div>
             }
@@ -145,6 +154,7 @@
     </div>
 </div>
 
+@* Modal Edición *@
 @if (MostrarModal)
 {
     <div class="modal-overlay">
@@ -203,4 +213,10 @@
             </div>
         </div>
     </div>
+}
+
+@* Modal Bitácora *@
+@if (MostrarBitacora)
+{
+    <BitacoraTarea OnClose="() => MostrarBitacora = false" />
 }
