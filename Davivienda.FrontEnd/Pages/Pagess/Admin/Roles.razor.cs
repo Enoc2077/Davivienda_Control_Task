@@ -98,6 +98,11 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
             MostrarModal = true;
         }
 
+        private void OnEstadoChanged(ChangeEventArgs e)
+        {
+            RolForm.ROL_EST = e.Value?.ToString() == "true";
+        }
+
         private async Task EliminarRol(Guid id)
         {
             if (await JS.InvokeAsync<bool>("confirm", "¿Está seguro de eliminar este rol?"))

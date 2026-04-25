@@ -18,10 +18,17 @@
                 </div>
             </div>
 
-            @* Barra de búsqueda horizontal y larga *@
-            <div class="modal-search-bar-horizontal-long">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Buscar procesos por nombre..." class="modal-input-long" @oninput="OnSearchProcesoChanged" />
+            <div class="header-right-buttons">
+                @* Barra de búsqueda horizontal y larga *@
+                <div class="modal-search-bar-horizontal-long">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Buscar procesos por nombre..." class="modal-input-long" @oninput="OnSearchProcesoChanged" />
+                </div>
+                
+                @* Botón Historial al lado *@
+                <button class="btn-historial-proceso" @onclick="AbrirBitacoraProceso">
+                    <i class="bi bi-clock-history"></i> Historial
+                </button>
             </div>
         </div>
 
@@ -154,4 +161,9 @@
 @if (MostrarModalCrearTarea)
 {
     <div class="modal-overlay-secondary"><Davivienda.Component.Componentes.CrearTarea ProcId="ProcesoSeleccionado!.PROC_ID" OnClose="CerrarModalCrearTarea" /></div>
+}
+@if (MostrarBitacoraProceso)
+{
+    <Davivienda.Component.Componentes.BitacoraProceso OnClose="CerrarBitacoraProceso" ProyectoId="@ProyectoId" />
+    
 }

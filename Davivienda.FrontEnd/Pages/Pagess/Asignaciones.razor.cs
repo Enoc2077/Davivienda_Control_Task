@@ -30,6 +30,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess
         public string ModalActual { get; set; } = "";
         public TareaModel? TareaSeleccionada { get; set; }
 
+        // 🔥 NUEVO: Para BitacoraTarea
+        public bool MostrarBitacoraTarea { get; set; }
+
         public int TotalTareasCount { get; set; }
         public int TotalProyectos { get; set; }
 
@@ -104,12 +107,33 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     TAR_EST = t.Tar_EST,
                     PRI_ID = t.Pri_ID,
                     USU_ID = t.Usu_ID,
-                    TAR_FEC_INI = t.Tar_FEC_INI,
-                    TAR_FEC_FIN = t.Tar_FEC_FIN,
+                    TAR_FEC_INI = t.Tar_FEC_INI.DateTime,
+                    TAR_FEC_FIN = t.Tar_FEC_FIN?.DateTime,
                     PROC_ID = t.Proc_ID
                 }).ToList() ?? new();
 
                 Console.WriteLine($"📊 Total de tareas en BD: {allTasks.Count}");
+
+                // 🔥 2.1 CARGAR PROCESOS PARA VERIFICAR PROC_EST
+                var resProc = await Client.GetProcesos.ExecuteAsync();
+                var procesosActivos = resProc.Data?.Procesos
+                    .Where(p => p.Proc_EST == true) // Solo procesos activos
+                    .Select(p => p.Proc_ID)
+                    .ToList() ?? new();
+
+                Console.WriteLine($"📊 Procesos activos: {procesosActivos.Count}");
+
+                // 🔥 2.2 FILTRAR TAREAS CON PROCESOS ACTIVOS
+                allTasks = allTasks.Where(t =>
+                {
+                    // Si no tiene proceso, la mostramos (por seguridad)
+                    if (!t.PROC_ID.HasValue) return true;
+
+                    // Solo mostrar si el proceso está activo
+                    return procesosActivos.Contains(t.PROC_ID.Value);
+                }).ToList();
+
+                Console.WriteLine($"📊 Tareas con proceso activo: {allTasks.Count}");
 
                 // 🔥 3. FILTRAR TAREAS SEGÚN ROL Y ÁREA
                 Tasks = await FiltrarTareasPorRolYArea(allTasks);
@@ -283,8 +307,8 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     Fecha = f,
                     EsMesActual = f.Month == FechaCalendario.Month,
                     EsHoy = f.Date == DateTime.Today,
-                    TieneInicio = tieneInicio,  // 🔥 NUEVO
-                    TieneFin = tieneFin         // 🔥 NUEVO
+                    TieneInicio = tieneInicio,
+                    TieneFin = tieneFin
                 });
             }
         }
@@ -325,6 +349,19 @@ namespace Davivienda.FrontEnd.Pages.Pagess
             TareaSeleccionada = null;
         }
 
+        // 🔥 NUEVO: BITÁCORA DE TAREAS
+        private void AbrirBitacoraTarea()
+        {
+            MostrarBitacoraTarea = true;
+            Console.WriteLine("📖 Abriendo Bitácora de Tareas");
+        }
+
+        private void CerrarBitacoraTarea()
+        {
+            MostrarBitacoraTarea = false;
+            Console.WriteLine("❌ Cerrando Bitácora de Tareas");
+        }
+
         // NAVEGACIÓN CALENDARIO
         public void MesAnterior()
         {
@@ -344,8 +381,8 @@ namespace Davivienda.FrontEnd.Pages.Pagess
             public DateTime Fecha { get; set; }
             public bool EsMesActual { get; set; }
             public bool EsHoy { get; set; }
-            public bool TieneInicio { get; set; }  // 🔥 NUEVO: Tareas que inician (verde)
-            public bool TieneFin { get; set; }     // 🔥 NUEVO: Tareas que finalizan (rojo)
+            public bool TieneInicio { get; set; }
+            public bool TieneFin { get; set; }
         }
     }
 }

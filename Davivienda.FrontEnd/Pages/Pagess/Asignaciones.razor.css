@@ -599,3 +599,29 @@
     height: 380px !important;
     border: 1px solid #e2e8f0;
 }
+
+/* Se añade el estilo para el botón Historial al CSS existente */
+
+/* Botón Historial - Estilo especial */
+.filter-pill.historial-btn {
+    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+    color: white;
+    border: none;
+    padding: 6px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
+    margin-left: 8px;
+    transition: all 0.3s ease;
+}
+
+    .filter-pill.historial-btn:hover {
+        background: linear-gradient(135deg, #15803d 0%, #14532d 100%);
+        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .filter-pill.historial-btn i {
+        font-size: 13px;
+    }

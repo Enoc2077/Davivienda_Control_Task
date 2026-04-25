@@ -1,0 +1,198 @@
+﻿@namespace Davivienda.Component.Componentes
+@inherits Microsoft.AspNetCore.Components.ComponentBase
+@using Davivienda.Models.Modelos
+
+<div class="modal-fixed-backdrop">
+    <div class="master-modal-container" @onclick:stopPropagation>
+        <div class="dav-modal-art-bg">
+            <button type="button" class="btn-close-modal" @onclick="Regresar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+            <div class="bg-blob blob-red-top"></div>
+            <div class="bg-blob blob-red-bottom"></div>
+
+            @* 🎨 ILUSTRACIÓN DECORATIVA *@
+            <div class="illustration-scene">
+                <div class="device-monitor">
+                    <div class="device-screen">
+                        <div class="screen-ui-lines"></div>
+                    </div>
+                    <div class="device-stand"></div>
+                </div>
+                <div class="vector-person person-standing"></div>
+                <div class="vector-person person-climbing"></div>
+                <div class="vector-person person-sitting"></div>
+                <div class="floating-element element-1"></div>
+                <div class="floating-element element-2"></div>
+            </div>
+
+            <div class="content-sectors-container">
+                @* ========== LISTADO DE PROCESOS ========== *@
+                <div class="sector-white-card sector-listado">
+                    <div class="sector-label">Historial de Procesos</div>
+
+                    <div class="sector-banner-header">
+                        <div class="banner-waves"></div>
+                        <div class="banner-content">
+                            <div class="banner-icon">
+                                <i class="bi bi-archive-fill"></i> Bitácora de Procesos Completados
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="solution-main-viewport">
+                        @if (ProcesosFiltrados.Any())
+                        {
+                            @foreach (var proceso in ProcesosFiltrados)
+                            {
+                                <div class="solution-item-card" @onclick="() => AbrirDetalleProceso(proceso)">
+                                    <div class="sol-card-info">
+                                        <span class="sol-name">@proceso.PROC_NOM</span>
+                                        <div class="tarea-metadata">
+                                            <span class="metadata-item">
+                                                <i class="bi bi-folder"></i> @ObtenerNombreProyecto(proceso.PRO_ID)
+                                            </span>
+                                            <span class="metadata-item">
+                                                <i class="bi bi-calendar-check"></i> @proceso.PROC_FRE
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="sol-card-metrics">
+                                        <div class="metric-badge status">@(proceso.PROC_EST == false ? "Completado" : "Activo")</div>
+                                        <div class="metric-badge effectiveness">@ObtenerCantidadTareas(proceso.PROC_ID) Tareas</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="empty-results-msg">
+                                <i class="bi bi-inbox"></i>
+                                <p>No hay procesos en el historial.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @* ========== PANEL DE FILTROS ========== *@
+                <div class="sector-white-card sector-filtros">
+                    <div class="sector-label verde">Filtros Inteligentes</div>
+                    <div class="dynamic-filter-zone">
+                        <Filtros Areas="AreasList"
+                                 Proyectos="ProyectosList"
+                                 Procesos="ProcesosGlobales"
+                                 OnFiltrosChanged="ManejarCambioFiltros" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ========== MODAL DE DETALLE ========== *@
+@if (ProcesoSeleccionado != null)
+{
+    <div class="modal-detalle-overlay" @onclick="CerrarDetalle">
+        <div class="modal-detalle-card" @onclick:stopPropagation>
+            @* HEADER *@
+            <div class="modal-detalle-header">
+                <div class="header-icon">
+                    <i class="bi bi-archive-fill"></i>
+                </div>
+                <h3 class="modal-detalle-title">Detalle de Proceso Completado</h3>
+                <button class="btn-cerrar-detalle" @onclick="CerrarDetalle">×</button>
+            </div>
+
+            @* BODY CON 2 COLUMNAS *@
+            <div class="modal-detalle-body">
+                @* COLUMNA IZQUIERDA: INFORMACIÓN *@
+                <div class="detalle-columna-info">
+                    <div class="info-section">
+                        <label>NOMBRE DEL PROCESO</label>
+                        <p class="info-value">@ProcesoSeleccionado.PROC_NOM</p>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-section">
+                            <label>ESTADO</label>
+                            <span class="badge-estado completado">@(ProcesoSeleccionado.PROC_EST == false ? "Completado" : "Activo")</span>
+                        </div>
+
+                        <div class="info-section">
+                            <label>FRECUENCIA</label>
+                            <span class="badge-prioridad">@ProcesoSeleccionado.PROC_FRE</span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <label>PROYECTO</label>
+                        <p class="info-value-small">@ObtenerNombreProyecto(ProcesoSeleccionado.PRO_ID)</p>
+                    </div>
+
+                    <div class="info-section">
+                        <label>TAREAS TOTALES</label>
+                        <p class="info-value-small">@ObtenerCantidadTareas(ProcesoSeleccionado.PROC_ID) tareas</p>
+                    </div>
+
+                    <div class="info-section">
+                        <label>FECHAS</label>
+                        <div class="fecha-range">
+                            <span class="fecha-label">Creado:</span>
+                            <span class="fecha-value">@ProcesoSeleccionado.PROC_FEC_CRE.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        @if (ProcesoSeleccionado.PROC_FEC_MOD.HasValue)
+                        {
+                            <div class="fecha-range">
+                                <span class="fecha-label">Modificado:</span>
+                                <span class="fecha-value">@ProcesoSeleccionado.PROC_FEC_MOD.Value.ToString("dd/MM/yyyy")</span>
+                            </div>
+                        }
+                    </div>
+
+                    <div class="info-footer">
+                        <i class="bi bi-calendar3"></i>
+                        <span>Completado: @ProcesoSeleccionado.PROC_FEC_CRE.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))</span>
+                    </div>
+                </div>
+
+                @* COLUMNA DERECHA: DESCRIPCIÓN *@
+                <div class="detalle-columna-yoopta">
+                    <div class="yoopta-header-modal">
+                        <label>DESCRIPCIÓN DEL PROCESO</label>
+                    </div>
+                    <div class="yoopta-content-modal descripcion-texto">
+                        <p>@(ProcesoSeleccionado.PROC_DES ?? "Sin descripción")</p>
+                    </div>
+
+                    <div class="yoopta-header-modal" style="margin-top: 20px;">
+                        <label>TAREAS ASOCIADAS</label>
+                    </div>
+                    <div class="yoopta-content-modal">
+                        @if (TareasDeProceso.Any())
+                        {
+                            <div class="lista-tareas-modal">
+                                @foreach (var tarea in TareasDeProceso)
+                                {
+                                    <div class="tarea-item-modal">
+                                        <i class="bi bi-check-circle-fill" style="color: #16a34a;"></i>
+                                        <span>@tarea.TAR_NOM</span>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        else
+                        {
+                            <p style="color: #94a3b8; font-size: 13px;">Sin tareas asociadas</p>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            @* FOOTER *@
+            <div class="modal-detalle-footer">
+                <button class="btn-modal-cerrar" @onclick="CerrarDetalle">Cerrar</button>
+            </div>
+        </div>
+    </div>
+}

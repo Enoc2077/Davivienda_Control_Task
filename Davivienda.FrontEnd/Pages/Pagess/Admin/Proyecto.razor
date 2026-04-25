@@ -3,7 +3,7 @@
 @using Davivienda.Component.Componentes
 @inherits Davivienda.FrontEnd.Pages.Pagess.Admin.Proyectos
 
-<div class="projects-main-container @(MostrarModalProcesos ? "container-blur" : "")">
+<div class="projects-main-container @(MostrarModalProcesos || MostrarBitacoraProyecto ? "container-blur" : "")">
 
     @* --- BARRA DE FILTROS SUPERIOR --- *@
     <div class="header-filter-bar">
@@ -12,19 +12,29 @@
             <input type="text" @oninput="OnSearchChanged" placeholder="Buscar proyecto..." class="search-input-pill" />
         </div>
 
-        <div class="select-pill-container">
-            <select @onchange="OnAreaFilterChanged" class="select-pill">
-                <option value=""> Áreas</option>
-                @foreach (var area in ListaAreas)
-                {
-                    <option value="@area.ARE_ID">@area.ARE_NOM</option>
-                }
-            </select>
-        </div>
+        @* Solo el Gerente ve el filtro de Áreas *@
+        @if (EsGerente(UserRole))
+        {
+            <div class="select-pill-container">
+                <select @onchange="OnAreaFilterChanged" class="select-pill">
+                    <option value=""> Áreas</option>
+                    @foreach (var area in ListaAreas)
+                    {
+                        <option value="@area.ARE_ID">@area.ARE_NOM</option>
+                    }
+                </select>
+            </div>
+        }
 
-        <button class="btn-add-role" @onclick="AbrirModalNuevoProyecto">
-            <i class="fas fa-plus"></i> Nuevo Proyecto
+        <button class="btn-historial-proyectos" @onclick="AbrirBitacoraProyecto">
+            <i class="bi bi-clock-history"></i> Historial
         </button>
+
+     
+            <button class="btn-add-role" @onclick="AbrirModalNuevoProyecto">
+                <i class="fas fa-plus"></i> Nuevo Proyecto
+            </button>
+        
     </div>
 
     @* --- GRID DE PANELES --- *@
@@ -54,7 +64,7 @@
                             <button class="btn-view-details"
                                     @onclick:stopPropagation="true"
                                     @onclick="() => AbrirModalProcesos(proy)">
-                                 ■
+                                <i class="bi bi-diagram-3"></i> Procesos
                             </button>
                             <i class="fas fa-chevron-right arrow-icon"></i>
                         </div>
@@ -84,9 +94,12 @@
                     <div class="progress-card-item filtered-highlight selected-top-card">
                         <div class="detail-header-row">
                             <span class="progress-project-label">@ProyectoFiltroAvance.PRO_NOM</span>
-                            <button class="btn-edit-inline" @onclick="() => AbrirModalEditar(ProyectoFiltroAvance)">
-                                <i class="fas fa-edit"></i> Editar
-                            </button>
+                            @if (EsGerente(UserRole))
+                            {
+                                <button class="btn-edit-inline" @onclick="() => AbrirModalEditar(ProyectoFiltroAvance)">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                            }
                         </div>
                     </div>
                 }
@@ -97,9 +110,12 @@
                         <div class="progress-card-item" @onclick="() => VerDetalles(p)">
                             <div class="detail-header-row">
                                 <span class="progress-project-label">@p.PRO_NOM</span>
-                                <button class="btn-edit-inline" @onclick:stopPropagation="true" @onclick="() => AbrirModalEditar(p)">
-                                    <i class="fas fa-edit"></i> Editar
-                                </button>
+                                @if (EsGerente(UserRole))
+                                {
+                                    <button class="btn-edit-inline" @onclick:stopPropagation="true" @onclick="() => AbrirModalEditar(p)">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                }
                             </div>
                         </div>
                     }
@@ -131,9 +147,9 @@
                 @foreach (var dia in DiasDelMes)
                 {
                     <div class="calendar-day @(dia.EsMesActual ? "" : "not-current")
-                                          @(DiaSeleccionado?.Fecha == dia.Fecha ? "selected-day" : "")
-                                          @(dia.EsInicioProyecto ? "day-start-green" : "")
-                                          @(dia.EsFinProyecto ? "day-end-red" : "")"
+                                              @(DiaSeleccionado?.Fecha == dia.Fecha ? "selected-day" : "")
+                                              @(dia.EsInicioProyecto ? "day-start-green" : "")
+                                              @(dia.EsFinProyecto ? "day-end-red" : "")"
                          @onclick="() => SeleccionarDiaCalendario(dia)">
 
                         <span class="day-number">@dia.Fecha.Day</span>
@@ -204,6 +220,7 @@
     </div>
 </div>
 
+@* ========== MODALES DE EDICIÓN/CREACIÓN ========== *@
 @if (MostrarModalProcesos)
 {
     <div class="modal-overlay">
@@ -220,4 +237,10 @@
             <Procesos ProyectoId="ProyectoSeleccionado.PRO_ID" ProyectoNombre="@ProyectoSeleccionado.PRO_NOM" OnClose="CerrarModalProceso" />
         }
     </div>
+}
+
+@* ========== MODAL BITÁCORA DE PROYECTOS ========== *@
+@if (MostrarBitacoraProyecto)
+{
+    <Bitacoraproyecto OnClose="CerrarBitacoraProyecto" />
 }

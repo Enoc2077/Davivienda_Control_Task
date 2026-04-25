@@ -1,0 +1,177 @@
+﻿@namespace Davivienda.Component.Componentes
+@inherits Microsoft.AspNetCore.Components.ComponentBase
+@using Davivienda.Models.Modelos
+
+<div class="modal-fixed-backdrop">
+    <div class="master-modal-container" @onclick:stopPropagation>
+        <div class="dav-modal-art-bg">
+            <button type="button" class="btn-close-modal" @onclick="Regresar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+
+            <div class="bg-blob blob-red-top"></div>
+            <div class="bg-blob blob-red-bottom"></div>
+
+            @* 🎨 ILUSTRACIÓN DECORATIVA *@
+            <div class="illustration-scene">
+                <div class="device-monitor">
+                    <div class="device-screen">
+                        <div class="screen-ui-lines"></div>
+                    </div>
+                    <div class="device-stand"></div>
+                </div>
+                <div class="vector-person person-standing"></div>
+                <div class="vector-person person-climbing"></div>
+                <div class="vector-person person-sitting"></div>
+                <div class="floating-element element-1"></div>
+                <div class="floating-element element-2"></div>
+            </div>
+
+            <div class="content-sectors-container">
+                @* ========== LISTADO DE TAREAS ========== *@
+                <div class="sector-white-card sector-listado">
+                    <div class="sector-label">Historial de Tareas</div>
+
+                    <div class="sector-banner-header">
+                        <div class="banner-waves"></div>
+                        <div class="banner-content">
+                            <div class="banner-icon">
+                                <i class="bi bi-clock-history"></i> Bitácora de Tareas Completadas
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="solution-main-viewport">
+                        @if (TareasFiltradas.Any())
+                        {
+                            @foreach (var tarea in TareasFiltradas)
+                            {
+                                <div class="solution-item-card" @onclick="() => AbrirDetalleTarea(tarea)">
+                                    <div class="sol-card-info">
+                                        <span class="sol-name">@tarea.TAR_NOM</span>
+                                        <div class="tarea-metadata">
+                                            <span class="metadata-item">
+                                                <i class="bi bi-diagram-3"></i> @ObtenerNombreProceso(tarea.PROC_ID)
+                                            </span>
+                                            <span class="metadata-item">
+                                                <i class="bi bi-folder"></i> @ObtenerNombreProyecto(tarea.PROC_ID)
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="sol-card-metrics">
+                                        <div class="metric-badge status">@tarea.TAR_EST</div>
+                                        <div class="metric-badge priority">@ObtenerNombrePrioridad(tarea.PRI_ID)</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="empty-results-msg">
+                                <i class="bi bi-inbox"></i>
+                                <p>No hay tareas completadas en el historial.</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @* ========== PANEL DE FILTROS ========== *@
+                <div class="sector-white-card sector-filtros">
+                    <div class="sector-label verde">Filtros Inteligentes</div>
+                    <div class="dynamic-filter-zone">
+                        <Filtros Areas="AreasList"
+                                 Proyectos="ProyectosList"
+                                 Procesos="ProcesosList"
+                                 Tareas="TareasGlobales"
+                                 Prioridades="PrioridadesList"
+                                 OnFiltrosChanged="ManejarCambioFiltros" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@* ========== MODAL DE DETALLE ========== *@
+@if (TareaSeleccionada != null)
+{
+    <div class="modal-detalle-overlay" @onclick="CerrarDetalle">
+        <div class="modal-detalle-card" @onclick:stopPropagation>
+            @* HEADER *@
+            <div class="modal-detalle-header">
+                <div class="header-icon">
+                    <i class="bi bi-check-circle-fill"></i>
+                </div>
+                <h3 class="modal-detalle-title">Detalle de Tarea Completada</h3>
+                <button class="btn-cerrar-detalle" @onclick="CerrarDetalle">×</button>
+            </div>
+
+            @* BODY CON 2 COLUMNAS *@
+            <div class="modal-detalle-body">
+                @* COLUMNA IZQUIERDA: INFORMACIÓN *@
+                <div class="detalle-columna-info">
+                    <div class="info-section">
+                        <label>NOMBRE DE LA TAREA</label>
+                        <p class="info-value">@TareaSeleccionada.TAR_NOM</p>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-section">
+                            <label>ESTADO</label>
+                            <span class="badge-estado completado">@TareaSeleccionada.TAR_EST</span>
+                        </div>
+
+                        <div class="info-section">
+                            <label>PRIORIDAD</label>
+                            <span class="badge-prioridad">@ObtenerNombrePrioridad(TareaSeleccionada.PRI_ID)</span>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <label>PROCESO</label>
+                        <p class="info-value-small">@ObtenerNombreProceso(TareaSeleccionada.PROC_ID)</p>
+                    </div>
+
+                    <div class="info-section">
+                        <label>PROYECTO</label>
+                        <p class="info-value-small">@ObtenerNombreProyecto(TareaSeleccionada.PROC_ID)</p>
+                    </div>
+
+                    <div class="info-section">
+                        <label>FECHAS</label>
+                        <div class="fecha-range">
+                            <span class="fecha-label">Inicio:</span>
+                            <span class="fecha-value">@TareaSeleccionada.TAR_FEC_INI.ToString("dd/MM/yyyy")</span>
+                        </div>
+                        <div class="fecha-range">
+                            <span class="fecha-label">Fin:</span>
+                            <span class="fecha-value">@(TareaSeleccionada.TAR_FEC_FIN?.ToString("dd/MM/yyyy") ?? "N/A")</span>
+                        </div>
+                    </div>
+
+                    <div class="info-footer">
+                        <i class="bi bi-calendar3"></i>
+                        <span>Completado: @TareaSeleccionada.TAR_FEC_CRE.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))</span>
+                    </div>
+                </div>
+
+                @* COLUMNA DERECHA: YOOPTA *@
+                <div class="detalle-columna-yoopta">
+                    <div class="yoopta-header-modal">
+                        <label>DESCRIPCIÓN DE LA TAREA</label>
+                    </div>
+                    <div class="yoopta-content-modal">
+                        <Yoopta Contenido="@(TareaSeleccionada.TAR_DES ?? string.Empty)"
+                                ContenidoChanged="@((valor) => { /* Solo lectura */ })"
+                                SoloLectura="true" />
+                    </div>
+                </div>
+            </div>
+
+            @* FOOTER *@
+            <div class="modal-detalle-footer">
+                <button class="btn-modal-cerrar" @onclick="CerrarDetalle">Cerrar</button>
+            </div>
+        </div>
+    </div>
+}

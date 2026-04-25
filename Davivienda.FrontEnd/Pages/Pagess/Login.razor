@@ -53,28 +53,110 @@
         </EditForm>
 
         <div class="login-footer">
-            <button class="btn-link-dav" @onclick="() => mostrarRecuperar = true">
-                ¿Olvidó su contraseña o número de empleado?
+            <button class="btn-link-dav" @onclick="() => mostrarRegistro = true">
+                ¿No tiene cuenta? Crear nuevo usuario
             </button>
         </div>
     </div>
 </div>
 
-@if (mostrarRecuperar)
+@* ========== MODAL DE REGISTRO ========== *@
+@if (mostrarRegistro)
 {
-    <div class="modal-backdrop-dav" @onclick="() => mostrarRecuperar = false">
-        <div class="modal-content-centered" @onclick:stopPropagation>
-            <div class="modal-header-dav">
-                <h4>Recuperar Acceso</h4>
-                <button class="close-btn-dav" @onclick="() => mostrarRecuperar = false">×</button>
+    <div class="modal-backdrop-dav" @onclick="CerrarModalRegistro">
+        <div class="modal-content-registro animate-pop" @onclick:stopPropagation>
+            <div class="modal-head">
+                <h2 class="modal-title-main">Registro de Usuario</h2>
+                <button class="close-x-dav" @onclick="CerrarModalRegistro">×</button>
             </div>
-            <div class="modal-body-dav">
-                <p class="modal-instruction">Ingrese su correo institucional para recibir sus datos de acceso.</p>
-                <div class="form-group-dav">
-                    <label>CORREO ELECTRÓNICO</label>
-                    <input type="email" class="input-dav" @bind="correoRecuperar" placeholder="usuario@davivienda.com" />
-                </div>
-                <button class="btn-save-dav full-width" @onclick="EnviarCorreo">ENVIAR INFORMACIÓN</button>
+
+            <div class="modal-body">
+                @if (!string.IsNullOrEmpty(errorRegistro))
+                {
+                    <div class="alert-error-registro">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>@errorRegistro</span>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(exitoRegistro))
+                {
+                    <div class="alert-success-registro">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>@exitoRegistro</span>
+                    </div>
+                }
+
+                <EditForm Model="@nuevoUsuario" OnValidSubmit="CrearUsuario">
+                    <div class="form-grid-dav">
+                        <div class="input-container-dav">
+                            <label>NOMBRE COMPLETO</label>
+                            <input type="text" 
+                                   class="input-field-dav" 
+                                   @bind="nuevoUsuario.USU_NOM" 
+                                   placeholder="Ej: Juan Pérez"
+                                   required />
+                        </div>
+
+                        <div class="input-container-dav">
+                            <label>N° EMPLEADO (5 DÍGITOS)</label>
+                            <input type="text" 
+                                   class="input-field-dav" 
+                                   @bind="nuevoUsuario.USU_NUM" 
+                                   placeholder="54324"
+                                   maxlength="5"
+                                   required />
+                        </div>
+
+                        <div class="input-container-dav">
+                            <label>CORREO INSTITUCIONAL</label>
+                            <input type="email" 
+                                   class="input-field-dav" 
+                                   @bind="nuevoUsuario.USU_COR" 
+                                   placeholder="usuario@davivienda.com"
+                                   required />
+                        </div>
+
+                        <div class="input-container-dav">
+                            <label>TELÉFONO</label>
+                            <input type="tel" 
+                                   class="input-field-dav" 
+                                   @bind="nuevoUsuario.USU_TEL" 
+                                   placeholder="+504 9999-9999"
+                                   required />
+                        </div>
+
+                        <div class="input-container-dav full-width-input">
+                            <label>CONTRASEÑA INICIAL</label>
+                            <input type="password" 
+                                   class="input-field-dav @(errorPassword ? "input-error" : "")" 
+                                   @bind="nuevoUsuario.USU_CON" 
+                                   placeholder="••••••••"
+                                   required />
+                            @if (errorPassword)
+                            {
+                                <span class="error-text">Mínimo 6 caracteres</span>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="modal-foot-dav">
+                        <button type="button" class="btn-secondary-dav" @onclick="CerrarModalRegistro">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="btn-save-main-dav" disabled="@registrando">
+                            @if (registrando)
+                            {
+                                <span class="spinner-small"></span>
+                                <span>Creando...</span>
+                            }
+                            else
+                            {
+                                <span>Finalizar Registro</span>
+                            }
+                        </button>
+                    </div>
+                </EditForm>
             </div>
         </div>
     </div>

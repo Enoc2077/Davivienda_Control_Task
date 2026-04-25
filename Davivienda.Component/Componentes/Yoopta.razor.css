@@ -1,9 +1,14 @@
+﻿/* ================================================
+   Yoopta.razor.css — ARCHIVO COMPLETO CORREGIDO
+   ================================================ */
+
 .yoopta-container {
     width: 100%;
     height: 100%;
     display: flex;
     flex-direction: column;
     background: white;
+    overflow: visible;
 }
 
 .yoopta-header {
@@ -24,9 +29,10 @@
 
 .yoopta-content {
     flex: 1;
-    overflow-y: auto;
+    overflow-y: visible;
     padding: 8px;
-    background: white;
+    /* FIX 1: fondo siempre blanco, sin cambio de color */
+    background: white !important;
 }
 
 .yoopta-line {
@@ -36,12 +42,25 @@
     padding: 4px 0;
     min-height: 32px;
     position: relative;
+    /* FIX 1: fondo blanco en toda la línea */
+    background: white;
+}
+
+/* ================================================
+   FIX 2: MENÚ INLINE — siempre a la izquierda
+   ================================================ */
+.line-handle-wrapper {
+    position: relative;
+    width: 24px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .line-handle {
     width: 24px;
     height: 24px;
-    flex-shrink: 0;
     opacity: 0;
     transition: opacity 0.2s;
 }
@@ -68,16 +87,57 @@
         color: #475569;
     }
 
+/* Menú pegado debajo del handle, a la izquierda, sin tapar el texto */
+.yoopta-menu-inline {
+    position: absolute;
+    top: -115px;
+    left: 0;
+    background: white;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    padding: 4px;
+    z-index: 1000;
+    min-width: 160px;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    font-size: 14px;
+    color: #475569;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+    .menu-item:hover {
+        background: #F0F9FF;
+        color: #0369A1;
+    }
+
+    .menu-item i {
+        width: 20px;
+        text-align: center;
+    }
+
+/* ================================================
+   CONTENIDO DE LÍNEA
+   ================================================ */
 .line-content {
     flex: 1;
     min-width: 0;
 }
 
+/* FIX 1: textarea siempre blanco, sin fondo gris al escribir */
 .line-textarea {
     width: 100%;
     border: none;
     outline: none;
-    background: transparent;
+    background: white !important;
     font-family: inherit;
     font-size: 14px;
     line-height: 1.6;
@@ -95,11 +155,13 @@
         font-style: italic;
     }
 
+    /* FIX 1: al enfocar también queda blanco */
     .line-textarea:focus {
-        background: #F8FAFC;
+        background: white !important;
         border-radius: 4px;
     }
 
+/* Botón eliminar línea */
 .btn-delete-line {
     position: absolute;
     top: 4px;
@@ -129,6 +191,9 @@
         transform: scale(1.1);
     }
 
+/* ================================================
+   UPLOAD DE ARCHIVOS
+   ================================================ */
 .file-upload-zone {
     padding: 12px;
     border: 2px dashed #CBD5E1;
@@ -160,64 +225,103 @@
         font-size: 18px;
     }
 
+/* ================================================
+   IMAGEN CON DESCARGA
+   ================================================ */
+.imagen-preview-container {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
 .preview-img {
     max-width: 100%;
     max-height: 300px;
     border-radius: 8px;
     object-fit: contain;
+    display: block;
 }
 
+.btn-download-image {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.imagen-preview-container:hover .btn-download-image {
+    opacity: 1;
+}
+
+.btn-download-image:hover {
+    background: rgba(237, 28, 36, 0.9);
+    transform: scale(1.1);
+}
+
+/* ================================================
+   FIX 3: DOCUMENTO CLICKEABLE Y DESCARGABLE
+   ================================================ */
 .doc-preview {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 12px;
-    background: #F1F5F9;
+    padding: 12px 16px;
+    background: #f3f4f6;
+    border: 2px solid #e5e7eb;
     border-radius: 8px;
-    color: #1E293B;
-    font-weight: 600;
-}
-
-    .doc-preview i {
-        font-size: 24px;
-        color: #0369A1;
-    }
-
-.yoopta-menu {
-    position: absolute;
-    background: white;
-    border: 1px solid #E2E8F0;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    padding: 4px;
-    z-index: 1000;
-    min-width: 180px;
-    top: 60px;
-    left: 40px;
-}
-
-.menu-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
     cursor: pointer;
-    border-radius: 6px;
-    font-size: 14px;
-    color: #475569;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
 }
 
-    .menu-item:hover {
-        background: #F0F9FF;
-        color: #0369A1;
+    .doc-preview:hover {
+        background: #e0f2fe;
+        border-color: #0ea5e9;
+        transform: translateX(4px);
     }
 
-    .menu-item i {
-        width: 20px;
-        text-align: center;
-    }
+.doc-icon {
+    font-size: 24px;
+    color: #0ea5e9;
+    flex-shrink: 0;
+}
 
+.doc-name {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.doc-download-icon {
+    font-size: 18px;
+    color: #64748b;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.doc-preview:hover .doc-download-icon {
+    color: #0ea5e9;
+    transform: translateY(2px);
+}
+
+/* ================================================
+   SCROLLBAR
+   ================================================ */
 .yoopta-content::-webkit-scrollbar {
     width: 6px;
 }

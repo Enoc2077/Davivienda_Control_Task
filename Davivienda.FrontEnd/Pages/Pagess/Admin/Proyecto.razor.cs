@@ -21,6 +21,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         public List<AreasModel> ListaAreas { get; set; } = new();
 
         public bool MostrarModalProcesos { get; set; } = false;
+        public bool MostrarBitacoraProyecto { get; set; } = false;
         public string ModalActual { get; set; } = "";
         public string TextoBusqueda { get; set; } = "";
         public Guid? AreaIdFiltro { get; set; }
@@ -32,8 +33,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         public List<CalendarDay> DiasDelMes { get; set; } = new();
         public CalendarDay? DiaSeleccionado { get; set; }
 
-        private string UserRole { get; set; } = "";
-        private Guid? UserAreaId { get; set; }
+        // 🔥 PUBLIC para que el .razor pueda acceder
+        public string UserRole { get; set; } = "";
+        public Guid? UserAreaId { get; set; }
 
         protected override async Task OnInitializedAsync()
         {
@@ -69,12 +71,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         {
             try
             {
-                Console.WriteLine("🔄 [SINCRO] Iniciando recarga de datos por cambio de contexto...");
-
-                // 1. Volvemos a obtener el usuario por si cambió el área en el token o BD
                 await ObtenerDatosUsuario();
-
-                // 2. Limpiamos las listas actuales para forzar el refresco visual
                 ListaProyectos.Clear();
                 ProyectosFiltrados.Clear();
 
@@ -87,19 +84,20 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                     {
                         PRO_ID = p.Pro_ID,
                         PRO_NOM = p.Pro_NOM,
+                        PRO_DES = p.Pro_DES,
                         PRO_EST = p.Pro_EST,
                         ARE_ID = p.Are_ID,
                         PRO_FEC_INI = p.Pro_FEC_INI,
-                        PRO_FEC_FIN = p.Pro_FEC_FIN
+                        PRO_FEC_FIN = p.Pro_FEC_FIN,
+                        PRO_FEC_CRE = p.Pro_FEC_CRE,
+                        PRO_FEC_MOD = p.Pro_FEC_MOD
                     }).ToList();
 
-                    // 🔥 Aquí es donde ocurre la magia del filtro por área
-                    ListaProyectos = FiltrarProyectosPorRol(todosProyectos);
-
-                    Console.WriteLine($"✅ [SINCRO] Datos actualizados. Área actual: {UserAreaId}. Proyectos visibles: {ListaProyectos.Count}");
+                    ListaProyectos = FiltrarProyectosPorRol(todosProyectos)
+                        .Where(p => p.PRO_EST != "FINALIZADO")
+                        .ToList();
                 }
 
-                // Cargar catálogo de áreas para los filtros de la UI
                 var resAreas = await Client.GetAreas.ExecuteAsync();
                 ListaAreas = resAreas.Data?.Areas.Select(a => new AreasModel
                 {
@@ -107,42 +105,31 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                     ARE_NOM = a.Are_NOM
                 }).ToList() ?? new();
 
-                Filtrar(); // Aplica búsqueda por texto si existe
+                Filtrar();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ [ERROR] Fallo al sincronizar áreas: {ex.Message}");
+                Console.WriteLine($"Error al cargar datos: {ex.Message}");
             }
             finally
             {
-                StateHasChanged(); // Forzamos a Blazor a re-dibujar la pantalla
+                StateHasChanged();
             }
         }
 
         private List<ProyectosModel> FiltrarProyectosPorRol(List<ProyectosModel> proyectos)
         {
-            Console.WriteLine($"🔍 [FILTRO] Aplicando reglas para Rol: {UserRole} y Área: {UserAreaId}");
-
-            // GERENTE: Ve todo (Administrador, Gerente, Enoc, Admin)
             if (EsGerente(UserRole))
-            {
-                Console.WriteLine("🔓 [ROL] Gerencia detectada: Acceso total a proyectos.");
                 return proyectos;
-            }
 
-            // CUALQUIER OTRO ROL (Incluido Líder Técnico): Solo los de su área
             if (UserAreaId.HasValue && UserAreaId != Guid.Empty)
-            {
-                var filtrados = proyectos.Where(p => p.ARE_ID == UserAreaId.Value).ToList();
-                Console.WriteLine($"🔒 [ROL] Usuario restringido: Mostrando {filtrados.Count} proyectos del área {UserAreaId}");
-                return filtrados;
-            }
+                return proyectos.Where(p => p.ARE_ID == UserAreaId.Value).ToList();
 
-            Console.WriteLine("⚠️ [AVISO] Usuario sin área asignada o rol no reconocido. Lista vacía.");
             return new List<ProyectosModel>();
         }
 
-        private bool EsGerente(string rol)
+        // 🔥 PUBLIC para que el .razor pueda usarlo en @if
+        public bool EsGerente(string rol)
         {
             var rolesGerente = new[] { "Gerente", "Administrador", "Enoc", "Admin" };
             return rolesGerente.Any(r => rol.Equals(r, StringComparison.OrdinalIgnoreCase));
@@ -186,10 +173,21 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         {
             MostrarModalProcesos = false;
             ModalActual = "";
-
-            // 🔥 RECARGAR DATOS DESPUÉS DE CERRAR EL MODAL
             await CargarDatos();
-            GenerarCalendario(); // 🔥 REGENERAR CALENDARIO CON NUEVOS DATOS
+            GenerarCalendario();
+        }
+
+        public void AbrirBitacoraProyecto()
+        {
+            MostrarBitacoraProyecto = true;
+        }
+
+        public async Task CerrarBitacoraProyecto()
+        {
+            MostrarBitacoraProyecto = false;
+            await CargarDatos();
+            GenerarCalendario();
+            StateHasChanged();
         }
 
         public void OnSearchChanged(ChangeEventArgs e)
