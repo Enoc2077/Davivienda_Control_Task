@@ -3,21 +3,27 @@
 @using Davivienda.Component.Componentes
 @using Microsoft.AspNetCore.Components.Authorization
 
-<div class="dashboard-wrapper warm-theme">
+<div class="dashboard-wrapper">
     <div class="asignaciones-grid">
 
-        @* --- CUADRANTE 0° a 180°: Tareas y Calendario --- *@
+        @* --- TAREAS --- *@
         <section class="white-panel-card panel-tareas">
             <div class="panel-header-dav">
                 <div class="header-with-filter">
                     <h3 class="panel-title">Mis Tareas Asignadas</h3>
                     <div class="priority-filters">
-                        <button class="filter-pill @(PrioridadSeleccionada == "Todas" ? "active" : "")" @onclick='() => FiltrarPorPrioridad("Todas")'>Todas</button>
+                        <button class="filter-pill @(PrioridadSeleccionada == "Todas" ? "active" : "")"
+                                @onclick='() => FiltrarPorPrioridad("Todas")'>
+                            Todas
+                        </button>
                         @if (Prioridades != null)
                         {
                             @foreach (var p in Prioridades)
                             {
-                                <button class="filter-pill @(PrioridadSeleccionada == p.PRI_NOM ? "active" : "")" @onclick="() => FiltrarPorPrioridad(p.PRI_NOM)">@p.PRI_NOM</button>
+                                <button class="filter-pill @(PrioridadSeleccionada == p.PRI_NOM ? "active" : "")"
+                                        @onclick="() => FiltrarPorPrioridad(p.PRI_NOM)">
+                                    @p.PRI_NOM
+                                </button>
                             }
                         }
                         <button class="filter-pill historial-btn" @onclick="AbrirBitacoraTarea">
@@ -29,21 +35,26 @@
 
             <div class="panel-content-horizontal">
                 <div id="scroll-container" class="horizontal-scroll-wrapper">
+                    @* Muestra TODAS las tareas: pendiente, en progreso y completadas dentro de 24h *@
                     @if (TareasFiltradas != null && TareasFiltradas.Any())
                     {
                         @foreach (var tarea in TareasFiltradas)
                         {
-                            <div class="task-card-column" @onclick="() => AbrirDetalleTarea(tarea)" style="cursor: pointer;">
+                            <div class="task-card-column" @onclick="() => AbrirDetalleTarea(tarea)" style="cursor:pointer;">
                                 <div class="task-card-inner">
                                     <div class="task-header-prio">
-                                        <span class="badge @GetPrioridadNombre(tarea.PRI_ID).ToLower()">@GetPrioridadNombre(tarea.PRI_ID).ToUpper()</span>
+                                        <span class="badge @GetPrioridadNombre(tarea.PRI_ID).ToLower()">
+                                            @GetPrioridadNombre(tarea.PRI_ID).ToUpper()
+                                        </span>
                                     </div>
                                     <div class="task-body-content">
                                         <strong>@tarea.TAR_NOM</strong>
                                         <p class="task-desc-short"></p>
                                     </div>
                                     <div class="task-footer-info">
-                                        <span class="status-tag">@tarea.TAR_EST</span>
+                                        <span class="status-tag @tarea.TAR_EST.ToLower().Replace(" ", "-")">
+                                            @tarea.TAR_EST
+                                        </span>
                                         <div class="blue-accent-bottom"></div>
                                     </div>
                                 </div>
@@ -52,13 +63,13 @@
                     }
                     else
                     {
-                        <div class="empty-state-msg">No hay tareas.</div>
+                        <div class="empty-state-msg">No hay tareas activas.</div>
                     }
                 </div>
             </div>
         </section>
 
-        @* --- CALENDARIO CON INDICADORES DE COLOR --- *@
+        @* --- CALENDARIO --- *@
         <section class="white-panel-card panel-calendario">
             <div class="panel-header-dav calendar-mini-header">
                 <h3 class="panel-title-bold">Calendario</h3>
@@ -67,7 +78,6 @@
 
             <div class="panel-scroll-content no-padding-top">
                 <div class="mini-cal-container">
-                    @* Navegación del mes *@
                     <div class="cal-nav-row">
                         <button class="btn-cal-nav" @onclick="MesAnterior">
                             <i class="bi bi-chevron-left"></i>
@@ -78,36 +88,31 @@
                         </button>
                     </div>
 
-                    @* Días de la semana *@
                     <div class="cal-days-grid-header">
                         <span>D</span><span>L</span><span>M</span><span>M</span><span>J</span><span>V</span><span>S</span>
                     </div>
 
-                    @* Grilla de días del mes *@
                     <div class="cal-numbers-grid-spacious">
                         @foreach (var dia in DiasDelMesAsignaciones)
                         {
-                            var clases = $"cal-day-cell-spacious " +
-                            $"{(dia.EsMesActual ? "" : "not-current ")} " +
-                            $"{(dia.EsHoy ? "today-highlight " : "")} " +
-                            $"{(dia.TieneInicio ? "has-inicio-bg " : "")} " +
-                            $"{(dia.TieneFin ? "has-fin-bg " : "")}";
-
-                            <div class="@clases">
+                            var clases = "cal-day-cell-spacious " +
+                            (dia.EsMesActual ? "" : "not-current ") +
+                            (dia.EsHoy ? "today-highlight " : "") +
+                            (dia.TieneInicio ? "has-inicio-bg " : "") +
+                            (dia.TieneFin ? "has-fin-bg " : "");
+                            <div class="@clases" title="@dia.Tooltip">
                                 <span class="num">@dia.Fecha.Day</span>
                             </div>
                         }
                     </div>
                 </div>
 
-                @* 🔥 BOTÓN PRÓXIMA TAREA A FINALIZAR *@
                 @{
                     var proximaTarea = GetProximaTareaAFinalizar();
                 }
-
                 @if (proximaTarea != null)
                 {
-                    <div class="delivery-footer-card-v2" @onclick="AbrirModalCalendario" style="cursor: pointer;">
+                    <div class="delivery-footer-card-v2" @onclick="AbrirModalCalendario" style="cursor:pointer;">
                         <div class="delivery-blue-box">
                             <span class="day-num-box">@proximaTarea.TAR_FEC_FIN.Value.Day</span>
                         </div>
@@ -120,31 +125,60 @@
                 }
                 else
                 {
-                    <div class="delivery-footer-card-v2" style="opacity: 0.5;">
+                    <div class="delivery-footer-card-v2" @onclick="AbrirModalCalendario" style="cursor:pointer;">
                         <div class="delivery-blue-box">
-                            <i class="bi bi-calendar-check" style="color: white; font-size: 1.2rem;"></i>
+                            <i class="bi bi-calendar-check" style="color:white;font-size:1.2rem;"></i>
                         </div>
                         <div class="delivery-text">
-                            <strong>Sin tareas próximas</strong>
-                            <span>No hay tareas pendientes</span>
+                            <strong>Sin tareas proximas</strong>
+                            <span>Toca para abrir el calendario</span>
                         </div>
+                        <i class="bi bi-arrow-right arrow-icon"></i>
                     </div>
                 }
             </div>
         </section>
 
-        @* --- CUADRANTE 180° a 270°: Estado de Tareas (GRÁFICO DE BARRAS) --- *@
-        <section class="white-panel-card panel-grafica-izq">
-            <div class="panel-header-dav"><h3 class="panel-title-bold">Estado de Tareas</h3></div>
-            <Graficas TipoGrafica="Estados"
-                      OnFiltrar="FiltrarPorEstadoGrafica"
-                      TotalTareas="@TotalTareasCount"
-                      Pendientes="@Tasks.Count(t => t.TAR_EST == "Pendiente")"
-                      EnProgreso="@Tasks.Count(t => t.TAR_EST == "En Progreso")"
-                      Completadas="@Tasks.Count(t => t.TAR_EST == "Completado")" />
+        @* --- GRAFICA --- *@
+        <section class="panel-grafica-izq">
+            <div class="grafica-header">
+                <h3 class="panel-title-bold">Estado de Tareas</h3>
+                @* Contador muestra solo las activas (sin completadas) *@
+                <span class="total-badge">@TotalTareasCount Tareas</span>
+            </div>
+            <div class="divider-line"></div>
+            <div class="chart-wrapper">
+                <canvas id="estadoTareasChart"></canvas>
+            </div>
+            <div class="divider-line" style="margin-top:12px;"></div>
+
+            <div class="chart-legend-row">
+                <div class="legend-item" @onclick='() => FiltrarPorEstadoGrafica("Pendiente")' style="cursor:pointer;">
+                    <span class="legend-dot dot-pendiente"></span> Pendiente
+                    <strong class="legend-count">
+                        @(Tasks?.Count(t => t.TAR_EST == "Pendiente") ?? 0)
+                    </strong>
+                </div>
+                <div class="legend-item" @onclick='() => FiltrarPorEstadoGrafica("En Progreso")' style="cursor:pointer;">
+                    <span class="legend-dot dot-progreso"></span> En Progreso
+                    <strong class="legend-count">
+                        @(Tasks?.Count(t => t.TAR_EST == "En Progreso") ?? 0)
+                    </strong>
+                </div>
+                @* Completado muestra las que aun estan visibles (dentro de 24h) *@
+                <div class="legend-item" @onclick='() => FiltrarPorEstadoGrafica("Completado")' style="cursor:pointer;">
+                    <span class="legend-dot dot-completado"></span> Completado
+                    <strong class="legend-count">
+                        @(Tasks?.Count(t => t.TAR_EST == "Completado") ?? 0)
+                    </strong>
+                </div>
+                <div class="legend-item" @onclick='() => FiltrarPorEstadoGrafica("Todas")' style="cursor:pointer;">
+                    <span class="legend-dot dot-todas"></span> Todas
+                </div>
+            </div>
         </section>
 
-        @* --- CUADRANTE 270° a 360°: Ilustración (FUERA DEL CUADRO) --- *@
+        @* --- ILUSTRACION --- *@
         <div class="illustration-panel">
             <div class="device-monitor">
                 <div class="device-screen"><div class="screen-ui-lines"></div></div>
@@ -159,14 +193,16 @@
     </div>
 </div>
 
-@* --- MODAL PARA CALENDARIO Y DETALLE DE TAREA --- *@
+@* MODAL *@
 @if (MostrarModal)
 {
     <div class="modal-backdrop-dav" @onclick="CerrarModal">
         <div class="modal-calendar-content" @onclick:stopPropagation>
             <div class="modal-header-dav">
-                <h3 style="font-weight: 800; color: #1e3a5f; margin: 0;">@(ModalActual == "CALENDARIO" ? "Agenda" : "Detalle")</h3>
-                <button class="close-btn-dav" @onclick="CerrarModal">×</button>
+                <h3 style="font-weight:800;color:#1e3a5f;margin:0;">
+                    @(ModalActual == "CALENDARIO" ? "Agenda" : "Detalle de Tarea")
+                </h3>
+                <button class="close-btn-dav" @onclick="CerrarModal">x</button>
             </div>
             <div class="modal-body-dav">
                 @if (ModalActual == "CALENDARIO")
@@ -182,7 +218,7 @@
     </div>
 }
 
-@* --- MODAL PARA BITÁCORA DE TAREAS --- *@
+@* BITACORA *@
 @if (MostrarBitacoraTarea)
 {
     <BitacoraTarea OnClose="CerrarBitacoraTarea" />

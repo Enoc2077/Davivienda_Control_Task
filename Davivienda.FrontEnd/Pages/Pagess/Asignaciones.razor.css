@@ -1,10 +1,10 @@
-﻿/* ==========================================================================
-   1. ESTRUCTURA PRINCIPAL Y DASHBOARD
-   ========================================================================== */
+﻿/* ============================================================
+   Asignaciones.razor.css
+   ============================================================ */
 
 .dashboard-wrapper {
     padding: 25px;
-    background: #f4f7f9;
+    background: #ffffff;
     min-height: 100vh;
     margin-top: -1.5%;
     margin-right: -3%;
@@ -15,8 +15,8 @@
 .white-panel-card {
     background: #ffffff;
     border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+    border: 1px solid #eff2f7;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -24,8 +24,9 @@
 
 .panel-header-dav {
     padding: 15px 20px;
-    border-bottom: 1px solid #f1f5f9;
-    background: #fafbfc;
+    border-bottom: 1px solid #f4f6fa;
+    background: #ffffff;
+    flex-shrink: 0;
 }
 
 .panel-scroll-content {
@@ -34,14 +35,11 @@
     flex-grow: 1;
 }
 
-/* ==========================================================================
-   2. DISTRIBUCIÓN DE LOS CUADROS (GRID)
-   ========================================================================== */
-
+/* GRID */
 .asignaciones-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
-    grid-template-rows: 450px 380px;
+    grid-template-rows: 450px 400px;
     gap: 24px;
     padding: 20px;
 }
@@ -60,6 +58,10 @@
     grid-column: 1;
     grid-row: 2;
     height: 100%;
+    padding: 24px 28px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
 }
 
 .illustration-panel {
@@ -72,10 +74,9 @@
     position: relative;
 }
 
-/* ==========================================================================
-   3. COMPONENTES INTERNOS CUADRO 1 (SCROLL HORIZONTAL)
-   ========================================================================== */
-
+/* ============================================================
+   TAREAS - HEADER
+   ============================================================ */
 .header-with-filter {
     display: flex;
     justify-content: space-between;
@@ -95,16 +96,20 @@
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
+/* ============================================================
+   FIX 5: Scroll horizontal — las tarjetas deben verse arriba
+   ============================================================ */
 .panel-content-horizontal {
     width: 100%;
-    height: 100%;
+    flex: 1; /* ocupa el espacio restante del panel */
     overflow-x: auto;
     overflow-y: hidden;
     padding: 20px;
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* alinea al TOP no al centro */
     scroll-behavior: smooth;
 }
 
@@ -112,7 +117,9 @@
     display: flex;
     flex-direction: row;
     gap: 25px;
-    padding-bottom: 15px;
+    padding-bottom: 10px;
+    align-items: flex-start; /* tarjetas desde arriba */
+    height: 100%;
 }
 
     .horizontal-scroll-wrapper::-webkit-scrollbar {
@@ -120,34 +127,36 @@
     }
 
     .horizontal-scroll-wrapper::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
+        background: #e2e8f0;
         border-radius: 10px;
     }
 
+/* FIX 5: Las tarjetas tienen altura fija y se ven completas */
 .task-card-column {
-    min-width: 280px;
-    max-width: 280px;
-    height: 320px;
+    min-width: 260px;
+    max-width: 260px;
+    height: 300px;
     flex-shrink: 0;
 }
 
 .task-card-inner {
     background: #ffffff;
-    border: 1px solid #e2e8f0;
+    border: 1px solid #eff2f7;
     border-radius: 16px;
     height: 100%;
-    padding: 20px;
+    padding: 18px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
     position: relative;
-    transition: transform 0.2s;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
     .task-card-inner:hover {
-        transform: translateY(-5px);
+        transform: translateY(-4px);
         border-color: #0033a0;
+        box-shadow: 0 8px 20px rgba(0,51,160,0.1);
     }
 
 .task-header-prio {
@@ -157,19 +166,20 @@
 
 .task-body-content {
     flex: 1;
-    padding: 10px 0;
+    padding: 8px 0;
 }
 
     .task-body-content strong {
         display: block;
-        font-size: 1rem;
+        font-size: 0.95rem;
         color: #1e293b;
-        margin-bottom: 8px;
+        margin-bottom: 6px;
+        line-height: 1.4;
     }
 
 .task-desc-short {
-    font-size: 0.85rem;
-    color: #64748b;
+    font-size: 0.82rem;
+    color: #94a3b8;
     line-height: 1.4;
     margin: 0;
 }
@@ -178,20 +188,37 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-top: 8px;
 }
 
 .status-tag {
-    font-size: 0.75rem;
-    color: #64748b;
-    font-weight: 600;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
 }
+
+    .status-tag.pendiente {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .status-tag.en-progreso {
+        background: #fef3c7;
+        color: #b45309;
+    }
+
+    .status-tag.completado {
+        background: #dcfce7;
+        color: #15803d;
+    }
 
 .blue-accent-bottom {
     position: absolute;
     bottom: 0;
     left: 20%;
     right: 20%;
-    height: 4px;
+    height: 3px;
     background: #0033a0;
     border-radius: 4px 4px 0 0;
 }
@@ -199,15 +226,14 @@
 .empty-state-msg {
     width: 100%;
     text-align: center;
-    padding: 40px;
-    color: #94a3b8;
+    padding: 40px 20px;
+    color: #cbd5e1;
     font-size: 0.9rem;
 }
 
-/* ==========================================================================
-   4. CALENDARIO CON INDICADORES DE COLOR
-   ========================================================================== */
-
+/* ============================================================
+   CALENDARIO
+   ============================================================ */
 .calendar-mini-header {
     display: flex;
     justify-content: space-between;
@@ -223,35 +249,35 @@
 
 .header-icon-orange {
     color: #f39c12;
-    background: #fef5e7;
+    background: #fef9f0;
     padding: 8px;
     border-radius: 10px;
     font-size: 1.2rem;
 }
 
 .mini-cal-container {
-    padding: 10px;
+    padding: 8px;
 }
 
 .cal-nav-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
-    padding: 0 10px;
+    margin-bottom: 18px;
+    padding: 0 8px;
 }
 
 .month-label-bold {
     font-weight: 800;
     color: #1e293b;
     text-transform: capitalize;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
 }
 
 .btn-cal-nav {
     border: none;
     background: transparent;
-    color: #64748b;
+    color: #94a3b8;
     cursor: pointer;
     font-size: 0.9rem;
     transition: color 0.2s;
@@ -265,96 +291,88 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     text-align: center;
-    color: #94a3b8;
-    font-size: 0.75rem;
+    color: #cbd5e1;
+    font-size: 0.72rem;
     font-weight: 700;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .cal-numbers-grid-spacious {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 12px;
+    gap: 6px;
 }
 
 .cal-day-cell-spacious {
-    height: 45px;
+    height: 32px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    border-radius: 12px;
+    border-radius: 8px;
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     color: #475569;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    border: 1.5px solid transparent;
 }
-
-    .cal-day-cell-spacious:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
 
     .cal-day-cell-spacious.not-current {
-        color: #cbd5e1;
+        color: #e2e8f0;
     }
 
-/* Día con tarea que INICIA (fondo VERDE claro) */
+/* Verde = inicio tarea pendiente */
 .has-inicio-bg {
-    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
-    color: #065f46 !important;
-    font-weight: 700;
-    border: 2px solid #10b981;
-}
-
-/* Día con tarea que FINALIZA (fondo ROJO claro) */
-.has-fin-bg {
-    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%) !important;
-    color: #991b1b !important;
-    font-weight: 700;
-    border: 2px solid #ef4444;
-}
-
-/* Si un día tiene AMBAS (inicio Y fin) */
-.has-inicio-bg.has-fin-bg {
-    background: linear-gradient(135deg, #d1fae5 0%, #fee2e2 100%) !important;
-    color: #1e293b !important;
+    background: #f0fdf4 !important;
+    color: #15803d !important;
+    border: 1.5px solid #86efac !important;
     font-weight: 800;
-    border: 2px solid #f59e0b;
 }
 
-/* Día de hoy */
+/* Rojo = fin tarea pendiente */
+.has-fin-bg {
+    background: #fff1f2 !important;
+    color: #be123c !important;
+    border: 1.5px solid #fda4af !important;
+    font-weight: 800;
+}
+
+.has-inicio-bg.has-fin-bg {
+    background: linear-gradient(135deg, #f0fdf4 0%, #fff1f2 100%) !important;
+    color: #1e293b !important;
+    border: 1.5px solid #fbbf24 !important;
+}
+
 .today-highlight {
     background: #3b82f6 !important;
     color: white !important;
     font-weight: 800;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    box-shadow: 0 4px 10px rgba(59,130,246,0.3);
 }
 
-/* Botón de próxima tarea a finalizar */
+/* FIX 2: Boton de proxima tarea — siempre clickeable */
 .delivery-footer-card-v2 {
-    margin: 20px 15px;
-    padding: 15px;
+    margin: 12px 8px;
+    padding: 12px;
     background: #f8fafc;
-    border-radius: 16px;
+    border-radius: 12px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    border: 2px solid #e2e8f0;
+    gap: 12px;
+    border: 1px solid #eff2f7;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
     .delivery-footer-card-v2:hover {
-        background: #ffffff;
+        background: #fff;
         border-color: #3b82f6;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+        box-shadow: 0 4px 12px rgba(59,130,246,0.1);
         transform: translateY(-2px);
     }
 
 .delivery-blue-box {
-    min-width: 45px;
-    height: 45px;
+    min-width: 38px;
+    height: 38px;
     background: #0033a0;
     border-radius: 10px;
     display: flex;
@@ -365,7 +383,7 @@
 .day-num-box {
     color: white;
     font-weight: 800;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .delivery-text {
@@ -374,42 +392,138 @@
 
     .delivery-text strong {
         display: block;
-        font-size: 0.9rem;
+        font-size: 0.83rem;
         color: #1e293b;
         font-weight: 700;
     }
 
     .delivery-text span {
-        font-size: 0.75rem;
+        font-size: 0.72rem;
         color: #94a3b8;
     }
 
 .arrow-icon {
     margin-left: auto;
-    color: #cbd5e1;
-    font-size: 1.2rem;
+    color: #e2e8f0;
+    font-size: 1rem;
     transition: all 0.3s ease;
 }
 
 .delivery-footer-card-v2:hover .arrow-icon {
     color: #3b82f6;
-    transform: translateX(5px);
+    transform: translateX(4px);
 }
 
-/* ==========================================================================
-   5. ILUSTRACIÓN ESCENA (CUADRO INFERIOR DERECHO)
-   ========================================================================== */
+/* ============================================================
+   GRAFICA
+   ============================================================ */
+.grafica-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-shrink: 0;
+}
 
+.total-badge {
+    background: #f1f5f9;
+    color: #64748b;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+}
+
+.divider-line {
+    width: 100%;
+    height: 1px;
+    background: #f1f5f9;
+    margin: 10px 0;
+    flex-shrink: 0;
+    border: none;
+}
+
+.chart-wrapper {
+    flex: 1;
+    position: relative;
+    min-height: 0;
+    width: 100%;
+}
+
+    .chart-wrapper canvas {
+        width: 100% !important;
+        height: 100% !important;
+    }
+
+.chart-legend-row {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-shrink: 0;
+    flex-wrap: wrap;
+    margin-top: 4px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #64748b;
+    font-weight: 600;
+    transition: color 0.2s;
+    cursor: pointer;
+}
+
+    .legend-item:hover {
+        color: #1e293b;
+    }
+
+.legend-count {
+    background: #f1f5f9;
+    color: #475569;
+    font-size: 0.72rem;
+    padding: 1px 7px;
+    border-radius: 10px;
+    margin-left: 2px;
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.dot-pendiente {
+    background: #f59e0b;
+}
+
+.dot-progreso {
+    background: #f97316;
+}
+
+.dot-completado {
+    background: #22c55e;
+}
+
+.dot-todas {
+    background: #0033a0;
+}
+
+/* ============================================================
+   ILUSTRACION
+   ============================================================ */
 .device-monitor {
     position: absolute;
     bottom: 40px;
     right: 40px;
     width: 180px;
     height: 120px;
-    background: #475569;
+    background: #e2e8f0;
     border-radius: 12px;
     padding: 8px;
-    box-shadow: 0 15px 20px -5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.06);
 }
 
 .device-screen {
@@ -425,9 +539,9 @@
     top: 20px;
     left: 15px;
     width: 60%;
-    height: 8px;
+    height: 6px;
     background: #f1f5f9;
-    box-shadow: 0 15px 0 #f1f5f9, 0 30px 0 #f1f5f9;
+    box-shadow: 0 14px 0 #f1f5f9, 0 28px 0 #f1f5f9;
 }
 
 .vector-person {
@@ -436,65 +550,64 @@
 }
 
 .person-standing {
-    width: 30px;
-    height: 80px;
+    width: 28px;
+    height: 75px;
     bottom: 30px;
     right: 60px;
     background: #ed1c24;
+    border-radius: 10px;
 }
 
 .person-climbing {
-    width: 25px;
-    height: 60px;
+    width: 22px;
+    height: 55px;
     bottom: 100px;
     left: 40px;
     background: #0033a0;
+    border-radius: 10px;
 }
 
 .person-sitting {
-    width: 35px;
-    height: 45px;
+    width: 32px;
+    height: 42px;
     bottom: 30px;
     left: 45%;
     background: #f59e0b;
+    border-radius: 10px;
 }
 
 .floating-element {
     position: absolute;
-    background: rgba(0, 51, 160, 0.1);
-    border-radius: 8px;
+    background: rgba(0,51,160,0.06);
+    border-radius: 10px;
 }
 
 .element-1 {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     top: 20px;
     right: 40px;
 }
 
 .element-2 {
-    width: 50px;
-    height: 50px;
+    width: 45px;
+    height: 45px;
     bottom: 100px;
     left: 20px;
 }
 
-/* ==========================================================================
-   6. MODAL
-   ========================================================================== */
-
+/* ============================================================
+   MODAL
+   ============================================================ */
 .modal-backdrop-dav {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(15, 23, 42, 0.6);
+    inset: 0;
+    background: rgba(15,23,42,0.5);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 9999;
-    backdrop-filter: blur(8px);
+    backdrop-filter: blur(6px);
 }
 
 .modal-calendar-content {
@@ -505,14 +618,14 @@
     border-radius: 20px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 25px 50px -12px rgba(0,0,0,0.4);
     overflow: hidden;
 }
 
 .modal-header-dav {
     padding: 15px 25px;
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
+    background: #ffffff;
+    border-bottom: 1px solid #f1f5f9;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -522,7 +635,7 @@
     background: transparent;
     border: none;
     font-size: 2rem;
-    color: #64748b;
+    color: #94a3b8;
     cursor: pointer;
     line-height: 1;
 }
@@ -534,21 +647,20 @@
 .modal-body-dav {
     flex: 1;
     overflow-y: auto;
-    background: #f1f5f9;
+    background: #f8fafc;
     padding: 10px;
 }
 
-/* ==========================================================================
-   7. ELEMENTOS GLOBALES
-   ========================================================================== */
-
+/* ============================================================
+   PILLS Y BADGES
+   ============================================================ */
 .filter-pill {
     padding: 6px 14px;
     border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    background: white;
+    border: 1px solid #eff2f7;
+    background: #ffffff;
     font-size: 0.75rem;
-    color: #64748b;
+    color: #94a3b8;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
@@ -591,18 +703,6 @@
     padding-top: 5px !important;
 }
 
-.warm-theme {
-    background: #fdfcf8 !important;
-}
-
-.panel-bottom {
-    height: 380px !important;
-    border: 1px solid #e2e8f0;
-}
-
-/* Se añade el estilo para el botón Historial al CSS existente */
-
-/* Botón Historial - Estilo especial */
 .filter-pill.historial-btn {
     background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
     color: white;
@@ -611,15 +711,13 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.2);
+    box-shadow: 0 2px 8px rgba(22,163,74,0.15);
     margin-left: 8px;
-    transition: all 0.3s ease;
 }
 
     .filter-pill.historial-btn:hover {
         background: linear-gradient(135deg, #15803d 0%, #14532d 100%);
-        box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3);
-        transform: translateY(-2px);
+        transform: translateY(-1px);
     }
 
     .filter-pill.historial-btn i {

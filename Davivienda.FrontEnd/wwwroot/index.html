@@ -1,12 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
-
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Davivienda - Gestión de Proyectos</title>
-
+    <title>Davivienda - Gestion de Proyectos</title>
     <script>
         var base = document.createElement('base');
         if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
@@ -16,19 +13,14 @@
         }
         document.getElementsByTagName('head')[0].appendChild(base);
     </script>
-
     <link rel="stylesheet" href="css/bootstrap/bootstrap.min.css" />
     <link rel="stylesheet" href="css/app.css" />
     <link rel="stylesheet" href="css/Calendario.css" />
     <link rel="icon" type="image/png" href="favicon.png" />
     <link rel="stylesheet" href="Davivienda.FrontEnd.styles.css" />
-
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <script src="_content/Davivienda.Component/js/yoopta.js"></script>
 </head>
-
 <body>
     <div id="app">
         <div style="display:flex; justify-content:center; align-items:center; height:100vh; flex-direction:column; font-family:'Inter', sans-serif;">
@@ -49,8 +41,17 @@
         }
     </style>
 
+    <!-- 1. Chart.js - DEBE ir antes de grafica.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <!-- 2. Grafica de barras (depende de Chart.js) -->
+    <script src="js/grafica.js"></script>
+
+    <!-- 3. Yoopta - editor de texto y descarga de archivos -->
+    <script src="_content/Davivienda.Component/js/yoopta.js"></script>
+
+    <!-- 4. Scroll horizontal -->
     <script>
-        // Función autoejecutable para scroll horizontal (Asignaciones/Calendario)
         (function () {
             window.setupHorizontalScroll = (elementId) => {
                 const element = document.getElementById(elementId);
@@ -61,17 +62,18 @@
                     }, { passive: false });
                     console.log("Scroll horizontal configurado para: " + elementId);
                 } else {
-                    console.error("No se encontró el elemento: " + elementId);
+                    console.error("No se encontro el elemento: " + elementId);
                 }
             };
         })();
     </script>
 
+    <!-- 5. Blazor - siempre al final -->
     <script src="_framework/blazor.webassembly.js"></script>
+
+    <!-- 6. Service Worker PWA -->
     <script>
-        // Registro de Service Worker para PWA
         navigator.serviceWorker.register('service-worker.js').catch(err => console.error("SW error:", err));
     </script>
 </body>
-
 </html>
