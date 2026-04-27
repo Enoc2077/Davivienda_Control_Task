@@ -1,100 +1,106 @@
 ﻿@namespace Davivienda.Component.Componentes
 @using Davivienda.Models.Modelos
 @using Davivienda.GraphQL.SDK
+@implements IAsyncDisposable
 
 <div class="modal-fullscreen-overlay">
-    @* TOOLBAR SUPERIOR *@
+
+    @* ── TOOLBAR SUPERIOR ── *@
     <div class="toolbar-dav-top">
         <div class="toolbar-content-full">
-            <div class="selector-container-premium">
-                <i class="fas fa-history icon-blue"></i>
-                <label>Gestión de Tareas</label>
-                <label>Ver Historial:</label>
-                <select class="select-dav-mini" @onchange="ManejarCambioBitacora">
-                    <option value="">-- Seleccionar --</option>
-                    <option value="BIT_SOL">Bitácora de Soluciones</option>
-                    <option value="BIT_FRI">Bitácora de Fricciones</option>
-                </select>
+
+            @* Izquierda: marca + selector bitacoras *@
+            <div class="toolbar-left-group">
+                <div class="toolbar-brand">
+                    <div class="toolbar-brand-dot"></div>
+                    <span class="toolbar-brand-name">Gestión de Tareas</span>
+                </div>
+                <div class="toolbar-divider"></div>
+                <div class="selector-container-premium">
+                    <span class="selector-label">Ver Bitácora:</span>
+                    <select class="select-dav-mini" @onchange="ManejarCambioBitacora">
+                        <option value="">-- Seleccionar --</option>
+                        <option value="BIT_SOL">Bitácora de Soluciones</option>
+                        <option value="BIT_FRI">Bitácora de Fricciones</option>
+                    </select>
+                </div>
             </div>
-            <button type="button" class="btn-close-fullscreen" @onclick="Cerrar">×</button>
+
+            @* Derecha: boton cerrar *@
+            <button type="button" class="btn-close-fullscreen" @onclick="Cerrar" title="Cerrar">
+                <i class="bi bi-x"></i>
+            </button>
         </div>
     </div>
 
+    @* ── GRID 2x2 ── *@
     <div class="modal-content-container">
-        @* 90º-180º (TOP-LEFT): DETALLES DE LA TAREA *@
-        <div class="sector sector-detalles">
-            <div class="sector-accent-line"></div>
-            <div class="sector-header-with-button">
+
+        @* ── TOP-LEFT: Información de Ejecución (sin cuadro, fondo blanco) ── *@
+        <div class="sector-detalles">
+            <div class="sector-header">
                 <div class="title-group">
                     <h3 class="sector-title">Información de Ejecución</h3>
-                    <span class="sector-subtitle">Detalles de la Tarea</span>
+                    <span class="sector-subtitle">Detalles de la tarea</span>
                 </div>
-                
             </div>
-            <div class="sector-content">
-                @if (Tarea != null)
-                {
-                    <div class="detalles-list">
-                        <div class="detail-row">
-                            <span class="detail-label">Título de la Tarea:</span>
-                            <p class="detail-value">@Tarea.TAR_NOM</p>
-                        </div>
 
-                        <div class="detail-row">
-                            <span class="detail-label">Proyecto Asociado:</span>
-                            <p class="detail-value highlight-blue">@NombreProyecto</p>
-                        </div>
-
-                        <div class="detail-row">
-                            <span class="detail-label">Proceso Actual:</span>
-                            <p class="detail-value">@NombreProceso</p>
-                        </div>
-
-                        <div class="detail-row">
-                            <span class="detail-label">Fecha Inicio:</span>
-                            <p class="detail-value highlight-green">@Tarea.TAR_FEC_INI.ToString("dd/MM/yyyy HH:mm")</p>
-                        </div>
-
-                        <div class="detail-row">
-                            <span class="detail-label">Fecha Fin:</span>
-                            <p class="detail-value highlight-red">
-                                @if (Tarea.TAR_FEC_FIN.HasValue)
-                                {
-                                    @Tarea.TAR_FEC_FIN.Value.ToString("dd/MM/yyyy HH:mm")
-                                }
-                                else
-                                {
-                                    <span class="text-muted">Sin fecha estimada</span>
-                                }
-                            </p>
-                        </div>
-
-                        <div class="detail-row">
-                            <span class="detail-label">Actualizar Estado:</span>
-                            <select @bind="Tarea.TAR_EST" class="select-status-compact">
-                                <option value="Pendiente">Pendiente</option>
-                                <option value="En Progreso">En Progreso</option>
-                                <option value="Completado">Completado</option>
-                            </select>
-                        </div>
+            @if (Tarea != null)
+            {
+                <div class="detalles-list">
+                    <div class="detail-row">
+                        <span class="detail-label">Título de la tarea</span>
+                        <p class="detail-value">@Tarea.TAR_NOM</p>
                     </div>
-                }
-            </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Proyecto asociado</span>
+                        <p class="detail-value highlight-blue">@NombreProyecto</p>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Proceso actual</span>
+                        <p class="detail-value">@NombreProceso</p>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Fecha de inicio</span>
+                        <p class="detail-value highlight-green">@Tarea.TAR_FEC_INI.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Fecha de finalización</span>
+                        <p class="detail-value highlight-red">
+                            @if (Tarea.TAR_FEC_FIN.HasValue)
+                            {
+                                @Tarea.TAR_FEC_FIN.Value.ToString("dd/MM/yyyy HH:mm")
+                            }
+                            else
+                            {
+                                <span class="text-muted">Sin fecha estimada</span>
+                            }
+                        </p>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Estado actual</span>
+                        <select @bind="Tarea.TAR_EST" class="select-status-compact">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En Progreso">En Progreso</option>
+                            <option value="Completado">Completado</option>
+                        </select>
+                    </div>
+                </div>
+            }
         </div>
 
-        @* 0º-90º (TOP-RIGHT): NOTAS CON YOOPTA *@
-        <div class="sector sector-notas">
-            <div class="sector-accent-line"></div>
+        @* ── TOP-RIGHT: Descripción / Yoopta (sin cuadro, fondo blanco) ── *@
+        <div class="sector-notas">
             <div class="sector-header-with-button">
                 <div class="title-group">
                     <h3 class="sector-title">Descripción</h3>
-                    <span class="sector-subtitle">Notas y Documentos</span>
+                    <span class="sector-subtitle">Notas y documentos</span>
                 </div>
-                <button type="button" class="btn-save-small" @onclick="GuardarDescripcion">
-                    <i class="fas fa-save"></i> GUARDAR
-                </button>
             </div>
-            <div class="sector-content-full">
+
+            @* Borde gris sutil alrededor del editor (punto 7) *@
+            <div class="descripcion-wrapper">
+                <span class="descripcion-label">Descripción</span>
                 @if (Tarea != null)
                 {
                     <Yoopta Contenido="@Tarea.TAR_DES"
@@ -103,26 +109,36 @@
             </div>
         </div>
 
-        @* 180º-270º (BOTTOM-LEFT): SOLUCIONES *@
-        <div class="sector sector-soluciones">
-            <div class="sector-accent-line"></div>
-            <div class="sector-header">
+        @* ── BOTTOM-LEFT: Soluciones ── *@
+        <div class="sector-soluciones">
+            <div class="sector-bottom-header">
                 <div class="title-group">
                     <h3 class="sector-title">Soluciones</h3>
-                    <span class="sector-subtitle">Propuestas Activas</span>
+                    <span class="sector-subtitle">Propuestas activas</span>
                 </div>
-                <button type="button" class="btn-add-text" @onclick="AbrirModalCrearSolucion" title="Añadir Solución">
-                    <i class="fas fa-plus"></i> NUEVA
+                <button type="button" class="btn-add-text" @onclick="AbrirModalCrearSolucion">
+                    <i class="bi bi-plus-lg"></i> Nueva
                 </button>
             </div>
-            <div class="sector-content scroll-dav">
+
+            <div class="sector-bottom-list">
                 @if (SolucionesList?.Any() == true)
                 {
                     @foreach (var sol in SolucionesList)
                     {
                         <div class="item-card-mini" @onclick="() => AbrirModalEditarSolucion(sol)">
-                            <span>@sol.SOL_NOM</span>
-                            <button type="button" class="btn-del" @onclick:stopPropagation @onclick="() => EliminarSolucion(sol.SOL_ID)">×</button>
+                            <div class="item-card-left">
+                                <div class="item-card-icon icon-sol">
+                                    <i class="bi bi-lightbulb"></i>
+                                </div>
+                                <span class="item-card-name">@sol.SOL_NOM</span>
+                            </div>
+                            <button type="button" class="btn-del"
+                                    title="Eliminar solución"
+                                    @onclick:stopPropagation
+                                    @onclick="() => EliminarSolucion(sol.SOL_ID)">
+                                <i class="bi bi-trash3"></i>
+                            </button>
                         </div>
                     }
                 }
@@ -133,26 +149,36 @@
             </div>
         </div>
 
-        @* 270º-360º (BOTTOM-RIGHT): FRICCIONES *@
-        <div class="sector sector-fricciones">
-            <div class="sector-accent-line"></div>
-            <div class="sector-header">
+        @* ── BOTTOM-RIGHT: Fricciones ── *@
+        <div class="sector-fricciones">
+            <div class="sector-bottom-header">
                 <div class="title-group">
                     <h3 class="sector-title">Fricciones</h3>
-                    <span class="sector-subtitle">Obstáculos Detectados</span>
+                    <span class="sector-subtitle">Obstáculos detectados</span>
                 </div>
-                <button type="button" class="btn-add-text" @onclick="AbrirModalCrearFriccion" title="Reportar Fricción">
-                    <i class="fas fa-plus"></i> NUEVA
+                <button type="button" class="btn-add-text" @onclick="AbrirModalCrearFriccion">
+                    <i class="bi bi-plus-lg"></i> Nueva
                 </button>
             </div>
-            <div class="sector-content scroll-dav">
+
+            <div class="sector-bottom-list">
                 @if (FriccionesList?.Any() == true)
                 {
                     @foreach (var fri in FriccionesList)
                     {
                         <div class="item-card-mini" @onclick="() => AbrirModalEditarFriccion(fri)">
-                            <span>@fri.FRI_TIP</span>
-                            <button type="button" class="btn-del" @onclick:stopPropagation @onclick="() => EliminarFriccion(fri.FRI_ID)">×</button>
+                            <div class="item-card-left">
+                                <div class="item-card-icon icon-fri">
+                                    <i class="bi bi-exclamation-triangle"></i>
+                                </div>
+                                <span class="item-card-name">@fri.FRI_TIP</span>
+                            </div>
+                            <button type="button" class="btn-del"
+                                    title="Eliminar fricción"
+                                    @onclick:stopPropagation
+                                    @onclick="() => EliminarFriccion(fri.FRI_ID)">
+                                <i class="bi bi-trash3"></i>
+                            </button>
                         </div>
                     }
                 }
@@ -162,16 +188,19 @@
                 }
             </div>
         </div>
+
     </div>
 
-    @* MODALES INTERNOS *@
+    @* ── MODALES INTERNOS ── *@
     @if (MostrarModalCrear)
     {
         <div class="modal-backdrop-premium" @onclick="CerrarModalInterno">
             <div class="modal-window-dav" @onclick:stopPropagation>
                 <div class="modal-header-dav">
                     <h3>@TituloModal</h3>
-                    <button type="button" class="modal-close-x" @onclick="CerrarModalInterno">×</button>
+                    <button type="button" class="modal-close-x" @onclick="CerrarModalInterno">
+                        <i class="bi bi-x"></i>
+                    </button>
                 </div>
                 <div class="modal-body-dav">
                     @if (TipoModal == "FRICCION_NUEVA" && Tarea != null)
@@ -202,4 +231,5 @@
             </div>
         </div>
     }
+
 </div>
