@@ -116,6 +116,24 @@ namespace Davivienda.Migrations.DbContext
                       .HasColumnType("nvarchar(max)");
             });
 
+            //configuracion para proyecto
+            modelBuilder.Entity<Proyecto>(entity =>
+            {
+                entity.ToTable("PROYECTO");
+                entity.Property(e => e.PRO_DES)
+                      .HasColumnName("PRO_DES")
+                      .HasColumnType("nvarchar(max)");
+            });
+
+            //configurcaion pra proceso
+            modelBuilder.Entity<Procesos>(entity =>
+            {
+                entity.ToTable("PROCESO");
+                entity.Property(e => e.PROC_DES)
+                      .HasColumnName("PROC_DES")
+                      .HasColumnType("nvarchar(max)");
+            });
+
 
             // Mapeo USUARIO (Asegura que las llaves foráneas funcionen)
             modelBuilder.Entity<Usuario>(entity =>

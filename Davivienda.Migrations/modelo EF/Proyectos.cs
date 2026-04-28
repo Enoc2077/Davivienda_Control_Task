@@ -19,8 +19,7 @@ namespace Davivienda.Migrations.ModelosEF
         [StringLength(100)]
         public string? PRO_NOM { get; set; }
 
-        [Column("PRO_DES")]
-        [StringLength(255)]
+        [Column(TypeName = "nvarchar(max)")]
         public string? PRO_DES { get; set; }
 
         [Column("PRO_FEC_INI")]
