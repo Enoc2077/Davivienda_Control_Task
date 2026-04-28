@@ -1,5 +1,6 @@
 ﻿@namespace Davivienda.Component.Componentes
 @using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
 @using Microsoft.AspNetCore.Components
 
 <div class="modal-premium-overlay" @onclick="Cerrar">
@@ -15,13 +16,16 @@
         <div class="modal-body-registro">
             <div class="form-grid-registro">
 
-                @* Campo Nombre *@
+                @* Nombre *@
                 <div class="input-group-registro full-width">
                     <label>NOMBRE DE LA SOLUCIÓN</label>
-                    <input type="text" @bind="solEdit.SOL_NOM" class="input-field-premium" placeholder="Ej: Ajuste de índices en BD" />
+                    <input type="text"
+                           @bind="solEdit.SOL_NOM"
+                           class="input-field-premium"
+                           placeholder="Ej: Ajuste de índices en BD" />
                 </div>
 
-                @* 🔥 DESCRIPCIÓN TÉCNICA CON YOOPTA *@
+                @* Descripción *@
                 <div class="input-group-registro full-width">
                     <label>DESCRIPCIÓN TÉCNICA</label>
                     <div class="yoopta-editor-limiter">
@@ -30,7 +34,22 @@
                     </div>
                 </div>
 
-                @* Fila Doble: Estado y Efectividad *@
+                @* Friccion asociada — dentro del form *@
+                <div class="input-group-registro full-width">
+                    <label>FRICCIÓN ASOCIADA</label>
+                    <select @bind="friccionSeleccionadaId" class="input-field-premium select-premium">
+                        <option value="">-- Sin fricción asociada --</option>
+                        @if (FriccionesDisponibles != null)
+                        {
+                            @foreach (var fri in FriccionesDisponibles)
+                            {
+                                <option value="@fri.FRI_ID">@fri.FRI_TIP</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                @* Estado *@
                 <div class="input-group-registro">
                     <label>ESTADO ACTUAL</label>
                     <select @bind="solEdit.SOL_EST" class="input-field-premium select-premium">
@@ -40,15 +59,17 @@
                     </select>
                 </div>
 
-                @* 🔥 NIVEL DE EFECTIVIDAD COMO SELECT DE NIVELES *@
+                @* Efectividad *@
                 <div class="input-group-registro">
                     <label>NIVEL DE EFECTIVIDAD</label>
                     <select @bind="solEdit.SOL_NIV_EFE" class="input-field-premium select-premium">
-                        <option value="100">Alto (100%)</option>
-                        <option value="50">Medio (50%)</option>
                         <option value="25">Bajo (25%)</option>
+                        <option value="50">Medio (50%)</option>
+                        <option value="75">Alto (75%)</option>
+                        <option value="100">Muy alto (100%)</option>
                     </select>
                 </div>
+
             </div>
 
             <div class="modal-footer-registro">
@@ -56,5 +77,6 @@
                 <button type="button" class="btn-save-premium" @onclick="ActualizarSolucion">Actualizar Registro</button>
             </div>
         </div>
+
     </div>
 </div>

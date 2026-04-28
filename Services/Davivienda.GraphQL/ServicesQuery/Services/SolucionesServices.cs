@@ -67,15 +67,15 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // 1. Preparación de datos
-                if (solucion.SOL_ID == Guid.Empty) solucion.SOL_ID = Guid.NewGuid();
-                if (solucion.SOL_FEC_CRE == default) solucion.SOL_FEC_CRE = DateTimeOffset.Now;
-                // Si no viene un ID de fricción, asignamos el GUID vacío por defecto
-                if (solucion.FRI_ID == null || solucion.FRI_ID == Guid.Empty)
-                {
-                    // Usamos Guid.Empty (00000000-0000-0000-0000-000000000000)
-                    solucion.FRI_ID = Guid.Empty;
-                }
+                if (solucion.SOL_ID == Guid.Empty)
+                    solucion.SOL_ID = Guid.NewGuid();
+
+                if (solucion.SOL_FEC_CRE == default)
+                    solucion.SOL_FEC_CRE = DateTimeOffset.Now;
+
+                // Si FRI_ID es Guid.Empty dejamos null para respetar la FK
+                if (solucion.FRI_ID == Guid.Empty)
+                    solucion.FRI_ID = null;
 
                 var bitacora = new BitacoraSolucionesModel
                 {
@@ -89,24 +89,21 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                     BIT_SOL_FEC_CRE = solucion.SOL_FEC_CRE
                 };
 
-                // 2. Conexión y Limpieza
                 await dataBase.ConnectAsync();
 
-                // 3. Bloque Transaccional
                 using (var transaction = dataBase.Connection.BeginTransaction())
                 {
                     try
                     {
                         string sqlSol = @"INSERT INTO dbo.SOLUCIONES 
-                    (SOL_ID, SOL_NOM, SOL_DES, SOL_EST, SOL_TIE_RES, SOL_NIV_EFE, FRI_ID, USU_ID, SOL_FEC_CRE) 
-                    VALUES (@SOL_ID, @SOL_NOM, @SOL_DES, @SOL_EST, @SOL_TIE_RES, @SOL_NIV_EFE, @FRI_ID, @USU_ID, @SOL_FEC_CRE)";
+                            (SOL_ID, SOL_NOM, SOL_DES, SOL_EST, SOL_TIE_RES, SOL_NIV_EFE, FRI_ID, USU_ID, SOL_FEC_CRE) 
+                            VALUES (@SOL_ID, @SOL_NOM, @SOL_DES, @SOL_EST, @SOL_TIE_RES, @SOL_NIV_EFE, @FRI_ID, @USU_ID, @SOL_FEC_CRE)";
 
-                        // IMPORTANTE: Pasar siempre el objeto 'transaction'
                         await dataBase.Connection.ExecuteAsync(sqlSol, solucion, transaction);
 
                         string sqlBit = @"INSERT INTO dbo.BITACORA_SOLUCIONES 
-                    (BIT_SOL_ID, BIT_SOL_NOM, BIT_SOL_EST, BIT_SOL_DES, BIT_SOL_TIE_TOT_TRA, SOL_ID, USU_ID, BIT_SOL_FEC_CRE) 
-                    VALUES (@BIT_SOL_ID, @BIT_SOL_NOM, @BIT_SOL_EST, @BIT_SOL_DES, @BIT_SOL_TIE_TOT_TRA, @SOL_ID, @USU_ID, @BIT_SOL_FEC_CRE)";
+                            (BIT_SOL_ID, BIT_SOL_NOM, BIT_SOL_EST, BIT_SOL_DES, BIT_SOL_TIE_TOT_TRA, SOL_ID, USU_ID, BIT_SOL_FEC_CRE) 
+                            VALUES (@BIT_SOL_ID, @BIT_SOL_NOM, @BIT_SOL_EST, @BIT_SOL_DES, @BIT_SOL_TIE_TOT_TRA, @SOL_ID, @USU_ID, @BIT_SOL_FEC_CRE)";
 
                         await dataBase.Connection.ExecuteAsync(sqlBit, bitacora, transaction);
 
@@ -120,33 +117,34 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                     }
                 }
             }
-            finally
-            {
-                // Cerramos físicamente la conexión para liberar el hilo en el pool
-                await dataBase.DisconnectAsync();
-            }
+            finally { await dataBase.DisconnectAsync(); }
         }
-
-
 
         public async Task<bool> UpdateSolucion(IResolverContext context, SolucionesModel solucion)
         {
             try
             {
+                // FIX: Si FRI_ID es Guid.Empty lo dejamos null para respetar la FK
+                if (solucion.FRI_ID == Guid.Empty)
+                    solucion.FRI_ID = null;
+
                 await dataBase.ConnectAsync();
                 using (var transaction = dataBase.Connection.BeginTransaction())
                 {
                     try
                     {
-                        // 1. Actualizar Tabla Principal
+                        // FIX: FRI_ID ahora se incluye en el UPDATE
                         string sqlUpdate = @"UPDATE dbo.SOLUCIONES SET 
-                    SOL_NOM = @SOL_NOM, SOL_DES = @SOL_DES, SOL_EST = @SOL_EST, 
-                    SOL_NIV_EFE = @SOL_NIV_EFE, SOL_FEC_MOD = @SOL_FEC_MOD 
-                    WHERE SOL_ID = @SOL_ID";
+                            SOL_NOM     = @SOL_NOM,
+                            SOL_DES     = @SOL_DES,
+                            SOL_EST     = @SOL_EST,
+                            SOL_NIV_EFE = @SOL_NIV_EFE,
+                            FRI_ID      = @FRI_ID,
+                            SOL_FEC_MOD = @SOL_FEC_MOD
+                            WHERE SOL_ID = @SOL_ID";
 
                         await dataBase.Connection.ExecuteAsync(sqlUpdate, solucion, transaction);
 
-                        // 2. Insertar Nuevo Registro en Bitácora (Auditoría de cambio)
                         var bitacora = new BitacoraSolucionesModel
                         {
                             BIT_SOL_ID = Guid.NewGuid(),
@@ -160,8 +158,8 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                         };
 
                         string sqlBit = @"INSERT INTO dbo.BITACORA_SOLUCIONES 
-                    (BIT_SOL_ID, BIT_SOL_NOM, BIT_SOL_EST, BIT_SOL_DES, BIT_SOL_TIE_TOT_TRA, SOL_ID, USU_ID, BIT_SOL_FEC_CRE) 
-                    VALUES (@BIT_SOL_ID, @BIT_SOL_NOM, @BIT_SOL_EST, @BIT_SOL_DES, @BIT_SOL_TIE_TOT_TRA, @SOL_ID, @USU_ID, @BIT_SOL_FEC_CRE)";
+                            (BIT_SOL_ID, BIT_SOL_NOM, BIT_SOL_EST, BIT_SOL_DES, BIT_SOL_TIE_TOT_TRA, SOL_ID, USU_ID, BIT_SOL_FEC_CRE) 
+                            VALUES (@BIT_SOL_ID, @BIT_SOL_NOM, @BIT_SOL_EST, @BIT_SOL_DES, @BIT_SOL_TIE_TOT_TRA, @SOL_ID, @USU_ID, @BIT_SOL_FEC_CRE)";
 
                         await dataBase.Connection.ExecuteAsync(sqlBit, bitacora, transaction);
 
@@ -183,36 +181,27 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             try
             {
                 await dataBase.ConnectAsync();
-
-                // Iniciamos una transacción para asegurar que se borre todo o nada
                 using (var transaction = dataBase.Connection.BeginTransaction())
                 {
                     try
                     {
-                        // 1. Borrar primero las dependencias en la tabla BITACORA_SOLUCIONES
                         string sqlBitacora = "DELETE FROM dbo.BITACORA_SOLUCIONES WHERE SOL_ID = @sol_id";
                         await dataBase.Connection.ExecuteAsync(sqlBitacora, new { sol_id }, transaction);
 
-                        // 2. Ahora borrar el registro principal en SOLUCIONES
                         string sqlSolucion = "DELETE FROM dbo.SOLUCIONES WHERE SOL_ID = @sol_id";
                         var exec = await dataBase.Connection.ExecuteAsync(sqlSolucion, new { sol_id }, transaction);
 
-                        // Si todo salió bien, confirmamos los cambios
                         transaction.Commit();
                         return exec > 0;
                     }
                     catch (Exception ex)
                     {
-                        // Si algo falla (ej. error de red), deshacemos los cambios
                         transaction.Rollback();
                         throw new Exception($"Error al eliminar la solución y sus bitácoras: {ex.Message}");
                     }
                 }
             }
-            finally
-            {
-                await dataBase.DisconnectAsync();
-            }
+            finally { await dataBase.DisconnectAsync(); }
         }
     }
 }

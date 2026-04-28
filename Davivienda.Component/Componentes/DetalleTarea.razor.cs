@@ -76,6 +76,7 @@ namespace Davivienda.Component.Componentes
         {
             try
             {
+                // 1. Cargar fricciones de esta tarea
                 var resFri = await Client.GetFricciones.ExecuteAsync();
                 FriccionesList = resFri.Data?.Fricciones?
                     .Where(f => f.Tar_ID == Tarea?.TAR_ID)
@@ -90,10 +91,21 @@ namespace Davivienda.Component.Componentes
                         FRI_FEC_CRE = f.Fri_FEC_CRE.DateTime
                     }).ToList() ?? new();
 
+                // 2. Cargar soluciones
                 var resSol = await Client.GetSoluciones.ExecuteAsync();
-                var idsFricciones = FriccionesList.Select(f => f.FRI_ID).ToList();
+
+                // IDs de las fricciones de esta tarea
+                var idsFricciones = FriccionesList.Select(f => f.FRI_ID).ToHashSet();
+
                 SolucionesList = resSol.Data?.Soluciones?
-                    .Where(s => s.Fri_ID.HasValue && idsFricciones.Contains(s.Fri_ID.Value))
+                    .Where(s =>
+                        // Opcion A: la solucion tiene una friccion que pertenece a esta tarea
+                        (s.Fri_ID.HasValue && idsFricciones.Contains(s.Fri_ID.Value))
+                        ||
+                        // Opcion B: la solucion NO tiene friccion y fue creada por el mismo usuario
+                        // (filtro temporal hasta que se agregue TAR_ID a la tabla SOLUCIONES)
+                        (!s.Fri_ID.HasValue && s.Usu_ID == Guid.Parse("0BC4DB21-1FFB-46BB-B120-48AE7B0909CD"))
+                    )
                     .Select(s => new SolucionesModel
                     {
                         SOL_ID = s.Sol_ID,
@@ -106,11 +118,14 @@ namespace Davivienda.Component.Componentes
                         SOL_FEC_CRE = s.Sol_FEC_CRE.DateTime
                     }).ToList() ?? new();
             }
-            catch (Exception ex) { Console.WriteLine($"Error carga: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error carga: {ex.Message}");
+            }
             StateHasChanged();
         }
 
-        // Autoguardado — se llama al cerrar (punto 8)
+        // Autoguardado al cerrar
         private async Task GuardarTarea()
         {
             if (Tarea == null) return;
@@ -142,14 +157,12 @@ namespace Davivienda.Component.Componentes
             }
         }
 
-        // Cerrar — guarda antes de cerrar
         private async Task Cerrar()
         {
             await GuardarTarea();
             await OnClose.InvokeAsync();
         }
 
-        // IAsyncDisposable — guarda si el componente se destruye (punto 8)
         public async ValueTask DisposeAsync()
         {
             await GuardarTarea();

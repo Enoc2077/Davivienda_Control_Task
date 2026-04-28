@@ -179,7 +179,7 @@
    Fricciones: anaranjado/amarillo palido
    ============================================================ */
 .sector-soluciones {
-    background: #fff5f0;
+    background: #c1f5f1;
     border-right: 1px solid #d1d9e6;
     display: flex;
     flex-direction: column;
@@ -188,7 +188,7 @@
 }
 
 .sector-fricciones {
-    background: #fffbea;
+    background: #fff5cc;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -345,11 +345,11 @@
 }
 
 .descripcion-wrapper {
-    border: 1px solid #e2e8f0;
+    border: 1px solid #f75252;
     border-radius: 10px;
     padding: 6px 10px;
     overflow-y: auto;
-    background: #fafbfc;
+    background: #ffffff;
     display: flex;
     flex-direction: column;
     flex: 1;

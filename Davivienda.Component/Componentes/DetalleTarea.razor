@@ -209,11 +209,17 @@
                     }
                     else if (TipoModal == "SOLUCION_NUEVA")
                     {
-                        <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                        <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)"
+                                       TareaId="@(Tarea?.TAR_ID ?? Guid.Empty)"
+                                       OnSuccess="AlCrearExitoso"
+                                       OnClose="CerrarModalInterno" />
                     }
                     else if (TipoModal == "SOLUCION_EDITAR" && SolucionSeleccionada != null)
                     {
-                        <EditarSolucion Solucion="@SolucionSeleccionada" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
+                        <EditarSolucion Solucion="@SolucionSeleccionada"
+                                        FriccionesDisponibles="@FriccionesList"
+                                        OnSuccess="AlCrearExitoso"
+                                        OnClose="CerrarModalInterno" />
                     }
                     else if (TipoModal == "FRICCION_EDITAR" && FriccionSeleccionada != null)
                     {

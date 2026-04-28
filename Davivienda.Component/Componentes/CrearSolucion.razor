@@ -6,37 +6,69 @@
 <div class="modal-premium-overlay" @onclick="CerrarModalInterno">
     <div class="modal-card-registro animate-pop" @onclick:stopPropagation>
 
-        <div class="modal-top-accent-blue"></div>
+        @* Franja superior degradado Davivienda *@
+        <div class="modal-top-accent-gold"></div>
 
+        @* Header *@
         <div class="modal-header-registro">
-            <h2 class="modal-title-main">Registrar Solución</h2>
-            <button type="button" class="btn-close-x" @onclick="CerrarModalInterno">×</button>
+            <div class="modal-header-left">
+                <div class="modal-header-icon sol-icon">
+                    <i class="bi bi-lightbulb-fill"></i>
+                </div>
+                <div>
+                    <h2 class="modal-title-main">Registrar Solución</h2>
+                    <span class="modal-title-sub">Propuesta de resolución</span>
+                </div>
+            </div>
+            <button type="button" class="btn-close-x" @onclick="CerrarModalInterno">
+                <i class="bi bi-x"></i>
+            </button>
         </div>
 
+        @* Body *@
         <div class="modal-body-registro">
             <div class="form-grid-registro">
 
                 @* Nombre de la Solución *@
                 <div class="input-group-registro full-width">
-                    <label>NOMBRE DE LA SOLUCIÓN</label>
+                    <label>Nombre de la solución</label>
                     <input type="text"
                            @bind="nuevaSolucion.SOL_NOM"
                            class="input-field-premium"
                            placeholder="Ej: Automatización de carga de datos..." />
                 </div>
 
-                @* 🔥 DESCRIPCIÓN CON YOOPTA *@
+                @* Descripción con Yoopta *@
                 <div class="input-group-registro full-width">
-                    <label>DESCRIPCIÓN TÉCNICA</label>
-                    <div class="yoopta-editor-limiter">
+                    <label>Descripción técnica</label>
+                    <div class="yoopta-editor-container">
                         <Yoopta Contenido="@nuevaSolucion.SOL_DES"
                                 ContenidoChanged="@((valor) => { nuevaSolucion.SOL_DES = valor; })" />
                     </div>
                 </div>
 
-                @* Fila de Estado y Efectividad *@
+                @* NUEVO punto 4: Friccion asociada *@
+                <div class="input-group-registro full-width">
+                    <label>Fricción asociada</label>
+                    <select @bind="friccionSeleccionadaId" class="input-field-premium select-premium">
+                        <option value="">-- Sin fricción asociada --</option>
+                        @if (FriccionesDisponibles != null)
+                        {
+                            @foreach (var fri in FriccionesDisponibles)
+                            {
+                                <option value="@fri.FRI_ID">@fri.FRI_TIP</option>
+                            }
+                        }
+                        @if (FriccionesDisponibles == null || !FriccionesDisponibles.Any())
+                        {
+                            <option value="" disabled>No hay fricciones registradas</option>
+                        }
+                    </select>
+                </div>
+
+                @* Estado y Efectividad *@
                 <div class="input-group-registro">
-                    <label>ESTADO ACTUAL</label>
+                    <label>Estado actual</label>
                     <select @bind="nuevaSolucion.SOL_EST" class="input-field-premium select-premium">
                         <option value="Pendiente">Pendiente</option>
                         <option value="En Progreso">En Progreso</option>
@@ -44,21 +76,29 @@
                     </select>
                 </div>
 
-                @* 🔥 EFECTIVIDAD COMO SELECT DE NIVELES *@
+                @* PUNTO 3: Nivel de efectividad con 4 opciones *@
                 <div class="input-group-registro">
-                    <label>NIVEL DE EFECTIVIDAD</label>
+                    <label>Nivel de efectividad</label>
                     <select @bind="nuevaSolucion.SOL_NIV_EFE" class="input-field-premium select-premium">
-                        <option value="100">Alto (100%)</option>
-                        <option value="50">Medio (50%)</option>
                         <option value="25">Bajo (25%)</option>
+                        <option value="50">Medio (50%)</option>
+                        <option value="75">Alto (75%)</option>
+                        <option value="100">Muy alto (100%)</option>
                     </select>
                 </div>
+
             </div>
 
+            @* Footer botones *@
             <div class="modal-footer-registro">
-                <button type="button" class="btn-cancel-premium" @onclick="CerrarModalInterno">Cancelar</button>
-                <button type="button" class="btn-save-premium" @onclick="GuardarSolucion">Guardar Registro</button>
+                <button type="button" class="btn-cancel-premium" @onclick="CerrarModalInterno">
+                    <i class="bi bi-x-circle"></i> Cancelar
+                </button>
+                <button type="button" class="btn-save-premium" @onclick="GuardarSolucion">
+                    <i class="bi bi-check-circle"></i> Guardar Registro
+                </button>
             </div>
         </div>
+
     </div>
 </div>
