@@ -12,12 +12,9 @@
             <div class="bg-blob blob-red-top"></div>
             <div class="bg-blob blob-red-bottom"></div>
 
-            @* 🎨 ILUSTRACIÓN DECORATIVA *@
             <div class="illustration-scene">
                 <div class="device-monitor">
-                    <div class="device-screen">
-                        <div class="screen-ui-lines"></div>
-                    </div>
+                    <div class="device-screen"><div class="screen-ui-lines"></div></div>
                     <div class="device-stand"></div>
                 </div>
                 <div class="vector-person person-standing"></div>
@@ -28,10 +25,10 @@
             </div>
 
             <div class="content-sectors-container">
-                @* ========== LISTADO DE TAREAS ========== *@
+
+                @* LISTADO *@
                 <div class="sector-white-card sector-listado">
                     <div class="sector-label">Historial de Tareas</div>
-
                     <div class="sector-banner-header">
                         <div class="banner-waves"></div>
                         <div class="banner-content">
@@ -75,7 +72,7 @@
                     </div>
                 </div>
 
-                @* ========== PANEL DE FILTROS ========== *@
+                @* FILTROS *@
                 <div class="sector-white-card sector-filtros">
                     <div class="sector-label verde">Filtros Inteligentes</div>
                     <div class="dynamic-filter-zone">
@@ -87,17 +84,18 @@
                                  OnFiltrosChanged="ManejarCambioFiltros" />
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 
-@* ========== MODAL DE DETALLE ========== *@
+@* ── MODAL DETALLE TAREA — diseño mejorado ── *@
 @if (TareaSeleccionada != null)
 {
     <div class="modal-detalle-overlay" @onclick="CerrarDetalle">
         <div class="modal-detalle-card" @onclick:stopPropagation>
-            @* HEADER *@
+
             <div class="modal-detalle-header">
                 <div class="header-icon">
                     <i class="bi bi-check-circle-fill"></i>
@@ -106,52 +104,75 @@
                 <button class="btn-cerrar-detalle" @onclick="CerrarDetalle">×</button>
             </div>
 
-            @* BODY CON 2 COLUMNAS *@
             <div class="modal-detalle-body">
-                @* COLUMNA IZQUIERDA: INFORMACIÓN *@
+
+                @* COLUMNA IZQUIERDA — hero mejorado *@
                 <div class="detalle-columna-info">
-                    <div class="info-section">
-                        <label>NOMBRE DE LA TAREA</label>
-                        <p class="info-value">@TareaSeleccionada.TAR_NOM</p>
-                    </div>
 
-                    <div class="info-row">
-                        <div class="info-section">
-                            <label>ESTADO</label>
-                            <span class="badge-estado completado">@TareaSeleccionada.TAR_EST</span>
+                    @* NOMBRE HERO *@
+                    <div class="tarea-nombre-hero">
+                        <div class="tarea-nombre-icon">
+                            <i class="bi bi-check-circle-fill"></i>
                         </div>
-
-                        <div class="info-section">
-                            <label>PRIORIDAD</label>
-                            <span class="badge-prioridad">@ObtenerNombrePrioridad(TareaSeleccionada.PRI_ID)</span>
+                        <div class="tarea-nombre-texto">
+                            <span class="tarea-nombre-label">NOMBRE DE LA TAREA</span>
+                            <h2 class="tarea-nombre-titulo">@TareaSeleccionada.TAR_NOM</h2>
                         </div>
                     </div>
 
+                    @* BADGES estado y prioridad *@
+                    <div class="tarea-badges-row">
+                        <div class="tarea-badge-item">
+                            <span class="tarea-badge-label">ESTADO</span>
+                            <span class="badge-estado completado">
+                                <i class="bi bi-check-circle"></i> @TareaSeleccionada.TAR_EST
+                            </span>
+                        </div>
+                        <div class="tarea-badge-item">
+                            <span class="tarea-badge-label">PRIORIDAD</span>
+                            <span class="badge-prioridad">
+                                <i class="bi bi-flag-fill"></i> @ObtenerNombrePrioridad(TareaSeleccionada.PRI_ID)
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="tarea-separador"></div>
+
+                    @* PROCESO Y PROYECTO *@
                     <div class="info-section">
                         <label>PROCESO</label>
-                        <p class="info-value-small">@ObtenerNombreProceso(TareaSeleccionada.PROC_ID)</p>
+                        <div class="tarea-origen-card">
+                            <i class="bi bi-diagram-3" style="color:#16a34a;"></i>
+                            <p class="info-value-small">@ObtenerNombreProceso(TareaSeleccionada.PROC_ID)</p>
+                        </div>
                     </div>
 
                     <div class="info-section">
                         <label>PROYECTO</label>
-                        <p class="info-value-small">@ObtenerNombreProyecto(TareaSeleccionada.PROC_ID)</p>
+                        <div class="tarea-origen-card">
+                            <i class="bi bi-folder-fill" style="color:#3b82f6;"></i>
+                            <p class="info-value-small">@ObtenerNombreProyecto(TareaSeleccionada.PROC_ID)</p>
+                        </div>
                     </div>
 
+                    @* FECHAS *@
                     <div class="info-section">
                         <label>FECHAS</label>
-                        <div class="fecha-range">
-                            <span class="fecha-label">Inicio:</span>
-                            <span class="fecha-value">@TareaSeleccionada.TAR_FEC_INI.ToString("dd/MM/yyyy")</span>
-                        </div>
-                        <div class="fecha-range">
-                            <span class="fecha-label">Fin:</span>
-                            <span class="fecha-value">@(TareaSeleccionada.TAR_FEC_FIN?.ToString("dd/MM/yyyy") ?? "N/A")</span>
+                        <div class="fechas-card">
+                            <div class="fecha-row">
+                                <span class="fecha-icon-label"><i class="bi bi-play-circle" style="color:#16a34a;"></i> Inicio</span>
+                                <span class="fecha-value">@TareaSeleccionada.TAR_FEC_INI.ToString("dd/MM/yyyy")</span>
+                            </div>
+                            <div class="fecha-row">
+                                <span class="fecha-icon-label"><i class="bi bi-stop-circle" style="color:#ef4444;"></i> Fin</span>
+                                <span class="fecha-value">@(TareaSeleccionada.TAR_FEC_FIN?.ToString("dd/MM/yyyy") ?? "N/A")</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="info-footer">
                         <i class="bi bi-calendar3"></i>
-                        <span>Completado: @TareaSeleccionada.TAR_FEC_CRE.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))</span>
+                        <span>Completado: @TareaSeleccionada.TAR_FEC_CRE.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))</span>
                     </div>
                 </div>
 
@@ -162,15 +183,37 @@
                     </div>
                     <div class="yoopta-content-modal">
                         <Yoopta Contenido="@(TareaSeleccionada.TAR_DES ?? string.Empty)"
-                                ContenidoChanged="@((valor) => { /* Solo lectura */ })"
-                                SoloLectura="true" />
+                                ContenidoChanged="@((valor) => { })" />
                     </div>
                 </div>
+
             </div>
 
-            @* FOOTER *@
             <div class="modal-detalle-footer">
                 <button class="btn-modal-cerrar" @onclick="CerrarDetalle">Cerrar</button>
+                @* Solo Gerente y Lider Tecnico *@
+                @if (PuedeVerTarea)
+                {
+                    <button class="btn-modal-ver-tarea" @onclick="AbrirDetalleTareaCompleta">
+                        <i class="bi bi-eye"></i> Ver Detalle Completo
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+}
+
+@* ── DETALLE TAREA COMPLETO — mismo patrón que Asignaciones ── *@
+@if (TareaParaDetalle != null)
+{
+    <div class="modal-backdrop-dav" @onclick="CerrarDetalleTareaCompleta">
+        <div class="modal-calendar-content" @onclick:stopPropagation>
+            <div class="modal-header-dav">
+                <h3 style="font-weight:800;color:#1e3a5f;margin:0;">Detalle de Tarea</h3>
+                <button class="close-btn-dav" @onclick="CerrarDetalleTareaCompleta">x</button>
+            </div>
+            <div class="modal-body-dav">
+                <DetalleTarea Tarea="TareaParaDetalle" OnClose="CerrarDetalleTareaCompleta" />
             </div>
         </div>
     </div>

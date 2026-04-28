@@ -62,14 +62,14 @@
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Fecha de inicio</span>
-                        <p class="detail-value highlight-green">@Tarea.TAR_FEC_INI.ToString("dd/MM/yyyy HH:mm")</p>
+                        <p class="detail-value highlight-green">@Tarea.TAR_FEC_INI.ToString("dd/MM/yyyy")</p>
                     </div>
                     <div class="detail-row">
                         <span class="detail-label">Fecha de finalización</span>
                         <p class="detail-value highlight-red">
                             @if (Tarea.TAR_FEC_FIN.HasValue)
                             {
-                                @Tarea.TAR_FEC_FIN.Value.ToString("dd/MM/yyyy HH:mm")
+                                @Tarea.TAR_FEC_FIN.Value.ToString("dd/MM/yyyy")
                             }
                             else
                             {
