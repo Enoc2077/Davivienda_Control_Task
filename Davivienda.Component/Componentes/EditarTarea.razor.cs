@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Davivienda.GraphQL.SDK;
 
@@ -12,7 +11,6 @@ namespace Davivienda.Component.Componentes
     public partial class EditarTarea
     {
         [Inject] public DaviviendaGraphQLClient Client { get; set; } = default!;
-
         [Parameter] public TareaModel Tarea { get; set; } = new();
         [Parameter] public EventCallback OnClose { get; set; }
 
@@ -20,18 +18,19 @@ namespace Davivienda.Component.Componentes
 
         protected override async Task OnInitializedAsync()
         {
-            // Validamos si la fecha viene vacía (01/01/0001) para evitar el error visual de ceros
             if (Tarea.TAR_FEC_INI == DateTime.MinValue || Tarea.TAR_FEC_INI == null)
-            {
                 Tarea.TAR_FEC_INI = DateTime.Now;
-            }
 
             if (Tarea.TAR_FEC_FIN == DateTime.MinValue || Tarea.TAR_FEC_FIN == null)
-            {
                 Tarea.TAR_FEC_FIN = DateTime.Now.AddDays(1);
-            }
 
             await CargarUsuarios();
+        }
+
+        // FIX: método separado para Yoopta — evita el error de lambda con bloque
+        private void OnDescripcionChanged(string valor)
+        {
+            Tarea.TAR_DES = valor;
         }
 
         private async Task CargarUsuarios()
@@ -63,7 +62,6 @@ namespace Davivienda.Component.Componentes
                     Tar_NOM = Tarea.TAR_NOM,
                     Tar_DES = Tarea.TAR_DES,
                     Tar_EST = Tarea.TAR_EST,
-                    // Aseguramos que se envíe la fecha capturada en el input yyyy-MM-dd
                     Tar_FEC_INI = Tarea.TAR_FEC_INI,
                     Tar_FEC_FIN = Tarea.TAR_FEC_FIN,
                     Proc_ID = Tarea.PROC_ID,

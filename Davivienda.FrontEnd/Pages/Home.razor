@@ -1,37 +1,38 @@
 ﻿@page "/home"
 @layout MainLayout
-
+@using Microsoft.AspNetCore.Components
+@implements IDisposable
 <PageTitle>Davivienda - Análisis</PageTitle>
 
 <div class="home-data-analysis">
     <div class="container-home">
-        @* Contenido Izquierdo: Texto y Acción *@
+
         <div class="content-left">
-            <h1 class="title-analysis">Bienvenidos a Davivienda</h1>
-            <p class="description-analysis">
-                Bienvenidos a control de asignaciones de Davivienda
+            <h1 class="title-analysis @(animating ? "slide-out" : "slide-in")">
+                @slides[currentSlide].Titulo
+            </h1>
+            <p class="description-analysis @(animating ? "slide-out" : "slide-in")">
+                @slides[currentSlide].Descripcion
             </p>
-            
 
             <div class="pagination-dots">
-                <span class="dot active"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
+                @for (int i = 0; i < slides.Length; i++)
+                {
+                    int index = i;
+                    <span class="dot @(currentSlide == index ? "active" : "")"
+                          @onclick="() => CambiarSlide(index)">
+                    </span>
+                }
             </div>
         </div>
 
-        @* Contenido Derecho: Ilustraciones y Gráficas *@
         <div class="content-right">
             <div class="illustration-container">
-                @* Círculos y Decoraciones *@
                 <div class="decoration-circle top-left"></div>
                 <div class="decoration-icon chart-icon"></div>
                 <div class="decoration-icon bar-icon"></div>
                 <div class="decoration-gear gear-1"></div>
                 <div class="decoration-gear gear-2"></div>
-
-                @* Gráficas de Barras *@
                 <div class="chart-bars">
                     <div class="bar bar-red" style="height: 180px;"></div>
                     <div class="bar bar-orange" style="height: 240px;"></div>
@@ -39,13 +40,74 @@
                     <div class="bar bar-purple" style="height: 280px;"></div>
                     <div class="bar bar-blue" style="height: 200px;"></div>
                 </div>
-
-                @* Personas Representativas (Basado en la imagen) *@
                 <div class="person person-1"><div class="person-head"></div><div class="person-body"></div></div>
                 <div class="person person-2"><div class="person-head"></div><div class="person-body"></div></div>
                 <div class="person person-3"><div class="person-head"></div><div class="person-body"></div></div>
                 <div class="person person-4"><div class="person-head"></div><div class="person-body"></div></div>
             </div>
         </div>
+
     </div>
 </div>
+
+@code {
+    private int currentSlide = 0;
+    private bool animating = false;
+    private System.Timers.Timer? autoTimer;
+
+    private record SlideItem(string Titulo, string Descripcion);
+
+    private SlideItem[] slides = new[]
+    {
+        new SlideItem(
+            "Bienvenidos a Davivienda",
+            "Plataforma de control y gestión de asignaciones para los equipos de Davivienda Honduras."
+        ),
+        new SlideItem(
+            "Construimos juntos el futuro",
+            "Nuestra misión: brindar soluciones financieras accesibles que transformen la vida de las personas y fortalezcan el desarrollo de cada uno de nosotros."
+        ),
+        new SlideItem(
+            "Visión de excelencia",
+            "Ser el banco más admirado de Honduras, reconocido por su innovación, cercanía con el cliente y compromiso con la comunidad."
+        ),
+        new SlideItem(
+            "El éxito es trabajo en equipo",
+            "Cada proyecto, cada tarea y cada proceso que gestionamos es un paso más hacia la excelencia cambio para cada uno de nosotros."
+        )
+    };
+
+    protected override void OnInitialized()
+    {
+        autoTimer = new System.Timers.Timer(5000);
+        autoTimer.Elapsed += async (_, _) =>
+        {
+            await InvokeAsync(async () =>
+            {
+                int siguiente = (currentSlide + 1) % slides.Length;
+                await CambiarSlide(siguiente);
+            });
+        };
+        autoTimer.AutoReset = true;
+        autoTimer.Start();
+    }
+
+    private async Task CambiarSlide(int index)
+    {
+        if (index == currentSlide || animating) return;
+
+        animating = true;
+        StateHasChanged();
+        await Task.Delay(280);
+
+        currentSlide = index;
+        animating = false;
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        autoTimer?.Stop();
+        autoTimer?.Dispose();
+    }
+}

@@ -42,7 +42,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // Buscamos coincidencias dentro del contenido del comentario
                 string sqlQuery = "SELECT c.* FROM dbo.COMENTARIOS c WHERE c.COM_COM LIKE @texto";
 
                 await dataBase.ConnectAsync();

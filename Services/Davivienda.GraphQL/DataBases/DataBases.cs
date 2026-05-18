@@ -4,18 +4,17 @@ using System.Threading.Tasks;
 
 namespace Davivienda.GraphQL.DataBases
 {
-    // Implementamos IAsyncDisposable para que el contenedor de servicios
-    // pueda liberar la conexión de forma segura en entornos asíncronos como GraphQL.
-    public class DataBase : IDisposable, IAsyncDisposable
+    // IAsyncDisposable para que el contenedor de servicios
+    public class DataBase : IDisposable, /*/ /*/ IAsyncDisposable
     {
         private SqlConnection? connection;
 
-        // Propiedad para obtener la conexión activa
+        // Propiedad para obtener la conexión activa lo encapsulamos
         public SqlConnection? Connection { get => this.connection; }
 
         public DataBase()
         {
-            // Mantenemos tu cadena de conexión actual
+            // Mantenemos tu cadena de conexión 
             string stringConexion = "Server=DESKTOP-IJ2LO3K\\SQLEXPRESS;Database=Davivienda_Asignaciones;Trusted_Connection=True;TrustServerCertificate=True;";
             connection = new SqlConnection(stringConexion);
         }
@@ -48,7 +47,6 @@ namespace Davivienda.GraphQL.DataBases
             }
         }
 
-        // Limpieza Asíncrona: CRÍTICO para evitar errores de transacciones paralelas
         public async ValueTask DisposeAsync()
         {
             if (connection != null)

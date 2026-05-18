@@ -8,6 +8,7 @@
     /* padding: 20px; */
     position: relative;
     overflow: hidden;
+    background-color: #ffffff;
 }
 
     .login-page-container::before {
@@ -41,11 +42,11 @@
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     max-width: 450px;
     width: 100%;
-    padding: 40px;
-    position: relative;
+    padding: 62px;
+    position: absolute;
     z-index: 10;
     backdrop-filter: blur(10px);
-    margin-left: 60%;
+    margin-left: 67%;
 }
 
 .login-header {

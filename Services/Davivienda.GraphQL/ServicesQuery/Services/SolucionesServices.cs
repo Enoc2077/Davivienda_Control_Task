@@ -73,7 +73,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                 if (solucion.SOL_FEC_CRE == default)
                     solucion.SOL_FEC_CRE = DateTimeOffset.Now;
 
-                // Si FRI_ID es Guid.Empty dejamos null para respetar la FK
                 if (solucion.FRI_ID == Guid.Empty)
                     solucion.FRI_ID = null;
 
@@ -124,7 +123,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // FIX: Si FRI_ID es Guid.Empty lo dejamos null para respetar la FK
                 if (solucion.FRI_ID == Guid.Empty)
                     solucion.FRI_ID = null;
 
@@ -133,7 +131,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                 {
                     try
                     {
-                        // FIX: FRI_ID ahora se incluye en el UPDATE
                         string sqlUpdate = @"UPDATE dbo.SOLUCIONES SET 
                             SOL_NOM     = @SOL_NOM,
                             SOL_DES     = @SOL_DES,

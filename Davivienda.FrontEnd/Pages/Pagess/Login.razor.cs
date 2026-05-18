@@ -33,20 +33,16 @@ namespace Davivienda.FrontEnd.Pages.Pagess
 
         protected override async Task OnInitializedAsync()
         {
-            // 🔥 VERIFICAR SI YA HAY SESIÓN ACTIVA
             var token = await LocalStorage.GetItemAsync<string>("authToken");
             if (!string.IsNullOrEmpty(token))
             {
                 var authState = await AuthStateProvider.GetAuthenticationStateAsync();
                 if (authState.User.Identity?.IsAuthenticated == true)
                 {
-                    Console.WriteLine("✅ Sesión activa encontrada, redirigiendo...");
                     Nav.NavigateTo("/home");
                 }
                 else
                 {
-                    // Token inválido o expirado
-                    Console.WriteLine("⚠️ Token inválido, limpiando...");
                     await LocalStorage.RemoveItemAsync("authToken");
                 }
             }
@@ -57,11 +53,53 @@ namespace Davivienda.FrontEnd.Pages.Pagess
             cargando = true;
             errorMsg = "";
 
+            // --- Validaciones de caja negra: Número de empleado ---
+            if (string.IsNullOrWhiteSpace(loginModel.UsuNum))
+            {
+                errorMsg = "El número de empleado es obligatorio.";
+                cargando = false;
+                return;
+            }
+
+            if (loginModel.UsuNum.Length != 5)
+            {
+                errorMsg = "El número de empleado debe tener exactamente 5 dígitos.";
+                cargando = false;
+                return;
+            }
+
+            if (!loginModel.UsuNum.All(char.IsDigit))
+            {
+                errorMsg = "El número de empleado solo debe contener números.";
+                cargando = false;
+                return;
+            }
+
+            // --- Validaciones de caja negra: Contraseña ---
+            if (string.IsNullOrWhiteSpace(loginModel.Password))
+            {
+                errorMsg = "La contraseña es obligatoria.";
+                cargando = false;
+                return;
+            }
+
+            if (loginModel.Password.Length < 2)
+            {
+                errorMsg = "La contraseña debe tener al menos 2 caracteres.";
+                cargando = false;
+                return;
+            }
+
+            if (loginModel.Password.Length > 20)
+            {
+                errorMsg = "La contraseña no puede superar los 20 caracteres.";
+                cargando = false;
+                return;
+            }
+
             try
             {
-                // 🔥 LIMPIAR TOKEN ANTERIOR SI EXISTE
                 await LocalStorage.RemoveItemAsync("authToken");
-                Console.WriteLine("🔐 Solicitando nuevo token al backend...");
 
                 var result = await Client.IniciarSesion.ExecuteAsync(loginModel);
 
@@ -71,9 +109,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess
 
                     if (!string.IsNullOrEmpty(token))
                     {
-                        // 🔥 GUARDAR NUEVO TOKEN
                         await LocalStorage.SetItemAsync("authToken", token);
-                        Console.WriteLine("✅ Nuevo token guardado en LocalStorage");
 
                         if (AuthStateProvider is CustomAuthStateProvider customAuth)
                         {
@@ -84,18 +120,18 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     }
                     else
                     {
-                        errorMsg = "Error interno: El servidor no proporcionó un token válido.";
+                        errorMsg = "Error interno: el servidor no proporcionó un token válido.";
                     }
                 }
                 else
                 {
-                    errorMsg = result.Data?.Login.Mensaje ?? "Credenciales inválidas";
+                    errorMsg = result.Data?.Login.Mensaje ?? "Credenciales inválidas. Verifique su número de empleado y contraseña.";
                 }
             }
             catch (Exception ex)
             {
                 errorMsg = "No se pudo establecer conexión con el servidor.";
-                Console.WriteLine($"❌ Login Error: {ex.Message}");
+                Console.WriteLine($"Login Error: {ex.Message}");
             }
             finally
             {
@@ -113,7 +149,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess
 
             try
             {
-                // Validaciones
+                // --- Validaciones de caja negra: Número de empleado ---
                 if (string.IsNullOrWhiteSpace(nuevoUsuario.USU_NUM))
                 {
                     errorRegistro = "El número de empleado es obligatorio.";
@@ -121,7 +157,6 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     return;
                 }
 
-                // Validar que sean exactamente 5 dígitos
                 if (nuevoUsuario.USU_NUM.Length != 5)
                 {
                     errorRegistro = "El número de empleado debe tener exactamente 5 dígitos.";
@@ -129,14 +164,14 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     return;
                 }
 
-                // Validar que solo contenga números
                 if (!nuevoUsuario.USU_NUM.All(char.IsDigit))
                 {
-                    errorRegistro = "El número de empleado debe contener solo números.";
+                    errorRegistro = "El número de empleado solo debe contener números.";
                     registrando = false;
                     return;
                 }
 
+                // --- Otras validaciones de registro ---
                 if (string.IsNullOrWhiteSpace(nuevoUsuario.USU_NOM))
                 {
                     errorRegistro = "El nombre completo es obligatorio.";
@@ -158,6 +193,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     return;
                 }
 
+                // --- Validaciones de caja negra: Contraseña ---
                 if (string.IsNullOrWhiteSpace(nuevoUsuario.USU_CON))
                 {
                     errorPassword = true;
@@ -166,39 +202,39 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     return;
                 }
 
-                if (nuevoUsuario.USU_CON.Length < 5)
+                if (nuevoUsuario.USU_CON.Length < 2)
                 {
                     errorPassword = true;
+                    errorRegistro = "La contraseña debe tener al menos 2 caracteres.";
                     registrando = false;
                     return;
                 }
 
-                Console.WriteLine("📝 Creando nuevo usuario...");
-                Console.WriteLine($"   Número: {nuevoUsuario.USU_NUM}");
-                Console.WriteLine($"   Nombre: {nuevoUsuario.USU_NOM}");
-                Console.WriteLine($"   Email: {nuevoUsuario.USU_COR}");
+                if (nuevoUsuario.USU_CON.Length > 20)
+                {
+                    errorPassword = true;
+                    errorRegistro = "La contraseña no puede superar los 20 caracteres.";
+                    registrando = false;
+                    return;
+                }
 
-                // 🔥 BUSCAR EL ROL "Servicio" DESDE LA BASE DE DATOS
                 var resRoles = await Client.GetRoles.ExecuteAsync();
                 var rolServicio = resRoles.Data?.Roles?.FirstOrDefault(r =>
                     r.Rol_NOM.Equals("Servicio", StringComparison.OrdinalIgnoreCase));
 
                 if (rolServicio == null)
                 {
-                    errorRegistro = "Error: No se encontró el rol 'Servicio' en el sistema.";
+                    errorRegistro = "Error: no se encontró el rol 'Servicio' en el sistema.";
                     registrando = false;
                     return;
                 }
 
                 var rolServicioId = rolServicio.Rol_ID;
-                Console.WriteLine($"   Rol: Servicio ({rolServicioId})");
 
-                // 🔥 ASIGNAR VALORES
                 nuevoUsuario.ROL_ID = rolServicioId;
                 nuevoUsuario.USU_EST = true;
                 nuevoUsuario.USU_FEC_CRE = DateTimeOffset.Now;
 
-                // 🔥 CREAR USUARIO VIA GRAPHQL
                 var input = new GqlSdk.UsuarioModelInput
                 {
                     Usu_ID = Guid.NewGuid(),
@@ -216,26 +252,19 @@ namespace Davivienda.FrontEnd.Pages.Pagess
 
                 if (result.Data?.InsertUsuario != null)
                 {
-                    exitoRegistro = "✅ Usuario creado exitosamente. Ahora puede iniciar sesión.";
-                    Console.WriteLine("✅ Usuario registrado correctamente");
-
-                    // Esperar 2 segundos para que vea el mensaje de éxito
+                    exitoRegistro = "Usuario creado exitosamente. Ahora puede iniciar sesión.";
                     await Task.Delay(2000);
-
-                    // Cerrar modal
                     CerrarModalRegistro();
                 }
                 else
                 {
                     errorRegistro = "Error al crear el usuario. Intente nuevamente.";
-                    Console.WriteLine("❌ Error en la creación del usuario");
                 }
             }
             catch (Exception ex)
             {
                 errorRegistro = $"Error: {ex.Message}";
-                Console.WriteLine($"❌ Excepción al crear usuario: {ex.Message}");
-                Console.WriteLine($"   StackTrace: {ex.StackTrace}");
+                Console.WriteLine($"Excepción al crear usuario: {ex.Message}");
             }
             finally
             {

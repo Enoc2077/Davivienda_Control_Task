@@ -1,24 +1,24 @@
-﻿using Davivienda.Migrations.ModelosEF;
+﻿using Davivienda.Migrations.ModelosEF;  
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 
 namespace Davivienda.Migrations.DbContext
 {
-    // 1. LA FÁBRICA: Solo sirve para que la consola de 'dotnet ef' pueda crear el contexto
+    // 1.  Solo sirve para que la consola de 'dotnet ef' pueda crear el contexto
     public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
     {
         public ApplicationDbContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 
-            // Usamos tu servidor real: DESKTOP-IJ2LO3K\SQLEXPRESS
+            // Usamos el servidor local: DESKTOP-IJ2LO3K\SQLEXPRESS
             optionsBuilder.UseSqlServer("Server=DESKTOP-IJ2LO3K\\SQLEXPRESS;Database=Davivienda_Asignaciones;Trusted_Connection=True;TrustServerCertificate=True;");
 
             return new ApplicationDbContext(optionsBuilder.Options);
         }
     }
 
-    // 2. EL CONTEXTO: Aquí es donde definas tus tablas y mapeos
+    // 2.  Aquí definimos las tablas y mapeos       
     public class ApplicationDbContext : Microsoft.EntityFrameworkCore.DbContext
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
@@ -78,7 +78,7 @@ namespace Davivienda.Migrations.DbContext
                 entity.ToTable("TAREA");
                 entity.HasKey(e => e.TAR_ID);
 
-                // Ampliamos TAR_DES a MAX para que soporte el string de Base64 sin cortes
+                // Ampliamos TAR_DES a MAX para que soporte el string de Base64 
                 entity.Property(e => e.TAR_DES)
                       .HasColumnName("TAR_DES")
                       .HasColumnType("nvarchar(max)");
@@ -135,13 +135,13 @@ namespace Davivienda.Migrations.DbContext
             });
 
 
-            // Mapeo USUARIO (Asegura que las llaves foráneas funcionen)
+            // Mapeo USUARIO 
             modelBuilder.Entity<Usuario>(entity =>
             {
                 entity.ToTable("USUARIO");
                 entity.HasKey(e => e.USU_ID);
 
-                // Solo pones el área porque crees que el rol ya "se sabe"
+             
                 entity.HasOne(u => u.Area)
                       .WithMany()
                       .HasForeignKey(u => u.ARE_ID);
@@ -152,14 +152,14 @@ namespace Davivienda.Migrations.DbContext
                 entity.ToTable("BITACORA_SOLUCIONES");
                 entity.HasKey(e => e.BIT_SOL_ID);
 
-                // Configuramos explícitamente el tipo de columna como datetimeoffset
+                // Configuramos la columna como datetimeoffset
                 entity.Property(e => e.BIT_SOL_TIE_TOT_TRA)
                       .HasColumnName("BIT_SOL_TIE_TOT_TRA")
                       .HasColumnType("datetimeoffset");
             });
 
 
-            // Mapeo de las demás tablas en mayúsculas
+            // Mapeo de las demás tablas
             modelBuilder.Entity<Roles>().ToTable("ROLES");
             modelBuilder.Entity<Usuario>().ToTable("USUARIO");
             modelBuilder.Entity<Proyecto>().ToTable("PROYECTO");
@@ -173,11 +173,11 @@ namespace Davivienda.Migrations.DbContext
             modelBuilder.Entity<Documentacion>().ToTable("DOCUMENTACION");
             modelBuilder.Entity<BitacoraSoluciones>().ToTable("BITACORA_SOLUCIONES");
             modelBuilder.Entity<BitacoraFriccion>().ToTable("BITACORA_FRICCIONES");
-            modelBuilder.Entity<Notificaciones>().ToTable("NOTIFICACIONES");
+            //modelBuilder.Entity<Notificaciones>().ToTable("NOTIFICACIONES");
 
 
             // ==========================================
-            // 🔥 SECCIÓN DE DATOS SEMILLA (SEED DATA)
+            //  SECCIÓN DE DATOS
             // ==========================================
 
             var areaAdminId = Guid.Parse("f9b2d8e4-7c5a-4b2a-8d3f-1a2b3c4d5e6f");

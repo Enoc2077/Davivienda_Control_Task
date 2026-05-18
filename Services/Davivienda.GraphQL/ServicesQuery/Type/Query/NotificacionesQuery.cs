@@ -7,7 +7,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Query
     [ExtendObjectType("Query")]
     public class NotificacionesQuery
     {
-        // Obtener el listado de todas las notificaciones
         public async Task<IEnumerable<NotificacionesModel>> GetNotificaciones(
             [Service] NotificacionesServices notiServices,
             IResolverContext context)
@@ -15,7 +14,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Query
             return await notiServices.GetNotificaciones(context);
         }
 
-        // Obtener una notificación específica por su ID (NOT_ID)
         public async Task<NotificacionesModel?> GetNotificacionById(
             Guid not_id,
             [Service] NotificacionesServices notiServices,

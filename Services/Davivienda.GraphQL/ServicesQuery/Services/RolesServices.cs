@@ -2,7 +2,7 @@
 using Davivienda.GraphQL.DataBases;
 using Davivienda.Models;
 using Davivienda.Models.Modelos;
-using Davivienda.QueryBuilder.Builder; // Asegúrate de que esta referencia exista
+using Davivienda.QueryBuilder.Builder; 
 using HotChocolate.Language;
 using HotChocolate.Resolvers;
 
@@ -11,12 +11,12 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
     public class RolesServices
     {
         private readonly DataBase dataBase;
-        private readonly RolesQueryBuilder rolBuilder; // Inyección del Builder
+        private readonly RolesQueryBuilder rolBuilder; 
 
         public RolesServices(DataBase dataBase, RolesQueryBuilder builder)
         {
             this.dataBase = dataBase;
-            this.rolBuilder = builder; // Asignación del builder
+            this.rolBuilder = builder; 
         }
 
         // --- QUERIES ---
@@ -44,7 +44,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // Búsqueda por coincidencia en ROL_NOM
                 string sqlQuery = "SELECT r.* FROM dbo.ROLES r WHERE r.ROL_NOM LIKE @nombre";
 
                 await dataBase.ConnectAsync();
@@ -82,7 +81,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             {
                 if (rol.ROL_ID == Guid.Empty) rol.ROL_ID = Guid.NewGuid();
 
-                // Mantenemos tu lógica de omitir fechas si así está en tu DB
                 string sqlQuery = @"INSERT INTO dbo.ROLES 
                                     (ROL_ID, ROL_NOM, ROL_DES, ROL_EST) 
                                     VALUES 

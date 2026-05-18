@@ -15,7 +15,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Mutations
            [Service] ITopicEventSender eventSender,
            CancellationToken cancellationToken)
         {
-            // Notifica el evento de inserción
             await eventSender.SendAsync(nameof(InsertAreas), area);
             return await areasServices.InsertArea(context, area);
         }
@@ -26,7 +25,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Mutations
             [Service] AreaServices areasServices,
             Guid area_id)
         {
-            // Nota: En tu oficina el método en el service se llama DeleteAreas (en plural)
             return await areasServices.DeleteAreas(context, area_id);
         }
 
@@ -37,7 +35,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Mutations
             AreasModel areas,
             [Service] ITopicEventSender topicEventSender)
         {
-            // Notifica usando el nombre de la suscripción
             await topicEventSender.SendAsync("UpdateArea", areas);
             return await areasServices.UpdateAreas(context, areas);
         }

@@ -1,10 +1,11 @@
-﻿.home-data-analysis {
+﻿/* *********************** CONTENEDOR PRINCIPAL***************** */
+
+.home-data-analysis {
     min-height: 102vh;
     background: linear-gradient(135deg, #e8eaf6 0%, #f3e5f5 50%, #f8f9ff 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    /* padding: 40px 20px; */
     position: relative;
     overflow: hidden;
     margin-top: -2%;
@@ -20,6 +21,8 @@
     gap: 80px;
     align-items: center;
 }
+
+/**********************CONTENIDO IZQUIERDO***********************/
 
 .content-left {
     padding: 40px;
@@ -42,28 +45,7 @@
     max-width: 480px;
 }
 
-.btn-learn-more {
-    background: linear-gradient(135deg, #ff5252 0%, #ff4081 100%);
-    color: white;
-    border: none;
-    padding: 16px 40px;
-    border-radius: 30px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 8px 24px rgba(255, 64, 129, 0.35);
-    transition: all 0.3s ease;
-    text-transform: capitalize;
-}
-
-    .btn-learn-more:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 32px rgba(255, 64, 129, 0.45);
-    }
-
-    .btn-learn-more:active {
-        transform: translateY(-1px);
-    }
+/***************Puntos de navegacion****************+*/
 
 .pagination-dots {
     display: flex;
@@ -89,6 +71,42 @@
     .dot:hover:not(.active) {
         background: #a0aec0;
     }
+
+/***********************Aniaciones de texto **************/
+
+.slide-in {
+    animation: slideIn 0.35s ease forwards;
+}
+
+.slide-out {
+    animation: slideOut 0.28s ease forwards;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-14px);
+    }
+}
+
+/****************CONTENIDO DERECHO Y ILUSTACIONES*********************** */
 
 .content-right {
     position: relative;
@@ -139,6 +157,8 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
+/*****************Engranajes animados**********/
+
 .decoration-gear {
     position: absolute;
     width: 40px;
@@ -174,6 +194,8 @@
     }
 }
 
+/* ******** Colores de las barras **************/
+
 .chart-bars {
     position: absolute;
     bottom: 80px;
@@ -204,6 +226,8 @@
     }
 }
 
+/******************* Colores de las barras **************/
+
 .bar-red {
     background: linear-gradient(180deg, #ff5252 0%, #ff1744 100%);
 }
@@ -223,6 +247,8 @@
 .bar-blue {
     background: linear-gradient(180deg, #42a5f5 0%, #1e88e5 100%);
 }
+
+/********** diseño de personas******************* */
 
 .person {
     position: absolute;
@@ -295,6 +321,8 @@
         border: 2px solid #5e72e4;
     }
 
+/*************** RESPONSIVE *****************/
+
 @media (max-width: 1024px) {
     .container-home {
         grid-template-columns: 1fr;
@@ -326,11 +354,6 @@
 
     .description-analysis {
         font-size: 15px;
-    }
-
-    .btn-learn-more {
-        padding: 14px 32px;
-        font-size: 14px;
     }
 
     .chart-bars {

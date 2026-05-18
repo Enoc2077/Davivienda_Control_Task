@@ -78,7 +78,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // Validación de IDs y Fechas con los nombres nuevos
                 if (bitacora.BIT_FRI_ID == Guid.Empty) bitacora.BIT_FRI_ID = Guid.NewGuid();
                 if (bitacora.BIT_FRI_FEC_CRE == default) bitacora.BIT_FRI_FEC_CRE = DateTimeOffset.Now;
 

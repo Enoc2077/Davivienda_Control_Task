@@ -7,7 +7,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Query
     [ExtendObjectType("Query")]
     public class DetalleProyectoQuery
     {
-        // Obtiene todos los detalles de proyectos (asignaciones)
         public async Task<IEnumerable<DetalleProyectoModel>> GetDetallesProyecto(
             [Service] DetalleProyectoServices detalleServices,
             IResolverContext context)
@@ -15,7 +14,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Query
             return await detalleServices.GetDetallesProyecto(context);
         }
 
-        // Obtiene una asignación específica mediante su ID único (DET_PRO_ID)
         public async Task<DetalleProyectoModel?> GetDetalleProyectoById(
             Guid det_pro_id,
             [Service] DetalleProyectoServices detalleServices,
