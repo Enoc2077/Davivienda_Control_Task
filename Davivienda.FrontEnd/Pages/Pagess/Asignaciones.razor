@@ -35,7 +35,6 @@
 
             <div class="panel-content-horizontal">
                 <div id="scroll-container" class="horizontal-scroll-wrapper">
-                    @* Muestra TODAS las tareas: pendiente, en progreso y completadas dentro de 24h *@
                     @if (TareasFiltradas != null && TareasFiltradas.Any())
                     {
                         @foreach (var tarea in TareasFiltradas)
@@ -143,7 +142,6 @@
         <section class="panel-grafica-izq">
             <div class="grafica-header">
                 <h3 class="panel-title-bold">Estado de Tareas</h3>
-                @* Contador muestra solo las activas (sin completadas) *@
                 <span class="total-badge">@TotalTareasCount Tareas</span>
             </div>
             <div class="divider-line"></div>
@@ -155,22 +153,15 @@
             <div class="chart-legend-row">
                 <div class="legend-item" @onclick='() => FiltrarPorEstadoGrafica("Pendiente")' style="cursor:pointer;">
                     <span class="legend-dot dot-pendiente"></span> Pendiente
-                    <strong class="legend-count">
-                        @(Tasks?.Count(t => t.TAR_EST == "Pendiente") ?? 0)
-                    </strong>
+                    <strong class="legend-count">@(Tasks?.Count(t => t.TAR_EST == "Pendiente") ?? 0)</strong>
                 </div>
                 <div class="legend-item" @onclick='() => FiltrarPorEstadoGrafica("En Progreso")' style="cursor:pointer;">
                     <span class="legend-dot dot-progreso"></span> En Progreso
-                    <strong class="legend-count">
-                        @(Tasks?.Count(t => t.TAR_EST == "En Progreso") ?? 0)
-                    </strong>
+                    <strong class="legend-count">@(Tasks?.Count(t => t.TAR_EST == "En Progreso") ?? 0)</strong>
                 </div>
-                @* Completado muestra las que aun estan visibles (dentro de 24h) *@
                 <div class="legend-item" @onclick='() => FiltrarPorEstadoGrafica("Completado")' style="cursor:pointer;">
                     <span class="legend-dot dot-completado"></span> Completado
-                    <strong class="legend-count">
-                        @(Tasks?.Count(t => t.TAR_EST == "Completado") ?? 0)
-                    </strong>
+                    <strong class="legend-count">@(Tasks?.Count(t => t.TAR_EST == "Completado") ?? 0)</strong>
                 </div>
                 <div class="legend-item" @onclick='() => FiltrarPorEstadoGrafica("Todas")' style="cursor:pointer;">
                     <span class="legend-dot dot-todas"></span> Todas
@@ -193,29 +184,26 @@
     </div>
 </div>
 
-@* MODAL *@
-@if (MostrarModal)
+@* MODAL SOLO PARA CALENDARIO *@
+@if (MostrarModal && ModalActual == "CALENDARIO")
 {
     <div class="modal-backdrop-dav" @onclick="CerrarModal">
         <div class="modal-calendar-content" @onclick:stopPropagation>
             <div class="modal-header-dav">
-                <h3 style="font-weight:800;color:#1e3a5f;margin:0;">
-                    @(ModalActual == "CALENDARIO" ? "Agenda" : "Detalle de Tarea")
-                </h3>
+                <h3 style="font-weight:800;color:#1e3a5f;margin:0;">Agenda</h3>
                 <button class="close-btn-dav" @onclick="CerrarModal">x</button>
             </div>
             <div class="modal-body-dav">
-                @if (ModalActual == "CALENDARIO")
-                {
-                    <Calendario />
-                }
-                else if (ModalActual == "DETALLE" && TareaSeleccionada != null)
-                {
-                    <Davivienda.Component.Componentes.DetalleTarea Tarea="TareaSeleccionada" OnClose="CerrarModal" />
-                }
+                <Calendario />
             </div>
         </div>
     </div>
+}
+
+@* DETALLE TAREA: directo sin contenedor modal *@
+@if (MostrarModal && ModalActual == "DETALLE" && TareaSeleccionada != null)
+{
+    <Davivienda.Component.Componentes.DetalleTarea Tarea="TareaSeleccionada" OnClose="CerrarModal" />
 }
 
 @* BITACORA *@

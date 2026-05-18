@@ -1,260 +1,349 @@
-﻿/* ============================================================
-   CrearFriccion / CrearSolucion — Modal estilo Davivienda
-   Aplica al archivo que contiene .modal-premium-overlay
-   (puede ser un archivo compartido o en DetalleTarea.razor.css)
-   ============================================================ */
+﻿/* ******* backdrop transparente ******* */
 
-/* OVERLAY */
-.modal-premium-overlay {
+.crear-fri-backdrop {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.45);
-    backdrop-filter: blur(8px);
-    z-index: 11000;
+    background: transparent;
+    z-index: 10500;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    align-items: stretch;
+    justify-content: flex-end;
 }
 
-/* CARD — mas grande y ancho (punto 4) */
-.modal-card-registro {
+/* ******* panel lateral derecho ******* */
+
+.crear-fri-panel {
+    width: 60%;
+    max-width: 860px;
+    height: 100%;
     background: #ffffff;
-    width: 100%;
-    max-width: 860px; /* antes 800px, ahora 860px */
-    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -6px 0 40px rgba(0, 0, 0, 0.14);
+    animation: slideFromRight 0.32s cubic-bezier(0.16, 1, 0.3, 1);
     overflow: hidden;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.18);
-    border: 1px solid #e8edf5;
-    position: relative;
 }
 
-/* FRANJA SUPERIOR — degradado Davivienda (azul → rojo) */
-.modal-top-accent-gold {
-    height: 5px;
-    background: linear-gradient(90deg, #0033a0 0%, #ed1c24 100%);
-    width: 100%;
+@keyframes slideFromRight {
+    from {
+        opacity: 0;
+        transform: translateX(60px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
-/* HEADER */
-.modal-header-registro {
-    background: #ffffff;
-    padding: 28px 36px 16px;
+/* ******* toolbar ******* */
+
+.crear-fri-toolbar {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid #f1f5f9;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 56px;
+    border-bottom: 1px solid #e8edf5;
+    background: #ffffff;
+    flex-shrink: 0;
+    gap: 16px;
 }
 
-.modal-header-left {
+.crear-fri-toolbar-left {
     display: flex;
     align-items: center;
     gap: 14px;
+    flex: 1;
+    min-width: 0;
 }
 
-.modal-header-icon {
-    width: 42px;
-    height: 42px;
-    background: #fff1f2;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ed1c24;
-    font-size: 1.2rem;
-}
-
-.modal-title-main {
-    font-size: 1.3rem;
-    font-weight: 800;
-    color: #0033a0;
-    margin: 0 0 2px 0;
-    letter-spacing: -0.3px;
-}
-
-.modal-title-sub {
-    font-size: 0.72rem;
-    color: #94a3b8;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* BOTON CERRAR X — estilo consistente con DetalleTarea */
-.btn-close-x {
-    background: #eff6ff;
-    border: 1px solid #bfdbfe;
-    width: 36px;
-    height: 36px;
+.crear-fri-dot {
+    width: 9px;
+    height: 9px;
+    background: #ed1c24;
     border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.crear-fri-brand {
+    font-size: 0.78rem;
+    font-weight: 700;
     color: #0033a0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.crear-fri-divider {
+    width: 1px;
+    height: 22px;
+    background: #e8edf5;
+    flex-shrink: 0;
+}
+
+.crear-fri-toolbar-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #ea580c;
+    white-space: nowrap;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.crear-fri-btn-cerrar {
+    background: #fff1f2;
+    border: 1px solid #fda4af;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    color: #ed1c24;
     font-size: 1.1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    opacity: 1;
-    visibility: visible;
-    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.3s;
     flex-shrink: 0;
+    transition: background 0.2s, color 0.2s, transform 0.25s;
 }
 
-    .btn-close-x:hover {
-        background: #ed1c24;
-        color: white;
-        border-color: #ed1c24;
+    .crear-fri-btn-cerrar:hover {
+        background: #b91c1c;
+        color: #ffffff;
+        border-color: #b91c1c;
         transform: rotate(90deg);
     }
 
-/* BODY */
-.modal-body-registro {
-    padding: 24px 36px 32px;
+/* ******* scroll contenido ******* */
+
+.crear-fri-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
-/* GRID FORMULARIO */
-.form-grid-registro {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-    margin-bottom: 28px;
+    .crear-fri-scroll::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .crear-fri-scroll::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+
+/* ******* seccion titulo y referencia ******* */
+
+.crear-fri-titulo-section {
+    padding: 32px 36px 20px;
 }
 
-.input-group-registro {
+.crear-fri-titulo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.crear-fri-tarea-ref {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .crear-fri-tarea-ref i {
+        color: #94a3b8;
+        font-size: 0.85rem;
+    }
+
+.crear-fri-tarea-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.crear-fri-tarea-nombre {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0033a0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ******* divisor ******* */
+
+.crear-fri-divisor {
+    height: 1px;
+    background: #e8edf5;
+    margin: 0 36px;
+}
+
+/* ******* body formulario ******* */
+
+.crear-fri-body {
+    padding: 28px 36px 36px;
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 22px;
 }
 
-    .input-group-registro.full-width {
-        grid-column: 1 / -1;
-    }
+/* ******* campo individual ******* */
 
-    .input-group-registro label {
-        font-size: 0.68rem;
-        font-weight: 700;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.6px;
-    }
+.crear-fri-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
 
-/* INPUTS */
-.input-field-premium {
+.crear-fri-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.crear-fri-input {
     width: 100%;
-    padding: 11px 16px;
+    padding: 14px 18px;
     border: 1.5px solid #e8edf5;
-    border-radius: 10px;
+    border-radius: 12px;
     background: #f8fafc;
-    font-size: 0.88rem;
+    font-size: 0.95rem;
     color: #1e293b;
-    transition: all 0.2s;
     outline: none;
     box-sizing: border-box;
-    font-family: inherit;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
 }
 
-    .input-field-premium:focus {
+    .crear-fri-input:focus {
         border-color: #0033a0;
         background: #ffffff;
         box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.08);
     }
 
-/* SELECT con estilo */
-.select-premium {
-    cursor: pointer;
-    appearance: auto;
-    font-weight: 600;
-}
-
-    .select-premium:focus {
-        border-color: #0033a0;
+    .crear-fri-input::placeholder {
+        color: #b0b8c4;
     }
 
-/* YOOPTA CONTAINER */
-.yoopta-editor-container {
+/* ******* yoopta ******* */
+
+.crear-fri-yoopta {
     width: 100%;
-    min-height: 160px;
-    max-height: 260px;
-    background: #ffffff;
+    min-height: 180px;
     border: 1.5px solid #e8edf5;
-    border-radius: 10px;
+    border-radius: 12px;
+    background: #ffffff;
     overflow-y: auto;
+    box-sizing: border-box;
     transition: border-color 0.2s, box-shadow 0.2s;
-    position: relative;
 }
 
-    .yoopta-editor-container:focus-within {
+    .crear-fri-yoopta:focus-within {
         border-color: #0033a0;
         box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.08);
     }
 
-/* FOOTER */
-.modal-footer-registro {
-    display: flex;
-    gap: 12px;
-    justify-content: flex-end;
+/* ******* fila dos columnas ******* */
+
+.crear-fri-fila-dos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
 }
 
-/* Boton cancelar */
-.btn-cancel-premium {
+.crear-fri-select {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1.5px solid #e8edf5;
+    border-radius: 12px;
+    background: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+    cursor: pointer;
+    outline: none;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    appearance: auto;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+    .crear-fri-select:focus {
+        border-color: #0033a0;
+        box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.08);
+    }
+
+/* ******* footer botones ******* */
+
+.crear-fri-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+}
+
+.crear-fri-btn-regresar {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 10px 24px;
-    border-radius: 10px;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 12px;
     border: 1.5px solid #e8edf5;
     background: #ffffff;
-    font-size: 0.82rem;
+    font-size: 0.88rem;
     font-weight: 700;
     color: #64748b;
     cursor: pointer;
+    font-family: 'Segoe UI', system-ui, sans-serif;
     transition: all 0.2s;
 }
 
-    .btn-cancel-premium:hover {
+    .crear-fri-btn-regresar:hover {
         background: #f8fafc;
-        border-color: #cbd5e1;
+        border-color: #94a3b8;
         color: #475569;
     }
 
-/* Boton guardar — azul oscuro, texto rojo */
-.btn-save-premium {
+.crear-fri-btn-guardar {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 10px 28px;
-    border-radius: 10px;
-    background: #001f6b;
-    color: #ff6b6b;
+    gap: 8px;
+    padding: 12px 30px;
+    border-radius: 12px;
+    background: #0033a0;
+    color: #ffffff;
     border: none;
-    font-size: 0.82rem;
+    font-size: 0.88rem;
     font-weight: 800;
     cursor: pointer;
-    box-shadow: 0 4px 14px rgba(0, 31, 107, 0.25);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    box-shadow: 0 4px 14px rgba(0, 51, 160, 0.25);
     transition: all 0.2s;
-    letter-spacing: 0.3px;
 }
 
-    .btn-save-premium:hover {
-        background: #00134a;
-        color: #ff4444;
+    .crear-fri-btn-guardar:hover {
+        background: #002280;
         transform: translateY(-1px);
-        box-shadow: 0 6px 18px rgba(0, 31, 107, 0.3);
+        box-shadow: 0 6px 18px rgba(0, 51, 160, 0.32);
     }
 
-/* ANIMACION DE ENTRADA */
-.animate-pop {
-    animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+/* ******* animacion ******* */
 
-@keyframes popIn {
+@keyframes slideFromRight {
     from {
         opacity: 0;
-        transform: scale(0.92) translateY(16px);
+        transform: translateX(60px);
     }
 
     to {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: translateX(0);
     }
 }

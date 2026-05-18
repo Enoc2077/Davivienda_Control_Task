@@ -1,4 +1,5 @@
-﻿/* --- ESTILOS DE CABECERA (HEADER) --- */
+﻿/* ******* header perfil ******* */
+
 .sidebar-header-profile {
     background: linear-gradient(135deg, #e30613 0%, #a1040d 100%);
     padding: 35px 20px;
@@ -13,7 +14,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background-image: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px);
+    background-image: repeating-linear-gradient( 45deg, transparent, transparent 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px );
     pointer-events: none;
 }
 
@@ -75,109 +76,75 @@
     background: #e2e8f0;
 }
 
-/* --- BOTONES PRINCIPALES (MENU ADMIN) --- */
-/* Botón de Administración */
+/* ******* boton administracion e icono ******* */
+
 .menu-button-modern {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
     gap: 14px;
-    padding: 12px 16px;
-    height: 60px;
+    padding: 13px 16px;
+    color: #334155;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    transition: background 0.2s ease, color 0.2s ease;
 }
 
-/* Submenús */
-.submenu-button-modern {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    gap: 12px;
-    padding: 12px 18px;
-}
+    .menu-button-modern:hover {
+        background: #fef5f5;
+        color: #e30613;
+    }
 
-/* Botón Cerrar Sesión (Footer) */
-.logout-button-modern {
-    display: flex;
-    align-items: center;
-    justify-content: center; /* Este se mantiene al centro por estética de footer */
-    gap: 10px;
-}
+        .menu-button-modern:hover .icon-box {
+            background: #e30613;
+            color: #ffffff;
+            transform: scale(1.05);
+        }
 
 .icon-box {
     width: 36px;
     height: 36px;
-    background: #f8fafc;
-    border-radius: 8px;
+    background: #f1f5f9;
+    border-radius: 9px;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #64748b;
-    font-size: 18px;
-    transition: all 0.3s ease;
+    font-size: 17px;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    flex-shrink: 0;
 }
 
-.menu-button-modern:hover .icon-box {
-    background: #e30613;
-    color: #ffffff;
+.menu-text-modern {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
 }
 
-/* --- SUBMENÚ Y ANIMACIONES --- */
+/* ******* submenu wrapper ******* */
+
 .submenu-wrapper {
-    padding: 12px 0 0 0;
+    padding: 4px 0 6px 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    background: transparent;
-    animation: slideDownSub 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 4px;
+    animation: slideDownSub 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.nav-sub-container {
-    background: #ffffff;
-    border: 1px solid #f1f5f9;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-    margin-bottom: 4px;
-    transition: all 0.2s ease-in-out;
-    border-radius: 10px;
-    overflow: hidden;
-}
+/* ******* footer cerrar sesion ******* */
 
-.submenu-button-modern {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 18px;
-    color: #64748b;
-    font-size: 14px;
-    font-weight: 500;
-    border: none;
-    background: transparent;
-    width: 100%;
-    cursor: pointer;
-    text-align: left;
-}
-
-.nav-sub-container:hover {
-    transform: translateX(8px);
-    border-color: #e30613;
-    box-shadow: 0 4px 12px rgba(227,6,19,0.12);
-}
-
-    .nav-sub-container:hover .submenu-button-modern {
-        color: #e30613;
-        font-weight: 600;
-    }
-
-    .nav-sub-container:hover i {
-        color: #e30613;
-        transform: scale(1.1);
-    }
-
-/* --- FOOTER Y LOGOUT --- */
 .sidebar-footer-modern {
     padding: 20px;
     background: #ffffff;
     border-top: 1px solid #edf2f7;
-    margin-top: auto; /* Empuja al fondo */
+    margin-top: auto;
 }
 
 .logout-button-modern {
@@ -186,22 +153,24 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
-    padding: 16px 20px; /* Más padding */
+    padding: 16px 20px;
     background: #fff5f5;
-    border: none; /* Sin bordes */
-    border-radius: 0; /* Sin border-radius para pegar al borde */
+    border: none;
+    border-radius: 0;
     color: #c53030;
     font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
-    border-top: 1px solid #fed7d7; /* Solo borde superior */
+    border-top: 1px solid #fed7d7;
 }
 
     .logout-button-modern:hover {
         background: #c53030;
         color: white;
     }
+
+/* ******* animaciones ******* */
 
 @keyframes slideDownSub {
     from {
@@ -215,16 +184,22 @@
     }
 }
 
+@keyframes pulseStatus {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
 @keyframes avatarPulse {
-    0% {
+    0%, 100% {
         opacity: 0.6;
     }
 
     50% {
         opacity: 1;
-    }
-
-    100% {
-        opacity: 0.6;
     }
 }

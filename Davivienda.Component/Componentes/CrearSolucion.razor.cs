@@ -12,20 +12,14 @@ namespace Davivienda.Component.Componentes
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
 
-        // FriccionId puede venir del componente padre (DetalleTarea)
-        // pero ahora el usuario tambien puede elegir desde el select
         [Parameter] public Guid FriccionId { get; set; }
-
-        // TareaId para filtrar las fricciones de esa tarea
         [Parameter] public Guid TareaId { get; set; }
-
+        [Parameter] public string NombreTarea { get; set; } = "Sin nombre";
         [Parameter] public EventCallback OnSuccess { get; set; }
         [Parameter] public EventCallback OnClose { get; set; }
 
-        // Lista de fricciones disponibles para la tarea
         public List<FriccionModel> FriccionesDisponibles { get; set; } = new();
 
-        // ID de friccion seleccionado en el select (string para manejar el valor vacio)
         private string friccionSeleccionadaId = "";
 
         private SolucionesModel nuevaSolucion = new SolucionesModel
@@ -37,7 +31,6 @@ namespace Davivienda.Component.Componentes
 
         protected override async Task OnInitializedAsync()
         {
-            // Si viene un FriccionId del padre, lo preseleccionamos
             if (FriccionId != Guid.Empty)
                 friccionSeleccionadaId = FriccionId.ToString();
 
@@ -79,7 +72,6 @@ namespace Davivienda.Component.Componentes
             {
                 if (string.IsNullOrWhiteSpace(nuevaSolucion.SOL_NOM)) return;
 
-                // Resolver el ID de friccion seleccionado
                 Guid? frId = null;
                 if (!string.IsNullOrEmpty(friccionSeleccionadaId) &&
                     Guid.TryParse(friccionSeleccionadaId, out Guid parsedId))
@@ -94,7 +86,7 @@ namespace Davivienda.Component.Componentes
                     Sol_DES = nuevaSolucion.SOL_DES,
                     Sol_EST = nuevaSolucion.SOL_EST ?? "Pendiente",
                     Sol_NIV_EFE = nuevaSolucion.SOL_NIV_EFE ?? 50,
-                    Fri_ID = frId,   // null si no se selecciono ninguna
+                    Fri_ID = frId,
                     Usu_ID = Guid.Parse("0BC4DB21-1FFB-46BB-B120-48AE7B0909CD"),
                     Sol_FEC_CRE = DateTimeOffset.Now
                 };

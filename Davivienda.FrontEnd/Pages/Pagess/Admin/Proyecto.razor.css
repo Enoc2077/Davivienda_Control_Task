@@ -1,14 +1,16 @@
-﻿/* --- VARIABLES DE COLOR Y ESTILO --- */
+﻿/* ******* variables ******* */
+
 :root {
     --dav-red: #ed1c24;
     --dav-blue: #0033a0;
     --bg-light: #f4f7f9;
-    --border-color: #d1d5db; /* Borde gris definido */
+    --border-color: #d1d5db;
     --text-dark: #1f2937;
     --text-muted: #6b7280;
 }
 
-/* Scrollbar estético para todos los paneles */
+/* ******* scrollbar ******* */
+
 .cards-stack::-webkit-scrollbar,
 .status-scroll-area::-webkit-scrollbar,
 .table-scroll::-webkit-scrollbar {
@@ -22,15 +24,22 @@
     border-radius: 10px;
 }
 
-/* --- CONTENEDOR PRINCIPAL --- */
+/* ******* contenedor principal ******* */
+
 .projects-main-container {
     padding: 2rem;
-    background-color: #f9fafb; /* antes era #f4f7f9, ahora más blanco */
+    background-color: #fafcff;
     min-height: 100vh;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* --- BARRA DE FILTROS --- */
+.container-blur {
+    filter: blur(4px);
+    pointer-events: none;
+}
+
+/* ******* barra de filtros ******* */
+
 .header-filter-bar {
     display: flex;
     flex-direction: row;
@@ -44,7 +53,6 @@
     border: 1px solid #e5e7eb;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
- 
 
 .search-pill-container {
     background: #f3f4f6;
@@ -63,6 +71,11 @@
     width: 300px;
     font-size: 0.95rem;
     background: transparent;
+}
+
+.select-pill-container {
+    display: flex;
+    align-items: center;
 }
 
 .select-pill {
@@ -92,7 +105,35 @@
         background-color: #c4161c;
     }
 
-/* --- GRID DE DISTRIBUCIÓN --- */
+.btn-historial-proyectos {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    white-space: nowrap;
+}
+
+    .btn-historial-proyectos:hover {
+        background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        transform: translateY(-2px);
+    }
+
+    .btn-historial-proyectos i {
+        font-size: 14px;
+    }
+
+/* ******* grid superior ******* */
+
 .dashboard-top-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -100,7 +141,8 @@
     align-items: start;
 }
 
-/* --- CUADRO IZQUIERDO: PROYECTOS --- */
+/* ******* panel izquierdo proyectos ******* */
+
 .projects-list-card {
     background: #ffffff;
     border: 1px solid var(--border-color);
@@ -187,170 +229,6 @@
     font-weight: 700;
 }
 
-/* --- CUADRO DERECHO: ESTADO DE AVANCE --- */
-.status-progress-card {
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-    display: flex;
-    flex-direction: column;
-    height: 520px;
-}
-
-.status-list-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #f3f4f6;
-}
-
-.status-title-text {
-    font-size: 1.25rem;
-    color: var(--text-dark);
-    font-weight: 700;
-    margin: 0;
-}
-
-.status-scroll-area {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-    overflow-y: auto;
-    flex-grow: 1;
-    padding-right: 8px;
-}
-
-.progress-individual-row {
-    display: flex;
-    flex-direction: column;
-    gap: 0.6rem;
-}
-
-.progress-project-label {
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--dav-blue);
-}
-
-.progress-flex-container {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-}
-
-.progress-track-bg {
-    flex-grow: 1;
-    height: 12px;
-    background-color: #efebeb;
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    overflow: hidden;
-}
-
-.progress-fill-indicator {
-    height: 100%;
-    background-color: var(--dav-red);
-    border-radius: 20px;
-    transition: width 0.5s ease-in-out;
-}
-
-.progress-percentage-number {
-    font-weight: 700;
-    color: var(--text-dark);
-    font-size: 0.95rem;
-    min-width: 45px;
-    text-align: right;
-}
-
-/* --- MODAL Y BLUR --- */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.container-blur {
-    filter: blur(4px);
-    pointer-events: none;
-}
-
-/* Scrollbar para ambos */
-.cards-stack::-webkit-scrollbar,
-.status-scroll-area::-webkit-scrollbar {
-    width: 6px;
-}
-
-.cards-stack::-webkit-scrollbar-thumb,
-.status-scroll-area::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 10px;
-}
-/* --- TARJETAS BLANCAS INDIVIDUALES PARA PROGRESO --- */
-.progress-card-item {
-    background: #ffffff;
-    border: 1px solid #e5e7eb; /* Mismo borde que el cuadro izquierdo */
-    border-radius: 10px;
-    padding: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.8rem;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-    /* Efecto sutil al pasar el mouse */
-    .progress-card-item:hover {
-        border-color: var(--dav-blue);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-/* Ajuste del scroll para dar espacio a las tarjetas */
-.status-scroll-area {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem; /* Espacio entre cada cuadro blanco */
-    overflow-y: auto;
-    flex-grow: 1;
-    padding: 0.5rem; /* Padding extra para que la sombra no se corte */
-}
-
-/* Modificación del contenedor del panel (opcional) */
-.status-progress-card {
-    background: #f8fafc; /* Fondo ligeramente gris para que los cuadros blancos resalten */
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    height: 520px;
-    display: flex;
-    flex-direction: column;
-}
-.status-scroll-area {
-    overflow-y: auto; /* Activa el scroll interno si hay muchos proyectos */
-    flex-grow: 1;
-    padding-right: 8px;
-}
-
-/* Estilo de la barra dentro del cuadro blanco */
-.progress-track-bg {
-    flex-grow: 1;
-    height: 10px; /* Un poco más delgada para verse elegante */
-    background-color: #f3f4f6;
-    border: 1px solid #e5e7eb;
-    border-radius: 20px;
-    overflow: hidden;
-}
-
 .btn-view-details {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
     color: white;
@@ -375,35 +253,314 @@
         box-shadow: 0 5px 12px rgba(59, 130, 246, 0.35);
         transform: translateY(-1px);
     }
- 
-    /* Cuando el filtro está activo, el botón se queda resaltado */
+
     .btn-view-details.btn-active {
         background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
         box-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
     }
 
+/* ******* panel derecho detalle ******* */
 
-
-
-
-    /***************************************************************************/
-/* --- CONTENEDOR INFERIOR --- */
-.calendar-section-container {
-    margin-top: 2rem;
+.status-progress-card {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 520px;
     display: flex;
-    justify-content: flex-start; /* No muy grande, alineado a la izquierda */
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
 }
 
+.status-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.status-title-text {
+    font-size: 1.25rem;
+    color: var(--text-dark);
+    font-weight: 700;
+    margin: 0;
+}
+
+.status-scroll-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    padding: 0.5rem;
+}
+
+.progress-card-item {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+    .progress-card-item:hover {
+        border-color: var(--dav-blue);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+.progress-project-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--dav-blue);
+}
+
+.detail-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.btn-edit-inline {
+    background-color: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--dav-blue);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .btn-edit-inline:hover {
+        background-color: var(--dav-blue);
+        color: white;
+        border-color: var(--dav-blue);
+    }
+
+.selected-top-card {
+    border: 2px solid var(--dav-blue) !important;
+    background-color: #f0f7ff !important;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    box-shadow: 0 4px 12px rgba(0, 51, 160, 0.1);
+}
+
+/* ******* tarjeta detalle completo ******* */
+
+.detail-card-full {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px 22px;
+}
+
+.detail-project-name {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #0033a0;
+}
+
+.detail-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.detail-info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.detail-info-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.detail-info-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.detail-date-end {
+    color: #b91c1c;
+}
+
+.detail-status-badge {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    width: fit-content;
+}
+
+/* ******* barras de progreso ******* */
+
+.progress-individual-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+.progress-flex-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.progress-track-bg {
+    flex-grow: 1;
+    height: 10px;
+    background-color: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-fill-indicator {
+    height: 100%;
+    background-color: var(--dav-red);
+    border-radius: 20px;
+    transition: width 0.5s ease-in-out;
+}
+
+.progress-percentage-number {
+    font-weight: 700;
+    color: var(--text-dark);
+    font-size: 0.95rem;
+    min-width: 45px;
+    text-align: right;
+}
+
+/* ******* modal overlay ******* */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.davivienda-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.davivienda-modal-container {
+    width: 900px;
+    max-width: 95%;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+    animation: modalFade 0.25s ease;
+}
+
+.davivienda-modal-header {
+    background: linear-gradient(135deg, #d71920, #b31318);
+    color: white;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.davivienda-modal-title {
+    display: flex;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.davivienda-close-btn {
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+    .davivienda-close-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+    }
+
+.davivienda-modal-body {
+    padding: 24px;
+    background: #fafafa;
+}
+
+@keyframes modalFade {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* ******* grid inferior ******* */
+
+.bottom-dashboard-grid {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    align-items: stretch;
+}
+
+/* ******* calendario ******* */
+
 .calendar-card {
+    width: 70%;
     background: #ffffff;
     border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
-    width: 60%; /* Tamaño moderado para que no ocupe todo el ancho */
 }
 
-/* --- ENCABEZADO Y BOTONES --- */
 .calendar-header-nav {
     display: flex;
     justify-content: space-between;
@@ -439,12 +596,11 @@
         color: white;
     }
 
-/* --- GRILLA DEL CALENDARIO --- */
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 2px;
-    background-color: #e5e7eb; /* Color de las líneas divisorias */
+    background-color: #e5e7eb;
     border: 1px solid #e5e7eb;
 }
 
@@ -460,145 +616,11 @@
 .calendar-day {
     background-color: #ffffff;
     min-height: 80px;
-    padding: 0.5rem;
-    transition: background 0.2s;
-}
-
-    .calendar-day:hover {
-        background-color: #f0f7ff;
-    }
-
-.day-number {
-    font-size: 0.9rem;
-    color: var(--text-dark);
-    font-weight: 500;
-}
-
-
-
-
-
-/************************************************************************************/
-/* Contenedor Flex para alinear Calendario y Tabla */
-.bottom-dashboard-grid {
-    display: flex;
-    gap: 1.5rem;
-    margin-top: 2rem;
-    align-items: stretch;
-}
-
-.calendar-card {
-    width: 70%;
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-}
-
-/* --- TABLA FECHAS PRÓXIMAS --- */
-.upcoming-dates-card {
-    width: 30%;
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-    display: flex;
-    flex-direction: column;
-}
-
-.minimal-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0 8px; /* Espacio entre filas */
-}
-
-    .minimal-table th {
-        text-align: left;
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        padding: 0 10px;
-    }
-
-    .minimal-table td {
-        padding: 12px 10px;
-        background: #f9fafb;
-        border-top: 1px solid var(--border-color);
-        border-bottom: 1px solid var(--border-color);
-    }
-
-        .minimal-table td:first-child {
-            border-left: 1px solid var(--border-color);
-            border-radius: 8px 0 0 8px;
-        }
-
-        .minimal-table td:last-child {
-            border-right: 1px solid var(--border-color);
-            border-radius: 0 8px 8px 0;
-        }
-
-.table-proy-name {
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: var(--dav-blue);
-    display: block;
-    max-width: 100px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* Badges de fechas */
-.date-badge {
-    font-size: 0.75rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-weight: 700;
-}
-
-    .date-badge.start {
-        background: #e0f2fe;
-        color: #0369a1;
-    }
-
-    .date-badge.end {
-        background: #fee2e2;
-        color: #b91c1c;
-    }
-
-/* Marcadores dentro del calendario */
-.event-markers {
-    display: flex;
-    gap: 3px;
-    margin-top: 4px;
-    justify-content: center;
-}
-
-.dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-}
-
-.start-dot {
-    background-color: #0ea5e9;
-}
-/* Azul para inicio */
-.end-dot {
-    background-color: var(--dav-red);
-}
-/* Rojo para fin */
-
-
-/* Contenedor del número y los puntos */
-.calendar-day {
-    min-height: 80px;
     padding: 10px;
     border: 0.5px solid #f0f0f0;
     display: flex;
     flex-direction: column;
-    align-items: center; /* Centra el contenido horizontalmente */
+    align-items: center;
     cursor: pointer;
     transition: background 0.2s;
 }
@@ -606,6 +628,12 @@
     .calendar-day:hover {
         background-color: #f8fafc;
     }
+
+.day-number {
+    font-size: 0.9rem;
+    color: var(--text-dark);
+    font-weight: 500;
+}
 
 .not-current {
     color: #ccc;
@@ -617,12 +645,49 @@
     background-color: #eff6ff;
 }
 
-/* Estilo de los puntos indicadores */
+.calendar-day.today {
+    background: #fef2f2;
+    font-weight: bold;
+}
+
+    .calendar-day.today .day-number {
+        color: var(--dav-red);
+        border-bottom: 2px solid var(--dav-red);
+    }
+
+.calendar-day.in-range {
+    background: #f0f9ff;
+}
+
+.calendar-day.in-process {
+    background-color: #dcfce7 !important;
+    color: #166534;
+}
+
+.calendar-day.is-deadline {
+    background-color: #fee2e2 !important;
+    color: #991b1b;
+    border: 2px solid #ef4444;
+}
+
+.day-start-green {
+    background-color: rgba(40, 167, 69, 0.2) !important;
+    border: 1px solid #28a745 !important;
+}
+
+.day-end-red {
+    background-color: rgba(220, 53, 69, 0.2) !important;
+    border: 1px solid #dc3545 !important;
+}
+
+/* ******* puntos indicadores del calendario ******* */
+
 .event-markers {
     display: flex;
     gap: 4px;
-    margin-top: auto; /* Empuja los puntos hacia abajo */
+    margin-top: auto;
     padding-bottom: 5px;
+    justify-content: center;
 }
 
 .dot {
@@ -632,19 +697,35 @@
 }
 
 .start-dot {
-    background-color: #0ea5e9;
+    background-color: #28a745;
 }
-/* Azul */
+
 .end-dot {
-    background-color: #ef4444;
+    background-color: #dc3545;
 }
-/* Rojo 
 
+/* ******* fechas proximas ******* */
 
+.upcoming-dates-card {
+    width: 30%;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    height: 520px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
 
-*/
+.table-scroll {
+    overflow-y: auto;
+    flex-grow: 1;
+    padding-right: 5px;
+    margin-top: 10px;
+    max-height: 420px;
+}
 
-/* Tarjetas de la derecha */
 .mini-project-card {
     background: #ffffff;
     border: 1px solid #e5e7eb;
@@ -675,150 +756,7 @@
 .mini-card-dates {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-}
-
-.date-group {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.date-label {
-    font-size: 0.7rem;
-    color: #6b7280;
-    text-transform: uppercase;
-}
-
-/* Calendario: Marcado de Hoy y Rango */
-.calendar-day.today {
-    background: #fef2f2;
-    font-weight: bold;
-}
-
-    .calendar-day.today .day-number {
-        color: var(--dav-red);
-        border-bottom: 2px solid var(--dav-red);
-    }
-
-.calendar-day.in-range {
-    background: #f0f9ff; /* Azul muy suave para el rango seleccionado */
-}
-/* Día dentro del rango de ejecución */
-.calendar-day.in-process {
-    background-color: #dcfce7 !important; /* Verde suave */
-    color: #166534;
-}
-
-/* Día de entrega / Fin */
-.calendar-day.is-deadline {
-    background-color: #fee2e2 !important; /* Rojo suave */
-    color: #991b1b;
-    border: 2px solid #ef4444;
-}
-
-
-
-
-
-
-
-/* Color para días que inician proyecto */
-.day-start-green {
-    background-color: rgba(40, 167, 69, 0.2) !important; /* Verde suave */
-    border: 1px solid #28a745 !important;
-}
-
-/* Color para días que terminan proyecto */
-.day-end-red {
-    background-color: rgba(220, 53, 69, 0.2) !important; /* Rojo suave */
-    border: 1px solid #dc3545 !important;
-}
-
-/* Punto indicador verde */
-.start-dot {
-    background-color: #28a745;
-}
-
-/* Punto indicador rojo */
-.end-dot {
-    background-color: #dc3545;
-}
-
-.davivienda-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.45);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 9999;
-}
-
-.davivienda-modal-container {
-    width: 900px;
-    max-width: 95%;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-    overflow: hidden;
-    animation: modalFade 0.25s ease;
-}
-
-@keyframes modalFade {
-
-    from {
-        transform: scale(0.95);
-        opacity: 0;
-    }
-
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-.davivienda-modal-header {
-    background: linear-gradient(135deg, #d71920, #b31318);
-    color: white;
-    padding: 18px 24px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.davivienda-modal-title {
-    display: flex;
-    gap: 10px;
-    font-size: 18px;
-    font-weight: 600;
-}
-
-.davivienda-close-btn {
-    border: none;
-    background: rgba(255,255,255,0.15);
-    color: white;
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-    .davivienda-close-btn:hover {
-        background: rgba(255,255,255,0.3);
-    }
-
-.davivienda-modal-body {
-    padding: 24px;
-    background: #fafafa;
-}
-
-.mini-card-dates {
-    display: flex;
-    flex-direction: column;
-    gap: 6px; /* Espacio entre inicio y fin */
+    gap: 6px;
     margin-top: 8px;
 }
 
@@ -845,120 +783,63 @@
 }
 
     .date-badge.start {
-        background: #e0f2fe; /* Azul clarito */
+        background: #e0f2fe;
         color: #0369a1;
     }
 
     .date-badge.end {
-        background: #fee2e2; /* Rojo clarito */
+        background: #fee2e2;
         color: #b91c1c;
     }
 
-/* El scroll para que solo se vean unos 5 y luego bajes */
-.table-scroll {
-    max-height: 420px; /* Ajusta según el tamaño de tus tarjetas */
-    overflow-y: auto;
-    padding-right: 8px;
-}
-
-/* Fila para alinear nombre y botón de editar */
-.detail-header-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-}
-
-/* Botón de edición discreto pero visible */
-.btn-edit-inline {
-    background-color: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--dav-blue);
-    padding: 4px 10px;
-    border-radius: 6px;
-    font-size: 0.8rem;
+.table-proy-name {
     font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    font-size: 0.85rem;
+    color: var(--dav-blue);
+    display: block;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
-    .btn-edit-inline:hover {
-        background-color: var(--dav-blue);
-        color: white;
-        border-color: var(--dav-blue);
-    }
-
-/* Estilo para la tarjeta seleccionada arriba */
-.selected-top-card {
-    border: 2px solid var(--dav-blue) !important;
-    background-color: #f0f7ff !important;
-    position: sticky;
-    top: 0;
-    z-index: 5;
-    box-shadow: 0 4px 6px rgba(0, 51, 160, 0.1);
-}
-
-/* Contenedor de la tabla lateral (Cuadro Blanco) */
-.upcoming-dates-card {
-    width: 30%;
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    height: 520px; /* Altura fija para alinear con el calendario */
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-}
-
-/* Área interna con scroll */
-.table-scroll {
-    overflow-y: auto; /* Activa el scroll vertical */
-    flex-grow: 1;
-    padding-right: 5px;
-    margin-top: 10px;
-}
-
-/* Estilo para que el seleccionado aparezca primero y resaltado */
 .selected-first {
     border: 2px solid var(--dav-red) !important;
     background-color: #fff1f2 !important;
-    position: sticky; /* Se queda pegado arriba mientras bajas */
+    position: sticky;
     top: 0;
     z-index: 10;
     box-shadow: 0 4px 6px rgba(237, 28, 36, 0.1);
 }
 
-.selected-top-card {
-    border: 2px solid var(--dav-blue) !important;
-    background-color: #f0f7ff !important;
-    box-shadow: 0 4px 12px rgba(0, 51, 160, 0.1);
+/* ******* tabla minima ******* */
+
+.minimal-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 8px;
 }
 
-/* Botón Historial de Proyectos */
-.btn-historial-proyectos {
-    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-    white-space: nowrap;
-}
+    .minimal-table th {
+        text-align: left;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        padding: 0 10px;
+    }
 
-.btn-historial-proyectos:hover {
-    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
-    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
-    transform: translateY(-2px);
-}
+    .minimal-table td {
+        padding: 12px 10px;
+        background: #f9fafb;
+        border-top: 1px solid var(--border-color);
+        border-bottom: 1px solid var(--border-color);
+    }
 
-.btn-historial-proyectos i {
-    font-size: 14px;
-}
+        .minimal-table td:first-child {
+            border-left: 1px solid var(--border-color);
+            border-radius: 8px 0 0 8px;
+        }
+
+        .minimal-table td:last-child {
+            border-right: 1px solid var(--border-color);
+            border-radius: 0 8px 8px 0;
+        }

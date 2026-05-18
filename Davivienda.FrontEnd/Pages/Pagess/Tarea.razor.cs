@@ -80,14 +80,25 @@ namespace Davivienda.FrontEnd.Pages.Pagess
             }).ToList() ?? new();
 
             var resProy = await Client.GetProyectos.ExecuteAsync();
+
+            // Mapear incluyendo PRO_EST para poder filtrar por estado
             var proyectosData = resProy.Data?.Proyectos.Select(p => new ProyectosModel
             {
                 PRO_ID = p.Pro_ID,
                 PRO_NOM = p.Pro_NOM,
-                ARE_ID = p.Are_ID
+                ARE_ID = p.Are_ID,
+                PRO_EST = p.Pro_EST
             }).ToList() ?? new();
 
-            ProyectosLista = EsGerente ? proyectosData : proyectosData.Where(p => p.ARE_ID == UserAreaId).ToList();
+            // Filtrar proyectos no finalizados
+            var proyectosSinFinalizar = proyectosData
+                .Where(p => p.PRO_EST != "FINALIZADO")
+                .ToList();
+
+            // Filtrar por área del usuario si no es gerente
+            ProyectosLista = EsGerente
+                ? proyectosSinFinalizar
+                : proyectosSinFinalizar.Where(p => p.ARE_ID == UserAreaId).ToList();
 
             var resProc = await Client.GetProcesos.ExecuteAsync();
             TodosLosProcesos = resProc.Data?.Procesos.Select(p => new ProcesoModel
@@ -113,7 +124,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                 ARE_ID = u.Are_ID
             }).ToList() ?? new();
 
-            UsuariosFiltrados = EsGerente ? UsuariosGlobales : UsuariosGlobales.Where(u => u.ARE_ID == UserAreaId).ToList();
+            UsuariosFiltrados = EsGerente
+                ? UsuariosGlobales
+                : UsuariosGlobales.Where(u => u.ARE_ID == UserAreaId).ToList();
         }
 
         private async Task CargarTareas()
@@ -149,7 +162,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     .Select(pc => pc.PROC_ID)
                     .ToList();
 
-                TareasLista = todasTareas.Where(t => idsMisProcesos.Contains((Guid)t.PROC_ID)).ToList();
+                TareasLista = todasTareas
+                    .Where(t => idsMisProcesos.Contains((Guid)t.PROC_ID))
+                    .ToList();
             }
         }
 
@@ -157,7 +172,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess
         {
             var areaId = e.Value?.ToString();
             if (string.IsNullOrEmpty(areaId))
-                UsuariosFiltrados = EsGerente ? UsuariosGlobales : UsuariosGlobales.Where(u => u.ARE_ID == UserAreaId).ToList();
+                UsuariosFiltrados = EsGerente
+                    ? UsuariosGlobales
+                    : UsuariosGlobales.Where(u => u.ARE_ID == UserAreaId).ToList();
             else
                 UsuariosFiltrados = UsuariosGlobales.Where(u => u.ARE_ID.ToString() == areaId).ToList();
         }
@@ -165,7 +182,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess
         private void OnProyectoChanged(ChangeEventArgs e)
         {
             var proyId = e.Value?.ToString();
-            ProcesosFiltrados = TodosLosProcesos.Where(p => p.PRO_ID.ToString() == proyId).ToList();
+            ProcesosFiltrados = TodosLosProcesos
+                .Where(p => p.PRO_ID.ToString() == proyId)
+                .ToList();
         }
 
         private async Task GuardarNuevaTarea()
@@ -226,7 +245,10 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     await CargarTareas();
                 }
             }
-            catch (Exception ex) { Console.WriteLine($"Error: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
         }
 
         private string GetPrioridadNombre(Guid? id) =>

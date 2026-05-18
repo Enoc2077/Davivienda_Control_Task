@@ -1,16 +1,62 @@
-﻿/* ============================================================
-   Asignaciones.razor.css
-   ============================================================ */
+﻿/* ******* contenedor principal ******* */
 
 .dashboard-wrapper {
     padding: 25px;
     background: #ffffff;
     min-height: 100vh;
-    margin-top: -1.5%;
-    margin-right: -3%;
-    min-width: 114vh;
-    margin-left: -3%;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
 }
+
+/* ******* grid principal ******* */
+
+.asignaciones-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    grid-template-rows: 450px 400px;
+    gap: 24px;
+    padding: 0;
+}
+
+.panel-tareas {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.panel-calendario {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.panel-grafica-izq {
+    grid-column: 1;
+    grid-row: 2;
+    height: 100%;
+    padding: 24px 28px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    border-radius: 16px;
+    border: 1px solid #eff2f7;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.illustration-panel {
+    grid-column: 2;
+    grid-row: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    background: transparent;
+    border-radius: 0;
+    border: none;
+    overflow: visible;
+}
+
+/* ******* panel blanco base ******* */
 
 .white-panel-card {
     background: #ffffff;
@@ -35,48 +81,8 @@
     flex-grow: 1;
 }
 
-/* GRID */
-.asignaciones-grid {
-    display: grid;
-    grid-template-columns: 1.5fr 1fr;
-    grid-template-rows: 450px 400px;
-    gap: 24px;
-    padding: 20px;
-}
+/* ******* tareas header ******* */
 
-.panel-tareas {
-    grid-column: 1;
-    grid-row: 1;
-}
-
-.panel-calendario {
-    grid-column: 2;
-    grid-row: 1;
-}
-
-.panel-grafica-izq {
-    grid-column: 1;
-    grid-row: 2;
-    height: 100%;
-    padding: 24px 28px;
-    background: #ffffff;
-    display: flex;
-    flex-direction: column;
-}
-
-.illustration-panel {
-    grid-column: 2;
-    grid-row: 2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px;
-    position: relative;
-}
-
-/* ============================================================
-   TAREAS - HEADER
-   ============================================================ */
 .header-with-filter {
     display: flex;
     justify-content: space-between;
@@ -86,10 +92,19 @@
 }
 
 .panel-title {
-    font-weight: 800;
+    font-weight: 700;
     color: #1e293b;
-    font-size: 1.1rem;
+    font-size: 1rem;
     margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.panel-title-bold {
+    font-weight: 700;
+    color: #1e293b;
+    font-size: 1rem;
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 .priority-filters {
@@ -99,17 +114,16 @@
     align-items: center;
 }
 
-/* ============================================================
-   FIX 5: Scroll horizontal — las tarjetas deben verse arriba
-   ============================================================ */
+/* ******* scroll horizontal tareas ******* */
+
 .panel-content-horizontal {
     width: 100%;
-    flex: 1; /* ocupa el espacio restante del panel */
+    flex: 1;
     overflow-x: auto;
     overflow-y: hidden;
     padding: 20px;
     display: flex;
-    align-items: flex-start; /* alinea al TOP no al centro */
+    align-items: flex-start;
     scroll-behavior: smooth;
 }
 
@@ -118,7 +132,7 @@
     flex-direction: row;
     gap: 25px;
     padding-bottom: 10px;
-    align-items: flex-start; /* tarjetas desde arriba */
+    align-items: flex-start;
     height: 100%;
 }
 
@@ -131,7 +145,8 @@
         border-radius: 10px;
     }
 
-/* FIX 5: Las tarjetas tienen altura fija y se ven completas */
+/* ******* tarjetas de tarea ******* */
+
 .task-card-column {
     min-width: 260px;
     max-width: 260px;
@@ -175,6 +190,8 @@
         color: #1e293b;
         margin-bottom: 6px;
         line-height: 1.4;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        font-weight: 700;
     }
 
 .task-desc-short {
@@ -196,6 +213,7 @@
     font-weight: 700;
     padding: 3px 8px;
     border-radius: 6px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
     .status-tag.pendiente {
@@ -229,22 +247,15 @@
     padding: 40px 20px;
     color: #cbd5e1;
     font-size: 0.9rem;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-/* ============================================================
-   CALENDARIO
-   ============================================================ */
+/* ******* calendario ******* */
+
 .calendar-mini-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-}
-
-.panel-title-bold {
-    font-weight: 800;
-    color: #1e293b;
-    font-size: 1.1rem;
-    margin: 0;
 }
 
 .header-icon-orange {
@@ -268,10 +279,11 @@
 }
 
 .month-label-bold {
-    font-weight: 800;
+    font-weight: 700;
     color: #1e293b;
     text-transform: capitalize;
     font-size: 0.92rem;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 .btn-cal-nav {
@@ -295,6 +307,7 @@
     font-size: 0.72rem;
     font-weight: 700;
     margin-bottom: 10px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 .cal-numbers-grid-spacious {
@@ -314,13 +327,13 @@
     color: #475569;
     transition: all 0.2s ease;
     border: 1.5px solid transparent;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
     .cal-day-cell-spacious.not-current {
         color: #e2e8f0;
     }
 
-/* Verde = inicio tarea pendiente */
 .has-inicio-bg {
     background: #f0fdf4 !important;
     color: #15803d !important;
@@ -328,7 +341,6 @@
     font-weight: 800;
 }
 
-/* Rojo = fin tarea pendiente */
 .has-fin-bg {
     background: #fff1f2 !important;
     color: #be123c !important;
@@ -349,7 +361,8 @@
     box-shadow: 0 4px 10px rgba(59,130,246,0.3);
 }
 
-/* FIX 2: Boton de proxima tarea — siempre clickeable */
+/* ******* proxima tarea footer ******* */
+
 .delivery-footer-card-v2 {
     margin: 12px 8px;
     padding: 12px;
@@ -384,6 +397,7 @@
     color: white;
     font-weight: 800;
     font-size: 1rem;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 .delivery-text {
@@ -395,11 +409,13 @@
         font-size: 0.83rem;
         color: #1e293b;
         font-weight: 700;
+        font-family: 'Segoe UI', system-ui, sans-serif;
     }
 
     .delivery-text span {
         font-size: 0.72rem;
         color: #94a3b8;
+        font-family: 'Segoe UI', system-ui, sans-serif;
     }
 
 .arrow-icon {
@@ -414,9 +430,8 @@
     transform: translateX(4px);
 }
 
-/* ============================================================
-   GRAFICA
-   ============================================================ */
+/* ******* grafica ******* */
+
 .grafica-header {
     display: flex;
     justify-content: space-between;
@@ -432,6 +447,7 @@
     font-weight: 700;
     padding: 4px 12px;
     border-radius: 20px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 .divider-line {
@@ -473,6 +489,7 @@
     font-weight: 600;
     transition: color 0.2s;
     cursor: pointer;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
     .legend-item:hover {
@@ -511,94 +528,143 @@
     background: #0033a0;
 }
 
-/* ============================================================
-   ILUSTRACION
-   ============================================================ */
+/* ******* ilustracion computadora ******* */
+
 .device-monitor {
-    position: absolute;
-    bottom: 40px;
-    right: 40px;
-    width: 180px;
-    height: 120px;
-    background: #e2e8f0;
-    border-radius: 12px;
-    padding: 8px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.06);
+    position: relative;
+    width: 200px;
+    height: 130px;
+    background: #334155;
+    border-radius: 14px;
+    padding: 10px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    z-index: 2;
 }
 
 .device-screen {
     width: 100%;
     height: 100%;
-    background: #fff;
-    border-radius: 4px;
+    background: #e8f5f0;
+    border-radius: 6px;
     position: relative;
+    overflow: hidden;
 }
 
 .screen-ui-lines {
     position: absolute;
-    top: 20px;
-    left: 15px;
-    width: 60%;
-    height: 6px;
-    background: #f1f5f9;
-    box-shadow: 0 14px 0 #f1f5f9, 0 28px 0 #f1f5f9;
+    top: 18px;
+    left: 14px;
+    right: 14px;
 }
 
+    .screen-ui-lines::before {
+        content: '';
+        display: block;
+        height: 6px;
+        background: #a7f3d0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+    }
+
+    .screen-ui-lines::after {
+        content: '';
+        display: block;
+        height: 6px;
+        background: #a7f3d0;
+        border-radius: 4px;
+        width: 70%;
+    }
+
+/* Pie del monitor */
+.device-monitor::after {
+    content: '';
+    position: absolute;
+    bottom: -18px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 18px;
+    background: #334155;
+    border-radius: 0 0 8px 8px;
+}
+
+/* Base del monitor */
+.device-monitor::before {
+    content: '';
+    position: absolute;
+    bottom: -26px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90px;
+    height: 8px;
+    background: #475569;
+    border-radius: 4px;
+}
+
+/* Personas decorativas reubicadas alrededor del monitor */
 .vector-person {
     position: absolute;
     border-radius: 8px;
+    z-index: 1;
 }
 
 .person-standing {
-    width: 28px;
-    height: 75px;
-    bottom: 30px;
-    right: 60px;
+    width: 16px;
+    height: 48px;
+    bottom: 28px;
+    right: 52px;
     background: #ed1c24;
-    border-radius: 10px;
+    border-radius: 8px;
+    z-index: 3;
 }
 
 .person-climbing {
-    width: 22px;
-    height: 55px;
-    bottom: 100px;
-    left: 40px;
+    width: 14px;
+    height: 36px;
+    bottom: 28px;
+    left: 52px;
     background: #0033a0;
-    border-radius: 10px;
+    border-radius: 8px;
+    z-index: 3;
 }
 
 .person-sitting {
-    width: 32px;
-    height: 42px;
-    bottom: 30px;
-    left: 45%;
+    width: 16px;
+    height: 28px;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
     background: #f59e0b;
-    border-radius: 10px;
+    border-radius: 8px;
+    z-index: 3;
 }
 
+/* Elementos flotantes pequeños decorativos */
 .floating-element {
     position: absolute;
-    background: rgba(0,51,160,0.06);
-    border-radius: 10px;
+    border-radius: 6px;
 }
 
 .element-1 {
-    width: 70px;
-    height: 70px;
-    top: 20px;
-    right: 40px;
+    width: 14px;
+    height: 14px;
+    background: #fbbf24;
+    top: 28px;
+    left: 38px;
+    border-radius: 50%;
 }
 
 .element-2 {
-    width: 45px;
-    height: 45px;
-    bottom: 100px;
-    left: 20px;
+    width: 10px;
+    height: 10px;
+    background: #22c55e;
+    top: 28px;
+    right: 38px;
+    border-radius: 50%;
 }
 
-/* ============================================================
-   MODAL
-   ============================================================ */
+/* ******* modal ******* */
+
 .modal-backdrop-dav {
     position: fixed;
     inset: 0;
@@ -651,9 +717,8 @@
     padding: 10px;
 }
 
-/* ============================================================
-   PILLS Y BADGES
-   ============================================================ */
+/* ******* pills y badges ******* */
+
 .filter-pill {
     padding: 6px 14px;
     border-radius: 12px;
@@ -664,6 +729,7 @@
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
     .filter-pill:hover {
@@ -677,11 +743,33 @@
         border-color: #0033a0;
     }
 
+    .filter-pill.historial-btn {
+        background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+        color: white;
+        border: none;
+        padding: 6px 16px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        box-shadow: 0 2px 8px rgba(22,163,74,0.15);
+        margin-left: 8px;
+    }
+
+        .filter-pill.historial-btn:hover {
+            background: linear-gradient(135deg, #15803d 0%, #14532d 100%);
+            transform: translateY(-1px);
+        }
+
+        .filter-pill.historial-btn i {
+            font-size: 13px;
+        }
+
 .badge {
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 0.65rem;
     font-weight: 800;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
     .badge.alta {
@@ -702,24 +790,3 @@
 .no-padding-top {
     padding-top: 5px !important;
 }
-
-.filter-pill.historial-btn {
-    background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
-    color: white;
-    border: none;
-    padding: 6px 16px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 8px rgba(22,163,74,0.15);
-    margin-left: 8px;
-}
-
-    .filter-pill.historial-btn:hover {
-        background: linear-gradient(135deg, #15803d 0%, #14532d 100%);
-        transform: translateY(-1px);
-    }
-
-    .filter-pill.historial-btn i {
-        font-size: 13px;
-    }

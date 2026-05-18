@@ -1,193 +1,337 @@
-/* OVERLAY CON DESENFOQUE */
-.modal-premium-overlay {
+/* ******* backdrop transparente ******* */
+
+.editar-sol-backdrop {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(8px);
-    z-index: 11000;
+    inset: 0;
+    background: transparent;
+    z-index: 10500;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    font-family: 'Poppins', sans-serif;
-}
-
-/* TARJETA PRINCIPAL */
-.modal-card-registro {
-    background: white;
-    width: 100%;
-    max-width: 800px;
-    border-radius: 30px;
-    overflow: hidden;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.15);
-    border: 1px solid #f1f5f9;
-    position: relative;
-}
-
-/* ACENTO SUPERIOR AZUL */
-.modal-top-accent-blue {
-    height: 6px;
-    background: linear-gradient(90deg, #002855 0%, #004b93 100%);
-}
-
-/* HEADER */
-.modal-header-registro {
-    padding: 35px 45px 15px 45px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.modal-title-main {
-    font-size: 28px;
-    font-weight: 800;
-    color: #002855;
-    margin: 0;
-}
-
-.btn-close-x {
-    background: #f1f5f9;
-    border: none;
-    color: #64748b;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    font-size: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: 0.3s;
-}
-
-    .btn-close-x:hover {
-        background: #e30613;
-        color: white;
-        transform: rotate(90deg);
-    }
-
-/* CUERPO DEL FORMULARIO */
-.modal-body-registro {
-    padding: 20px 45px 40px 45px;
-}
-
-.form-grid-registro {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 25px;
-    margin-bottom: 35px;
-}
-
-.input-group-registro {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-    .input-group-registro.full-width {
-        grid-column: 1 / -1;
-    }
-
-    .input-group-registro label {
-        font-size: 12px;
-        font-weight: 700;
-        color: #64748b;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-/* INPUTS ESTILO DAVIVIENDA */
-.input-field-premium {
-    width: 100%;
-    padding: 15px 20px;
-    border: 2px solid #eef2f7;
-    border-radius: 15px;
-    background: #f8fafc;
-    font-size: 15px;
-    color: #334155;
-    transition: all 0.3s ease;
-    outline: none;
-    box-sizing: border-box;
-}
-
-    .input-field-premium:focus {
-        border-color: #002855;
-        background: white;
-        box-shadow: 0 0 0 4px rgba(0, 40, 85, 0.05);
-    }
-
-.textarea-premium {
-    resize: none;
-    min-height: 110px;
-}
-
-/* FOOTER */
-.modal-footer-registro {
-    display: flex;
-    gap: 20px;
+    align-items: stretch;
     justify-content: flex-end;
 }
 
-.btn-cancel-premium {
-    padding: 15px 35px;
-    border-radius: 15px;
-    border: 2px solid #eef2f7;
-    background: white;
-    font-weight: 700;
-    color: #64748b;
-    cursor: pointer;
+/* ******* panel lateral derecho ******* */
+
+.editar-sol-panel {
+    width: 60%;
+    max-width: 860px;
+    height: 100%;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -6px 0 40px rgba(0, 0, 0, 0.14);
+    animation: editarSolSlide 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
 }
 
-.btn-save-premium {
-    padding: 15px 45px;
-    border-radius: 15px;
-    background: #002855;
-    color: white;
-    border: none;
-    font-weight: 700;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0, 40, 85, 0.2);
-    transition: 0.3s;
-}
-
-    .btn-save-premium:hover {
-        background: #001a38;
-        transform: translateY(-2px);
-    }
-
-/* ANIMACIONES */
-.animate-pop {
-    animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes popIn {
+@keyframes editarSolSlide {
     from {
         opacity: 0;
-        transform: scale(0.9) translateY(20px);
+        transform: translateX(60px);
     }
 
     to {
         opacity: 1;
-        transform: scale(1) translateY(0);
+        transform: translateX(0);
     }
 }
 
-/* Limitador de crecimiento para el editor Yoopta en el modal de Soluciones */
-.yoopta-editor-limiter {
-    width: 100%;
-    min-height: 200px;
-    max-height: 350px;
+/* ******* toolbar ******* */
+
+.editar-sol-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 28px;
+    height: 56px;
+    border-bottom: 1px solid #e8edf5;
     background: #ffffff;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    overflow-y: auto;
-    transition: border-color 0.3s ease;
+    flex-shrink: 0;
+    gap: 16px;
 }
 
-    .yoopta-editor-limiter:focus-within {
-        border-color: #00448d;
-        box-shadow: 0 0 0 4px rgba(0, 68, 141, 0.1);
+.editar-sol-toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex: 1;
+    min-width: 0;
+}
+
+.editar-sol-dot {
+    width: 9px;
+    height: 9px;
+    background: #ed1c24;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.editar-sol-brand {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: #0033a0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.editar-sol-divider {
+    width: 1px;
+    height: 22px;
+    background: #e8edf5;
+    flex-shrink: 0;
+}
+
+.editar-sol-toolbar-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #0033a0;
+    white-space: nowrap;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.editar-sol-btn-cerrar {
+    background: #fff1f2;
+    border: 1px solid #fda4af;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    color: #ed1c24;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.2s, color 0.2s, transform 0.25s;
+}
+
+    .editar-sol-btn-cerrar:hover {
+        background: #b91c1c;
+        color: #ffffff;
+        border-color: #b91c1c;
+        transform: rotate(90deg);
+    }
+
+/* ******* scroll contenido ******* */
+
+.editar-sol-scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+    .editar-sol-scroll::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .editar-sol-scroll::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 10px;
+    }
+
+/* ******* titulo y referencia ******* */
+
+.editar-sol-titulo-section {
+    padding: 32px 36px 20px;
+}
+
+.editar-sol-titulo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin: 0 0 12px 0;
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.editar-sol-ref {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+    .editar-sol-ref i {
+        color: #94a3b8;
+        font-size: 0.85rem;
+    }
+
+.editar-sol-ref-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.editar-sol-ref-nombre {
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #0033a0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+/* ******* divisor ******* */
+
+.editar-sol-divisor {
+    height: 1px;
+    background: #e8edf5;
+    margin: 0 36px;
+}
+
+/* ******* body formulario ******* */
+
+.editar-sol-body {
+    padding: 28px 36px 36px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+/* ******* campo individual ******* */
+
+.editar-sol-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.editar-sol-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+.editar-sol-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1.5px solid #e8edf5;
+    border-radius: 12px;
+    background: #f8fafc;
+    font-size: 0.95rem;
+    color: #1e293b;
+    outline: none;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+}
+
+    .editar-sol-input:focus {
+        border-color: #0033a0;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.08);
+    }
+
+    .editar-sol-input::placeholder {
+        color: #b0b8c4;
+    }
+
+/* ******* yoopta ******* */
+
+.editar-sol-yoopta {
+    width: 100%;
+    min-height: 180px;
+    border: 1.5px solid #e8edf5;
+    border-radius: 12px;
+    background: #ffffff;
+    overflow-y: auto;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+    .editar-sol-yoopta:focus-within {
+        border-color: #0033a0;
+        box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.08);
+    }
+
+/* ******* fila dos columnas ******* */
+
+.editar-sol-fila-dos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+}
+
+/* ******* select ******* */
+
+.editar-sol-select {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1.5px solid #e8edf5;
+    border-radius: 12px;
+    background: #ffffff;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1e293b;
+    cursor: pointer;
+    outline: none;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    appearance: auto;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+    .editar-sol-select:focus {
+        border-color: #0033a0;
+        box-shadow: 0 0 0 3px rgba(0, 51, 160, 0.08);
+    }
+
+/* ******* footer botones ******* */
+
+.editar-sol-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 8px;
+}
+
+.editar-sol-btn-regresar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: 12px;
+    border: 1.5px solid #e8edf5;
+    background: #ffffff;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #64748b;
+    cursor: pointer;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    transition: all 0.2s;
+}
+
+    .editar-sol-btn-regresar:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+        color: #475569;
+    }
+
+.editar-sol-btn-guardar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 30px;
+    border-radius: 12px;
+    background: #0033a0;
+    color: #ffffff;
+    border: none;
+    font-size: 0.88rem;
+    font-weight: 800;
+    cursor: pointer;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    box-shadow: 0 4px 14px rgba(0, 51, 160, 0.25);
+    transition: all 0.2s;
+}
+
+    .editar-sol-btn-guardar:hover {
+        background: #002280;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(0, 51, 160, 0.32);
     }

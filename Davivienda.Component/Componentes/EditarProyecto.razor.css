@@ -1,7 +1,11 @@
-.modal-overlay {
+/* ========================================
+   overlay
+   ======================================== */
+
+.modal-overlay-edit {
     position: fixed;
     inset: 0;
-    background: rgba(15, 23, 42, 0.6);
+    background: rgba(255, 255, 255, 0.92);
     backdrop-filter: blur(6px);
     display: flex;
     justify-content: center;
@@ -9,149 +13,237 @@
     z-index: 2000;
 }
 
-.modal-card-premium {
-    background: white;
-    width: 680px;
-    border-radius: 24px;
-    position: relative;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+/* ========================================
+   tarjeta del modal
+   ======================================== */
+
+.modal-card-edit {
+    background: #ffffff;
+    width: 640px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(10, 36, 99, 0.14), 0 4px 16px rgba(0,0,0,0.08);
     overflow: hidden;
-    padding: 0;
+    border: 1px solid #e2e8f0;
 }
 
-.modal-top-accent {
-    height: 6px;
-    width: 100%;
-    background: linear-gradient(90deg, #ED1C24 0%, #0A2463 100%);
-}
+/* ========================================
+   cabecera
+   ======================================== */
 
-.modal-head {
-    padding: 35px 45px 10px;
+.modal-head-edit {
+    padding: 32px 40px 20px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
+    border-bottom: 1.5px solid #f1f5f9;
 }
 
-.modal-title-main {
-    font-size: 24px;
+.modal-title-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.modal-title-edit {
+    font-size: 22px;
     font-weight: 800;
     color: #0A2463;
     margin: 0;
+    letter-spacing: -0.3px;
 }
 
-.modal-subtitle {
-    color: #64748b;
-    margin: -5px 45px 20px;
-    font-size: 14px;
-}
-
-.close-x-dav {
-    background: #f1f5f9;
-    border: none;
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    font-size: 22px;
+.modal-subtitle-edit {
     color: #94a3b8;
-    cursor: pointer;
-    transition: 0.2s;
+    font-size: 13px;
+    margin: 0;
 }
 
-    .close-x-dav:hover {
-        background: #e2e8f0;
-        color: #64748b;
+    .modal-subtitle-edit strong {
+        color: #475569;
+        font-weight: 700;
     }
 
-.modal-body {
-    padding: 20px 45px 30px;
+.close-x-edit {
+    background: #f1f5f9;
+    border: none;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    font-size: 20px;
+    color: #94a3b8;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease, color 0.2s ease;
+    flex-shrink: 0;
+    margin-top: 2px;
 }
 
-.form-grid-dav {
+    .close-x-edit:hover {
+        background: #e2e8f0;
+        color: #475569;
+    }
+
+/* ========================================
+   cuerpo y formulario
+   ======================================== */
+
+.modal-body-edit {
+    padding: 28px 40px 24px;
+}
+
+.form-grid-edit {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 22px;
 }
 
-.full-width {
+.full-width-edit {
     grid-column: 1 / -1;
 }
 
-.input-container-dav label {
-    display: block;
-    font-size: 11px;
-    font-weight: 800;
-    color: #64748b;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+.input-wrap-edit {
+    display: flex;
+    flex-direction: column;
 }
 
-.input-field-dav {
-    width: 100%;
-    padding: 14px 18px;
-    border: 2px solid #e2e8f0;
-    border-radius: 12px;
-    background-color: #f8fafc;
-    font-size: 15px;
-    color: #1e293b !important;
-    transition: all 0.3s ease;
-}
-
-    .input-field-dav:focus {
-        outline: none;
-        border-color: #0A2463;
-        background-color: white;
-        box-shadow: 0 0 0 4px rgba(10, 36, 99, 0.05);
+    .input-wrap-edit label {
+        font-size: 11px;
+        font-weight: 700;
+        color: #64748b;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
     }
 
-.visual-fix {
-    color: #0A2463 !important;
-    background-color: white !important;
-    appearance: auto !important;
+/* ========================================
+   inputs y textarea
+   ======================================== */
+
+.input-edit {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid #dde1e7;
+    border-radius: 12px;
+    background-color: #fafbfc;
+    font-size: 15px;
+    color: #1e293b;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+    .input-edit:focus {
+        border-color: #0A2463;
+        background-color: #ffffff;
+        box-shadow: 0 0 0 3px rgba(10, 36, 99, 0.08);
+    }
+
+    .input-edit::placeholder {
+        color: #b0b8c4;
+        font-size: 14px;
+    }
+
+.textarea-edit {
+    resize: vertical;
+    min-height: 90px;
+    line-height: 1.6;
+}
+
+/* ========================================
+   select de estado
+   ======================================== */
+
+.select-edit {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid #dde1e7;
+    border-radius: 12px;
+    background-color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    outline: none;
     cursor: pointer;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    appearance: auto;
+    -webkit-appearance: auto;
 }
 
-.modal-foot-dav {
-    padding: 25px 45px 40px;
-    background: #fcfdfe;
+    .select-edit:focus {
+        border-color: #0A2463;
+        box-shadow: 0 0 0 3px rgba(10, 36, 99, 0.08);
+    }
+
+    .select-edit option {
+        color: #1e293b;
+        background-color: white;
+        font-weight: 600;
+    }
+
+/* ========================================
+   pie del modal
+   ======================================== */
+
+.modal-foot-edit {
+    padding: 20px 40px 32px;
     display: flex;
-    gap: 15px;
+    gap: 14px;
+    background: #f8fafc;
+    border-top: 1.5px solid #f1f5f9;
 }
 
-.btn-secondary-dav {
+.btn-cancel-edit {
     flex: 1;
     background: white;
-    border: 2.5px solid #e2e8f0;
+    border: 1.5px solid #dde1e7;
     color: #64748b;
-    padding: 14px;
+    padding: 13px;
     border-radius: 12px;
     font-weight: 700;
+    font-size: 14px;
     cursor: pointer;
-    transition: 0.2s;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-    .btn-secondary-dav:hover {
-        background: #f8fafc;
+    .btn-cancel-edit:hover {
+        background: #f1f5f9;
+        border-color: #94a3b8;
     }
 
-.btn-save-main-dav {
+.btn-save-edit {
     flex: 2;
     background: #0A2463;
     color: white;
     border: none;
-    padding: 14px;
+    padding: 13px;
     border-radius: 12px;
     font-weight: 800;
-    font-size: 15px;
+    font-size: 14px;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: background 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    box-shadow: 0 4px 12px rgba(10, 36, 99, 0.25);
 }
 
-    .btn-save-main-dav:hover {
+    .btn-save-edit:hover {
         background: #081b4d;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(10, 36, 99, 0.2);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(10, 36, 99, 0.32);
     }
+
+    .btn-save-edit:active {
+        transform: translateY(0);
+    }
+
+/* ========================================
+   animacion
+   ======================================== */
 
 @keyframes popIn {
     from {
@@ -166,5 +258,5 @@
 }
 
 .animate-pop {
-    animation: popIn 0.3s ease-out;
+    animation: popIn 0.25s ease-out;
 }

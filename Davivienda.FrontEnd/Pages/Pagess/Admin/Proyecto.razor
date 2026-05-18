@@ -70,11 +70,11 @@
             </div>
         </div>
 
-        @* PANEL DERECHO — al tocar cualquier tarjeta abre EditarProyecto *@
+        @* PANEL DERECHO — solo muestra info, botón Editar abre el modal *@
         <div class="status-progress-card">
             <div class="status-list-header">
                 <h2 class="status-title-text">
-                    @(ProyectoFiltroAvance == null ? "Detalle de Proyectos" : "Filtro Activo")
+                    @(ProyectoFiltroAvance == null ? "Detalle de Proyectos" : "Proyecto Seleccionado")
                 </h2>
 
                 @if (ProyectoFiltroAvance != null)
@@ -88,31 +88,56 @@
             <div class="status-scroll-area">
                 @if (ProyectoFiltroAvance != null)
                 {
-                    @* ── TARJETA SELECCIONADA: abre EditarProyecto al tocar ── *@
-                    <div class="progress-card-item filtered-highlight selected-top-card"
-                         style="cursor:pointer;"
-                         @onclick="() => AbrirModalEditar(ProyectoFiltroAvance)">
+                    @* ── TARJETA SELECCIONADA: info completa + botón Editar ── *@
+                    <div class="progress-card-item filtered-highlight selected-top-card detail-card-full">
                         <div class="detail-header-row">
-                            <span class="progress-project-label">@ProyectoFiltroAvance.PRO_NOM</span>
-                            <span class="btn-edit-inline">
+                            <span class="progress-project-label detail-project-name">@ProyectoFiltroAvance.PRO_NOM</span>
+                            <button class="btn-edit-inline"
+                                    @onclick="() => AbrirModalEditar(ProyectoFiltroAvance)">
                                 <i class="fas fa-edit"></i> Editar
+                            </button>
+                        </div>
+
+                        <div class="detail-info-grid">
+                            <div class="detail-info-item">
+                                <span class="detail-info-label"><i class="bi bi-calendar-check"></i> Fecha de creación</span>
+                                <span class="detail-info-value">
+                                    @ProyectoFiltroAvance.PRO_FEC_CRE.ToString("dd MMM yyyy")
+                                </span>
+                            </div>
+                            <div class="detail-info-item">
+                                <span class="detail-info-label"><i class="bi bi-calendar-x"></i> Fecha de finalización</span>
+                                <span class="detail-info-value detail-date-end">
+                                    @(ProyectoFiltroAvance.PRO_FEC_FIN.HasValue
+                                                                    ? ProyectoFiltroAvance.PRO_FEC_FIN.Value.ToString("dd MMM yyyy")
+                                                                    : "Sin fecha definida")
                             </span>
                         </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label"><i class="bi bi-building"></i> Área responsable</span>
+                            <span class="detail-info-value">
+                                @(ListaAreas.FirstOrDefault(a => a.ARE_ID == ProyectoFiltroAvance.ARE_ID)?.ARE_NOM ?? "Sin área asignada")
+                            </span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="detail-info-label"><i class="bi bi-flag"></i> Estado actual</span>
+                            <span class="detail-status-badge">@ProyectoFiltroAvance.PRO_EST</span>
+                        </div>
                     </div>
-                }
+                </div>
+                                }
                 else
                 {
                     @foreach (var p in ProyectosFiltrados)
                     {
-                        @* ── CADA TARJETA: abre EditarProyecto directamente ── *@
-                        <div class="progress-card-item"
-                             style="cursor:pointer;"
-                             @onclick="() => AbrirModalEditar(p)">
+                        @* ── TARJETAS GENERALES: solo info, sin onclick, botón Editar ── *@
+                        <div class="progress-card-item">
                             <div class="detail-header-row">
                                 <span class="progress-project-label">@p.PRO_NOM</span>
-                                <span class="btn-edit-inline">
+                                <button class="btn-edit-inline"
+                                        @onclick="() => AbrirModalEditar(p)">
                                     <i class="fas fa-edit"></i> Editar
-                                </span>
+                                </button>
                             </div>
                         </div>
                     }
@@ -144,9 +169,9 @@
                 @foreach (var dia in DiasDelMes)
                 {
                     <div class="calendar-day @(dia.EsMesActual ? "" : "not-current")
-                                                  @(DiaSeleccionado?.Fecha == dia.Fecha ? "selected-day" : "")
-                                                  @(dia.EsInicioProyecto ? "day-start-green" : "")
-                                                  @(dia.EsFinProyecto ? "day-end-red" : "")"
+                                                 @(DiaSeleccionado?.Fecha == dia.Fecha ? "selected-day" : "")
+                                                 @(dia.EsInicioProyecto ? "day-start-green" : "")
+                                                 @(dia.EsFinProyecto ? "day-end-red" : "")"
                          @onclick="() => SeleccionarDiaCalendario(dia)">
                         <span class="day-number">@dia.Fecha.Day</span>
                         <div class="event-markers">

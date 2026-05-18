@@ -3,239 +3,214 @@
 @using Davivienda.GraphQL.SDK
 @implements IAsyncDisposable
 
-<div class="modal-fullscreen-overlay">
+<div class="detalle-backdrop" @onclick="Cerrar">
+    <div class="detalle-panel" @onclick:stopPropagation>
 
-    @* ── TOOLBAR SUPERIOR ── *@
-    <div class="toolbar-dav-top">
-        <div class="toolbar-content-full">
-
-            @* Izquierda: marca + selector bitacoras *@
-            <div class="toolbar-left-group">
-                <div class="toolbar-brand">
-                    <div class="toolbar-brand-dot"></div>
-                    <span class="toolbar-brand-name">Gestión de Tareas</span>
-                </div>
+        @* ******* toolbar ******* *@
+        <div class="detalle-toolbar">
+            <div class="toolbar-left">
+                <div class="toolbar-dot"></div>
+                <span class="toolbar-brand">Gestión de Tareas</span>
                 <div class="toolbar-divider"></div>
-                <div class="selector-container-premium">
-                    <span class="selector-label">Ver Bitácora:</span>
-                    <select class="select-dav-mini" @onchange="ManejarCambioBitacora">
-                        <option value="">-- Seleccionar --</option>
-                        <option value="BIT_SOL">Bitácora de Soluciones</option>
-                        <option value="BIT_FRI">Bitácora de Fricciones</option>
-                    </select>
-                </div>
+                <span class="toolbar-bitacora-label">Ver Bitácora:</span>
+                <select class="toolbar-select" @onchange="ManejarCambioBitacora">
+                    <option value="">-- Seleccionar --</option>
+                    <option value="BIT_SOL">Bitácora de Soluciones</option>
+                    <option value="BIT_FRI">Bitácora de Fricciones</option>
+                </select>
             </div>
-
-            @* Derecha: boton cerrar *@
-            <button type="button" class="btn-close-fullscreen" @onclick="Cerrar" title="Cerrar">
+            <button class="toolbar-close" @onclick="Cerrar" title="Cerrar">
                 <i class="bi bi-x"></i>
             </button>
         </div>
-    </div>
 
-    @* ── GRID 2x2 ── *@
-    <div class="modal-content-container">
-
-        @* ── TOP-LEFT: Información de Ejecución (sin cuadro, fondo blanco) ── *@
-        <div class="sector-detalles">
-            <div class="sector-header">
-                <div class="title-group">
-                    <h3 class="sector-title">Información de Ejecución</h3>
-                    <span class="sector-subtitle">Detalles de la tarea</span>
-                </div>
-            </div>
+        @* ******* contenido con scroll ******* *@
+        <div class="detalle-scroll">
 
             @if (Tarea != null)
             {
-                <div class="detalles-list">
-                    <div class="detail-row">
-                        <span class="detail-label">Título de la tarea</span>
-                        <p class="detail-value">@Tarea.TAR_NOM</p>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Proyecto asociado</span>
-                        <p class="detail-value highlight-blue">@NombreProyecto</p>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Proceso actual</span>
-                        <p class="detail-value">@NombreProceso</p>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Fecha de inicio</span>
-                        <p class="detail-value highlight-green">@Tarea.TAR_FEC_INI.ToString("dd/MM/yyyy")</p>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Fecha de finalización</span>
-                        <p class="detail-value highlight-red">
-                            @if (Tarea.TAR_FEC_FIN.HasValue)
-                            {
-                                @Tarea.TAR_FEC_FIN.Value.ToString("dd/MM/yyyy")
-                            }
-                            else
-                            {
-                                <span class="text-muted">Sin fecha estimada</span>
-                            }
-                        </p>
-                    </div>
-                    <div class="detail-row">
-                        <span class="detail-label">Estado actual</span>
-                        <select @bind="Tarea.TAR_EST" class="select-status-compact">
+                <div class="detalle-titulo-section">
+                    <h1 class="detalle-titulo">@Tarea.TAR_NOM</h1>
+                </div>
+
+                <div class="detalle-info-section">
+                    <div class="info-fila">
+                        <span class="info-icono"><i class="bi bi-tag"></i></span>
+                        <span class="info-label">Estado</span>
+                        <select @bind="Tarea.TAR_EST" class="info-select">
                             <option value="Pendiente">Pendiente</option>
                             <option value="En Progreso">En Progreso</option>
                             <option value="Completado">Completado</option>
                         </select>
                     </div>
+                    <div class="info-fila">
+                        <span class="info-icono"><i class="bi bi-folder2"></i></span>
+                        <span class="info-label">Proyecto asociado</span>
+                        <span class="info-valor info-azul">@NombreProyecto</span>
+                    </div>
+                    <div class="info-fila">
+                        <span class="info-icono"><i class="bi bi-diagram-3"></i></span>
+                        <span class="info-label">Proceso actual</span>
+                        <span class="info-valor">@NombreProceso</span>
+                    </div>
+                    <div class="info-fila">
+                        <span class="info-icono"><i class="bi bi-calendar-check"></i></span>
+                        <span class="info-label">Fecha de inicio</span>
+                        <span class="info-valor info-verde">@Tarea.TAR_FEC_INI.ToString("dd/MM/yyyy")</span>
+                    </div>
+                    <div class="info-fila">
+                        <span class="info-icono"><i class="bi bi-calendar-x"></i></span>
+                        <span class="info-label">Fecha de finalización</span>
+                        <span class="info-valor info-rojo">
+                            @(Tarea.TAR_FEC_FIN.HasValue? Tarea.TAR_FEC_FIN.Value.ToString("dd/MM/yyyy") : "Sin fecha estimada")
+                        </span>
+                    </div>
+                </div>
+
+                <div class="detalle-desc-section">
+                    <div class="desc-header">
+                        <h3 class="desc-titulo">Descripción</h3>
+                        <span class="desc-subtitulo">Notas y documentos</span>
+                    </div>
+                    <div class="desc-editor">
+                        <span class="desc-label">DESCRIPCIÓN</span>
+                        <Yoopta Contenido="@Tarea.TAR_DES"
+                                ContenidoChanged="@((valor) => { Tarea.TAR_DES = valor; })" />
+                    </div>
+                </div>
+
+                <div class="bloques-grid">
+
+                    <div class="detalle-bloque bloque-sol">
+                        <div class="bloque-header">
+                            <div class="bloque-title-group">
+                                <h3 class="bloque-titulo">Soluciones</h3>
+                                <span class="bloque-subtitulo">Propuestas activas</span>
+                            </div>
+                            <button class="btn-nueva" @onclick="AbrirModalCrearSolucion">
+                                <i class="bi bi-plus-lg"></i> Nueva
+                            </button>
+                        </div>
+                        <div class="bloque-lista">
+                            @if (SolucionesList?.Any() == true)
+                            {
+                                @foreach (var sol in SolucionesList)
+                                {
+                                    <div class="bloque-item" @onclick="() => AbrirModalEditarSolucion(sol)">
+                                        <div class="bloque-item-left">
+                                            <div class="bloque-icono icono-sol"><i class="bi bi-lightbulb"></i></div>
+                                            <span class="bloque-nombre">@sol.SOL_NOM</span>
+                                        </div>
+                                        <button class="btn-eliminar" @onclick:stopPropagation @onclick="() => EliminarSolucion(sol.SOL_ID)">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="bloque-vacio">No hay soluciones registradas</p>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="detalle-bloque bloque-fri">
+                        <div class="bloque-header">
+                            <div class="bloque-title-group">
+                                <h3 class="bloque-titulo">Fricciones</h3>
+                                <span class="bloque-subtitulo">Obstáculos detectados</span>
+                            </div>
+                            <button class="btn-nueva" @onclick="AbrirModalCrearFriccion">
+                                <i class="bi bi-plus-lg"></i> Nueva
+                            </button>
+                        </div>
+                        <div class="bloque-lista">
+                            @if (FriccionesList?.Any() == true)
+                            {
+                                @foreach (var fri in FriccionesList)
+                                {
+                                    <div class="bloque-item" @onclick="() => AbrirModalEditarFriccion(fri)">
+                                        <div class="bloque-item-left">
+                                            <div class="bloque-icono icono-fri"><i class="bi bi-exclamation-triangle"></i></div>
+                                            <span class="bloque-nombre">@fri.FRI_TIP</span>
+                                        </div>
+                                        <button class="btn-eliminar" @onclick:stopPropagation @onclick="() => EliminarFriccion(fri.FRI_ID)">
+                                            <i class="bi bi-trash3"></i>
+                                        </button>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p class="bloque-vacio">No hay fricciones reportadas</p>
+                            }
+                        </div>
+                    </div>
+
                 </div>
             }
+
         </div>
-
-        @* ── TOP-RIGHT: Descripción / Yoopta (sin cuadro, fondo blanco) ── *@
-        <div class="sector-notas">
-            <div class="sector-header-with-button">
-                <div class="title-group">
-                    <h3 class="sector-title">Descripción</h3>
-                    <span class="sector-subtitle">Notas y documentos</span>
-                </div>
-            </div>
-
-            @* Borde gris sutil alrededor del editor (punto 7) *@
-            <div class="descripcion-wrapper">
-                <span class="descripcion-label">Descripción</span>
-                @if (Tarea != null)
-                {
-                    <Yoopta Contenido="@Tarea.TAR_DES"
-                            ContenidoChanged="@((valor) => { Tarea.TAR_DES = valor; })" />
-                }
-            </div>
-        </div>
-
-        @* ── BOTTOM-LEFT: Soluciones ── *@
-        <div class="sector-soluciones">
-            <div class="sector-bottom-header">
-                <div class="title-group">
-                    <h3 class="sector-title">Soluciones</h3>
-                    <span class="sector-subtitle">Propuestas activas</span>
-                </div>
-                <button type="button" class="btn-add-text" @onclick="AbrirModalCrearSolucion">
-                    <i class="bi bi-plus-lg"></i> Nueva
-                </button>
-            </div>
-
-            <div class="sector-bottom-list">
-                @if (SolucionesList?.Any() == true)
-                {
-                    @foreach (var sol in SolucionesList)
-                    {
-                        <div class="item-card-mini" @onclick="() => AbrirModalEditarSolucion(sol)">
-                            <div class="item-card-left">
-                                <div class="item-card-icon icon-sol">
-                                    <i class="bi bi-lightbulb"></i>
-                                </div>
-                                <span class="item-card-name">@sol.SOL_NOM</span>
-                            </div>
-                            <button type="button" class="btn-del"
-                                    title="Eliminar solución"
-                                    @onclick:stopPropagation
-                                    @onclick="() => EliminarSolucion(sol.SOL_ID)">
-                                <i class="bi bi-trash3"></i>
-                            </button>
-                        </div>
-                    }
-                }
-                else
-                {
-                    <p class="empty-message">No hay soluciones registradas</p>
-                }
-            </div>
-        </div>
-
-        @* ── BOTTOM-RIGHT: Fricciones ── *@
-        <div class="sector-fricciones">
-            <div class="sector-bottom-header">
-                <div class="title-group">
-                    <h3 class="sector-title">Fricciones</h3>
-                    <span class="sector-subtitle">Obstáculos detectados</span>
-                </div>
-                <button type="button" class="btn-add-text" @onclick="AbrirModalCrearFriccion">
-                    <i class="bi bi-plus-lg"></i> Nueva
-                </button>
-            </div>
-
-            <div class="sector-bottom-list">
-                @if (FriccionesList?.Any() == true)
-                {
-                    @foreach (var fri in FriccionesList)
-                    {
-                        <div class="item-card-mini" @onclick="() => AbrirModalEditarFriccion(fri)">
-                            <div class="item-card-left">
-                                <div class="item-card-icon icon-fri">
-                                    <i class="bi bi-exclamation-triangle"></i>
-                                </div>
-                                <span class="item-card-name">@fri.FRI_TIP</span>
-                            </div>
-                            <button type="button" class="btn-del"
-                                    title="Eliminar fricción"
-                                    @onclick:stopPropagation
-                                    @onclick="() => EliminarFriccion(fri.FRI_ID)">
-                                <i class="bi bi-trash3"></i>
-                            </button>
-                        </div>
-                    }
-                }
-                else
-                {
-                    <p class="empty-message">No hay fricciones reportadas</p>
-                }
-            </div>
-        </div>
-
     </div>
+</div>
 
-    @* ── MODALES INTERNOS ── *@
-    @if (MostrarModalCrear)
-    {
-        <div class="modal-backdrop-premium" @onclick="CerrarModalInterno">
-            <div class="modal-window-dav" @onclick:stopPropagation>
-                <div class="modal-header-dav">
-                    <h3>@TituloModal</h3>
-                    <button type="button" class="modal-close-x" @onclick="CerrarModalInterno">
-                        <i class="bi bi-x"></i>
-                    </button>
-                </div>
-                <div class="modal-body-dav">
-                    @if (TipoModal == "FRICCION_NUEVA" && Tarea != null)
-                    {
-                        <CrearFriccion TareaId="@Tarea.TAR_ID" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
-                    }
-                    else if (TipoModal == "SOLUCION_NUEVA")
-                    {
-                        <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)"
-                                       TareaId="@(Tarea?.TAR_ID ?? Guid.Empty)"
-                                       OnSuccess="AlCrearExitoso"
-                                       OnClose="CerrarModalInterno" />
-                    }
-                    else if (TipoModal == "SOLUCION_EDITAR" && SolucionSeleccionada != null)
-                    {
-                        <EditarSolucion Solucion="@SolucionSeleccionada"
-                                        FriccionesDisponibles="@FriccionesList"
-                                        OnSuccess="AlCrearExitoso"
-                                        OnClose="CerrarModalInterno" />
-                    }
-                    else if (TipoModal == "FRICCION_EDITAR" && FriccionSeleccionada != null)
-                    {
-                        <Davivienda.Componentes.EditarFriccion Friccion="@FriccionSeleccionada" OnSuccess="AlCrearExitoso" OnClose="CerrarModalInterno" />
-                    }
-                    else if (TipoModal == "HISTORIAL_SOLUCIONES")
-                    {
-                        <BitacoraSolucion OnClose="CerrarModalInterno" />
-                    }
-                    else if (TipoModal == "HISTORIAL_FRICCIONES")
-                    {
-                        <BitacoraFriccion OnClose="CerrarModalInterno" />
-                    }
-                </div>
+@* ******* crear friccion ******* *@
+@if (MostrarModalCrear && TipoModal == "FRICCION_NUEVA" && Tarea != null)
+{
+    <CrearFriccion TareaId="@Tarea.TAR_ID"
+                   NombreTarea="@Tarea.TAR_NOM"
+                   OnSuccess="AlCrearExitoso"
+                   OnClose="CerrarModalInterno" />
+}
+
+@* ******* crear solucion ******* *@
+@if (MostrarModalCrear && TipoModal == "SOLUCION_NUEVA" && Tarea != null)
+{
+    <CrearSolucion FriccionId="@(FriccionesList?.FirstOrDefault()?.FRI_ID ?? Guid.Empty)"
+                   TareaId="@Tarea.TAR_ID"
+                   NombreTarea="@Tarea.TAR_NOM"
+                   OnSuccess="AlCrearExitoso"
+                   OnClose="CerrarModalInterno" />
+}
+
+@* ******* editar solucion******* *@
+@if (MostrarModalCrear && TipoModal == "SOLUCION_EDITAR" && SolucionSeleccionada != null)
+{
+    <EditarSolucion Solucion="@SolucionSeleccionada"
+                    FriccionesDisponibles="@FriccionesList"
+                    OnSuccess="AlCrearExitoso"
+                    OnClose="CerrarModalInterno" />
+}
+
+@* ******* editar friccion ******* *@
+@if (MostrarModalCrear && TipoModal == "FRICCION_EDITAR" && FriccionSeleccionada != null)
+{
+    <Davivienda.Componentes.EditarFriccion Friccion="@FriccionSeleccionada"
+                                           OnSuccess="AlCrearExitoso"
+                                           OnClose="CerrarModalInterno" />
+}
+
+@* ******* historial ******* *@
+@if (MostrarModalCrear && (TipoModal == "HISTORIAL_SOLUCIONES" || TipoModal == "HISTORIAL_FRICCIONES"))
+{
+    <div class="modal-interno-backdrop" @onclick="CerrarModalInterno">
+        <div class="modal-interno-ventana" @onclick:stopPropagation>
+            <div class="modal-interno-header">
+                <h3>@TituloModal</h3>
+                <button class="modal-interno-cerrar" @onclick="CerrarModalInterno">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+            <div class="modal-interno-body">
+                @if (TipoModal == "HISTORIAL_SOLUCIONES")
+                {
+                    <BitacoraSolucion OnClose="CerrarModalInterno" />
+                }
+                else if (TipoModal == "HISTORIAL_FRICCIONES")
+                {
+                    <BitacoraFriccion OnClose="CerrarModalInterno" />
+                }
             </div>
         </div>
-    }
-
-</div>
+    </div>
+}

@@ -1,30 +1,27 @@
-﻿/* ============================================
-   CONTENEDOR PRINCIPAL DEL SIDEBAR
-   ============================================ */
+﻿/* ******* contenedor principal ******* */
 
 .sidebar-modern {
-    width: 280px;
+    width: 300px;
     height: 100vh;
     background: #ffffff;
     display: flex;
     flex-direction: column;
-    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
     position: relative;
     overflow: hidden;
+    border-right: 2px solid #e2e8f0;
+    box-shadow: 3px 0 16px rgba(0, 0, 0, 0.07);
 }
 
-/* ============================================
-   ÁREA DE NAVEGACIÓN
-   ============================================ */
+/* ******* area de navegacion ******* */
 
 .sidebar-navigation-area {
     flex: 1;
     overflow-y: auto;
-    padding: 16px 0 0 0; /* Quitamos padding-bottom */
+    padding: 12px 0 0 0;
 }
 
     .sidebar-navigation-area::-webkit-scrollbar {
-        width: 6px;
+        width: 5px;
     }
 
     .sidebar-navigation-area::-webkit-scrollbar-track {
@@ -40,132 +37,44 @@
             background: #cbd5e0;
         }
 
-/* ============================================
-   MENÚ DE NAVEGACIÓN
-   ============================================ */
+/* ******* menu de navegacion ******* */
 
 .navigation-menu-modern {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding-bottom: 2px; /* Sin espacio al final */
-}
-
-/* ============================================
-   ITEMS DEL MENÚ
-   ============================================ */
-
-.menu-item-modern {
-    width: 100%;
-    padding: 0 12px;
+    gap: 6px;
+    padding: 4px 12px 8px 12px;
 }
 
 .nav-item-container {
     width: 100%;
-    padding: 0 12px;
 }
 
-/* ============================================
-   LINKS DEL MENÚ
-   ============================================ */
-
-.menu-link-modern {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 16px;
-    color: #64748b;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    position: relative;
-    background: transparent;
-    border: none;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-    border-radius: 10px;
-    height: 52px;
-}
-
-    .menu-link-modern:hover {
-        background: #fef5f5;
-        color: #334155;
-    }
-
-        .menu-link-modern:hover .icon-box {
-            background: #e30613;
-            color: #ffffff;
-            transform: scale(1.05);
-        }
-
-    .menu-link-modern.active {
-        background: linear-gradient(90deg, rgba(227, 6, 19, 0.1) 0%, transparent 100%);
-        color: #e30613;
-        border-left: 4px solid #e30613;
-        font-weight: 600;
-    }
-
-        .menu-link-modern.active .icon-box {
-            background: #e30613;
-            color: #ffffff;
-        }
-
-/* ============================================
-   CAJA DE ICONOS
-   ============================================ */
-
-.icon-box {
-    width: 36px;
-    height: 36px;
-    background: #f8fafc;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #64748b;
-    font-size: 18px;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-}
-
-/* ============================================
-   TEXTO DEL MENÚ
-   ============================================ */
-
-.menu-text-modern {
-    flex: 1;
-    font-size: 15px;
-}
-
-/* ============================================
-   BOTÓN DEL MENÚ (PARA DROPDOWNS)
-   ============================================ */
+/* ******* boton administracion ******* */
 
 .menu-button-modern {
     display: flex;
     align-items: center;
     gap: 14px;
-    padding: 12px 16px;
-    color: #64748b;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    position: relative;
+    padding: 18px 16px;
+    color: #334155;
     background: transparent;
     border: none;
     width: 100%;
     text-align: left;
     cursor: pointer;
-    border-radius: 10px;
-    height: 52px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    transition: background 0.2s ease, color 0.2s ease;
+    min-height: 56px;
+    box-sizing: border-box;
 }
 
     .menu-button-modern:hover {
         background: #fef5f5;
-        color: #334155;
+        color: #e30613;
     }
 
         .menu-button-modern:hover .icon-box {
@@ -174,87 +83,47 @@
             transform: scale(1.05);
         }
 
-/* ============================================
-   WRAPPER DEL SUBMENÚ
-   ============================================ */
+/* ******* caja de icono ******* */
+
+.icon-box {
+    width: 36px;
+    height: 36px;
+    background: #f1f5f9;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #64748b;
+    font-size: 17px;
+    transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+    flex-shrink: 0;
+}
+
+/* ******* texto del menu ******* */
+
+.menu-text-modern {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.1px;
+}
+
+/* ******* wrapper del submenu admin ******* */
 
 .submenu-wrapper {
-    padding: 8px 0 0 0; /* Reducimos padding */
+    padding: 4px 0 6px 0;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    background: transparent;
-    animation: slideDownSub 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    animation: slideDownSub 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* ============================================
-   CONTENEDOR DE SUB-ITEMS
-   ============================================ */
-
-.nav-sub-container {
-    background: #ffffff;
-    border: 1px solid #f1f5f9;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-    margin: 0 0 4px 0; /* Sin márgenes laterales */
-    transition: all 0.2s ease-in-out;
-    border-radius: 0; /* Sin border-radius para que pegue a los bordes */
-    overflow: hidden;
-    height: 40px;
-}
-
-    .nav-sub-container:hover {
-        transform: translateX(8px);
-        border-color: #e30613;
-        box-shadow: 0 4px 12px rgba(227, 6, 19, 0.12);
-    }
-
-        .nav-sub-container:hover .submenu-button-modern {
-            color: #e30613;
-            font-weight: 600;
-        }
-
-        .nav-sub-container:hover i {
-            color: #e30613;
-            transform: scale(1.1);
-        }
-
-/* ============================================
-   BOTONES DEL SUBMENÚ
-   ============================================ */
-
-.submenu-button-modern {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 12px 20px; /* Más padding horizontal */
-    color: #64748b;
-    text-decoration: none;
-    font-size: 15px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    position: relative;
-    background: transparent;
-    border: none;
-    width: 100%;
-    text-align: left;
-    cursor: pointer;
-    border-radius: 0; /* Sin border-radius */
-    height: 52px;
-}
-
-    .submenu-button-modern i {
-        font-size: 16px;
-        transition: all 0.2s ease;
-    }
-
-/* ============================================
-   ANIMACIONES
-   ============================================ */
+/* ******* animaciones ******* */
 
 @keyframes slideDownSub {
     from {
         opacity: 0;
-        transform: translateY(-15px);
+        transform: translateY(-10px);
     }
 
     to {
@@ -283,67 +152,16 @@
     }
 }
 
-/* ============================================
-   RESPONSIVE - TABLETS
-   ============================================ */
+/* ******* responsive ******* */
 
 @media (max-width: 768px) {
     .sidebar-modern {
-        width: 100%; /* Ocupa todo el ancho disponible del layout */
-        height: 100vh;
-        background: #ffffff;
-        display: flex;
-        flex-direction: column;
-        box-shadow: 2px 0 12px rgba(0, 0, 0, 0.08);
-        position: relative;
-        overflow: hidden;
+        width: 100%;
     }
 
-    .menu-link-modern,
     .menu-button-modern {
-        padding: 10px 14px;
-        font-size: 14px;
-        height: 48px;
-    }
-
-    .submenu-button-modern {
-        padding: 12px 16px;
+        padding: 14px;
         font-size: 13px;
+        min-height: 48px;
     }
-}
-
-/* ============================================
-   ESTILOS PARA NAVLINKS CON CLASE SUBMENU
-   ============================================ */
-
-.nav-sub-container .submenu-button-modern {
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 18px;
-    color: #64748b;
-    font-size: 14px;
-    font-weight: 500;
-    border: none;
-    background: transparent;
-    width: 100%;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.2s ease;
-}
-
-    .nav-sub-container .submenu-button-modern.active {
-        color: #e30613;
-        font-weight: 600;
-        background: rgba(227, 6, 19, 0.05);
-    }
-
-        .nav-sub-container .submenu-button-modern.active i {
-            color: #e30613;
-        }
-
-.nav-sub-container:has(.submenu-button-modern.active) {
-    border-color: #e30613;
-    box-shadow: 0 4px 12px rgba(227, 6, 19, 0.12);
 }
