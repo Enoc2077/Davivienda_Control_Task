@@ -1,9 +1,12 @@
 ﻿/* --- LAYOUT GENERAL --- */
 .page-container {
     padding: 35px 55px;
-    background-color: #f1f5f9;
-    min-height: 100vh;
+    background-color: #efefef;
+    min-height: 110vh;
+    width: 105%;
+    margin-left: -2%;
     font-family: 'Segoe UI', system-ui, sans-serif;
+    margin-top: -3%;
 }
 
 .header-section {

@@ -10,12 +10,12 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
     public class TareaServices
     {
         private readonly DataBase dataBase;
-        private readonly TareaQueryBuilder tarBuilder; // Inyección del Builder
+        private readonly TareaQueryBuilder tarBuilder; 
 
         public TareaServices(DataBase dataBase, TareaQueryBuilder builder)
         {
             this.dataBase = dataBase;
-            this.tarBuilder = builder; // Asignación del builder
+            this.tarBuilder = builder; 
         }
 
         public async Task<IEnumerable<TareaModel>> GetTareas(IResolverContext context)
@@ -41,7 +41,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // Búsqueda por coincidencia en TAR_NOM
                 string sqlQuery = "SELECT t.* FROM dbo.TAREA t WHERE t.TAR_NOM LIKE @nombre";
 
                 await dataBase.ConnectAsync();

@@ -134,12 +134,10 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // SQL Manual para asegurar que el borrado apunte a la tabla correcta
                 string sqlQuery = "DELETE FROM dbo.BITACORA_SOLUCIONES WHERE BIT_SOL_ID = @bit_sol_id";
 
                 await dataBase.ConnectAsync();
 
-                // Ejecutamos y retornamos true si se eliminó al menos 1 fila
                 var exec = await dataBase.Connection.ExecuteAsync(sqlQuery, new { bit_sol_id });
                 return exec > 0;
             }

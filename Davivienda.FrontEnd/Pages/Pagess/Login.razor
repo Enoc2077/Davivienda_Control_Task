@@ -7,9 +7,9 @@
 <div class="login-page-container">
     <div class="login-card-dav">
         <div class="login-header">
-            <img src="images/logo-dav.png" alt="Davivienda" class="logo-dav" />
-            <h2 class="title-dav">Gestión de Proyectos</h2>
-            <p class="subtitle-dav">Bienvenido al portal administrativo</p>
+            <img src="images/davivienda-house.png" alt="Davivienda" class="logo-dav" />
+            <h2 class="title-dav">Gestión de Asignaciones</h2>
+            <p class="subtitle-dav">Bienvenidos</p>
         </div>
 
         <EditForm Model="@loginModel" OnValidSubmit="ProcesarLogin">
@@ -22,31 +22,33 @@
                 }
 
                 <div class="form-group-dav">
-                    <label>NÚMERO DE EMPLEADO</label>
-                    <input type="text" 
-                           class="input-dav" 
-                           @bind="loginModel.UsuNum" 
-                           placeholder="Ingrese su número" 
+                    <label>Número de empleado</label>
+                    <input type="text"
+                           class="input-dav"
+                           @bind="loginModel.UsuNum"
+                           placeholder="Ingrese su número de empleado"
+                           maxlength="5"
                            required />
                 </div>
 
                 <div class="form-group-dav">
-                    <label>CONTRASEÑA</label>
-                    <input type="password" 
-                           class="input-dav" 
-                           @bind="loginModel.Password" 
-                           placeholder="••••••••" 
+                    <label>Contraseña</label>
+                    <input type="password"
+                           class="input-dav"
+                           @bind="loginModel.Password"
+                           placeholder="••••••••"
+                           maxlength="20"
                            required />
                 </div>
 
                 <button type="submit" class="btn-login-dav" disabled="@cargando">
                     @if (cargando)
                     {
-                        <span class="spinner"></span> <span>AUTENTICANDO...</span>
+                        <span class="spinner"></span> <span>Autenticando...</span>
                     }
                     else
                     {
-                        <span>INICIAR SESIÓN</span>
+                        <span>Iniciar sesión</span>
                     }
                 </button>
             </div>
@@ -60,13 +62,12 @@
     </div>
 </div>
 
-@* ========== MODAL DE REGISTRO ========== *@
 @if (mostrarRegistro)
 {
     <div class="modal-backdrop-dav" @onclick="CerrarModalRegistro">
         <div class="modal-content-registro animate-pop" @onclick:stopPropagation>
             <div class="modal-head">
-                <h2 class="modal-title-main">Registro de Usuario</h2>
+                <h2 class="modal-title-main">Registro de usuario</h2>
                 <button class="close-x-dav" @onclick="CerrarModalRegistro">×</button>
             </div>
 
@@ -90,52 +91,53 @@
                 <EditForm Model="@nuevoUsuario" OnValidSubmit="CrearUsuario">
                     <div class="form-grid-dav">
                         <div class="input-container-dav">
-                            <label>NOMBRE COMPLETO</label>
-                            <input type="text" 
-                                   class="input-field-dav" 
-                                   @bind="nuevoUsuario.USU_NOM" 
+                            <label>Nombre completo</label>
+                            <input type="text"
+                                   class="input-field-dav"
+                                   @bind="nuevoUsuario.USU_NOM"
                                    placeholder="Ej: Juan Pérez"
                                    required />
                         </div>
 
                         <div class="input-container-dav">
-                            <label>N° EMPLEADO (5 DÍGITOS)</label>
-                            <input type="text" 
-                                   class="input-field-dav" 
-                                   @bind="nuevoUsuario.USU_NUM" 
+                            <label>N.° de empleado (5 dígitos)</label>
+                            <input type="text"
+                                   class="input-field-dav"
+                                   @bind="nuevoUsuario.USU_NUM"
                                    placeholder="54324"
                                    maxlength="5"
                                    required />
                         </div>
 
                         <div class="input-container-dav">
-                            <label>CORREO INSTITUCIONAL</label>
-                            <input type="email" 
-                                   class="input-field-dav" 
-                                   @bind="nuevoUsuario.USU_COR" 
+                            <label>Correo institucional</label>
+                            <input type="email"
+                                   class="input-field-dav"
+                                   @bind="nuevoUsuario.USU_COR"
                                    placeholder="usuario@davivienda.com"
                                    required />
                         </div>
 
                         <div class="input-container-dav">
-                            <label>TELÉFONO</label>
-                            <input type="tel" 
-                                   class="input-field-dav" 
-                                   @bind="nuevoUsuario.USU_TEL" 
+                            <label>Teléfono</label>
+                            <input type="tel"
+                                   class="input-field-dav"
+                                   @bind="nuevoUsuario.USU_TEL"
                                    placeholder="+504 9999-9999"
                                    required />
                         </div>
 
                         <div class="input-container-dav full-width-input">
-                            <label>CONTRASEÑA INICIAL</label>
-                            <input type="password" 
-                                   class="input-field-dav @(errorPassword ? "input-error" : "")" 
-                                   @bind="nuevoUsuario.USU_CON" 
+                            <label>Contraseña inicial</label>
+                            <input type="password"
+                                   class="input-field-dav @(errorPassword ? "input-error" : "")"
+                                   @bind="nuevoUsuario.USU_CON"
                                    placeholder="••••••••"
+                                   maxlength="20"
                                    required />
                             @if (errorPassword)
                             {
-                                <span class="error-text">Mínimo 6 caracteres</span>
+                                <span class="error-text">Debe tener entre 2 y 20 caracteres</span>
                             }
                         </div>
                     </div>
@@ -152,7 +154,7 @@
                             }
                             else
                             {
-                                <span>Finalizar Registro</span>
+                                <span>Finalizar registro</span>
                             }
                         </button>
                     </div>

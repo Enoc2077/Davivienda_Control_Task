@@ -71,7 +71,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // Buscamos coincidencias en el nombre del documento (DOC_NOM)
                 string sqlQuery = "SELECT d.* FROM dbo.DOCUMENTACION d WHERE d.DOC_NOM LIKE @nombre";
 
                 await dataBase.ConnectAsync();

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Davivienda.Component.Componentes
 {
-    public partial class DetalleTarea : ComponentBase
+    public partial class DetalleTarea : ComponentBase, IAsyncDisposable
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
         [Parameter] public TareaModel? Tarea { get; set; }
@@ -16,8 +16,8 @@ namespace Davivienda.Component.Componentes
 
         private List<FriccionModel> FriccionesList = new();
         private List<SolucionesModel> SolucionesList = new();
-        private string NombreProceso = "CARGANDO...";
-        private string NombreProyecto = "CARGANDO...";
+        private string NombreProceso = "Cargando...";
+        private string NombreProyecto = "Cargando...";
         private bool MostrarModalCrear = false;
         private string TipoModal = "";
 
@@ -30,8 +30,8 @@ namespace Davivienda.Component.Componentes
             "SOLUCION_NUEVA" => "Nueva Solución",
             "SOLUCION_EDITAR" => "Editar Solución",
             "FRICCION_EDITAR" => "Editar Fricción",
-            "HISTORIAL_SOLUCIONES" => "Bitácora Global de Soluciones",
-            "HISTORIAL_FRICCIONES" => "Bitácora Global de Fricciones",
+            "HISTORIAL_SOLUCIONES" => "Bitácora de Soluciones",
+            "HISTORIAL_FRICCIONES" => "Bitácora de Fricciones",
             _ => "Detalle"
         };
 
@@ -58,15 +58,16 @@ namespace Davivienda.Component.Componentes
                         if (proId.HasValue)
                         {
                             var resProy = await Client.GetProyectoById.ExecuteAsync(proId.Value);
-                            NombreProyecto = resProy.Data?.ProyectoById?.Pro_NOM.ToUpper() ?? "PROYECTO NO ENCONTRADO";
+                            NombreProyecto = resProy.Data?.ProyectoById?.Pro_NOM.ToUpper() ?? "Proyecto no encontrado";
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error Jerarquía: {ex.Message}");
-                NombreProceso = "ERROR"; NombreProyecto = "ERROR";
+                Console.WriteLine($"Error jerarquía: {ex.Message}");
+                NombreProceso = "Error";
+                NombreProyecto = "Error";
             }
             StateHasChanged();
         }
@@ -75,6 +76,7 @@ namespace Davivienda.Component.Componentes
         {
             try
             {
+                // 1. Cargar fricciones de esta tarea
                 var resFri = await Client.GetFricciones.ExecuteAsync();
                 FriccionesList = resFri.Data?.Fricciones?
                     .Where(f => f.Tar_ID == Tarea?.TAR_ID)
@@ -89,10 +91,21 @@ namespace Davivienda.Component.Componentes
                         FRI_FEC_CRE = f.Fri_FEC_CRE.DateTime
                     }).ToList() ?? new();
 
+                // 2. Cargar soluciones
                 var resSol = await Client.GetSoluciones.ExecuteAsync();
-                var idsFricciones = FriccionesList.Select(f => f.FRI_ID).ToList();
+
+                // IDs de las fricciones de esta tarea
+                var idsFricciones = FriccionesList.Select(f => f.FRI_ID).ToHashSet();
+
                 SolucionesList = resSol.Data?.Soluciones?
-                    .Where(s => s.Fri_ID.HasValue && idsFricciones.Contains(s.Fri_ID.Value))
+                    .Where(s =>
+                        // Opcion A: la solucion tiene una friccion que pertenece a esta tarea
+                        (s.Fri_ID.HasValue && idsFricciones.Contains(s.Fri_ID.Value))
+                        ||
+                        // Opcion B: la solucion NO tiene friccion y fue creada por el mismo usuario
+                        // (filtro temporal hasta que se agregue TAR_ID a la tabla SOLUCIONES)
+                        (!s.Fri_ID.HasValue && s.Usu_ID == Guid.Parse("0BC4DB21-1FFB-46BB-B120-48AE7B0909CD"))
+                    )
                     .Select(s => new SolucionesModel
                     {
                         SOL_ID = s.Sol_ID,
@@ -105,22 +118,19 @@ namespace Davivienda.Component.Componentes
                         SOL_FEC_CRE = s.Sol_FEC_CRE.DateTime
                     }).ToList() ?? new();
             }
-            catch (Exception ex) { Console.WriteLine($"Error Carga: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error carga: {ex.Message}");
+            }
             StateHasChanged();
         }
 
-        private async Task GuardarDescripcion()
+        // Autoguardado al cerrar
+        private async Task GuardarTarea()
         {
             if (Tarea == null) return;
-
             try
             {
-                Console.WriteLine("========================================");
-                Console.WriteLine("💾 GUARDANDO DESCRIPCIÓN (YOOPTA)");
-                Console.WriteLine($"📝 TAR_DES contenido: {Tarea.TAR_DES}");
-                Console.WriteLine($"📏 TAR_DES longitud: {Tarea.TAR_DES?.Length ?? 0} caracteres");
-                Console.WriteLine("========================================");
-
                 var input = new TareaModelInput
                 {
                     Tar_ID = Tarea.TAR_ID,
@@ -134,79 +144,28 @@ namespace Davivienda.Component.Componentes
                     Tar_FEC_MOD = DateTimeOffset.Now
                 };
 
-                Console.WriteLine("📤 Enviando a GraphQL...");
                 var result = await Client.UpdateTarea.ExecuteAsync(input);
 
                 if (result.Errors != null && result.Errors.Any())
-                {
-                    Console.WriteLine("❌ ERROR AL GUARDAR:");
-                    foreach (var error in result.Errors)
-                    {
-                        Console.WriteLine($"   - {error.Message}");
-                    }
-                }
+                    Console.WriteLine($"Error guardado: {result.Errors.First().Message}");
                 else
-                {
-                    Console.WriteLine("✅ DESCRIPCIÓN GUARDADA EXITOSAMENTE");
-                    Console.WriteLine($"📋 Resultado: {result.Data?.UpdateTarea}");
-                }
+                    Console.WriteLine("✅ Tarea guardada automáticamente al cerrar");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("❌ EXCEPCIÓN AL GUARDAR:");
-                Console.WriteLine($"   Mensaje: {ex.Message}");
-                Console.WriteLine($"   Stack: {ex.StackTrace}");
+                Console.WriteLine($"Error al guardar: {ex.Message}");
             }
         }
 
-        private async Task GuardarEstadoTarea()
+        private async Task Cerrar()
         {
-            if (Tarea == null) return;
+            await GuardarTarea();
+            await OnClose.InvokeAsync();
+        }
 
-            try
-            {
-                Console.WriteLine("========================================");
-                Console.WriteLine("🔵 INICIANDO GUARDADO DE TAREA");
-                Console.WriteLine($"📝 TAR_DES contenido: {Tarea.TAR_DES}");
-                Console.WriteLine($"📏 TAR_DES longitud: {Tarea.TAR_DES?.Length ?? 0} caracteres");
-                Console.WriteLine("========================================");
-
-                var input = new TareaModelInput
-                {
-                    Tar_ID = Tarea.TAR_ID,
-                    Tar_NOM = Tarea.TAR_NOM,
-                    Tar_DES = Tarea.TAR_DES,
-                    Tar_EST = Tarea.TAR_EST,
-                    Pri_ID = Tarea.PRI_ID != Guid.Empty ? Tarea.PRI_ID : null,
-                    Proc_ID = Tarea.PROC_ID,
-                    Tar_FEC_INI = Tarea.TAR_FEC_INI,
-                    Tar_FEC_CRE = Tarea.TAR_FEC_CRE,
-                    Tar_FEC_MOD = DateTimeOffset.Now
-                };
-
-                Console.WriteLine("📤 Enviando a GraphQL...");
-                var result = await Client.UpdateTarea.ExecuteAsync(input);
-
-                if (result.Errors != null && result.Errors.Any())
-                {
-                    Console.WriteLine("❌ ERROR AL GUARDAR:");
-                    foreach (var error in result.Errors)
-                    {
-                        Console.WriteLine($"   - {error.Message}");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine("✅ TAREA GUARDADA EXITOSAMENTE");
-                    Console.WriteLine($"📋 Resultado: {result.Data?.UpdateTarea}");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("❌ EXCEPCIÓN AL GUARDAR:");
-                Console.WriteLine($"   Mensaje: {ex.Message}");
-                Console.WriteLine($"   Stack: {ex.StackTrace}");
-            }
+        public async ValueTask DisposeAsync()
+        {
+            await GuardarTarea();
         }
 
         private void ManejarCambioBitacora(ChangeEventArgs e)
@@ -265,7 +224,5 @@ namespace Davivienda.Component.Componentes
             }
             catch (Exception ex) { Console.WriteLine($"Error: {ex.Message}"); }
         }
-
-        private async Task Cerrar() => await OnClose.InvokeAsync();
     }
 }

@@ -10,12 +10,12 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
     public class PrioridadServices
     {
         private readonly DataBase dataBase;
-        private readonly PrioridadQueryBuilder priBuilder; // Agregado el Builder
+        private readonly PrioridadQueryBuilder priBuilder; 
 
         public PrioridadServices(DataBase dataBase, PrioridadQueryBuilder builder)
         {
             this.dataBase = dataBase;
-            this.priBuilder = builder; // Inyección del builder
+            this.priBuilder = builder; 
         }
 
         public async Task<IEnumerable<PrioridadModel>> GetPrioridades(IResolverContext context)

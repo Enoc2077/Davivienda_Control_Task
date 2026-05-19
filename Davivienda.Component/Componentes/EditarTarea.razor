@@ -3,33 +3,33 @@
 
 <div class="modal-overlay">
     <div class="modal-card-premium animate-pop">
-        @* Línea superior decorativa Davivienda (Verde para Tareas) *@
         <div class="modal-top-accent-green"></div>
-
         <div class="modal-head">
             <h2 class="modal-title-main">
                 <i class="fas fa-pencil-alt"></i> Editar Tarea
             </h2>
             <button class="close-x-dav" @onclick="CerrarModal">×</button>
         </div>
-
         <div class="modal-body">
             <p class="modal-subtitle">Modificando actividades de: <strong>@Tarea.TAR_NOM</strong></p>
-
             <div class="form-grid-dav">
-                @* Nombre de la Tarea *@
+
+                @* Nombre *@
                 <div class="input-container-dav full-width">
                     <label>NOMBRE DE LA TAREA</label>
                     <input type="text" @bind="Tarea.TAR_NOM" class="input-field-dav" />
                 </div>
 
-                @* Descripción *@
+                @* Descripción — Yoopta *@
                 <div class="input-container-dav full-width">
                     <label>DESCRIPCIÓN</label>
-                    <textarea @bind="Tarea.TAR_DES" rows="3" class="input-field-dav"></textarea>
+                    <div class="yoopta-wrapper-tarea">
+                        <Yoopta Contenido="@Tarea.TAR_DES"
+                                ContenidoChanged="@OnDescripcionChanged" />
+                    </div>
                 </div>
 
-                @* Campo Fecha Inicio: Carga el valor desde el modelo *@
+                @* Fecha Inicio *@
                 <div class="input-container-dav">
                     <label>FECHA INICIO</label>
                     <input type="date"
@@ -38,7 +38,7 @@
                            class="input-field-dav" />
                 </div>
 
-                @* Campo Fecha Fin *@
+                @* Fecha Fin *@
                 <div class="input-container-dav">
                     <label>FECHA FINALIZACIÓN</label>
                     <input type="date"
@@ -47,7 +47,7 @@
                            class="input-field-dav" />
                 </div>
 
-                @* Estado y Responsable *@
+                @* Estado *@
                 <div class="input-container-dav">
                     <label>ESTADO ACTUAL</label>
                     <select @bind="Tarea.TAR_EST" class="input-field-dav select-dav visual-fix">
@@ -57,6 +57,7 @@
                     </select>
                 </div>
 
+                @* Responsable *@
                 <div class="input-container-dav">
                     <label>USUARIO RESPONSABLE</label>
                     <select @bind="Tarea.USU_ID" class="input-field-dav select-dav visual-fix">
@@ -67,9 +68,9 @@
                         }
                     </select>
                 </div>
+
             </div>
         </div>
-
         <div class="modal-foot-dav">
             <button class="btn-secondary-dav" @onclick="CerrarModal">Cancelar</button>
             <button class="btn-save-main-dav-green" @onclick="ActualizarTarea">

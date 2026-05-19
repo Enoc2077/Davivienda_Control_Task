@@ -2,23 +2,25 @@
 @using Davivienda.Models.Modelos
 
 <div class="page-container">
-    @* 1. Título Superior *@
+
     <div class="header-section">
         <h2 class="page-title">Gestión de Usuarios</h2>
     </div>
 
-    @* 2. Barra de herramientas *@
     <div class="search-bar-wrapper">
         <div class="search-input-box">
             <i class="bi bi-search"></i>
-            <input type="text" placeholder="Buscar usuario por nombre..." @bind="Busqueda" @bind:event="oninput" @onkeyup="FiltrarUsuarios" />
+            <input type="text"
+                   placeholder="Buscar usuario por nombre..."
+                   @bind="Busqueda"
+                   @bind:event="oninput"
+                   @onkeyup="FiltrarUsuarios" />
         </div>
         <button class="btn-primary-blue" @onclick="AbrirModalNuevo">
             <i class="bi bi-person-plus-fill"></i> Nuevo Usuario
         </button>
     </div>
 
-    @* 3. Listado de Usuarios *@
     <div class="users-list-container">
         @if (UsuariosFiltrados == null || !UsuariosFiltrados.Any())
         {
@@ -71,46 +73,62 @@
 
             <div class="modal-body">
                 <div class="form-grid-dav">
+
                     <div class="input-container-dav">
-                        <label>NOMBRE COMPLETO</label>
-                        <input @bind="UsuarioForm.USU_NOM" placeholder="Ej. Juan Pérez" class="input-field-dav" />
+                        <label>Nombre completo</label>
+                        <input @bind="UsuarioForm.USU_NOM"
+                               placeholder="Ej. Juan Pérez"
+                               class="input-field-dav" />
                     </div>
 
                     <div class="input-container-dav">
-                        <label>N° EMPLEADO (5 DÍGITOS)</label>
-                        <input @bind="UsuarioForm.USU_NUM" readonly class="input-field-dav disabled-input" />
+                        <label>N.° de empleado (5 dígitos)</label>
+                        <input @bind="UsuarioForm.USU_NUM"
+                               readonly
+                               class="input-field-dav disabled-input" />
                     </div>
 
                     <div class="input-container-dav">
-                        <label>CORREO INSTITUCIONAL</label>
-                        <input @bind="UsuarioForm.USU_COR" placeholder="usuario@davivienda.com" class="input-field-dav" />
+                        <label>Correo institucional</label>
+                        <input @bind="UsuarioForm.USU_COR"
+                               placeholder="usuario@davivienda.com"
+                               class="input-field-dav" />
                     </div>
 
                     <div class="input-container-dav">
-                        <label>TELÉFONO</label>
-                        <input @bind="UsuarioForm.USU_TEL" placeholder="+504 9999-9999" class="input-field-dav" />
+                        <label>Teléfono</label>
+                        <input @bind="UsuarioForm.USU_TEL"
+                               placeholder="+504 9999-9999"
+                               class="input-field-dav" />
                     </div>
 
                     @if (Editando)
                     {
                         <div class="input-container-dav full-width-input">
-                            <label>ESTADO ACTUAL</label>
-                            <select @bind="UsuarioForm.USU_EST" class="input-field-dav select-dav status-select-fix">
+                            <label>Estado actual</label>
+                            <select class="select-dav"
+                                    value="@EstadoStr"
+                                    @onchange="OnEstadoChanged">
                                 <option value="true">Activo</option>
                                 <option value="false">Inactivo</option>
                             </select>
                         </div>
                     }
 
-                    @* CAMPO DE CONTRASEÑA CON VALIDACIÓN *@
                     <div class="input-container-dav full-width-input">
-                        <label>@(Editando ? "CONFIRMAR CONTRASEÑA PARA GUARDAR" : "CONTRASEÑA INICIAL")</label>
-                        <input type="password" @bind="PasswordCheck" placeholder="••••••••" class="input-field-dav @(ErrorPass ? "input-error" : "")" />
+                        <label>@(Editando ? "Confirmar contraseña para guardar" : "Contraseña inicial")</label>
+                        <input type="password"
+                               @bind="PasswordCheck"
+                               placeholder="••••••••"
+                               class="input-field-dav @(ErrorPass ? "input-error" : "")" />
                         @if (ErrorPass)
                         {
-                            <span class="error-text">@(Editando ? "La contraseña no coincide con la registrada." : "La contraseña es obligatoria.")</span>
+                            <span class="error-text">
+                                @(Editando ? "La contraseña no coincide con la registrada." : "La contraseña es obligatoria.")
+                            </span>
                         }
                     </div>
+
                 </div>
             </div>
 
@@ -120,6 +138,7 @@
                     @(Editando ? "Actualizar Cambios" : "Finalizar Registro")
                 </button>
             </div>
+
         </div>
     </div>
 }

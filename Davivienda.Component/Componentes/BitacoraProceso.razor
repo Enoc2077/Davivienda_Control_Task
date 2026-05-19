@@ -12,12 +12,9 @@
             <div class="bg-blob blob-red-top"></div>
             <div class="bg-blob blob-red-bottom"></div>
 
-            @* 🎨 ILUSTRACIÓN DECORATIVA *@
             <div class="illustration-scene">
                 <div class="device-monitor">
-                    <div class="device-screen">
-                        <div class="screen-ui-lines"></div>
-                    </div>
+                    <div class="device-screen"><div class="screen-ui-lines"></div></div>
                     <div class="device-stand"></div>
                 </div>
                 <div class="vector-person person-standing"></div>
@@ -28,10 +25,10 @@
             </div>
 
             <div class="content-sectors-container">
-                @* ========== LISTADO DE PROCESOS ========== *@
+
+                @* LISTADO *@
                 <div class="sector-white-card sector-listado">
                     <div class="sector-label">Historial de Procesos</div>
-
                     <div class="sector-banner-header">
                         <div class="banner-waves"></div>
                         <div class="banner-content">
@@ -54,12 +51,12 @@
                                                 <i class="bi bi-folder"></i> @ObtenerNombreProyecto(proceso.PRO_ID)
                                             </span>
                                             <span class="metadata-item">
-                                                <i class="bi bi-calendar-check"></i> @proceso.PROC_FRE
+                                                <i class="bi bi-arrow-repeat"></i> @proceso.PROC_FRE
                                             </span>
                                         </div>
                                     </div>
                                     <div class="sol-card-metrics">
-                                        <div class="metric-badge status">@(proceso.PROC_EST == false ? "Completado" : "Activo")</div>
+                                        <div class="metric-badge status">Completado</div>
                                         <div class="metric-badge effectiveness">@ObtenerCantidadTareas(proceso.PROC_ID) Tareas</div>
                                     </div>
                                 </div>
@@ -75,121 +72,167 @@
                     </div>
                 </div>
 
-                @* ========== PANEL DE FILTROS ========== *@
+                @* FILTROS *@
                 <div class="sector-white-card sector-filtros">
                     <div class="sector-label verde">Filtros Inteligentes</div>
                     <div class="dynamic-filter-zone">
                         <Filtros Areas="AreasList"
                                  Proyectos="ProyectosList"
                                  Procesos="ProcesosGlobales"
+                                 Tareas="new()"
+                                 Prioridades="new()"
                                  OnFiltrosChanged="ManejarCambioFiltros" />
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 
-@* ========== MODAL DE DETALLE ========== *@
+@* ── MODAL DETALLE PROCESO ── *@
 @if (ProcesoSeleccionado != null)
 {
     <div class="modal-detalle-overlay" @onclick="CerrarDetalle">
         <div class="modal-detalle-card" @onclick:stopPropagation>
-            @* HEADER *@
+
             <div class="modal-detalle-header">
                 <div class="header-icon">
-                    <i class="bi bi-archive-fill"></i>
+                    <i class="bi bi-gear-fill"></i>
                 </div>
                 <h3 class="modal-detalle-title">Detalle de Proceso Completado</h3>
                 <button class="btn-cerrar-detalle" @onclick="CerrarDetalle">×</button>
             </div>
 
-            @* BODY CON 2 COLUMNAS *@
             <div class="modal-detalle-body">
-                @* COLUMNA IZQUIERDA: INFORMACIÓN *@
+
+                @* COLUMNA IZQUIERDA *@
                 <div class="detalle-columna-info">
-                    <div class="info-section">
-                        <label>NOMBRE DEL PROCESO</label>
-                        <p class="info-value">@ProcesoSeleccionado.PROC_NOM</p>
-                    </div>
 
-                    <div class="info-row">
-                        <div class="info-section">
-                            <label>ESTADO</label>
-                            <span class="badge-estado completado">@(ProcesoSeleccionado.PROC_EST == false ? "Completado" : "Activo")</span>
+                    <div class="proceso-nombre-hero">
+                        <div class="proceso-nombre-icon">
+                            <i class="bi bi-gear-fill"></i>
                         </div>
-
-                        <div class="info-section">
-                            <label>FRECUENCIA</label>
-                            <span class="badge-prioridad">@ProcesoSeleccionado.PROC_FRE</span>
+                        <div class="proceso-nombre-texto">
+                            <span class="proceso-nombre-label">NOMBRE DEL PROCESO</span>
+                            <h2 class="proceso-nombre-titulo">@ProcesoSeleccionado.PROC_NOM</h2>
                         </div>
                     </div>
 
+                    <div class="proceso-badges-row">
+                        <div class="proceso-badge-item">
+                            <span class="proceso-badge-label">ESTADO</span>
+                            <span class="badge-completado">
+                                <i class="bi bi-check-circle"></i>
+                                @(ProcesoSeleccionado.PROC_EST == false ? "Completado" : "Activo")
+                            </span>
+                        </div>
+                        <div class="proceso-badge-item">
+                            <span class="proceso-badge-label">FRECUENCIA</span>
+                            <span class="badge-frecuencia">
+                                <i class="bi bi-arrow-repeat"></i>
+                                @ProcesoSeleccionado.PROC_FRE
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="proceso-separador"></div>
+
                     <div class="info-section">
-                        <label>PROYECTO</label>
-                        <p class="info-value-small">@ObtenerNombreProyecto(ProcesoSeleccionado.PRO_ID)</p>
+                        <label>PROYECTO ASOCIADO</label>
+                        <div class="proceso-origen-card">
+                            <i class="bi bi-folder-fill" style="color:#3b82f6;font-size:1rem;"></i>
+                            <p class="info-value-small">@ObtenerNombreProyecto(ProcesoSeleccionado.PRO_ID)</p>
+                        </div>
                     </div>
 
                     <div class="info-section">
                         <label>TAREAS TOTALES</label>
-                        <p class="info-value-small">@ObtenerCantidadTareas(ProcesoSeleccionado.PROC_ID) tareas</p>
+                        <div class="proceso-origen-card">
+                            <i class="bi bi-list-check" style="color:#8b5cf6;font-size:1rem;"></i>
+                            <p class="info-value-small">@ObtenerCantidadTareas(ProcesoSeleccionado.PROC_ID) tarea(s) registradas</p>
+                        </div>
                     </div>
 
                     <div class="info-section">
                         <label>FECHAS</label>
-                        <div class="fecha-range">
-                            <span class="fecha-label">Creado:</span>
-                            <span class="fecha-value">@ProcesoSeleccionado.PROC_FEC_CRE.ToString("dd/MM/yyyy")</span>
-                        </div>
-                        @if (ProcesoSeleccionado.PROC_FEC_MOD.HasValue)
-                        {
-                            <div class="fecha-range">
-                                <span class="fecha-label">Modificado:</span>
-                                <span class="fecha-value">@ProcesoSeleccionado.PROC_FEC_MOD.Value.ToString("dd/MM/yyyy")</span>
+                        <div class="fechas-card">
+                            <div class="fecha-row">
+                                <span class="fecha-icon-label">
+                                    <i class="bi bi-calendar-plus" style="color:#16a34a;"></i> Creado
+                                </span>
+                                <span class="fecha-value">@ProcesoSeleccionado.PROC_FEC_CRE.ToString("dd/MM/yyyy")</span>
                             </div>
-                        }
+                            @if (ProcesoSeleccionado.PROC_FEC_MOD.HasValue)
+                            {
+                                <div class="fecha-row">
+                                    <span class="fecha-icon-label">
+                                        <i class="bi bi-calendar-check" style="color:#f59e0b;"></i> Modificado
+                                    </span>
+                                    <span class="fecha-value">@ProcesoSeleccionado.PROC_FEC_MOD.Value.ToString("dd/MM/yyyy")</span>
+                                </div>
+                            }
+                        </div>
                     </div>
 
                     <div class="info-footer">
                         <i class="bi bi-calendar3"></i>
-                        <span>Completado: @ProcesoSeleccionado.PROC_FEC_CRE.ToString("dddd, dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))</span>
+                        <span>Completado: @ProcesoSeleccionado.PROC_FEC_CRE.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))</span>
                     </div>
                 </div>
 
-                @* COLUMNA DERECHA: DESCRIPCIÓN *@
-                <div class="detalle-columna-yoopta">
-                    <div class="yoopta-header-modal">
-                        <label>DESCRIPCIÓN DEL PROCESO</label>
-                    </div>
-                    <div class="yoopta-content-modal descripcion-texto">
-                        <p>@(ProcesoSeleccionado.PROC_DES ?? "Sin descripción")</p>
+                @* COLUMNA DERECHA — Yoopta + tareas *@
+                <div class="detalle-columna-derecha">
+
+                    @* DESCRIPCIÓN CON YOOPTA *@
+                    <div class="detalle-seccion detalle-seccion-yoopta">
+                        <div class="detalle-seccion-header">
+                            <i class="bi bi-text-paragraph" style="color:#3b82f6;"></i>
+                            <label>DESCRIPCIÓN DEL PROCESO</label>
+                        </div>
+                        <div class="detalle-seccion-body yoopta-body">
+                            <Yoopta Contenido="@(ProcesoSeleccionado.PROC_DES ?? string.Empty)"
+                                    ContenidoChanged="@((valor) => { })" />
+                        </div>
                     </div>
 
-                    <div class="yoopta-header-modal" style="margin-top: 20px;">
-                        <label>TAREAS ASOCIADAS</label>
-                    </div>
-                    <div class="yoopta-content-modal">
-                        @if (TareasDeProceso.Any())
-                        {
-                            <div class="lista-tareas-modal">
+                    @* TAREAS ASOCIADAS *@
+                    <div class="detalle-seccion">
+                        <div class="detalle-seccion-header">
+                            <i class="bi bi-list-check" style="color:#8b5cf6;"></i>
+                            <label>TAREAS ASOCIADAS (@TareasDeProceso.Count)</label>
+                        </div>
+                        <div class="detalle-seccion-body tareas-scroll">
+                            @if (TareasDeProceso.Any())
+                            {
                                 @foreach (var tarea in TareasDeProceso)
                                 {
-                                    <div class="tarea-item-modal">
-                                        <i class="bi bi-check-circle-fill" style="color: #16a34a;"></i>
-                                        <span>@tarea.TAR_NOM</span>
+                                    <div class="tarea-item-bit">
+                                        <div class="tarea-item-icon-bit">
+                                            <i class="bi bi-check-circle-fill"></i>
+                                        </div>
+                                        <div class="tarea-item-info-bit">
+                                            <span class="tarea-item-nombre-bit">@tarea.TAR_NOM</span>
+                                            <span class="tarea-item-est-bit @ObtenerClaseTarea(tarea.TAR_EST)">@tarea.TAR_EST</span>
+                                        </div>
                                     </div>
                                 }
-                            </div>
-                        }
-                        else
-                        {
-                            <p style="color: #94a3b8; font-size: 13px;">Sin tareas asociadas</p>
-                        }
+                            }
+                            else
+                            {
+                                <div class="tareas-vacio">
+                                    <i class="bi bi-inbox"></i>
+                                    <span>Sin tareas asociadas</span>
+                                </div>
+                            }
+                        </div>
                     </div>
+
                 </div>
+
             </div>
 
-            @* FOOTER *@
+            @* FOOTER — solo Cerrar *@
             <div class="modal-detalle-footer">
                 <button class="btn-modal-cerrar" @onclick="CerrarDetalle">Cerrar</button>
             </div>

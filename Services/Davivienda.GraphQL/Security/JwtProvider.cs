@@ -9,7 +9,7 @@ namespace Davivienda.GraphQL.Security
     {
         private readonly IConfiguration _configuration;
 
-        public JwtProvider(IConfiguration configuration)
+        public JwtProvider(IConfiguration configuration) 
         {
             _configuration = configuration;
         }
@@ -21,8 +21,8 @@ namespace Davivienda.GraphQL.Security
                 new Claim("USU_NUM", usuNum.ToString()),
                 new Claim(ClaimTypes.Name, nombre),
                 new Claim(ClaimTypes.Role, rolNombre),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), // 🔥 GUID único por token
-                new Claim("iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()) // 🔥 Timestamp de creación
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim("iat", DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString()) 
             };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
@@ -32,7 +32,7 @@ namespace Davivienda.GraphQL.Security
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddHours(6), // 🔥 6 HORAS DE DURACIÓN
+                expires: DateTime.UtcNow.AddHours(6), 
                 signingCredentials: creds
             );
 

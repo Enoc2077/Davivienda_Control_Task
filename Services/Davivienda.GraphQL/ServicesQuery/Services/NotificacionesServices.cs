@@ -41,7 +41,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // Búsqueda por coincidencia en el cuerpo del mensaje de la notificación
                 string sqlQuery = "SELECT n.* FROM dbo.NOTIFICACIONES n WHERE n.NOT_MEN LIKE @mensaje";
 
                 await dataBase.ConnectAsync();
@@ -108,7 +107,7 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                 {
                     NOT_ID = notificacion.NOT_ID,
                     NOT_MEN = !string.IsNullOrEmpty(notificacion.NOT_MEN) ? notificacion.NOT_MEN : existing.NOT_MEN,
-                    NOT_LEI = notificacion.NOT_LEI, // Al ser bool, se actualiza directo
+                    NOT_LEI = notificacion.NOT_LEI, 
                     USU_ID = notificacion.USU_ID ?? existing.USU_ID,
                     NOT_FEC_MOD = DateTimeOffset.Now
                 };

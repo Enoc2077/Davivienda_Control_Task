@@ -19,7 +19,7 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             this.areaQueryBuilder = areaBuilder;
         }
 
-        // --- QUERIES ---
+        // --- QUERIS ---
 
         public async Task<IEnumerable<AreasModel>> GetAreas(IResolverContext context)
         {
@@ -35,7 +35,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                         string fieldName = fieldNode.Name.Value;
                         if (fieldName != "__typename")
                         {
-                            // Forzamos a Upper para que coincida con la BD
                             fields.Add($"a.{fieldName.ToUpper()}");
                         }
                     }
@@ -57,11 +56,9 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // 1. Olvidémonos del Builder por un segundo para asegurar que funcione
-                // Construimos el SQL manualmente con el nombre de tabla correcto
+                
                 string sqlQuery = "SELECT a.* FROM dbo.AREA a WHERE a.ARE_NOM LIKE @area_name";
 
-                // Tip: Esto imprimirá la query exacta en tu consola de "Output" de Visual Studio
                 System.Diagnostics.Debug.WriteLine($"SQL DEBUG: {sqlQuery}");
 
                 await dataBase.ConnectAsync();
@@ -87,12 +84,10 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // SQL Manual: Garantizamos que la sintaxis sea correcta siempre
                 string sqlQuery = "SELECT a.* FROM dbo.AREA a WHERE a.ARE_ID = @area_id";
 
                 await dataBase.ConnectAsync();
 
-                // Usamos QueryFirstOrDefaultAsync porque solo esperamos un resultado por ID
                 var result = await dataBase.Connection.QueryFirstOrDefaultAsync<AreasModel>(
                     sqlQuery,
                     new { area_id }
@@ -139,13 +134,11 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             {
                 await dataBase.ConnectAsync();
 
-                // 1. Buscamos el registro actual para no perder datos existentes
                 var existingArea = await dataBase.Connection.QueryFirstOrDefaultAsync<AreasModel>(
                     "SELECT * FROM dbo.AREA WHERE ARE_ID = @ARE_ID", new { area.ARE_ID });
 
                 if (existingArea == null) return false;
 
-                // 2. Definimos la query apuntando a la tabla correcta: dbo.AREA
                 string sqlQuery = @"UPDATE dbo.AREA SET 
                             ARE_NOM = @ARE_NOM, 
                             ARE_DES = @ARE_DES, 
@@ -153,14 +146,13 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
                             ARE_FEC_MOD = @ARE_FEC_MOD 
                             WHERE ARE_ID = @ARE_ID";
 
-                // 3. Mapeamos: si el campo viene nulo en la petición, mantenemos el de la BD
                 var parameters = new
                 {
                     ARE_ID = area.ARE_ID,
                     ARE_NOM = area.ARE_NOM ?? existingArea.ARE_NOM,
                     ARE_DES = area.ARE_DES ?? existingArea.ARE_DES,
-                    ARE_EST = area.ARE_EST ?? existingArea.ARE_EST, // Ahora sí permite el ??
-                    ARE_FEC_MOD = DateTime.Now // Actualizamos siempre la fecha de modificación
+                    ARE_EST = area.ARE_EST ?? existingArea.ARE_EST, 
+                    ARE_FEC_MOD = DateTime.Now 
                 };
 
                 var exec = await dataBase.Connection.ExecuteAsync(sqlQuery, parameters);

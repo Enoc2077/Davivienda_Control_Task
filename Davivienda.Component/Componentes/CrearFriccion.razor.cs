@@ -11,6 +11,7 @@ namespace Davivienda.Component.Componentes
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
 
         [Parameter] public Guid TareaId { get; set; }
+        [Parameter] public string NombreTarea { get; set; } = "Sin nombre";
         [Parameter] public EventCallback OnSuccess { get; set; }
         [Parameter] public EventCallback OnClose { get; set; }
 
@@ -18,51 +19,40 @@ namespace Davivienda.Component.Componentes
         {
             FRI_EST = "Abierta",
             FRI_IMP = "Medio",
-            FRI_DES = "" // Se inicializa vacío para el Yoopta
+            FRI_DES = ""
         };
 
         private async Task CerrarModalInterno()
         {
             if (OnClose.HasDelegate)
-            {
                 await OnClose.InvokeAsync();
-            }
         }
 
         private async Task GuardarFriccion()
         {
             try
             {
-                // Validación básica de título
                 if (string.IsNullOrWhiteSpace(nuevaFriccion.FRI_TIP)) return;
 
                 var input = new FriccionModelInput
                 {
                     Fri_ID = Guid.NewGuid(),
                     Fri_TIP = nuevaFriccion.FRI_TIP,
-                    Fri_DES = nuevaFriccion.FRI_DES, // Aquí se guarda el JSON de Yoopta
+                    Fri_DES = nuevaFriccion.FRI_DES,
                     Fri_EST = nuevaFriccion.FRI_EST,
                     Fri_IMP = nuevaFriccion.FRI_IMP,
                     Tar_ID = TareaId,
-                    // Asegúrate de pasar el ID de usuario real de tu sesión si es necesario
                     Usu_ID = Guid.Parse("0BC4DB21-1FFB-46BB-B120-48AE7B0909CD"),
                     Fri_FEC_CRE = DateTimeOffset.Now
                 };
 
                 var result = await Client.InsertFriccion.ExecuteAsync(input);
 
-                // Verificamos si hubo errores en la respuesta de GraphQL
                 if (result.Errors.Count == 0)
-                {
                     await OnSuccess.InvokeAsync();
-                }
                 else
-                {
                     foreach (var error in result.Errors)
-                    {
                         Console.WriteLine($"Error GraphQL: {error.Message}");
-                    }
-                }
             }
             catch (Exception ex)
             {

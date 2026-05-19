@@ -89,7 +89,7 @@
     }
 
 /* ========================================
-   📐 LAYOUT 2 COLUMNAS (SIMPLIFICADO)
+   📐 LAYOUT
    ======================================== */
 
 .content-sectors-container {
@@ -107,7 +107,7 @@
 }
 
 /* ========================================
-   🎯 SECTORES PRINCIPALES (INDEPENDIENTES)
+   🎯 SECTORES
    ======================================== */
 
 .sector-white-card {
@@ -127,22 +127,20 @@
         box-shadow: 0 15px 50px rgba(0, 0, 0, 0.12);
     }
 
-/* ===== SECTOR LISTADO (IZQUIERDA) - ESTILOS PROPIOS ===== */
 .sector-listado {
-    width: 85%; /* 🔥 MENOS ANCHO */
+    width: 85%;
     display: flex;
     flex-direction: column;
     padding: 10px !important;
     background: #ffffff;
 }
 
-/* ===== SECTOR FILTROS (DERECHA) - ESTILOS PROPIOS ===== */
 .sector-filtros {
-    width: 120%; /* 🔥 Ocupa su columna del grid */
+    width: 120%;
     overflow-y: auto;
-    background: #ffffff; 
+    background: #ffffff;
     height: 500px;
-   margin-right: 20%;
+    margin-right: 20%;
 }
 
     .sector-filtros::-webkit-scrollbar {
@@ -155,7 +153,7 @@
     }
 
 /* ========================================
-   🔍 MODAL DE DETALLE (TIPO FRICCIÓN)
+   🔍 MODAL DETALLE
    ======================================== */
 
 .modal-detalle-overlay {
@@ -173,7 +171,7 @@
 }
 
 .modal-detalle-card {
-    width: 830px; /* 🔥 REDUCIDO: 380px + 450px = 830px total */
+    width: 830px;
     max-width: 95%;
     background: #ffffff;
     border-radius: 24px;
@@ -194,7 +192,6 @@
     }
 }
 
-/* HEADER DEL MODAL */
 .modal-detalle-header {
     background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
     padding: 20px 30px;
@@ -238,25 +235,23 @@
         transform: scale(1.2) rotate(90deg);
     }
 
-/* BODY DEL MODAL - 2 COLUMNAS CON ANCHOS FIJOS */
 .modal-detalle-body {
     display: grid;
-    grid-template-columns: 380px 450px; /* 🔥 Izquierda: 380px | Derecha: 450px (mitad de 650px) */
+    grid-template-columns: 380px 450px;
     gap: 0;
     max-height: 650px;
     min-height: 550px;
 }
 
-/* COLUMNA IZQUIERDA: INFORMACIÓN */
 .detalle-columna-info {
-    width: 380px; /* 🔥 ANCHO FIJO INDEPENDIENTE */
+    width: 380px;
     padding: 25px;
     background: #f8fafc;
     border-right: 2px solid #e2e8f0;
     display: flex;
     flex-direction: column;
     gap: 18px;
-    overflow-y: auto; /* 🔥 Scroll propio si crece */
+    overflow-y: auto;
 }
 
     .detalle-columna-info::-webkit-scrollbar {
@@ -268,14 +263,13 @@
         border-radius: 10px;
     }
 
-/* COLUMNA DERECHA: YOOPTA */
 .detalle-columna-yoopta {
-    width: 450px; /* 🔥 ANCHO FIJO INDEPENDIENTE */
+    width: 450px;
     padding: 25px;
     background: white;
     display: flex;
     flex-direction: column;
-    overflow-y: auto; /* 🔥 Scroll propio si crece */
+    overflow-y: auto;
 }
 
     .detalle-columna-yoopta::-webkit-scrollbar {
@@ -287,7 +281,6 @@
         border-radius: 10px;
     }
 
-/* ===== ESTILOS INTERNOS COLUMNA IZQUIERDA ===== */
 .info-section {
     display: flex;
     flex-direction: column;
@@ -357,8 +350,6 @@
         color: #cbd5e1;
     }
 
-/* ===== ESTILOS INTERNOS COLUMNA DERECHA ===== */
-
 .yoopta-header-modal {
     margin-bottom: 12px;
 }
@@ -388,7 +379,6 @@
         border-radius: 10px;
     }
 
-/* FOOTER DEL MODAL */
 .modal-detalle-footer {
     padding: 20px 30px;
     background: #f8fafc;
@@ -423,10 +413,114 @@
     background: #1e293b;
     border: none;
     color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
 
     .btn-modal-ver-tarea:hover {
         background: #334155;
+    }
+
+/* ========================================
+   🔥 FRICCIÓN ASOCIADA — mejorada
+   ======================================== */
+
+.friccion-section {
+    margin-top: 4px;
+}
+
+.friccion-card-detalle {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: #fff8f2;
+    border: 1.5px solid #f4b89a;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 6px;
+}
+
+.friccion-card-icon {
+    width: 36px;
+    height: 36px;
+    background: #ffedd5;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ea580c;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.friccion-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    min-width: 0;
+}
+
+.friccion-card-nombre {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.3;
+}
+
+.friccion-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.friccion-card-estado {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.friccion-estado-abierta {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.friccion-estado-analisis {
+    background: #fef9c3;
+    color: #ca8a04;
+}
+
+.friccion-estado-mitigada {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.friccion-card-impacto {
+    font-size: 0.68rem;
+    font-weight: 600;
+    color: #64748b;
+    background: #f1f5f9;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+.friccion-vacia {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-style: italic;
+    font-size: 0.82rem;
+    padding: 10px 0;
+}
+
+    .friccion-vacia i {
+        font-size: 1rem;
     }
 
 /* ========================================
@@ -448,12 +542,8 @@
     z-index: 10;
 }
 
-    .sector-label.verde {
-        background: #16a34a !important;
-    }
-
 /* ========================================
-   📋 BANNER HEADER
+   📋 BANNER
    ======================================== */
 
 .sector-banner-header {
@@ -502,7 +592,7 @@
     }
 
 /* ========================================
-   📋 LISTADO SOLUCIONES
+   📋 LISTADO
    ======================================== */
 
 .solution-main-viewport {
@@ -529,8 +619,8 @@
     background: #ffffff;
     border: 2px solid #f1f5f9;
     border-radius: 16px;
-    padding: 14px 16px; /* 🔥 MÁS COMPACTO */
-    margin-bottom: 10px; /* 🔥 MÁS COMPACTO */
+    padding: 14px 16px;
+    margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 16px;
@@ -545,13 +635,6 @@
         box-shadow: 0 8px 18px rgba(227, 6, 19, 0.08);
     }
 
-    .solution-item-card.selected {
-        border-color: #e30613;
-        background: #fff5f5;
-        transform: scale(1.02);
-        box-shadow: 0 10px 20px rgba(227, 6, 19, 0.12);
-    }
-
 .sol-card-info {
     flex: 1;
     display: flex;
@@ -559,26 +642,22 @@
 }
 
 .sol-name {
-    font-size: 15px; /* 🔥 Un poco más grande */
+    font-size: 15px;
     font-weight: 700;
     color: #1e293b;
 }
 
-.sol-desc-short {
-    display: none; /* 🔥 OCULTO - Ya no se usa */
-}
-
 .sol-card-metrics {
     display: flex;
-    flex-direction: row; /* 🔥 HORIZONTAL - uno al lado del otro */
-    gap: 8px; /* 🔥 Espacio entre badges */
+    flex-direction: row;
+    gap: 8px;
     align-items: center;
 }
 
 .metric-badge {
-    padding: 6px 12px; /* 🔥 MÁS GRANDE */
+    padding: 6px 12px;
     border-radius: 8px;
-    font-size: 11px; /* 🔥 MÁS GRANDE */
+    font-size: 11px;
     font-weight: 700;
 }
 
@@ -612,10 +691,6 @@
         margin: 0;
     }
 
-/* ========================================
-   🎨 FILTROS
-   ======================================== */
-
 .dynamic-filter-zone {
     width: 100%;
     height: 100%;
@@ -623,58 +698,7 @@
 }
 
 /* ========================================
-   ✨ ANIMACIONES
-   ======================================== */
-
-@keyframes slideIn {
-    from {
-        opacity: 0;
-        transform: translateX(15px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-.sector-informacion,
-.sector-yoopta {
-    animation: slideIn 0.25s ease-out;
-}
-
-/* ========================================
-   📱 RESPONSIVE
-   ======================================== */
-
-@media (max-width: 1400px) {
-    .content-sectors-container {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto;
-        height: auto;
-    }
-
-    .sector-listado {
-        max-height: 400px;
-    }
-
-    .modal-detalle-body {
-        grid-template-columns: 1fr;
-        max-height: 600px;
-    }
-
-    .detalle-columna-info {
-        border-right: none;
-        border-bottom: 2px solid #e2e8f0;
-    }
-
-    .illustration-scene {
-        display: none; /* 🔥 Ocultar en móvil */
-    }
-}
-
-/* ========================================
-   🎨 ILUSTRACIÓN DECORATIVA
+   🎨 ILUSTRACIÓN
    ======================================== */
 
 .illustration-scene {
@@ -796,4 +820,96 @@
     50% {
         transform: translateY(-12px) rotate(45deg);
     }
+}
+
+/* ========================================
+   📱 RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1400px) {
+    .content-sectors-container {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        height: auto;
+    }
+
+    .sector-listado {
+        max-height: 400px;
+    }
+
+    .modal-detalle-body {
+        grid-template-columns: 1fr;
+        max-height: 600px;
+    }
+
+    .detalle-columna-info {
+        border-right: none;
+        border-bottom: 2px solid #e2e8f0;
+    }
+
+    .illustration-scene {
+        display: none;
+    }
+}
+
+/* ========================================
+   🖼️ MODAL DETALLE TAREA (mismo estilo que Asignaciones)
+   ======================================== */
+
+.modal-backdrop-dav {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(6px);
+    z-index: 11000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-calendar-content {
+    background: white;
+    width: 95vw;
+    max-width: 1200px;
+    height: 88vh;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header-dav {
+    background: #0033a0;
+    padding: 14px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.close-btn-dav {
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+    .close-btn-dav:hover {
+        background: rgba(255,255,255,0.3);
+    }
+
+.modal-body-dav {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }

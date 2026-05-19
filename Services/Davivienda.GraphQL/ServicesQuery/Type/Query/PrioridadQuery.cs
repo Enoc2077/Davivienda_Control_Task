@@ -14,7 +14,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Query
             return await prioridadServices.GetPrioridades(context);
         }
 
-        // AGREGAR ESTE MÉTODO PARA SOLUCIONAR EL ERROR DEL SDK
         public async Task<IEnumerable<PrioridadModel>> GetPrioridadesByName(
             string nombre,
             [Service] PrioridadServices prioridadServices,

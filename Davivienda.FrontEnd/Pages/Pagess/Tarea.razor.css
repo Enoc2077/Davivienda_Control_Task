@@ -299,7 +299,7 @@ textarea.input-field-dav {
         cursor: not-allowed;
     }
 
-/* --- RESUMEN (ESTADÍSTICAS) - EXTRA COMPACTO --- */
+/* --- RESUMEN estadistica --- */
 .stats-premium {
     display: flex;
     flex-direction: column;

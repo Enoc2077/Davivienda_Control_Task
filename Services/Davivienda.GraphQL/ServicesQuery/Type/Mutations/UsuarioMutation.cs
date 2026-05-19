@@ -9,7 +9,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Mutation
     {
         // --- AUTENTICACIÓN ---
 
-        // Esta versión es la correcta porque usa el DTO LoginInput
         public async Task<LoginModel.LoginResponse> Login(
             [Service] UsuarioServices usuarioServices,
             LoginModel.LoginInput input)
@@ -17,9 +16,8 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Mutation
             return await usuarioServices.LoginAsync(input);
         }
 
-        // --- GESTIÓN DE USUARIOS ---
+        // --- USUARIO ---
 
-        // Registra un nuevo usuario en la plataforma
         public async Task<bool> InsertUsuario(
             UsuarioModel usuario,
             [Service] UsuarioServices usuarioServices,
@@ -28,7 +26,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Mutation
             return await usuarioServices.InsertUsuario(context, usuario);
         }
 
-        // Actualiza la información de un usuario existente
         public async Task<bool> UpdateUsuario(
             UsuarioModel usuario,
             [Service] UsuarioServices usuarioServices,
@@ -37,7 +34,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Mutation
             return await usuarioServices.UpdateUsuario(context, usuario);
         }
 
-        // Elimina permanentemente un usuario por su ID
         public async Task<bool> DeleteUsuario(
             Guid usu_id,
             [Service] UsuarioServices usuarioServices,

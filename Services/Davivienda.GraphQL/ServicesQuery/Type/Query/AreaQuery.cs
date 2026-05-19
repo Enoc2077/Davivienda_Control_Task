@@ -15,7 +15,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Query
             return data;
         }
 
-        // Obtener áreas por nombre
         public  async Task<IEnumerable<AreasModel>> GetAreasByName(
             string area_name,
             IResolverContext context,
@@ -25,7 +24,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Type.Query
             return data;
         }
 
-        // Obtener área por ID
         public  async Task<AreasModel> GetAreasById(
             Guid area_id,
             IResolverContext context,

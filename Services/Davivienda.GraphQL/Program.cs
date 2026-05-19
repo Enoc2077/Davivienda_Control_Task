@@ -7,7 +7,6 @@ using Davivienda.GraphQL.ServicesQuery.Type.Query;
 using Davivienda.QueryBuilder.Builder;
 using HotChocolate.AspNetCore;
 using HotChocolate.AspNetCore.Serialization;
-// NUEVOS USINGS PARA SEGURIDAD
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -15,7 +14,7 @@ using Davivienda.GraphQL.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 1. CONFIGURACIÓN DE CORS
+// 1. CONFIGURACIÓN DE COR
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("Dev", policy =>
@@ -28,9 +27,9 @@ builder.Services.AddCors(options =>
 
 // 2. REGISTRO DE SERVICIOS
 builder.Services.AddScoped<DataBase>();
-builder.Services.AddSingleton<JwtProvider>(); // REGISTRO DEL PROVEEDOR DE TOKENS
+builder.Services.AddSingleton<JwtProvider>(); // REGISTRO DE TOKEN
 
-// Registro de Builders y Services (Tus servicios existentes)
+// Registro de Builders y Services 
 builder.Services.AddTransient<AreaQueryBuilder>();
 builder.Services.AddTransient<AreaServices>();
 builder.Services.AddScoped<BitacoraFriccionQueryBuilder>();
@@ -62,7 +61,7 @@ builder.Services.AddScoped<TareaServices>();
 builder.Services.AddScoped<UsuarioQueryBuilder>();
 builder.Services.AddScoped<UsuarioServices>();
 
-// 2.1 CONFIGURACIÓN DE AUTENTICACIÓN JWT
+//  CONFIGURACIÓN DE AUTENTICACIÓN JWT
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -80,7 +79,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// 3. CONFIGURACIÓN DE HOT CHOCOLATE
+//  CONFIGURACIÓN DE HOT CHOCOLATE
 builder.Services
     .AddGraphQLServer()
     .AddQueryType(d => d.Name("Query"))
@@ -123,7 +122,7 @@ builder.Services
 
 var app = builder.Build();
 
-// 4. PIPELINE DE MIDDLEWARE
+
 if (app.Environment.IsDevelopment())
 {
     app.UseDeveloperExceptionPage();
@@ -131,11 +130,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-// El orden aquí es crítico: CORS -> Authentication -> Authorization
 app.UseCors("Dev");
 
-app.UseAuthentication(); // NUEVO
-app.UseAuthorization();  // NUEVO
+app.UseAuthentication(); 
+app.UseAuthorization();  
 
 app.UseWebSockets();
 app.MapGraphQL();

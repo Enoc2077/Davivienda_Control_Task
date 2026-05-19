@@ -10,12 +10,12 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
     public class ProcesoServices
     {
         private readonly DataBase dataBase;
-        private readonly ProcesoQueryBuilder proBuilder; // Inyectamos el Builder
+        private readonly ProcesoQueryBuilder proBuilder; 
 
         public ProcesoServices(DataBase dataBase, ProcesoQueryBuilder builder)
         {
             this.dataBase = dataBase;
-            this.proBuilder = builder; // Asignamos el builder inyectado
+            this.proBuilder = builder; 
         }
 
         public async Task<IEnumerable<ProcesoModel>> GetProcesos(IResolverContext context)
@@ -42,7 +42,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
         {
             try
             {
-                // Búsqueda por coincidencia en PROC_NOM
                 string sqlQuery = "SELECT pr.* FROM dbo.PROCESO pr WHERE pr.PROC_NOM LIKE @nombre";
 
                 await dataBase.ConnectAsync();

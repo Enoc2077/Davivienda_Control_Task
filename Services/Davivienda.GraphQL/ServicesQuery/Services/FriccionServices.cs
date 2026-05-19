@@ -54,28 +54,22 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             finally { await dataBase.DisconnectAsync(); }
         }
 
-        #endregion
+        
 
-        #region MUTATIONS
-
-        /// <summary>
-        /// Inserta una Fricción y genera automáticamente su primer registro en Bitácora.
-        /// </summary>
+       
         public async Task<bool> InsertFriccion(IResolverContext context, FriccionModel friccion)
         {
             try
             {
-                // 1. Preparación de IDs y Fechas
                 if (friccion.FRI_ID == Guid.Empty) friccion.FRI_ID = Guid.NewGuid();
                 if (friccion.FRI_FEC_CRE == default) friccion.FRI_FEC_CRE = DateTimeOffset.Now;
 
-                // 2. Preparar el objeto de Bitácora automático
                 var bitacora = new BitacoraFriccionModel
                 {
                     BIT_FRI_ID = Guid.NewGuid(),
                     BIT_FRI_NOM = $"Apertura: {friccion.FRI_TIP}",
                     BIT_FRI_DES = friccion.FRI_DES ?? "Registro inicial de fricción",
-                    BIT_FRI_EST = true, // Estado activo en bitácora
+                    BIT_FRI_EST = true, 
                     BIT_FRI_FEC_CRE = friccion.FRI_FEC_CRE,
                     FRI_ID = friccion.FRI_ID,
                     USU_ID = friccion.USU_ID
@@ -83,19 +77,18 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
 
                 await dataBase.ConnectAsync();
 
-                // 3. Inicio de Transacción SQL para asegurar ambas inserciones
                 using (var transaction = dataBase.Connection.BeginTransaction())
                 {
                     try
                     {
-                        // Inserción en Tabla Principal: FRICCION
+                        
                         string sqlFri = @"INSERT INTO dbo.FRICCION 
                             (FRI_ID, FRI_TIP, FRI_DES, FRI_EST, FRI_IMP, TAR_ID, USU_ID, FRI_FEC_CRE) 
                             VALUES (@FRI_ID, @FRI_TIP, @FRI_DES, @FRI_EST, @FRI_IMP, @TAR_ID, @USU_ID, @FRI_FEC_CRE)";
 
                         await dataBase.Connection.ExecuteAsync(sqlFri, friccion, transaction);
 
-                        // Inserción en Tabla de Auditoría: BITACORA_FRICCIONES
+                      
                         string sqlBit = @"INSERT INTO dbo.BITACORA_FRICCIONES 
                             (BIT_FRI_ID, BIT_FRI_NOM, BIT_FRI_DES, BIT_FRI_EST, BIT_FRI_FEC_CRE, FRI_ID, USU_ID) 
                             VALUES (@BIT_FRI_ID, @BIT_FRI_NOM, @BIT_FRI_DES, @BIT_FRI_EST, @BIT_FRI_FEC_CRE, @FRI_ID, @USU_ID)";
@@ -120,12 +113,11 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             try
             {
                 await dataBase.ConnectAsync();
-                // Iniciamos transacción para que si falla la bitácora, no se guarde el cambio en la fricción
+                
                 using (var transaction = dataBase.Connection.BeginTransaction())
                 {
                     try
                     {
-                        // 1. Actualizar Tabla Principal
                         string sqlUpdate = @"UPDATE dbo.FRICCION SET 
                     FRI_TIP = @FRI_TIP, FRI_DES = @FRI_DES, FRI_EST = @FRI_EST, 
                     FRI_IMP = @FRI_IMP, FRI_FEC_MOD = @FRI_FEC_MOD 
@@ -133,7 +125,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
 
                         await dataBase.Connection.ExecuteAsync(sqlUpdate, friccion, transaction);
 
-                        // 2. Crear registro de Bitácora (Auditoría de la edición)
                         var bitacora = new BitacoraFriccionModel
                         {
                             BIT_FRI_ID = Guid.NewGuid(),
@@ -170,7 +161,6 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             {
                 await dataBase.ConnectAsync();
 
-                // NOTA: Se recomienda borrar primero la bitácora si no hay CASCADE DELETE en SQL
                 string sqlDelBit = "DELETE FROM dbo.BITACORA_FRICCIONES WHERE FRI_ID = @fri_id";
                 await dataBase.Connection.ExecuteAsync(sqlDelBit, new { fri_id });
 

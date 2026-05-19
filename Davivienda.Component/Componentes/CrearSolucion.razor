@@ -3,61 +3,104 @@
 @using Davivienda.GraphQL.SDK
 @using Microsoft.AspNetCore.Components
 
-<div class="modal-premium-overlay" @onclick="CerrarModalInterno">
-    <div class="modal-card-registro animate-pop" @onclick:stopPropagation>
+<div class="crear-sol-backdrop" @onclick="CerrarModalInterno">
+    <div class="crear-sol-panel" @onclick:stopPropagation>
 
-        <div class="modal-top-accent-blue"></div>
-
-        <div class="modal-header-registro">
-            <h2 class="modal-title-main">Registrar Solución</h2>
-            <button type="button" class="btn-close-x" @onclick="CerrarModalInterno">×</button>
+        @* ******* toolbar ******* *@
+        <div class="crear-sol-toolbar">
+            <div class="crear-sol-toolbar-left">
+                <div class="crear-sol-dot"></div>
+                <span class="crear-sol-brand">Gestión de Tareas</span>
+                <div class="crear-sol-divider"></div>
+                <span class="crear-sol-toolbar-label">Nueva Solución</span>
+            </div>
+            <button class="crear-sol-btn-cerrar" @onclick="CerrarModalInterno" title="Cerrar">
+                <i class="bi bi-x"></i>
+            </button>
         </div>
 
-        <div class="modal-body-registro">
-            <div class="form-grid-registro">
+        @* ******* scroll contenido ******* *@
+        <div class="crear-sol-scroll">
 
-                @* Nombre de la Solución *@
-                <div class="input-group-registro full-width">
-                    <label>NOMBRE DE LA SOLUCIÓN</label>
+            @* titulo y referencia a la tarea *@
+            <div class="crear-sol-titulo-section">
+                <h1 class="crear-sol-titulo">Nueva Solución</h1>
+                <div class="crear-sol-tarea-ref">
+                    <i class="bi bi-list-task"></i>
+                    <span class="crear-sol-tarea-label">Tarea:</span>
+                    <span class="crear-sol-tarea-nombre">@NombreTarea</span>
+                </div>
+            </div>
+
+            <div class="crear-sol-divisor"></div>
+
+            @* formulario *@
+            <div class="crear-sol-body">
+
+                <div class="crear-sol-campo">
+                    <label class="crear-sol-label">Nombre de la solución</label>
                     <input type="text"
                            @bind="nuevaSolucion.SOL_NOM"
-                           class="input-field-premium"
+                           class="crear-sol-input"
                            placeholder="Ej: Automatización de carga de datos..." />
                 </div>
 
-                @* 🔥 DESCRIPCIÓN CON YOOPTA *@
-                <div class="input-group-registro full-width">
-                    <label>DESCRIPCIÓN TÉCNICA</label>
-                    <div class="yoopta-editor-limiter">
+                <div class="crear-sol-campo">
+                    <label class="crear-sol-label">Descripción técnica</label>
+                    <div class="crear-sol-yoopta">
                         <Yoopta Contenido="@nuevaSolucion.SOL_DES"
                                 ContenidoChanged="@((valor) => { nuevaSolucion.SOL_DES = valor; })" />
                     </div>
                 </div>
 
-                @* Fila de Estado y Efectividad *@
-                <div class="input-group-registro">
-                    <label>ESTADO ACTUAL</label>
-                    <select @bind="nuevaSolucion.SOL_EST" class="input-field-premium select-premium">
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="En Progreso">En Progreso</option>
-                        <option value="Completada">Completada</option>
+                <div class="crear-sol-campo">
+                    <label class="crear-sol-label">Fricción asociada</label>
+                    <select @bind="friccionSeleccionadaId" class="crear-sol-select">
+                        <option value="">-- Sin fricción asociada --</option>
+                        @if (FriccionesDisponibles != null && FriccionesDisponibles.Any())
+                        {
+                            @foreach (var fri in FriccionesDisponibles)
+                            {
+                                <option value="@fri.FRI_ID">@fri.FRI_TIP</option>
+                            }
+                        }
+                        else
+                        {
+                            <option value="" disabled>No hay fricciones registradas</option>
+                        }
                     </select>
                 </div>
 
-                @* 🔥 EFECTIVIDAD COMO SELECT DE NIVELES *@
-                <div class="input-group-registro">
-                    <label>NIVEL DE EFECTIVIDAD</label>
-                    <select @bind="nuevaSolucion.SOL_NIV_EFE" class="input-field-premium select-premium">
-                        <option value="100">Alto (100%)</option>
-                        <option value="50">Medio (50%)</option>
-                        <option value="25">Bajo (25%)</option>
-                    </select>
+                <div class="crear-sol-fila-dos">
+                    <div class="crear-sol-campo">
+                        <label class="crear-sol-label">Estado actual</label>
+                        <select @bind="nuevaSolucion.SOL_EST" class="crear-sol-select">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En Progreso">En Progreso</option>
+                            <option value="Completada">Completada</option>
+                        </select>
+                    </div>
+                    <div class="crear-sol-campo">
+                        <label class="crear-sol-label">Nivel de efectividad</label>
+                        <select @bind="nuevaSolucion.SOL_NIV_EFE" class="crear-sol-select">
+                            <option value="25">Bajo (25%)</option>
+                            <option value="50">Medio (50%)</option>
+                            <option value="75">Alto (75%)</option>
+                            <option value="100">Muy alto (100%)</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            <div class="modal-footer-registro">
-                <button type="button" class="btn-cancel-premium" @onclick="CerrarModalInterno">Cancelar</button>
-                <button type="button" class="btn-save-premium" @onclick="GuardarSolucion">Guardar Registro</button>
+                @* botones *@
+                <div class="crear-sol-footer">
+                    <button class="crear-sol-btn-regresar" @onclick="CerrarModalInterno">
+                        <i class="bi bi-arrow-left"></i> Regresar
+                    </button>
+                    <button class="crear-sol-btn-guardar" @onclick="GuardarSolucion">
+                        <i class="bi bi-check-lg"></i> Guardar registro
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>

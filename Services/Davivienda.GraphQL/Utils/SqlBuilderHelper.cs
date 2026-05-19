@@ -5,7 +5,7 @@ namespace Davivienda.GraphQL.Utils
 {
     public static class SqlBuilderHelper
     {
-        // Construye un UPDATE dinámico basado solo en los campos provistos
+        // Construye un UPDATE 
         public static (string Sql, DynamicParameters Params) BuildPartialUpdate<T>(
             string tableName,
             T input,
@@ -19,14 +19,14 @@ namespace Davivienda.GraphQL.Utils
             {
                 var value = prop.GetValue(input);
 
-                // Saltar el ID principal (llave primaria)w
+                
                 if (prop.Name.Equals(keyField, StringComparison.OrdinalIgnoreCase))
                 {
                     parameters.Add($"@{prop.Name}", value);
                     continue;
                 }
 
-                // Lógica para detectar si el campo es opcional y tiene valor
+                // para ver si el campo es opcional y tiene valor
                 var isOptional = prop.PropertyType.IsGenericType &&
                                  prop.PropertyType.GetGenericTypeDefinition() == typeof(Optional<>);
 
@@ -49,7 +49,6 @@ namespace Davivienda.GraphQL.Utils
             if (updates.Count == 0)
                 throw new Exception("No fields provided to update.");
 
-            // Construcción del SQL final
             var sql = $"UPDATE {tableName} SET {string.Join(", ", updates)}, modify_at = @ModifyAt WHERE {keyField} = @{keyField}";
             parameters.Add("@ModifyAt", DateTimeOffset.UtcNow);
 
@@ -57,7 +56,7 @@ namespace Davivienda.GraphQL.Utils
         }
     }
 
-    // Clase auxiliar para manejar valores opcionales en el patch
+    
     public class Optional<T>
     {
         public T? Value { get; set; }

@@ -17,7 +17,7 @@ namespace Davivienda.GraphQL.Extensions
         public void Add(MappedField field) => _fields.Add(field);
         public IEnumerable<MappedField> Fields => _fields;
     }
-
+     
     public static class SelectionSetExtensions
     {
         public static MappedField MapSelectionSetToField(this SelectionSetNode selectionSetNode)

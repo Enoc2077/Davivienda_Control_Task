@@ -1,169 +1,232 @@
 ﻿@using Davivienda.Models.Modelos
 @using Davivienda.GraphQL.SDK
-@inherits Davivienda.FrontEnd.Pages.Pagess.Admin.ProcesoBase
+@using Davivienda.Component.Componentes
+@inherits Davivienda.FrontEnd.Pages.Pagess.Admin.Proceso
 
-<div class="modal-backdrop-warm">
-    <div class="modal-window-proceso">
-        @* --- HEADER MEJORADO (SOLO CAMBIOS SOLICITADOS) --- *@
-        <div class="modal-top-section">
-            <div class="header-left">
-                @* Botón pequeño y alineado *@
-                <button class="btn-modal-back-red-small" @onclick="CerrarModal">
-                    <i class="fas fa-arrow-left"></i> VOLVER A PROYECTOS
-                </button>
+<div class="proc-fullscreen">
 
-                <div class="project-info-header">
-                    <h2 class="title-project-premium">@ProyectoNombre</h2>
-                    <p class="subtitle">Gestión detallada de procesos</p>
-                </div>
+    @* ── TOPBAR ── *@
+    <div class="proc-topbar">
+
+        @* IZQUIERDA: título + búsqueda + historial *@
+        <div class="proc-topbar-left">
+            <div class="proc-titulo-grupo">
+                <h1 class="proc-proyecto-title">@ProyectoNombre</h1>
+                <span class="proc-proyecto-sub">Gestión detallada de procesos</span>
             </div>
 
-            <div class="header-right-buttons">
-                @* Barra de búsqueda horizontal y larga *@
-                <div class="modal-search-bar-horizontal-long">
-                    <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Buscar procesos por nombre..." class="modal-input-long" @oninput="OnSearchProcesoChanged" />
-                </div>
-                
-                @* Botón Historial al lado *@
-                <button class="btn-historial-proceso" @onclick="AbrirBitacoraProceso">
-                    <i class="bi bi-clock-history"></i> Historial
+            <div class="proc-search-pill">
+                <i class="fas fa-search"></i>
+                <input type="text"
+                       placeholder="Buscar procesos..."
+                       class="proc-search-input"
+                       @oninput="OnSearchProcesoChanged" />
+            </div>
+
+            <button class="btn-proc-historial" @onclick="AbrirBitacoraProceso">
+                <i class="bi bi-clock-history"></i> Historial
+            </button>
+        </div>
+
+        @* DERECHA: solo flecha volver *@
+        <div class="proc-topbar-right">
+            <button class="btn-proc-volver" @onclick="CerrarModal" title="Volver a Proyectos">
+                <i class="fas fa-arrow-left"> X </i>
+            </button>
+        </div>
+    </div>
+
+    @* ── DIVIDER ── *@
+    <div class="proc-topbar-divider"></div>
+
+    @* ── CONTENIDO 3 COLUMNAS ── *@
+    <div class="proc-columns">
+
+        @* ─── COL 1: LISTA DE PROCESOS ─── *@
+        <div class="proc-col proc-col-lista">
+            <div class="proc-col-header">
+                <h3 class="proc-col-title">Listado de Procesos</h3>
+                <button class="btn-proc-nuevo" @onclick="PrepararNuevoProceso">
+                    <i class="fas fa-plus"></i> Nuevo
                 </button>
+            </div>
+            <div class="proc-col-divider red"></div>
+
+            <div class="proc-list-scroll">
+                @if (!ProcesosFiltradosEnModal.Any())
+                {
+                    <div class="proc-empty">
+                        <i class="bi bi-inbox"></i>
+                        <p>Sin procesos</p>
+                    </div>
+                }
+
+                @foreach (var proc in ProcesosFiltradosEnModal)
+                {
+                    <div class="proc-item @(ProcesoSeleccionado?.PROC_ID == proc.PROC_ID ? "proc-item-active" : "")"
+                         @onclick="() => CargarTareasDelProceso(proc)">
+                        <div class="proc-item-body">
+                            <span class="proc-item-name">@proc.PROC_NOM</span>
+                            <span class="proc-item-freq">@proc.PROC_FRE?.ToUpper()</span>
+                        </div>
+                        <div class="proc-item-actions">
+                            <button class="btn-proc-delete"
+                                    title="Eliminar proceso"
+                                    @onclick:stopPropagation="true"
+                                    @onclick="() => ConfirmarEliminar(proc)">
+                                <i class="bi bi-trash3"></i>
+                            </button>
+                            <i class="fas fa-chevron-right proc-item-arrow"></i>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 
-        <hr class="separator-red" />
+        @* DIVISOR VERTICAL *@
+        <div class="proc-vertical-divider"></div>
 
-        <div class="proceso-grid-layout">
-            @* Columna 1: Listado de Procesos (Modificación solicitada) *@
-            <div class="white-panel-inner">
-                <div class="panel-top-line line-red"></div>
-                <div class="panel-header">
-                    <h3 class="title-bold-proc">Listado de Procesos</h3>
-                </div>
-                <div class="scrollable-content-inner">
-                    @foreach (var proc in ProcesosFiltradosEnModal)
-                    {
-                        <div class="process-card-visual @(ProcesoSeleccionado?.PROC_ID == proc.PROC_ID ? "active-selection" : "")"
-                             @onclick="() => CargarTareasDelProceso(proc)">
+        @* ─── COL 2: CONFIGURACIÓN ─── *@
+        <div class="proc-col proc-col-config">
+            <div class="proc-col-header">
+                <h3 class="proc-col-title">Configuración</h3>
+                <button class="btn-proc-guardar" @onclick="GuardarCambiosProceso">
+                    <i class="fas fa-check-circle"></i> Guardar
+                </button>
+            </div>
+            <div class="proc-col-divider blue"></div>
 
-                            <div class="proc-body-content">
-                                <span class="proc-title-main">@proc.PROC_NOM</span>
-                                <span class="proc-freq-sub">FRECUENCIA: @proc.PROC_FRE.ToUpper()</span>
-                            </div>
+            @if (ProcesoSeleccionado != null)
+            {
+                <div class="proc-form">
 
-                            @* Flecha indicadora a la derecha *@
-                            <div class="proc-arrow-icon">
-                                <i class="fas fa-chevron-right"></i>
+                    <div class="proc-form-group">
+                        <label class="proc-label">NOMBRE DEL PROCESO</label>
+                        <input type="text"
+                               class="proc-input"
+                               @bind="ProcesoSeleccionado.PROC_NOM"
+                               placeholder="Nombre del proceso..." />
+                    </div>
+
+                    <div class="proc-form-row">
+                        <div class="proc-form-group proc-form-group-flex">
+                            <label class="proc-label">FRECUENCIA</label>
+                            <select class="proc-select" @bind="ProcesoSeleccionado.PROC_FRE">
+                                <option value="Diario">Diario</option>
+                                <option value="Semanal">Semanal</option>
+                                <option value="Mensual">Mensual</option>
+                            </select>
+                        </div>
+
+                        <div class="proc-form-group">
+                            <label class="proc-label">ESTADO</label>
+                            <div class="proc-estado-toggle @(ProcesoSeleccionado.PROC_EST == true ? "estado-activo" : "estado-inactivo")"
+                                 @onclick="() => ProcesoSeleccionado.PROC_EST = !(ProcesoSeleccionado.PROC_EST ?? false)">
+                                <i class="@(ProcesoSeleccionado.PROC_EST == true ? "bi bi-check-circle-fill" : "bi bi-x-circle-fill")"></i>
+                                @(ProcesoSeleccionado.PROC_EST == true ? "ACTIVO" : "INACTIVO")
                             </div>
                         </div>
-                    }
-                </div>
-            </div>
+                    </div>
 
-            @* Columna 2: Configuración (ESTILO ORIGINAL INTACTO) *@
-            @* Columna 2: Configuración (Diseño exacto solicitado) *@
-            <div class="white-panel-inner">
-                <div class="panel-top-line line-blue"></div>
-                <div class="panel-header header-split-premium">
-                    <h3 class="title-bold-config">Configuración</h3>
-                    <button class="btn-save-premium-shadow" @onclick="GuardarCambiosProceso">
-                        <i class="fas fa-check-circle"></i> GUARDAR CAMBIOS
+                    <div class="proc-form-group proc-form-yoopta">
+                        <label class="proc-label">DESCRIPCIÓN</label>
+                        <div class="proc-yoopta-wrapper">
+                            <Yoopta Contenido="@ProcesoSeleccionado.PROC_DES"
+                                    ContenidoChanged="@OnDescripcionChanged" />
+                        </div>
+                    </div>
+
+                </div>
+            }
+            else
+            {
+                <div class="proc-empty">
+                    <i class="bi bi-arrow-left-circle"></i>
+                    <p>Selecciona un proceso o crea uno nuevo</p>
+                </div>
+            }
+        </div>
+
+        @* DIVISOR VERTICAL *@
+        <div class="proc-vertical-divider"></div>
+
+        @* ─── COL 3: TAREAS ─── *@
+        <div class="proc-col proc-col-tareas">
+            <div class="proc-col-header">
+                <h3 class="proc-col-title">Tareas</h3>
+                @if (ProcesoSeleccionado?.PROC_ID != Guid.Empty && ProcesoSeleccionado != null)
+                {
+                    <button class="btn-proc-nueva-tarea" @onclick="AbrirCrearTarea">
+                        <i class="fas fa-plus-circle"></i> Nueva
                     </button>
-                </div>
+                }
+            </div>
+            <div class="proc-col-divider green"></div>
 
-                <div class="scrollable-content-inner">
-                    @if (ProcesoSeleccionado != null)
+            <div class="proc-list-scroll">
+                @if (TareasDelProceso != null && TareasDelProceso.Any())
+                {
+                    @foreach (var tar in TareasDelProceso)
                     {
-                        <div class="form-container-visual">
-                            <div class="form-group-premium">
-                                <label class="label-premium">NOMBRE DEL PROCESO</label>
-                                <input type="text" class="input-field-premium" @bind="ProcesoSeleccionado.PROC_NOM" placeholder="Nombre..." />
+                        <div class="tarea-item" @onclick="() => AbrirEditarTarea(tar)">
+                            <div class="tarea-item-bar @(tar.TAR_EST == "Completado" ? "bar-green" : tar.TAR_EST == "En Progreso" ? "bar-blue" : "bar-orange")"></div>
+                            <div class="tarea-item-body">
+                                <span class="tarea-item-name">@tar.TAR_NOM</span>
+                                <span class="tarea-item-est">@tar.TAR_EST?.ToUpper()</span>
                             </div>
-
-                            <div class="form-row-premium">
-                                <div class="form-group-premium flex-grow-1">
-                                    <label class="label-premium">FRECUENCIA</label>
-                                    <select class="select-field-premium" @bind="ProcesoSeleccionado.PROC_FRE">
-                                        <option value="Diario">Diario</option>
-                                        <option value="Semanal">Semanal</option>
-                                        <option value="Mensual">Mensual</option>
-                                    </select>
-                                </div>
-
-                                <div class="form-group-premium">
-                                    <label class="label-premium">ESTADO</label>
-                                    <div class="status-badge-capsule" @onclick="() => ProcesoSeleccionado.PROC_EST = !(ProcesoSeleccionado.PROC_EST ?? false)">
-                                        <span class="@(ProcesoSeleccionado.PROC_EST == true ? "text-active-green" : "text-inactive-red")">
-                                            @(ProcesoSeleccionado.PROC_EST == true ? "ACTIVO" : "INACTIVO")
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group-premium">
-                                <label class="label-premium">DESCRIPCIÓN</label>
-                                <textarea class="textarea-field-premium" rows="5" @bind="ProcesoSeleccionado.PROC_DES" placeholder="Escriba los detalles aquí..."></textarea>
-                            </div>
+                            <i class="fas fa-pencil-alt tarea-item-icon"></i>
                         </div>
                     }
-                </div>
-            </div>
-
-            @* Columna 3: Tareas (ESTILO EXACTO A LA IMAGEN) *@
-            @* Columna 3: Tareas (Diseño exacto solicitado) *@
-            <div class="white-panel-inner">
-                <div class="panel-top-line line-green"></div>
-                <div class="panel-header">
-                    <h3 class="title-bold-task">Tareas</h3>
-                    @if (ProcesoSeleccionado?.PROC_ID != Guid.Empty && ProcesoSeleccionado != null)
-                    {
-                        <button class="btn-new-task-capsule" @onclick="AbrirCrearTarea">
-                            <i class="fas fa-plus-circle"></i> NUEVA
-                        </button>
-                    }
-                </div>
-                <div class="scrollable-content-inner">
-                    @if (TareasDelProceso != null && TareasDelProceso.Any())
-                    {
-                        @foreach (var tar in TareasDelProceso)
-                        {
-                            <div class="task-card-premium-v2" @onclick="() => AbrirEditarTarea(tar)">
-                                @* Indicador lateral de color según estado *@
-                                <div class="task-status-bar @(tar.TAR_EST == "Completado" ? "status-green" : "status-orange")"></div>
-
-                                <div class="task-content-v2">
-                                    <p class="task-title-v2">@tar.TAR_NOM</p>
-                                    <span class="task-label-v2">@tar.TAR_EST.ToUpper()</span>
-                                </div>
-
-                                @* Icono de lápiz a la derecha *@
-                                <div class="task-edit-icon">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </div>
-                            </div>
-                        }
-                    }
-                    else
-                    {
-                        <div class="no-data-msg">Sin tareas disponibles.</div>
-                    }
-                </div>
+                }
+                else
+                {
+                    <div class="proc-empty">
+                        <i class="bi bi-list-check"></i>
+                        <p>Sin tareas en este proceso</p>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </div>
 
+@* ── CONFIRM ELIMINAR ── *@
+@if (MostrarConfirmEliminar && ProcesoAEliminar != null)
+{
+    <div class="proc-confirm-overlay" @onclick="CancelarEliminar">
+        <div class="proc-confirm-card" @onclick:stopPropagation="true">
+            <div class="proc-confirm-icon">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+            </div>
+            <h3 class="proc-confirm-title">¿Eliminar proceso?</h3>
+            <p class="proc-confirm-msg">
+                Estás a punto de eliminar <strong>@ProcesoAEliminar.PROC_NOM</strong>.<br />
+                Esta acción no se puede deshacer.
+            </p>
+            <div class="proc-confirm-btns">
+                <button class="btn-confirm-cancel" @onclick="CancelarEliminar">Cancelar</button>
+                <button class="btn-confirm-ok" @onclick="EjecutarEliminar">
+                    <i class="bi bi-trash3"></i> Sí, eliminar
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@* ── MODALES SECUNDARIOS ── *@
 @if (MostrarModalTarea)
 {
-    <div class="modal-overlay-secondary"><Davivienda.Component.Componentes.EditarTarea Tarea="TareaSeleccionada" OnClose="CerrarModalTarea" /></div>
+    <div class="modal-overlay-secondary">
+        <Davivienda.Component.Componentes.EditarTarea Tarea="TareaSeleccionada" OnClose="CerrarModalTarea" />
+    </div>
 }
 @if (MostrarModalCrearTarea)
 {
-    <div class="modal-overlay-secondary"><Davivienda.Component.Componentes.CrearTarea ProcId="ProcesoSeleccionado!.PROC_ID" OnClose="CerrarModalCrearTarea" /></div>
+    <div class="modal-overlay-secondary">
+        <Davivienda.Component.Componentes.CrearTarea ProcId="ProcesoSeleccionado!.PROC_ID" OnClose="CerrarModalCrearTarea" />
+    </div>
 }
 @if (MostrarBitacoraProceso)
 {
     <Davivienda.Component.Componentes.BitacoraProceso OnClose="CerrarBitacoraProceso" ProyectoId="@ProyectoId" />
-    
 }

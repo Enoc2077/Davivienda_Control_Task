@@ -1,59 +1,100 @@
 ﻿@namespace Davivienda.Component.Componentes
 @using Davivienda.Models.Modelos
+@using Davivienda.GraphQL.SDK
 @using Microsoft.AspNetCore.Components
 
-<div class="modal-premium-overlay" @onclick="Cerrar">
-    <div class="modal-card-registro animate-pop" @onclick:stopPropagation>
+<div class="editar-sol-backdrop" @onclick="Cerrar">
+    <div class="editar-sol-panel" @onclick:stopPropagation>
 
-        <div class="modal-top-accent-blue"></div>
-
-        <div class="modal-header-registro">
-            <h2 class="modal-title-main">Editar Solución</h2>
-            <button type="button" class="btn-close-x" @onclick="Cerrar">×</button>
+        @* ******* toolbar ******* *@
+        <div class="editar-sol-toolbar">
+            <div class="editar-sol-toolbar-left">
+                <div class="editar-sol-dot"></div>
+                <span class="editar-sol-brand">Gestión de Tareas</span>
+                <div class="editar-sol-divider"></div>
+                <span class="editar-sol-toolbar-label">Editar Solución</span>
+            </div>
+           
         </div>
 
-        <div class="modal-body-registro">
-            <div class="form-grid-registro">
+        @* ******* scroll contenido ******* *@
+        <div class="editar-sol-scroll">
 
-                @* Campo Nombre *@
-                <div class="input-group-registro full-width">
-                    <label>NOMBRE DE LA SOLUCIÓN</label>
-                    <input type="text" @bind="solEdit.SOL_NOM" class="input-field-premium" placeholder="Ej: Ajuste de índices en BD" />
+            <div class="editar-sol-titulo-section">
+                <h1 class="editar-sol-titulo">Editar Solución</h1>
+                @if (Solucion != null)
+                {
+                    <div class="editar-sol-ref">
+                        <i class="bi bi-lightbulb"></i>
+                        <span class="editar-sol-ref-label">Solución:</span>
+                        <span class="editar-sol-ref-nombre">@Solucion.SOL_NOM</span>
+                    </div>
+                }
+            </div>
+
+            <div class="editar-sol-divisor"></div>
+
+            <div class="editar-sol-body">
+
+                <div class="editar-sol-campo">
+                    <label class="editar-sol-label">Nombre de la solución</label>
+                    <input type="text"
+                           @bind="solEdit.SOL_NOM"
+                           class="editar-sol-input"
+                           placeholder="Ej: Ajuste de índices en BD" />
                 </div>
 
-                @* 🔥 DESCRIPCIÓN TÉCNICA CON YOOPTA *@
-                <div class="input-group-registro full-width">
-                    <label>DESCRIPCIÓN TÉCNICA</label>
-                    <div class="yoopta-editor-limiter">
+                <div class="editar-sol-campo">
+                    <label class="editar-sol-label">Descripción técnica</label>
+                    <div class="editar-sol-yoopta">
                         <Yoopta Contenido="@solEdit.SOL_DES"
                                 ContenidoChanged="@((valor) => { solEdit.SOL_DES = valor; })" />
                     </div>
                 </div>
 
-                @* Fila Doble: Estado y Efectividad *@
-                <div class="input-group-registro">
-                    <label>ESTADO ACTUAL</label>
-                    <select @bind="solEdit.SOL_EST" class="input-field-premium select-premium">
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="En Progreso">En Progreso</option>
-                        <option value="Completada">Completada</option>
+                <div class="editar-sol-campo">
+                    <label class="editar-sol-label">Fricción asociada</label>
+                    <select @bind="friccionSeleccionadaId" class="editar-sol-select">
+                        <option value="">-- Sin fricción asociada --</option>
+                        @if (FriccionesDisponibles != null)
+                        {
+                            @foreach (var fri in FriccionesDisponibles)
+                            {
+                                <option value="@fri.FRI_ID">@fri.FRI_TIP</option>
+                            }
+                        }
                     </select>
                 </div>
 
-                @* 🔥 NIVEL DE EFECTIVIDAD COMO SELECT DE NIVELES *@
-                <div class="input-group-registro">
-                    <label>NIVEL DE EFECTIVIDAD</label>
-                    <select @bind="solEdit.SOL_NIV_EFE" class="input-field-premium select-premium">
-                        <option value="100">Alto (100%)</option>
-                        <option value="50">Medio (50%)</option>
-                        <option value="25">Bajo (25%)</option>
-                    </select>
+                <div class="editar-sol-fila-dos">
+                    <div class="editar-sol-campo">
+                        <label class="editar-sol-label">Estado actual</label>
+                        <select @bind="solEdit.SOL_EST" class="editar-sol-select">
+                            <option value="Pendiente">Pendiente</option>
+                            <option value="En Progreso">En Progreso</option>
+                            <option value="Completada">Completada</option>
+                        </select>
+                    </div>
+                    <div class="editar-sol-campo">
+                        <label class="editar-sol-label">Nivel de efectividad</label>
+                        <select @bind="solEdit.SOL_NIV_EFE" class="editar-sol-select">
+                            <option value="25">Bajo (25%)</option>
+                            <option value="50">Medio (50%)</option>
+                            <option value="75">Alto (75%)</option>
+                            <option value="100">Muy alto (100%)</option>
+                        </select>
+                    </div>
                 </div>
-            </div>
 
-            <div class="modal-footer-registro">
-                <button type="button" class="btn-cancel-premium" @onclick="Cerrar">Cancelar</button>
-                <button type="button" class="btn-save-premium" @onclick="ActualizarSolucion">Actualizar Registro</button>
+                <div class="editar-sol-footer">
+                    <button class="editar-sol-btn-regresar" @onclick="Cerrar">
+                        <i class="bi bi-arrow-left"></i> Regresar
+                    </button>
+                    <button class="editar-sol-btn-guardar" @onclick="ActualizarSolucion">
+                        <i class="bi bi-check-lg"></i> Actualizar registro
+                    </button>
+                </div>
+
             </div>
         </div>
     </div>

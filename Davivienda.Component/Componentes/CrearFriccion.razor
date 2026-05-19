@@ -3,62 +3,84 @@
 @using Davivienda.GraphQL.SDK
 @using Microsoft.AspNetCore.Components
 
-<div class="modal-premium-overlay" @onclick="CerrarModalInterno">
-    @* Detenemos la propagación para que el clic adentro no cierre el modal *@
-    <div class="modal-card-registro animate-pop" @onclick:stopPropagation>
+<div class="crear-fri-backdrop" @onclick="CerrarModalInterno">
+    <div class="crear-fri-panel" @onclick:stopPropagation>
 
-        <div class="modal-top-accent-gold"></div>
-
-        <div class="modal-header-registro">
-            <h2 class="modal-title-main">Registrar Fricción</h2>
-            <button type="button" class="btn-close-x" @onclick="CerrarModalInterno">×</button>
+        @* ******* toolbar ******* *@
+        <div class="crear-fri-toolbar">
+            <div class="crear-fri-toolbar-left">
+                <div class="crear-fri-dot"></div>
+                <span class="crear-fri-brand">Gestión de Tareas</span>
+                <div class="crear-fri-divider"></div>
+                <span class="crear-fri-toolbar-label">Nueva Fricción</span>
+            </div>
+           
         </div>
 
-        <div class="modal-body-registro">
-            <div class="form-grid-registro">
+        @* ******* scroll contenido ******* *@
+        <div class="crear-fri-scroll">
 
-                @* Nombre de la Fricción *@
-                <div class="input-group-registro full-width">
-                    <label>NOMBRE DE LA FRICCIÓN</label>
+            @* nombre de la tarea *@
+            <div class="crear-fri-titulo-section">
+                <h1 class="crear-fri-titulo">Nueva Fricción</h1>
+                <div class="crear-fri-tarea-ref">
+                    <i class="bi bi-list-task"></i>
+                    <span class="crear-fri-tarea-label">Tarea:</span>
+                    <span class="crear-fri-tarea-nombre">@NombreTarea</span>
+                </div>
+            </div>
+
+            <div class="crear-fri-divisor"></div>
+
+            @* formulario *@
+            <div class="crear-fri-body">
+
+                <div class="crear-fri-campo">
+                    <label class="crear-fri-label">Nombre de la fricción</label>
                     <input type="text"
                            @bind="nuevaFriccion.FRI_TIP"
-                           class="input-field-premium"
+                           class="crear-fri-input"
                            placeholder="Ej: Error de conexión intermitente..." />
                 </div>
 
-                @* 🔥 Reemplazo de Textarea por Yoopta *@
-                <div class="input-group-registro full-width">
-                    <label>DESCRIPCIÓN DEL OBSTÁCULO</label>
-                    <div class="yoopta-editor-container">
+                <div class="crear-fri-campo">
+                    <label class="crear-fri-label">Descripción del obstáculo</label>
+                    <div class="crear-fri-yoopta">
                         <Yoopta Contenido="@nuevaFriccion.FRI_DES"
                                 ContenidoChanged="@((valor) => { nuevaFriccion.FRI_DES = valor; })" />
                     </div>
                 </div>
 
-                @* Selectores en fila *@
-                <div class="input-group-registro">
-                    <label>ESTADO INICIAL</label>
-                    <select @bind="nuevaFriccion.FRI_EST" class="input-field-premium select-premium">
-                        <option value="Abierta">Abierta</option>
-                        <option value="En Análisis">En Análisis</option>
-                        <option value="Mitigada">Mitigada</option>
-                    </select>
+                <div class="crear-fri-fila-dos">
+                    <div class="crear-fri-campo">
+                        <label class="crear-fri-label">Estado inicial</label>
+                        <select @bind="nuevaFriccion.FRI_EST" class="crear-fri-select">
+                            <option value="Abierta">Abierta</option>
+                            <option value="En Análisis">En Análisis</option>
+                            <option value="Mitigada">Mitigada</option>
+                        </select>
+                    </div>
+                    <div class="crear-fri-campo">
+                        <label class="crear-fri-label">Impacto</label>
+                        <select @bind="nuevaFriccion.FRI_IMP" class="crear-fri-select">
+                            <option value="Bajo">Bajo</option>
+                            <option value="Medio">Medio</option>
+                            <option value="Alto">Alto</option>
+                            <option value="Crítico">Crítico</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div class="input-group-registro">
-                    <label>IMPACTO</label>
-                    <select @bind="nuevaFriccion.FRI_IMP" class="input-field-premium select-premium">
-                        <option value="Bajo">Bajo</option>
-                        <option value="Medio">Medio</option>
-                        <option value="Alto">Alto</option>
-                        <option value="Crítico">Crítico</option>
-                    </select>
+                @* botones *@
+                <div class="crear-fri-footer">
+                    <button class="crear-fri-btn-regresar" @onclick="CerrarModalInterno">
+                        <i class="bi bi-arrow-left"></i> Regresar
+                    </button>
+                    <button class="crear-fri-btn-guardar" @onclick="GuardarFriccion">
+                        <i class="bi bi-check-lg"></i> Guardar registro
+                    </button>
                 </div>
-            </div>
 
-            <div class="modal-footer-registro">
-                <button type="button" class="btn-cancel-premium" @onclick="CerrarModalInterno">Cancelar</button>
-                <button type="button" class="btn-save-premium" @onclick="GuardarFriccion">Guardar Registro</button>
             </div>
         </div>
     </div>

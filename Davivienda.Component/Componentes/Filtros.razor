@@ -3,7 +3,7 @@
 
 <div class="filtros-panel">
 
-    @* ── TÍTULO DEL PANEL ── *@
+    @* TÍTULO *@
     <div class="filtros-panel-header">
         <i class="bi bi-funnel-fill"></i>
         <span>Filtros activos</span>
@@ -13,7 +13,7 @@
         }
     </div>
 
-    @* ── SELECTOR DE TIPO ── *@
+    @* SELECTOR DE TIPO *@
     <div class="filtro-row">
         <select class="select-tipo" @onchange="OnTipoChanged" value="@_tipoActual">
             <option value="">➕ Agregar filtro...</option>
@@ -38,10 +38,13 @@
                 <option value="Prioridad">🔴 Prioridad</option>
             }
             <option value="Nombre">🔍 Nombre</option>
+            <option value="Año">📅 Año</option>
+            <option value="Mes">🗓️ Mes</option>
+            <option value="Dia">📆 Día</option>
         </select>
     </div>
 
-    @* ── SEGUNDA ENTRADA: VALOR DEL FILTRO ── *@
+    @* SEGUNDA ENTRADA: VALOR DEL FILTRO *@
     @if (!string.IsNullOrEmpty(_tipoActual))
     {
         <div class="filtro-row filtro-valor-row animate-slide-down">
@@ -52,8 +55,7 @@
                        placeholder="Escribe y presiona Enter..."
                        @bind="_textoNombre"
                        @onkeydown="OnNombreKeyDown" />
-                <button class="btn-agregar-chip" @onclick="AgregarFiltroNombre"
-                        title="Agregar">
+                <button class="btn-agregar-chip" @onclick="AgregarFiltroNombre" title="Agregar">
                     <i class="bi bi-plus-lg"></i>
                 </button>
             }
@@ -63,14 +65,22 @@
                     <option value="">-- Seleccionar --</option>
                     @foreach (var item in _opcionesActuales)
                     {
-                        <option value="@item.Id">@item.Etiqueta</option>
+                        @* Para Año/Mes/Dia usamos la etiqueta como valor *@
+                        @if (_tipoActual == "Año" || _tipoActual == "Mes" || _tipoActual == "Dia")
+                        {
+                            <option value="@item.Etiqueta">@item.Etiqueta</option>
+                        }
+                        else
+                        {
+                            <option value="@item.Id">@item.Etiqueta</option>
+                        }
                     }
                 </select>
             }
         </div>
     }
 
-    @* ── CHIPS DE FILTROS ACTIVOS ── *@
+    @* CHIPS DE FILTROS ACTIVOS *@
     <div class="chips-area @(_filtrosActivos.Any() ? "" : "chips-empty")">
         @if (!_filtrosActivos.Any())
         {
@@ -89,8 +99,7 @@
                         <span class="chip-tipo">@filtro.Tipo</span>
                         <span class="chip-etiqueta">@filtro.Etiqueta</span>
                     </div>
-                    <button class="chip-btn-remove" @onclick="() => RemoverFiltro(filtro)"
-                            title="Quitar filtro">
+                    <button class="chip-btn-remove" @onclick="() => RemoverFiltro(filtro)" title="Quitar filtro">
                         ×
                     </button>
                 </div>
@@ -98,7 +107,7 @@
         }
     </div>
 
-    @* ── LIMPIAR TODO ── *@
+    @* LIMPIAR TODO *@
     @if (_filtrosActivos.Any())
     {
         <button class="btn-limpiar-todo" @onclick="LimpiarTodo">

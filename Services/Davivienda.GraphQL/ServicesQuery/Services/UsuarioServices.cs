@@ -13,7 +13,7 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
     {
         private readonly DataBase dataBase;
         private readonly UsuarioQueryBuilder usuBuilder;
-        private readonly JwtProvider jwtProvider; // Ya está inyectado aquí
+        private readonly JwtProvider jwtProvider; 
 
         public UsuarioServices(DataBase dataBase, UsuarioQueryBuilder builder, JwtProvider jwtProvider)
         {
@@ -28,12 +28,12 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             {
                 await dataBase.ConnectAsync();
 
-                // 🔥 JOIN con dbo.ROLES (plural)
+                
                 string sql = @"
             SELECT 
                 u.USU_ID,
                 u.USU_NOM,
-                u.USU_NUM,
+                u.USU_NUM, 
                 u.USU_COR,
                 u.USU_CON,
                 u.USU_TEL,
@@ -68,8 +68,7 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
 
                 string token = jwtProvider.GenerarToken(
                     int.TryParse(resultado.USU_NUM, out int num) ? num : 0,
-                    resultado.USU_NOM ?? "Usuario",
-                    rolNombre  // ✅ Pasará "Enoc"
+                    resultado.USU_NOM ?? "Usuario", rolNombre  
                 );
 
                 var usuario = new UsuarioModel
@@ -114,7 +113,7 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
 
 
 
-        // --- CONSULTAS EXISTENTES ---
+        // --- query ---
 
         public async Task<IEnumerable<UsuarioModel>> GetUsuarios(IResolverContext context)
         {
@@ -220,11 +219,9 @@ namespace Davivienda.GraphQL.ServicesQuery.Services
             try
             {
                 await dataBase.ConnectAsync();
-                // 1. Primero ponemos en NULL o borramos las tareas del usuario
                 string sqlTareas = "UPDATE dbo.TAREA SET USU_ID = NULL WHERE USU_ID = @usu_id";
                 await dataBase.Connection.ExecuteAsync(sqlTareas, new { usu_id });
 
-                // 2. Ahora sí borramos al usuario
                 string sqlUsuario = "DELETE FROM dbo.USUARIO WHERE USU_ID = @usu_id";
                 var exec = await dataBase.Connection.ExecuteAsync(sqlUsuario, new { usu_id });
                 return exec > 0;

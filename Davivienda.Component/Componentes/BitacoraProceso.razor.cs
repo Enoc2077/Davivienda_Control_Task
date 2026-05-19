@@ -2,9 +2,11 @@
 using Davivienda.Models;
 using Davivienda.Models.Modelos;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Authorization;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace Davivienda.Component.Componentes
@@ -12,36 +14,68 @@ namespace Davivienda.Component.Componentes
     public partial class BitacoraProceso : ComponentBase
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
+        [Inject] private AuthenticationStateProvider AuthProvider { get; set; } = default!;
         [Parameter] public EventCallback OnClose { get; set; }
         [Parameter] public Guid ProyectoId { get; set; }
 
-        // 🔥 LISTAS PRINCIPALES
         private List<ProcesoModel> ProcesosGlobales = new();
         private List<ProcesoModel> ProcesosFiltrados = new();
         private List<ProyectosModel> ProyectosGlobales = new();
         private List<TareaModel> TareasGlobales = new();
         private List<TareaModel> TareasDeProceso = new();
 
-        // 🔥 DATOS PARA FILTROS
         private List<AreasModel> AreasList = new();
         private List<ProyectosModel> ProyectosList = new();
 
         public ProcesoModel? ProcesoSeleccionado { get; set; }
 
+        // ── Controla si se muestra el componente Procesos
+        private bool MostrarProcesos = false;
+
+        // ── Proyecto al que pertenece el proceso seleccionado
+        // (puede ser diferente al ProyectoId del parámetro)
+        private ProyectosModel? ProyectoParaProcesos;
+
+        private string UserRole = "";
+        private Guid? UserAreaId;
+
         protected override async Task OnInitializedAsync()
         {
+            await CargarUsuarioYRol();
             await CargarTodo();
         }
 
+        // ── ROL Y AREA ──────────────────────────────────────────
+        private async Task CargarUsuarioYRol()
+        {
+            try
+            {
+                var authState = await AuthProvider.GetAuthenticationStateAsync();
+                var user = authState.User;
+
+                UserRole = user.FindFirst(ClaimTypes.Role)?.Value
+                           ?? user.FindFirst("role")?.Value
+                           ?? user.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value
+                           ?? "Empleado";
+
+                var usuNum = user.FindFirst("USU_NUM")?.Value ?? "";
+                if (string.IsNullOrEmpty(usuNum)) return;
+
+                var resU = await Client.GetUsuarios.ExecuteAsync();
+                var u = resU.Data?.Usuarios.FirstOrDefault(x => x.Usu_NUM == usuNum);
+                if (u != null) UserAreaId = u.Are_ID;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error CargarUsuarioYRol: {ex.Message}");
+            }
+        }
+
+        // ── CARGA ────────────────────────────────────────────────
         private async Task CargarTodo()
         {
             try
             {
-                Console.WriteLine("========================================");
-                Console.WriteLine("📦 BITÁCORA PROCESOS - CARGA INICIAL");
-                Console.WriteLine("========================================");
-
-                // 1. Proyectos
                 var resProy = await Client.GetProyectos.ExecuteAsync();
                 ProyectosGlobales = resProy.Data?.Proyectos.Select(p => new ProyectosModel
                 {
@@ -50,9 +84,7 @@ namespace Davivienda.Component.Componentes
                     PRO_EST = p.Pro_EST,
                     ARE_ID = p.Are_ID
                 }).ToList() ?? new();
-                Console.WriteLine($"✅ Proyectos: {ProyectosGlobales.Count}");
 
-                // 2. Procesos (TODOS)
                 var resProc = await Client.GetProcesos.ExecuteAsync();
                 var todosProcesos = resProc.Data?.Procesos.Select(p => new ProcesoModel
                 {
@@ -65,9 +97,7 @@ namespace Davivienda.Component.Componentes
                     PROC_FEC_CRE = p.Proc_FEC_CRE.DateTime,
                     PROC_FEC_MOD = p.Proc_FEC_MOD?.DateTime
                 }).ToList() ?? new();
-                Console.WriteLine($"✅ Procesos totales: {todosProcesos.Count}");
 
-                // 3. Tareas
                 var resTar = await Client.GetTareas.ExecuteAsync();
                 TareasGlobales = resTar.Data?.Tareas.Select(t => new TareaModel
                 {
@@ -76,107 +106,102 @@ namespace Davivienda.Component.Componentes
                     TAR_EST = t.Tar_EST,
                     PROC_ID = t.Proc_ID
                 }).ToList() ?? new();
-                Console.WriteLine($"✅ Tareas: {TareasGlobales.Count}");
 
-                // 4. Áreas
                 var resArea = await Client.GetAreas.ExecuteAsync();
                 AreasList = resArea.Data?.Areas.Select(a => new AreasModel
                 {
                     ARE_ID = a.Are_ID,
                     ARE_NOM = a.Are_NOM
                 }).ToList() ?? new();
-                Console.WriteLine($"✅ Áreas: {AreasList.Count}");
 
-                ProyectosList = ProyectosGlobales;
+                // Filtrar listas por rol
+                ProyectosList = FiltrarProyectosPorRol(ProyectosGlobales);
+                if (!EsGerente(UserRole) && UserAreaId.HasValue)
+                    AreasList = AreasList.Where(a => a.ARE_ID == UserAreaId).ToList();
 
-                // 🔥 APLICAR LÓGICA DE BITÁCORA
-                ProcesosGlobales = AplicarLogicaBitacora(todosProcesos);
+                // Aplicar lógica bitácora + filtro por rol
+                var enBitacora = AplicarLogicaBitacora(todosProcesos);
+                ProcesosGlobales = FiltrarProcesosPorRol(enBitacora);
 
-                Console.WriteLine($"✅ Procesos en historial: {ProcesosGlobales.Count}");
-
-                // 🔥 ORDENAR POR FECHA: MÁS RECIENTE PRIMERO
                 ProcesosFiltrados = ProcesosGlobales
                     .OrderByDescending(p => p.PROC_FEC_CRE)
                     .ToList();
 
-                Console.WriteLine("========================================");
+                StateHasChanged();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ ERROR: {ex.Message}");
+                Console.WriteLine($"Error CargarTodo: {ex.Message}");
             }
         }
 
-        // 🔥 LÓGICA PRINCIPAL: DETERMINAR QUÉ PROCESOS VAN A BITÁCORA
-        private List<ProcesoModel> AplicarLogicaBitacora(List<ProcesoModel> todosProcesos)
+        // ── LÓGICA BITÁCORA ─────────────────────────────────────
+        private List<ProcesoModel> AplicarLogicaBitacora(List<ProcesoModel> todos)
         {
-            var procesosEnBitacora = new List<ProcesoModel>();
+            var enBitacora = new List<ProcesoModel>();
+            var porProyecto = todos.GroupBy(p => p.PRO_ID);
 
-            // Agrupar por proyecto
-            var procesosPorProyecto = todosProcesos.GroupBy(p => p.PRO_ID);
-
-            foreach (var grupo in procesosPorProyecto)
+            foreach (var grupo in porProyecto)
             {
-                var proyectoId = grupo.Key;
-                if (!proyectoId.HasValue) continue;
-
-                // Obtener proyecto
-                var proyecto = ProyectosGlobales.FirstOrDefault(p => p.PRO_ID == proyectoId.Value);
+                if (!grupo.Key.HasValue) continue;
+                var proyecto = ProyectosGlobales.FirstOrDefault(p => p.PRO_ID == grupo.Key.Value);
                 if (proyecto == null) continue;
 
                 var procesosDelProyecto = grupo.ToList();
 
-                // 🔥 CASO 1: PROYECTO FINALIZADO
-                if (proyecto.PRO_EST == "Finalizado")
+                bool proyectoFinalizado =
+                    proyecto.PRO_EST?.Equals("FINALIZADO", StringComparison.OrdinalIgnoreCase) == true ||
+                    proyecto.PRO_EST?.Equals("Finalizado", StringComparison.OrdinalIgnoreCase) == true ||
+                    proyecto.PRO_EST?.Equals("Completado", StringComparison.OrdinalIgnoreCase) == true;
+
+                if (proyectoFinalizado)
                 {
-                    Console.WriteLine($"📁 Proyecto '{proyecto.PRO_NOM}' FINALIZADO");
-                    // TODOS los procesos inactivos van a bitácora
-                    var inactivos = procesosDelProyecto.Where(p => p.PROC_EST == false).ToList();
-                    procesosEnBitacora.AddRange(inactivos);
-                    Console.WriteLine($"   → {inactivos.Count} procesos completados en bitácora");
+                    // Proyecto finalizado → TODOS sus procesos van a bitácora y se quedan
+                    enBitacora.AddRange(procesosDelProyecto);
                 }
-                // 🔥 CASO 2: PROYECTO ACTIVO - REGLA DE 5 INACTIVOS
                 else
                 {
-                    Console.WriteLine($"📁 Proyecto '{proyecto.PRO_NOM}' ACTIVO");
-                    // Solo procesos inactivos (completados)
+                    // Proyecto activo → solo inactivos excedentes de 5
                     var inactivos = procesosDelProyecto
                         .Where(p => p.PROC_EST == false)
                         .OrderByDescending(p => p.PROC_FEC_CRE)
                         .ToList();
 
-                    Console.WriteLine($"   → Total inactivos: {inactivos.Count}");
-
-                    // Si hay MÁS de 5, los excedentes van a bitácora
                     if (inactivos.Count > 5)
-                    {
-                        // Los 5 más recientes se quedan en pantalla
-                        // Los demás van a bitácora
-                        var excedentes = inactivos.Skip(5).ToList();
-                        procesosEnBitacora.AddRange(excedentes);
-                        Console.WriteLine($"   → {excedentes.Count} excedentes en bitácora");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"   → No hay excedentes (≤ 5)");
-                    }
+                        enBitacora.AddRange(inactivos.Skip(5));
                 }
             }
 
-            return procesosEnBitacora;
+            return enBitacora;
         }
 
+        // ── FILTRADO POR ROL ────────────────────────────────────
+        private List<ProcesoModel> FiltrarProcesosPorRol(List<ProcesoModel> todos)
+        {
+            if (EsGerente(UserRole)) return todos;
+            if (!UserAreaId.HasValue) return new();
+
+            var proyDelArea = ProyectosGlobales
+                .Where(p => p.ARE_ID == UserAreaId)
+                .Select(p => p.PRO_ID)
+                .ToHashSet();
+
+            return todos.Where(p => p.PRO_ID.HasValue && proyDelArea.Contains(p.PRO_ID.Value)).ToList();
+        }
+
+        private List<ProyectosModel> FiltrarProyectosPorRol(List<ProyectosModel> todos)
+        {
+            if (EsGerente(UserRole)) return todos;
+            if (!UserAreaId.HasValue) return new();
+            return todos.Where(p => p.ARE_ID == UserAreaId).ToList();
+        }
+
+        // ── FILTROS ─────────────────────────────────────────────
         private void ManejarCambioFiltros(List<FiltroActivoModel> filtros)
         {
-            Console.WriteLine("\n🔍 APLICANDO FILTROS");
-            Console.WriteLine($"📊 Total: {ProcesosGlobales.Count}");
-            Console.WriteLine($"🎯 Activos: {filtros?.Count ?? 0}");
-
             if (filtros == null || !filtros.Any())
             {
-                ProcesosFiltrados = ProcesosGlobales
-                    .OrderByDescending(p => p.PROC_FEC_CRE)
-                    .ToList();
+                ProcesosFiltrados = ProcesosGlobales.OrderByDescending(p => p.PROC_FEC_CRE).ToList();
                 StateHasChanged();
                 return;
             }
@@ -185,55 +210,51 @@ namespace Davivienda.Component.Componentes
 
             foreach (var filtro in filtros)
             {
-                Console.WriteLine($"🔧 {filtro.Tipo} → {filtro.Etiqueta}");
-
                 switch (filtro.Tipo)
                 {
                     case "Nombre":
-                        resultado = resultado.Where(p =>
-                            p.PROC_NOM.Contains(filtro.Etiqueta, StringComparison.OrdinalIgnoreCase));
+                        resultado = resultado.Where(p => p.PROC_NOM.Contains(filtro.Etiqueta, StringComparison.OrdinalIgnoreCase));
                         break;
-
+                    case "Año":
+                        if (int.TryParse(filtro.Etiqueta, out int anio))
+                            resultado = resultado.Where(p => p.PROC_FEC_CRE.Year == anio);
+                        break;
+                    case "Mes":
+                        var meses = System.Globalization.CultureInfo.GetCultureInfo("es-ES").DateTimeFormat.MonthNames;
+                        int numMes = Array.FindIndex(meses, m => m.Equals(filtro.Etiqueta, StringComparison.OrdinalIgnoreCase)) + 1;
+                        if (numMes > 0) resultado = resultado.Where(p => p.PROC_FEC_CRE.Month == numMes);
+                        break;
+                    case "Dia":
+                        if (int.TryParse(filtro.Etiqueta, out int dia))
+                            resultado = resultado.Where(p => p.PROC_FEC_CRE.Day == dia);
+                        break;
                     case "Proceso":
                         resultado = resultado.Where(p => p.PROC_ID == filtro.Id);
                         break;
-
                     case "Proyecto":
                         resultado = resultado.Where(p => p.PRO_ID == filtro.Id);
                         break;
-
                     case "Area":
-                        var proyIds = ProyectosList
+                        var proyIds = ProyectosGlobales
                             .Where(p => p.ARE_ID == filtro.Id)
-                            .Select(p => p.PRO_ID)
-                            .ToList();
-                        resultado = resultado.Where(p =>
-                            p.PRO_ID.HasValue && proyIds.Contains(p.PRO_ID.Value));
+                            .Select(p => p.PRO_ID).ToList();
+                        resultado = resultado.Where(p => p.PRO_ID.HasValue && proyIds.Contains(p.PRO_ID.Value));
                         break;
                 }
-
-                Console.WriteLine($"   → Quedan: {resultado.Count()}");
             }
 
-            // 🔥 ORDENAR POR FECHA: MÁS RECIENTE PRIMERO
-            ProcesosFiltrados = resultado
-                .OrderByDescending(p => p.PROC_FEC_CRE)
-                .ToList();
-
-            Console.WriteLine($"📊 FINAL: {ProcesosFiltrados.Count}\n");
+            ProcesosFiltrados = resultado.OrderByDescending(p => p.PROC_FEC_CRE).ToList();
             StateHasChanged();
         }
 
-        private async Task AbrirDetalleProceso(ProcesoModel proceso)
+        // ── DETALLE ─────────────────────────────────────────────
+        private void AbrirDetalleProceso(ProcesoModel proceso)
         {
             ProcesoSeleccionado = proceso;
-
-            // Cargar tareas del proceso
+            MostrarProcesos = false;
             TareasDeProceso = TareasGlobales
                 .Where(t => t.PROC_ID == proceso.PROC_ID)
                 .ToList();
-
-            Console.WriteLine($"🔍 Abriendo detalle: {proceso.PROC_NOM}");
             StateHasChanged();
         }
 
@@ -244,16 +265,63 @@ namespace Davivienda.Component.Componentes
             StateHasChanged();
         }
 
-        private string ObtenerNombreProyecto(Guid? proyectoId)
+        // ── VER PROCESOS DEL PROYECTO ────────────────────────────
+        // Toma el PRO_ID del PROCESO seleccionado (no del parámetro ProyectoId).
+        // Ej: entré desde Proyecto 1, seleccioné un proceso del Proyecto 2
+        // → abre Procesos con los datos del Proyecto 2.
+        private void AbrirProcesosDelProyecto()
         {
-            if (!proyectoId.HasValue) return "Sin proyecto";
-            var proyecto = ProyectosGlobales.FirstOrDefault(p => p.PRO_ID == proyectoId.Value);
-            return proyecto?.PRO_NOM ?? "Proyecto no encontrado";
+            if (ProcesoSeleccionado?.PRO_ID == null) return;
+
+            // Buscar el proyecto al que pertenece ESTE proceso específico
+            ProyectoParaProcesos = ProyectosGlobales
+                .FirstOrDefault(p => p.PRO_ID == ProcesoSeleccionado.PRO_ID.Value);
+
+            if (ProyectoParaProcesos == null)
+            {
+                Console.WriteLine($"⚠️ Proyecto no encontrado para PRO_ID: {ProcesoSeleccionado.PRO_ID}");
+                return;
+            }
+
+            Console.WriteLine($"✅ Abriendo Procesos del proyecto: {ProyectoParaProcesos.PRO_NOM}");
+
+            // Cerrar el detalle del proceso y abrir el componente Procesos
+            ProcesoSeleccionado = null;
+            TareasDeProceso = new();
+            MostrarProcesos = true;
+            StateHasChanged();
         }
 
-        private int ObtenerCantidadTareas(Guid procesoId)
+        private void CerrarProcesos()
         {
-            return TareasGlobales.Count(t => t.PROC_ID == procesoId);
+            // Al volver desde Procesos regresamos a la bitácora
+            MostrarProcesos = false;
+            ProyectoParaProcesos = null;
+            StateHasChanged();
+        }
+
+        // ── HELPERS ─────────────────────────────────────────────
+        private string ObtenerNombreProyecto(Guid? id)
+        {
+            if (!id.HasValue) return "Sin proyecto";
+            return ProyectosGlobales.FirstOrDefault(p => p.PRO_ID == id.Value)?.PRO_NOM ?? "Proyecto no encontrado";
+        }
+
+        private int ObtenerCantidadTareas(Guid procesoId) =>
+            TareasGlobales.Count(t => t.PROC_ID == procesoId);
+
+        private string ObtenerClaseTarea(string? estado) => estado switch
+        {
+            "Completado" => "tarea-completada",
+            "En Progreso" => "tarea-progreso",
+            "Pendiente" => "tarea-pendiente",
+            _ => "tarea-pendiente"
+        };
+
+        private bool EsGerente(string rol)
+        {
+            var roles = new[] { "Gerente", "Administrador", "Enoc", "Admin" };
+            return roles.Any(r => rol.Equals(r, StringComparison.OrdinalIgnoreCase));
         }
 
         private async Task Regresar() => await OnClose.InvokeAsync();

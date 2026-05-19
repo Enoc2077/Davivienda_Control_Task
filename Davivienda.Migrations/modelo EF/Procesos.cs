@@ -19,8 +19,7 @@ namespace Davivienda.Migrations.ModelosEF
         [StringLength(100)]
         public string? PROC_NOM { get; set; }
 
-        [Column("PROC_DES")]
-        [StringLength(255)]
+        [Column(TypeName = "nvarchar(max)")]
         public string? PROC_DES { get; set; }
 
         [Column("PROC_FRE")]

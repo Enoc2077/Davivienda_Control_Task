@@ -27,6 +27,16 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         private string PasswordReal { get; set; } = "";
         private bool ErrorPass { get; set; } = false;
 
+        // Intermediario string para el select de bool USU_EST
+        // Blazor no puede bindear bool directamente a <option value="true/false">
+        private string EstadoStr { get; set; } = "true";
+
+        private void OnEstadoChanged(ChangeEventArgs e)
+        {
+            EstadoStr = e.Value?.ToString() ?? "true";
+            UsuarioForm.USU_EST = EstadoStr == "true";
+        }
+
         protected override async Task OnInitializedAsync()
         {
             await CargarDatos();
@@ -53,7 +63,10 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
 
                 FiltrarUsuarios();
             }
-            catch (Exception ex) { Console.WriteLine($"Error al cargar: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al cargar: {ex.Message}");
+            }
         }
 
         private void FiltrarUsuarios()
@@ -65,17 +78,11 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
 
         private void AbrirModalNuevo()
         {
-            // Auto-generación de número de empleado (5 dígitos)
-            // Buscamos el mayor número, le sumamos 1 y rellenamos con ceros a la izquierda
             int maxNum = 0;
             if (Usuarios.Any())
-            {
                 maxNum = Usuarios.Max(u => int.TryParse(u.USU_NUM, out int n) ? n : 0);
-            }
             else
-            {
-                maxNum = 100; // Valor inicial si no hay nadie
-            }
+                maxNum = 100;
 
             string nuevoNum = (maxNum + 1).ToString().PadLeft(5, '0');
 
@@ -83,9 +90,10 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
             {
                 USU_ID = Guid.NewGuid(),
                 USU_NUM = nuevoNum,
-                USU_EST = true // Por defecto activo
+                USU_EST = true
             };
 
+            EstadoStr = "true";
             PasswordCheck = "";
             ErrorPass = false;
             Editando = false;
@@ -107,6 +115,9 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                 USU_CON = user.USU_CON,
                 USU_FEC_CRE = user.USU_FEC_CRE
             };
+
+            // Sincronizar el intermediario con el valor real del usuario
+            EstadoStr = (bool)user.USU_EST ? "true" : "false";
             PasswordReal = user.USU_CON;
             PasswordCheck = "";
             ErrorPass = false;
@@ -118,25 +129,22 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         {
             ErrorPass = false;
 
-            // 1. Seguridad Contraseña
             if (Editando && PasswordCheck != PasswordReal) { ErrorPass = true; return; }
             if (!Editando && string.IsNullOrWhiteSpace(PasswordCheck)) { ErrorPass = true; return; }
 
-            // 2. Obligatorios
             if (string.IsNullOrWhiteSpace(UsuarioForm.USU_NOM) || string.IsNullOrWhiteSpace(UsuarioForm.USU_COR))
             {
-                await JS.InvokeVoidAsync("alert", "Nombre y Correo son obligatorios.");
+                await JS.InvokeVoidAsync("alert", "Nombre y correo son obligatorios.");
                 return;
             }
 
-            // 3. Duplicados
             var duplicado = Usuarios.FirstOrDefault(u =>
                 (u.USU_COR.ToLower() == UsuarioForm.USU_COR.ToLower() || u.USU_NUM == UsuarioForm.USU_NUM)
                 && u.USU_ID != UsuarioForm.USU_ID);
 
             if (duplicado != null)
             {
-                await JS.InvokeVoidAsync("alert", "El Correo o Número de empleado ya existen.");
+                await JS.InvokeVoidAsync("alert", "El correo o número de empleado ya existen.");
                 return;
             }
 
@@ -158,7 +166,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                     Usu_CON = UsuarioForm.USU_CON,
                     Usu_TEL = UsuarioForm.USU_TEL,
                     Usu_EST = UsuarioForm.USU_EST,
-                    Rol_ID = UsuarioForm.ROL_ID, // Se mantiene el que ya tenga o nulo para asignar después
+                    Rol_ID = UsuarioForm.ROL_ID,
                     Are_ID = UsuarioForm.ARE_ID,
                     Usu_FEC_MOD = DateTimeOffset.Now
                 };
@@ -178,7 +186,10 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                 await CargarDatos();
                 StateHasChanged();
             }
-            catch (Exception ex) { Console.WriteLine($"Error: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
         }
 
         private async Task EliminarUsuario(Guid id)
@@ -186,14 +197,13 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
             var user = Usuarios.FirstOrDefault(u => u.USU_ID == id);
             if (await JS.InvokeAsync<bool>("confirm", $"¿Desea dar de baja (desactivar) a {user?.USU_NOM}?"))
             {
-                // En lugar de llamar a DeleteUsuario, llamamos a Update para cambiar el estado
                 var input = new UsuarioModelInput
                 {
-                    Usu_ID = user.USU_ID,
+                    Usu_ID = user!.USU_ID,
                     Usu_NOM = user.USU_NOM,
                     Usu_NUM = user.USU_NUM,
                     Usu_COR = user.USU_COR,
-                    Usu_EST = false, // <--- Aquí lo desactivamos
+                    Usu_EST = false,
                     Usu_FEC_MOD = DateTimeOffset.Now
                 };
 

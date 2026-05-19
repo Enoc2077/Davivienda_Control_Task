@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace Davivienda.FrontEnd.Pages.Pagess.Admin
 {
-    public class ProcesoBase : ComponentBase
+    public class Proceso : ComponentBase
     {
         [Inject] public DaviviendaGraphQLClient Client { get; set; } = default!;
 
@@ -17,191 +17,33 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
         public ProcesoModel? ProcesoSeleccionado { get; set; }
         public string TextoBusquedaProceso { get; set; } = "";
 
-        // --- ESTADOS PARA MODALES DE TAREAS ---
+        // Modales tareas
         public bool MostrarModalTarea { get; set; } = false;
         public bool MostrarModalCrearTarea { get; set; } = false;
         public TareaModel TareaSeleccionada { get; set; } = new();
 
-        // 🔥 NUEVO: BITÁCORA DE PROCESOS
+        // Bitácora
         public bool MostrarBitacoraProceso { get; set; } = false;
 
-        // Métodos para Editar
-        public void AbrirEditarTarea(TareaModel tarea)
+        // Confirmar eliminación
+        public bool MostrarConfirmEliminar { get; set; } = false;
+        public ProcesoModel? ProcesoAEliminar { get; set; }
+
+        // ── FIX: método para Yoopta en lugar de lambda con bloque ──
+        public void OnDescripcionChanged(string valor)
         {
-            TareaSeleccionada = tarea;
-            MostrarModalTarea = true;
-            StateHasChanged();
-        }
-
-        public async Task CerrarModalTarea()
-        {
-            MostrarModalTarea = false;
-
-            // 🔥 PASO 0: GUARDAR CAMBIOS DE LA TAREA AUTOMÁTICAMENTE
-            if (TareaSeleccionada != null && TareaSeleccionada.TAR_ID != Guid.Empty)
-            {
-                try
-                {
-                    Console.WriteLine($"💾 Guardando tarea: {TareaSeleccionada.TAR_NOM} → Estado: {TareaSeleccionada.TAR_EST}");
-
-                    var tareaInput = new TareaModelInput
-                    {
-                        Tar_ID = TareaSeleccionada.TAR_ID,
-                        Tar_NOM = TareaSeleccionada.TAR_NOM,
-                        Tar_DES = TareaSeleccionada.TAR_DES,
-                        Tar_EST = TareaSeleccionada.TAR_EST,
-                        Tar_FEC_INI = TareaSeleccionada.TAR_FEC_INI,
-                        Tar_FEC_FIN = TareaSeleccionada.TAR_FEC_FIN,
-                        Proc_ID = TareaSeleccionada.PROC_ID,
-                        Pri_ID = TareaSeleccionada.PRI_ID,
-                        Usu_ID = TareaSeleccionada.USU_ID,
-                        Tar_FEC_CRE = TareaSeleccionada.TAR_FEC_CRE,
-                        Tar_FEC_MOD = DateTimeOffset.Now
-                    };
-
-                    await Client.UpdateTarea.ExecuteAsync(tareaInput);
-                    Console.WriteLine($"✅ Tarea guardada correctamente");
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"❌ Error guardando tarea: {ex.Message}");
-                }
-            }
-
-            // 🔥 ACTUALIZACIÓN EN TIEMPO REAL
             if (ProcesoSeleccionado != null)
-            {
-                // 1. Recargar tareas del proceso actual
-                await CargarTareasDelProceso(ProcesoSeleccionado);
-
-                // 2. Verificar si todas las tareas están completadas
-                await VerificarYCompletarProceso(ProcesoSeleccionado.PROC_ID);
-
-                // 3. Recargar lista completa de procesos
-                await CargarProcesos();
-
-                // 4. Refrescar el proceso seleccionado con datos actualizados
-                var procesoActualizado = ProcesosDelProyecto.FirstOrDefault(p => p.PROC_ID == ProcesoSeleccionado.PROC_ID);
-                if (procesoActualizado != null)
-                {
-                    ProcesoSeleccionado = procesoActualizado;
-                }
-
-                Console.WriteLine("✅ Actualización en tiempo real completada");
-            }
-
-            StateHasChanged();
+                ProcesoSeleccionado.PROC_DES = valor;
         }
 
-        // Métodos para Crear
-        public void AbrirCrearTarea()
-        {
-            MostrarModalCrearTarea = true;
-            StateHasChanged();
-        }
-
-        public async Task CerrarModalCrearTarea()
-        {
-            MostrarModalCrearTarea = false;
-
-            // 🔥 ACTUALIZACIÓN EN TIEMPO REAL
-            if (ProcesoSeleccionado != null)
-            {
-                // 1. Recargar tareas del proceso
-                await CargarTareasDelProceso(ProcesoSeleccionado);
-
-                // 2. Recargar procesos
-                await CargarProcesos();
-
-                Console.WriteLine("✅ Tareas actualizadas después de crear");
-            }
-
-            StateHasChanged();
-        }
-
-        // 🔥 BITÁCORA DE PROCESOS
-        public void AbrirBitacoraProceso()
-        {
-            MostrarBitacoraProceso = true;
-            Console.WriteLine("📖 Abriendo Bitácora de Procesos");
-        }
-
-        public async Task CerrarBitacoraProceso()
-        {
-            MostrarBitacoraProceso = false;
-            await CargarProcesos(); // Recargar procesos por si hubo cambios
-            Console.WriteLine("❌ Cerrando Bitácora de Procesos");
-            StateHasChanged();
-        }
-
-        // 🔥 VERIFICAR SI TODAS LAS TAREAS ESTÁN COMPLETADAS
-        private async Task VerificarYCompletarProceso(Guid procesoId)
-        {
-            try
-            {
-                // Cargar todas las tareas del proceso
-                var resTareas = await Client.GetTareas.ExecuteAsync();
-                var tareasDelProceso = resTareas.Data?.Tareas
-                    .Where(t => t.Proc_ID == procesoId)
-                    .ToList() ?? new();
-
-                if (!tareasDelProceso.Any())
-                {
-                    Console.WriteLine($"⚠️ Proceso {procesoId} sin tareas");
-                    return;
-                }
-
-                // Verificar si TODAS están completadas
-                bool todasCompletadas = tareasDelProceso.All(t => t.Tar_EST == "Completado");
-
-                if (todasCompletadas)
-                {
-                    Console.WriteLine($"✅ TODAS las tareas completadas. Marcando proceso como INACTIVO");
-
-                    // Obtener el proceso actual
-                    var resProc = await Client.GetProcesos.ExecuteAsync();
-                    var proceso = resProc.Data?.Procesos.FirstOrDefault(p => p.Proc_ID == procesoId);
-
-                    if (proceso != null)
-                    {
-                        // Actualizar proceso a INACTIVO
-                        var input = new ProcesoModelInput
-                        {
-                            Proc_ID = proceso.Proc_ID,
-                            Proc_NOM = proceso.Proc_NOM,
-                            Proc_DES = proceso.Proc_DES,
-                            Proc_FRE = proceso.Proc_FRE,
-                            Proc_EST = false, // 🔥 MARCAR COMO INACTIVO
-                            Pro_ID = proceso.Pro_ID,
-                            Proc_FEC_CRE = proceso.Proc_FEC_CRE,
-                            Proc_FEC_MOD = DateTimeOffset.Now
-                        };
-
-                        await Client.UpdateProceso.ExecuteAsync(input);
-                        Console.WriteLine($"✅ Proceso marcado como INACTIVO automáticamente");
-
-                        // Recargar procesos
-                        await CargarProcesos();
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"📝 Aún hay tareas pendientes o en progreso");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error verificando completado: {ex.Message}");
-            }
-        }
-
-        // ---------------------------------------
-
+        // ── FILTERED ──────────────────────────────────────────
         public IEnumerable<ProcesoModel> ProcesosFiltradosEnModal =>
             string.IsNullOrWhiteSpace(TextoBusquedaProceso)
                 ? ProcesosDelProyecto
-                : ProcesosDelProyecto.Where(p => p.PROC_NOM.Contains(TextoBusquedaProceso, StringComparison.OrdinalIgnoreCase));
+                : ProcesosDelProyecto.Where(p =>
+                    p.PROC_NOM.Contains(TextoBusquedaProceso, StringComparison.OrdinalIgnoreCase));
 
+        // ── LIFECYCLE ──────────────────────────────────────────
         protected override async Task OnParametersSetAsync()
         {
             if (ProyectoId != Guid.Empty)
@@ -211,6 +53,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
             }
         }
 
+        // ── CARGA ──────────────────────────────────────────────
         public async Task CargarProcesos()
         {
             try
@@ -230,8 +73,8 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                         PROC_FEC_MOD = p.Proc_FEC_MOD
                     }).ToList() ?? new();
 
-                // 🔥 APLICAR FILTRO: Solo mostrar procesos según reglas
                 ProcesosDelProyecto = await FiltrarProcesosParaPantalla(todosProcesos);
+                StateHasChanged();
             }
             catch (Exception ex)
             {
@@ -239,47 +82,35 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
             }
         }
 
-        // 🔥 FILTRAR PROCESOS PARA PANTALLA (EXCLUIR LOS DE BITÁCORA)
         private async Task<List<ProcesoModel>> FiltrarProcesosParaPantalla(List<ProcesoModel> todosProcesos)
         {
             try
             {
-                // Obtener información del proyecto
                 var resProyecto = await Client.GetProyectos.ExecuteAsync();
                 var proyecto = resProyecto.Data?.Proyectos.FirstOrDefault(p => p.Pro_ID == ProyectoId);
-
                 if (proyecto == null) return todosProcesos;
 
-                // 🔥 SI PROYECTO FINALIZADO: No mostrar procesos completados
-                if (proyecto.Pro_EST == "Finalizado")
-                {
-                    Console.WriteLine($"📁 Proyecto '{proyecto.Pro_NOM}' FINALIZADO - Ocultando completados");
+                if (proyecto.Pro_EST == "Finalizado" || proyecto.Pro_EST == "FINALIZADO")
                     return todosProcesos.Where(p => p.PROC_EST == true).ToList();
-                }
 
-                // 🔥 PROYECTO ACTIVO: Mostrar TODOS activos + Solo 5 inactivos más recientes
                 var activos = todosProcesos.Where(p => p.PROC_EST == true).ToList();
-
                 var inactivos = todosProcesos
                     .Where(p => p.PROC_EST == false)
                     .OrderByDescending(p => p.PROC_FEC_CRE)
-                    .Take(5) // Solo los 5 más recientes
-                    .ToList();
-
-                Console.WriteLine($"📊 Mostrando: {activos.Count} activos + {inactivos.Count} inactivos");
+                    .Take(5).ToList();
 
                 return activos.Concat(inactivos).ToList();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error filtrando procesos: {ex.Message}");
+                Console.WriteLine($"Error filtrando procesos: {ex.Message}");
                 return todosProcesos;
             }
         }
 
         public async Task CargarTareasDelProceso(ProcesoModel proc)
         {
-            ProcesoSeleccionado = proc; // Guardamos referencia directa del proceso seleccionado
+            ProcesoSeleccionado = proc;
             try
             {
                 var res = await Client.GetTareas.ExecuteAsync();
@@ -292,21 +123,22 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                         TAR_DES = t.Tar_DES,
                         TAR_EST = t.Tar_EST,
                         PROC_ID = t.Proc_ID
-                    })
-                    .ToList() ?? new();
+                    }).ToList() ?? new();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error al cargar tareas: {ex.Message}");
             }
+            StateHasChanged();
         }
 
+        // ── GUARDAR (crear o editar) ───────────────────────────
         public async Task GuardarCambiosProceso()
         {
             if (ProcesoSeleccionado == null) return;
             try
             {
-                DateTimeOffset fechaCreacion = ProcesoSeleccionado.PROC_FEC_CRE == default
+                var fechaCreacion = ProcesoSeleccionado.PROC_FEC_CRE == default
                     ? DateTimeOffset.Now
                     : ProcesoSeleccionado.PROC_FEC_CRE;
 
@@ -322,22 +154,200 @@ namespace Davivienda.FrontEnd.Pages.Pagess.Admin
                     Proc_FEC_MOD = DateTimeOffset.Now
                 };
 
-                if (ProcesoSeleccionado.PROC_ID == Guid.Empty) await Client.InsertProceso.ExecuteAsync(input);
-                else await Client.UpdateProceso.ExecuteAsync(input);
+                if (ProcesoSeleccionado.PROC_ID == Guid.Empty)
+                    await Client.InsertProceso.ExecuteAsync(input);
+                else
+                    await Client.UpdateProceso.ExecuteAsync(input);
 
                 await CargarProcesos();
             }
-            catch (Exception ex) { Console.WriteLine($"Error: {ex.Message}"); }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error guardando proceso: {ex.Message}");
+            }
         }
 
+        // ── NUEVO PROCESO ──────────────────────────────────────
         public void PrepararNuevoProceso()
         {
-            ProcesoSeleccionado = new ProcesoModel { PROC_ID = Guid.Empty, PROC_NOM = "", PROC_FRE = "Diario", PROC_EST = true, PRO_ID = ProyectoId };
+            ProcesoSeleccionado = new ProcesoModel
+            {
+                PROC_ID = Guid.Empty,
+                PROC_NOM = "",
+                PROC_FRE = "Diario",
+                PROC_EST = true,
+                PRO_ID = ProyectoId
+            };
             TareasDelProceso = new();
             StateHasChanged();
         }
 
-        public void OnSearchProcesoChanged(ChangeEventArgs e) => TextoBusquedaProceso = e.Value?.ToString() ?? "";
+        // ── ELIMINAR PROCESO ──────────────────────────────────
+        public void ConfirmarEliminar(ProcesoModel proc)
+        {
+            ProcesoAEliminar = proc;
+            MostrarConfirmEliminar = true;
+            StateHasChanged();
+        }
+
+        public void CancelarEliminar()
+        {
+            ProcesoAEliminar = null;
+            MostrarConfirmEliminar = false;
+            StateHasChanged();
+        }
+
+        public async Task EjecutarEliminar()
+        {
+            if (ProcesoAEliminar == null) return;
+            try
+            {
+                await Client.DeleteProceso.ExecuteAsync(ProcesoAEliminar.PROC_ID);
+                Console.WriteLine($"✅ Proceso eliminado: {ProcesoAEliminar.PROC_NOM}");
+
+                if (ProcesoSeleccionado?.PROC_ID == ProcesoAEliminar.PROC_ID)
+                {
+                    ProcesoSeleccionado = null;
+                    TareasDelProceso = new();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error eliminando proceso: {ex.Message}");
+            }
+            finally
+            {
+                ProcesoAEliminar = null;
+                MostrarConfirmEliminar = false;
+                await CargarProcesos();
+            }
+        }
+
+        // ── TAREAS ────────────────────────────────────────────
+        public void AbrirEditarTarea(TareaModel tarea)
+        {
+            TareaSeleccionada = tarea;
+            MostrarModalTarea = true;
+            StateHasChanged();
+        }
+
+        public async Task CerrarModalTarea()
+        {
+            MostrarModalTarea = false;
+
+            if (TareaSeleccionada != null && TareaSeleccionada.TAR_ID != Guid.Empty)
+            {
+                try
+                {
+                    var tareaInput = new TareaModelInput
+                    {
+                        Tar_ID = TareaSeleccionada.TAR_ID,
+                        Tar_NOM = TareaSeleccionada.TAR_NOM,
+                        Tar_DES = TareaSeleccionada.TAR_DES,
+                        Tar_EST = TareaSeleccionada.TAR_EST,
+                        Tar_FEC_INI = TareaSeleccionada.TAR_FEC_INI,
+                        Tar_FEC_FIN = TareaSeleccionada.TAR_FEC_FIN,
+                        Proc_ID = TareaSeleccionada.PROC_ID,
+                        Pri_ID = TareaSeleccionada.PRI_ID,
+                        Usu_ID = TareaSeleccionada.USU_ID,
+                        Tar_FEC_CRE = TareaSeleccionada.TAR_FEC_CRE,
+                        Tar_FEC_MOD = DateTimeOffset.Now
+                    };
+                    await Client.UpdateTarea.ExecuteAsync(tareaInput);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error guardando tarea: {ex.Message}");
+                }
+            }
+
+            if (ProcesoSeleccionado != null)
+            {
+                await CargarTareasDelProceso(ProcesoSeleccionado);
+                await VerificarYCompletarProceso(ProcesoSeleccionado.PROC_ID);
+                await CargarProcesos();
+
+                var actualizado = ProcesosDelProyecto.FirstOrDefault(p => p.PROC_ID == ProcesoSeleccionado.PROC_ID);
+                if (actualizado != null) ProcesoSeleccionado = actualizado;
+            }
+            StateHasChanged();
+        }
+
+        public void AbrirCrearTarea()
+        {
+            MostrarModalCrearTarea = true;
+            StateHasChanged();
+        }
+
+        public async Task CerrarModalCrearTarea()
+        {
+            MostrarModalCrearTarea = false;
+            if (ProcesoSeleccionado != null)
+            {
+                await CargarTareasDelProceso(ProcesoSeleccionado);
+                await CargarProcesos();
+            }
+            StateHasChanged();
+        }
+
+        // ── VERIFICAR COMPLETADO ──────────────────────────────
+        private async Task VerificarYCompletarProceso(Guid procesoId)
+        {
+            try
+            {
+                var resTareas = await Client.GetTareas.ExecuteAsync();
+                var tareas = resTareas.Data?.Tareas
+                    .Where(t => t.Proc_ID == procesoId).ToList() ?? new();
+
+                if (!tareas.Any()) return;
+
+                if (tareas.All(t => t.Tar_EST == "Completado"))
+                {
+                    var resProc = await Client.GetProcesos.ExecuteAsync();
+                    var proc = resProc.Data?.Procesos.FirstOrDefault(p => p.Proc_ID == procesoId);
+                    if (proc == null) return;
+
+                    await Client.UpdateProceso.ExecuteAsync(new ProcesoModelInput
+                    {
+                        Proc_ID = proc.Proc_ID,
+                        Proc_NOM = proc.Proc_NOM,
+                        Proc_DES = proc.Proc_DES,
+                        Proc_FRE = proc.Proc_FRE,
+                        Proc_EST = false,
+                        Pro_ID = proc.Pro_ID,
+                        Proc_FEC_CRE = proc.Proc_FEC_CRE,
+                        Proc_FEC_MOD = DateTimeOffset.Now
+                    });
+                    await CargarProcesos();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error verificando completado: {ex.Message}");
+            }
+        }
+
+        // ── BITÁCORA ──────────────────────────────────────────
+        public void AbrirBitacoraProceso()
+        {
+            MostrarBitacoraProceso = true;
+            StateHasChanged();
+        }
+
+        public async Task CerrarBitacoraProceso()
+        {
+            MostrarBitacoraProceso = false;
+            await CargarProcesos();
+            StateHasChanged();
+        }
+
+        // ── HELPERS ───────────────────────────────────────────
+        public void OnSearchProcesoChanged(ChangeEventArgs e)
+        {
+            TextoBusquedaProceso = e.Value?.ToString() ?? "";
+            StateHasChanged();
+        }
+
         public Task CerrarModal() => OnClose.InvokeAsync();
     }
 }

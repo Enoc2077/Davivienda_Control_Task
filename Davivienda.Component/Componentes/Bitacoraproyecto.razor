@@ -2,7 +2,6 @@
 @inherits Microsoft.AspNetCore.Components.ComponentBase
 @using Davivienda.Models.Modelos
 
-
 <div class="modal-fixed-backdrop">
     <div class="master-modal-container" @onclick:stopPropagation>
         <div class="dav-modal-art-bg">
@@ -13,12 +12,9 @@
             <div class="bg-blob blob-red-top"></div>
             <div class="bg-blob blob-red-bottom"></div>
 
-            @* 🎨 ILUSTRACIÓN DECORATIVA *@
             <div class="illustration-scene">
                 <div class="device-monitor">
-                    <div class="device-screen">
-                        <div class="screen-ui-lines"></div>
-                    </div>
+                    <div class="device-screen"><div class="screen-ui-lines"></div></div>
                     <div class="device-stand"></div>
                 </div>
                 <div class="vector-person person-standing"></div>
@@ -29,10 +25,10 @@
             </div>
 
             <div class="content-sectors-container">
-                @* ========== LISTADO DE PROYECTOS FINALIZADOS ========== *@
+
+                @* LISTADO *@
                 <div class="sector-white-card sector-listado">
                     <div class="sector-label">Historial de Proyectos</div>
-
                     <div class="sector-banner-header">
                         <div class="banner-waves"></div>
                         <div class="banner-content">
@@ -47,7 +43,7 @@
                         {
                             @foreach (var proyecto in ProyectosFiltrados)
                             {
-                                <div class="solution-item-card" @onclick="() => AbrirProcesosDelProyecto(proyecto)">
+                                <div class="solution-item-card" @onclick="() => AbrirDetalleProyecto(proyecto)">
                                     <div class="sol-card-info">
                                         <span class="sol-name">@proyecto.PRO_NOM</span>
                                         <div class="tarea-metadata">
@@ -76,49 +72,156 @@
                     </div>
                 </div>
 
-                @* ========== PANEL DE FILTROS ========== *@
+                @* FILTROS — mismo componente que las demás bitácoras *@
                 <div class="sector-white-card sector-filtros">
                     <div class="sector-label verde">Filtros Inteligentes</div>
                     <div class="dynamic-filter-zone">
-                        <div class="filtro-grupo">
-                            <label class="filtro-label">BUSCAR POR NOMBRE</label>
-                            <input type="text" 
-                                   class="filtro-input" 
-                                   placeholder="Nombre del proyecto..."
-                                   @oninput="OnBusquedaChanged" />
-                        </div>
-
-                        <div class="filtro-grupo">
-                            <label class="filtro-label">FILTRAR POR ÁREA</label>
-                            <select class="filtro-select" @onchange="OnAreaChanged">
-                                <option value="">Todas las áreas</option>
-                                @foreach (var area in AreasList)
-                                {
-                                    <option value="@area.ARE_ID">@area.ARE_NOM</option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="filtro-grupo">
-                            <label class="filtro-label">FILTRAR POR FECHA</label>
-                            <select class="filtro-select" @onchange="OnFechaChanged">
-                                <option value="todos">Todos</option>
-                                <option value="mes">Este mes</option>
-                                <option value="trimestre">Este trimestre</option>
-                                <option value="año">Este año</option>
-                            </select>
-                        </div>
+                        <Filtros Areas="AreasList"
+                                 Proyectos="ProyectosParaFiltro"
+                                 Procesos="new()"
+                                 Tareas="new()"
+                                 Prioridades="new()"
+                                 OnFiltrosChanged="ManejarCambioFiltros" />
                     </div>
                 </div>
+
             </div>
         </div>
     </div>
 </div>
 
-@* ========== MODAL DE PROCESOS ========== *@
-@if (MostrarModalProceso)
+@* ── MODAL DETALLE PROYECTO — hero + info + editar ── *@
+@if (ProyectoSeleccionado != null && !MostrarEditar)
 {
-    < ProyectoId="@ProyectoSeleccionadoId" 
-              ProyectoNombre="@ProyectoSeleccionadoNombre" 
-              OnClose="CerrarModalProceso" />
+    <div class="modal-detalle-overlay" @onclick="CerrarDetalle">
+        <div class="modal-detalle-card" @onclick:stopPropagation>
+
+            <div class="modal-detalle-header">
+                <div class="header-icon">
+                    <i class="bi bi-archive-fill"></i>
+                </div>
+                <h3 class="modal-detalle-title">Detalle del Proyecto</h3>
+                <button class="btn-cerrar-detalle" @onclick="CerrarDetalle">×</button>
+            </div>
+
+            <div class="modal-detalle-body">
+
+                @* COLUMNA IZQUIERDA *@
+                <div class="detalle-columna-info">
+
+                    @* NOMBRE HERO *@
+                    <div class="proyecto-nombre-hero">
+                        <div class="proyecto-nombre-icon">
+                            <i class="bi bi-folder2-open"></i>
+                        </div>
+                        <div class="proyecto-nombre-texto">
+                            <span class="proyecto-nombre-label">NOMBRE DEL PROYECTO</span>
+                            <h2 class="proyecto-nombre-titulo">@ProyectoSeleccionado.PRO_NOM</h2>
+                        </div>
+                    </div>
+
+                    @* BADGE ESTADO *@
+                    <div class="proyecto-badges-row">
+                        <div class="proyecto-badge-item">
+                            <span class="proyecto-badge-label">ESTADO</span>
+                            <span class="badge-finalizado">
+                                <i class="bi bi-archive"></i> @ProyectoSeleccionado.PRO_EST
+                            </span>
+                        </div>
+                        <div class="proyecto-badge-item">
+                            <span class="proyecto-badge-label">ÁREA</span>
+                            <span class="badge-area">
+                                <i class="bi bi-briefcase"></i> @ObtenerNombreArea(ProyectoSeleccionado.ARE_ID)
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="proyecto-separador"></div>
+
+                    @* PROCESOS *@
+                    <div class="info-section">
+                        <label>PROCESOS REGISTRADOS</label>
+                        <div class="proyecto-origen-card">
+                            <i class="bi bi-diagram-3" style="color:#3b82f6;font-size:1rem;"></i>
+                            <p class="info-value-small">@ObtenerCantidadProcesos(ProyectoSeleccionado.PRO_ID) proceso(s) asociados</p>
+                        </div>
+                    </div>
+
+                    @* FECHAS *@
+                    <div class="info-section">
+                        <label>FECHAS</label>
+                        <div class="fechas-card">
+                            <div class="fecha-row">
+                                <span class="fecha-icon-label"><i class="bi bi-play-circle" style="color:#16a34a;"></i> Inicio</span>
+                                <span class="fecha-value">@ProyectoSeleccionado.PRO_FEC_INI.ToString("dd/MM/yyyy")</span>
+                            </div>
+                            <div class="fecha-row">
+                                <span class="fecha-icon-label"><i class="bi bi-stop-circle" style="color:#ef4444;"></i> Fin</span>
+                                <span class="fecha-value">
+                                    @(ProyectoSeleccionado.PRO_FEC_FIN.HasValue
+                                                                    ? ProyectoSeleccionado.PRO_FEC_FIN.Value.ToString("dd/MM/yyyy")
+                                                                    : "Sin fecha")
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                    @* DESCRIPCIÓN *@
+                @if (!string.IsNullOrEmpty(ProyectoSeleccionado.PRO_DES))
+                    {
+                        <div class="info-section">
+                            <label>DESCRIPCIÓN</label>
+                            <div class="proyecto-desc-card">
+                                <p class="info-value-small">@ProyectoSeleccionado.PRO_DES</p>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="info-footer">
+                        <i class="bi bi-calendar3"></i>
+                        <span>Creado: @ProyectoSeleccionado.PRO_FEC_CRE.ToString("dd 'de' MMMM 'de' yyyy", new System.Globalization.CultureInfo("es-ES"))</span>
+                    </div>
+                </div>
+
+                @* COLUMNA DERECHA: acciones e ilustración *@
+                <div class="detalle-columna-acciones">
+                    <div class="acciones-header">
+                        <label>ACCIONES DISPONIBLES</label>
+                    </div>
+
+                    <div class="accion-card" @onclick="AbrirEditar">
+                        <div class="accion-icon accion-icon-edit">
+                            <i class="bi bi-pencil-fill"></i>
+                        </div>
+                        <div class="accion-texto">
+                            <span class="accion-titulo">Editar Proyecto</span>
+                            <span class="accion-desc">Modifica nombre, estado, fechas y descripción</span>
+                        </div>
+                        <i class="bi bi-chevron-right accion-arrow"></i>
+                    </div>
+
+                    <div class="accion-info-box">
+                        <i class="bi bi-info-circle"></i>
+                        <p>Si cambias el estado a uno distinto de <strong>FINALIZADO</strong>, el proyecto regresará automáticamente a la vista de proyectos activos.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-detalle-footer">
+                <button class="btn-modal-cerrar" @onclick="CerrarDetalle">Cerrar</button>
+                <button class="btn-modal-editar" @onclick="AbrirEditar">
+                    <i class="bi bi-pencil-fill"></i> Editar Proyecto
+                </button>
+            </div>
+        </div>
+    </div>
+}
+
+@* ── MODAL EDITAR PROYECTO ── *@
+@if (MostrarEditar && ProyectoSeleccionado != null)
+{
+    <div class="modal-overlay-editar">
+        <EditarProyecto Proyecto="ProyectoSeleccionado" OnClose="CerrarEditar" />
+    </div>
 }

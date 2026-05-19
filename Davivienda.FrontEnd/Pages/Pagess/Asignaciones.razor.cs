@@ -2,6 +2,7 @@
 using Davivienda.Models.Modelos;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,11 @@ using System.Threading.Tasks;
 
 namespace Davivienda.FrontEnd.Pages.Pagess
 {
-    public partial class Asignaciones
+    public partial class Asignaciones : IDisposable
     {
         [Inject] private DaviviendaGraphQLClient Client { get; set; } = default!;
         [Inject] private AuthenticationStateProvider AuthProvider { get; set; } = default!;
+        [Inject] private IJSRuntime JS { get; set; } = default!;
 
         public List<TareaModel>? Tasks { get; set; } = new();
         public List<TareaModel> TareasFiltradas { get; set; } = new();
@@ -29,17 +31,62 @@ namespace Davivienda.FrontEnd.Pages.Pagess
         public bool MostrarModal { get; set; }
         public string ModalActual { get; set; } = "";
         public TareaModel? TareaSeleccionada { get; set; }
-
-        // 🔥 NUEVO: Para BitacoraTarea
         public bool MostrarBitacoraTarea { get; set; }
-
         public int TotalTareasCount { get; set; }
         public int TotalProyectos { get; set; }
+
+        private const int MaxCompletadasVisibles = 5;
+        private const int HorasPermitidas = 24;
+
+        private DotNetObjectReference<Asignaciones>? _dotNetRef;
 
         protected override async Task OnInitializedAsync()
         {
             await CargarDatosDesdeBase();
             GenerarCalendarioMini();
+        }
+
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            if (firstRender)
+            {
+                _dotNetRef = DotNetObjectReference.Create(this);
+                await JS.InvokeVoidAsync("registrarInstanciaAsignaciones", _dotNetRef);
+            }
+        }
+
+        [JSInvokable]
+        public void FiltrarDesdeGrafica(string estado)
+        {
+            Console.WriteLine($"Click en barra: {estado}");
+            FiltrarPorEstadoGrafica(estado);
+            StateHasChanged();
+        }
+
+        // Reemplaza el metodo RenderizarGrafica en Asignaciones.razor.cs
+
+        private async Task RenderizarGrafica()
+        {
+            try
+            {
+                // Contar las tareas que SE VEN en la interfaz (las que pasaron AplicarReglasHistorial)
+                int pendientes = Tasks?.Count(t => t.TAR_EST == "Pendiente") ?? 0;
+                int enProgreso = Tasks?.Count(t => t.TAR_EST == "En Progreso") ?? 0;
+                // Completadas que aun estan visibles (dentro de las 24h, maximo 5)
+                int completadas = Tasks?.Count(t => t.TAR_EST == "Completado") ?? 0;
+
+                Console.WriteLine($"Grafica: P={pendientes} EP={enProgreso} C={completadas}");
+
+                await JS.InvokeVoidAsync("renderEstadoTareasChart",
+                    "estadoTareasChart",
+                    pendientes,
+                    enProgreso,
+                    completadas);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error Chart.js: {ex.Message}");
+            }
         }
 
         private async Task CargarDatosDesdeBase()
@@ -49,27 +96,21 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                 var authState = await AuthProvider.GetAuthenticationStateAsync();
                 var user = authState.User;
 
-                // 🔥 OBTENER ROL DEL USUARIO
                 UserRole = user.FindFirst(ClaimTypes.Role)?.Value
                            ?? user.FindFirst("role")?.Value
                            ?? user.FindFirst("http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value
                            ?? "Empleado";
 
                 Console.WriteLine("========================================");
-                Console.WriteLine($"🔐 ROL DETECTADO: {UserRole}");
+                Console.WriteLine($"ROL DETECTADO: {UserRole}");
 
-                // 🔥 1. CARGAR USUARIO ACTUAL POR NÚMERO DE EMPLEADO
                 var usuNumClaim = user.FindFirst("USU_NUM")?.Value ?? "";
-
-                Console.WriteLine($"🔢 Buscando usuario con USU_NUM: '{usuNumClaim}'");
-
                 if (string.IsNullOrEmpty(usuNumClaim))
                 {
-                    Console.WriteLine("❌ No se encontró el claim USU_NUM en el token");
+                    Console.WriteLine("No se encontro el claim USU_NUM");
                     return;
                 }
 
-                // Obtener todos los usuarios y filtrar por USU_NUM
                 var resUsuarios = await Client.GetUsuarios.ExecuteAsync();
                 var usuData = resUsuarios.Data?.Usuarios.FirstOrDefault(u => u.Usu_NUM == usuNumClaim);
 
@@ -84,20 +125,15 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                         ARE_ID = usuData.Are_ID,
                         ROL_ID = usuData.Rol_ID
                     };
-
                     UserAreaId = UsuarioActual.ARE_ID;
-
-                    Console.WriteLine($"👤 Usuario: {UsuarioActual.USU_NOM}");
-                    Console.WriteLine($"🔢 Número: {UsuarioActual.USU_NUM}");
-                    Console.WriteLine($"🏢 Área ID: {UserAreaId}");
+                    Console.WriteLine($"Usuario: {UsuarioActual.USU_NOM} | Area: {UserAreaId}");
                 }
                 else
                 {
-                    Console.WriteLine($"❌ Usuario con USU_NUM '{usuNumClaim}' no encontrado en la base de datos");
+                    Console.WriteLine("Usuario no encontrado");
                     return;
                 }
 
-                // 🔥 2. CARGAR TODAS LAS TAREAS
                 var response = await Client.GetTareas.ExecuteAsync();
                 var allTasks = response.Data?.Tareas.Select(t => new TareaModel
                 {
@@ -109,42 +145,43 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                     USU_ID = t.Usu_ID,
                     TAR_FEC_INI = t.Tar_FEC_INI.DateTime,
                     TAR_FEC_FIN = t.Tar_FEC_FIN?.DateTime,
-                    PROC_ID = t.Proc_ID
+                    PROC_ID = t.Proc_ID,
+                    TAR_FEC_CRE = t.Tar_FEC_CRE,
+                    TAR_FEC_MOD = t.Tar_FEC_MOD
                 }).ToList() ?? new();
 
-                Console.WriteLine($"📊 Total de tareas en BD: {allTasks.Count}");
+                Console.WriteLine($"Total tareas en BD: {allTasks.Count}");
 
-                // 🔥 2.1 CARGAR PROCESOS PARA VERIFICAR PROC_EST
                 var resProc = await Client.GetProcesos.ExecuteAsync();
                 var procesosActivos = resProc.Data?.Procesos
-                    .Where(p => p.Proc_EST == true) // Solo procesos activos
+                    .Where(p => p.Proc_EST == true)
                     .Select(p => p.Proc_ID)
                     .ToList() ?? new();
 
-                Console.WriteLine($"📊 Procesos activos: {procesosActivos.Count}");
+                Console.WriteLine($"Procesos activos: {procesosActivos.Count}");
 
-                // 🔥 2.2 FILTRAR TAREAS CON PROCESOS ACTIVOS
                 allTasks = allTasks.Where(t =>
                 {
-                    // Si no tiene proceso, la mostramos (por seguridad)
                     if (!t.PROC_ID.HasValue) return true;
-
-                    // Solo mostrar si el proceso está activo
                     return procesosActivos.Contains(t.PROC_ID.Value);
                 }).ToList();
 
-                Console.WriteLine($"📊 Tareas con proceso activo: {allTasks.Count}");
+                Console.WriteLine($"Tareas con proceso activo: {allTasks.Count}");
 
-                // 🔥 3. FILTRAR TAREAS SEGÚN ROL Y ÁREA
                 Tasks = await FiltrarTareasPorRolYArea(allTasks);
+                Console.WriteLine($"Tareas visibles para {UserRole}: {Tasks.Count}");
 
-                Console.WriteLine($"✅ Tareas visibles para {UserRole}: {Tasks.Count}");
+                AplicarReglasHistorial();
+                Console.WriteLine($"Tras reglas historial: {Tasks.Count}");
                 Console.WriteLine("========================================");
 
-                TareasFiltradas = Tasks;
-                TotalTareasCount = Tasks.Count;
+                // FIX: TareasFiltradas incluye TODAS (pendiente, en progreso
+                // y completadas dentro de las 24h que aun deben verse)
+                TareasFiltradas = Tasks.ToList();
 
-                // 4. CARGAR PROYECTOS
+                // El contador solo muestra las no completadas (activas)
+                TotalTareasCount = Tasks.Count(t => t.TAR_EST != "Completado");
+
                 var resProy = await Client.GetProyectos.ExecuteAsync();
                 ProyectosRelacionados = resProy.Data?.Proyectos
                     .Select(p => new ProyectosModel
@@ -152,134 +189,194 @@ namespace Davivienda.FrontEnd.Pages.Pagess
                         PRO_ID = p.Pro_ID,
                         PRO_NOM = p.Pro_NOM,
                         ARE_ID = p.Are_ID
-                    })
-                    .ToList() ?? new();
+                    }).ToList() ?? new();
                 TotalProyectos = ProyectosRelacionados.Count;
 
-                // 5. CARGAR PRIORIDADES
                 var resPrio = await Client.GetPrioridades.ExecuteAsync();
                 Prioridades = resPrio.Data?.Prioridades
                     .Select(p => new PrioridadModel { PRI_ID = p.Pri_ID, PRI_NOM = p.Pri_NOM })
                     .ToList();
+
+                StateHasChanged();
+                await Task.Delay(300);
+                await RenderizarGrafica();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("========================================");
-                Console.WriteLine($"❌ ERROR EN DASHBOARD: {ex.Message}");
-                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
-                Console.WriteLine("========================================");
+                Console.WriteLine($"ERROR EN DASHBOARD: {ex.Message}");
+                Console.WriteLine($"Stack: {ex.StackTrace}");
             }
         }
 
-        // 🔥 MÉTODO PRINCIPAL: FILTRAR TAREAS POR ROL Y ÁREA
+        // ============================================================
+        // REGLAS DE HISTORIAL:
+        // Regla 1: Completadas con mas de 24h → historial
+        // Regla 2: Si hay mas de 5 completadas dentro de 24h → las mas antiguas al historial
+        // Regla 3: Si TODAS las del proceso estan completadas Y todas >24h → historial
+        //          Si alguna tiene <24h → permanecen visibles hasta cumplir las 24h
+        // ============================================================
+        private void AplicarReglasHistorial()
+        {
+            if (Tasks == null || !Tasks.Any()) return;
+
+            var ahora = DateTimeOffset.Now;
+            var tareasBorrar = new HashSet<Guid>();
+
+            // Regla 1: Completadas con mas de 24h → historial
+            var completadasViejas = Tasks
+                .Where(t => t.TAR_EST == "Completado")
+                .Where(t =>
+                {
+                    var fecha = t.TAR_FEC_MOD ?? t.TAR_FEC_CRE;
+                    if (fecha == default) return false;
+                    return (ahora - fecha).TotalHours > HorasPermitidas;
+                })
+                .ToList();
+
+            foreach (var t in completadasViejas)
+            {
+                tareasBorrar.Add(t.TAR_ID);
+                Console.WriteLine($"Historial por 24h: {t.TAR_NOM}");
+            }
+
+            // Regla 2: Si quedan mas de 5 completadas visibles (dentro de 24h)
+            // las mas antiguas van al historial
+            var completadasRestantes = Tasks
+                .Where(t => t.TAR_EST == "Completado" && !tareasBorrar.Contains(t.TAR_ID))
+                .OrderBy(t => t.TAR_FEC_MOD ?? t.TAR_FEC_CRE)
+                .ToList();
+
+            if (completadasRestantes.Count > MaxCompletadasVisibles)
+            {
+                int exceso = completadasRestantes.Count - MaxCompletadasVisibles;
+                foreach (var t in completadasRestantes.Take(exceso))
+                {
+                    tareasBorrar.Add(t.TAR_ID);
+                    Console.WriteLine($"Historial por limite: {t.TAR_NOM}");
+                }
+            }
+
+            // Regla 3: Si TODAS las tareas de un proceso estan completadas
+            // solo van al historial si TODAS tienen mas de 24h
+            var procesosIds = Tasks
+                .Where(t => t.PROC_ID.HasValue)
+                .Select(t => t.PROC_ID!.Value)
+                .Distinct()
+                .ToList();
+
+            foreach (var procId in procesosIds)
+            {
+                var tareasDelProceso = Tasks.Where(t => t.PROC_ID == procId).ToList();
+
+                if (tareasDelProceso.All(t => t.TAR_EST == "Completado"))
+                {
+                    bool todasSuperaron24h = tareasDelProceso.All(t =>
+                    {
+                        var fecha = t.TAR_FEC_MOD ?? t.TAR_FEC_CRE;
+                        if (fecha == default) return false;
+                        return (ahora - fecha).TotalHours > HorasPermitidas;
+                    });
+
+                    if (todasSuperaron24h)
+                    {
+                        foreach (var t in tareasDelProceso)
+                            tareasBorrar.Add(t.TAR_ID);
+                        Console.WriteLine($"Proceso {procId}: todas completadas y >24h → historial");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Proceso {procId}: todas completadas pero <24h → permanecen visibles");
+                    }
+                }
+            }
+
+            if (tareasBorrar.Any())
+            {
+                Tasks = Tasks.Where(t => !tareasBorrar.Contains(t.TAR_ID)).ToList();
+                Console.WriteLine($"Total movidas al historial: {tareasBorrar.Count}");
+            }
+        }
+
         private async Task<List<TareaModel>> FiltrarTareasPorRolYArea(List<TareaModel> todasLasTareas)
         {
-            // 🔥 ROL 1: GERENTE - Ve TODAS las tareas
             if (EsGerente(UserRole))
             {
-                Console.WriteLine("👔 GERENTE/ADMIN: Acceso total a todas las tareas");
+                Console.WriteLine("GERENTE/ADMIN: Acceso total");
                 return todasLasTareas;
             }
 
-            // 🔥 ROL 2: LÍDER TÉCNICO - Ve solo tareas de SU área
             if (EsLiderTecnico(UserRole))
             {
-                Console.WriteLine($"👨‍💼 LÍDER TÉCNICO: Filtrando tareas del área {UserAreaId}");
+                Console.WriteLine($"LIDER TECNICO: area {UserAreaId}");
+                if (!UserAreaId.HasValue) return new List<TareaModel>();
 
-                if (!UserAreaId.HasValue)
-                {
-                    Console.WriteLine("⚠️ Líder sin área asignada, no verá tareas");
-                    return new List<TareaModel>();
-                }
-
-                var tareasFiltradas = new List<TareaModel>();
-
+                var filtradas = new List<TareaModel>();
                 foreach (var tarea in todasLasTareas)
                 {
                     if (tarea.PROC_ID.HasValue)
                     {
                         try
                         {
-                            // 1. Obtener el PROCESO
                             var resProceso = await Client.GetProcesoById.ExecuteAsync(tarea.PROC_ID.Value);
-
                             if (resProceso.Data?.ProcesoById?.Pro_ID != null)
                             {
-                                var proyectoId = resProceso.Data.ProcesoById.Pro_ID.Value;
-
-                                // 2. Obtener el PROYECTO del proceso
-                                var resProyecto = await Client.GetProyectoById.ExecuteAsync(proyectoId);
-
-                                if (resProyecto.Data?.ProyectoById != null)
-                                {
-                                    var areaDelProyecto = resProyecto.Data.ProyectoById.Are_ID;
-
-                                    // 3. Verificar si el ÁREA coincide
-                                    if (areaDelProyecto == UserAreaId)
-                                    {
-                                        tareasFiltradas.Add(tarea);
-                                        Console.WriteLine($"  ✓ Tarea '{tarea.TAR_NOM}' incluida");
-                                    }
-                                }
+                                var proyId = resProceso.Data.ProcesoById.Pro_ID.Value;
+                                var resProyecto = await Client.GetProyectoById.ExecuteAsync(proyId);
+                                if (resProyecto.Data?.ProyectoById?.Are_ID == UserAreaId)
+                                    filtradas.Add(tarea);
                             }
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"⚠️ Error procesando tarea '{tarea.TAR_NOM}': {ex.Message}");
+                            Console.WriteLine($"Error tarea '{tarea.TAR_NOM}': {ex.Message}");
                         }
                     }
                 }
-
-                Console.WriteLine($"  → Total tareas del área: {tareasFiltradas.Count}");
-                return tareasFiltradas;
+                Console.WriteLine($"  Total tareas del area: {filtradas.Count}");
+                return filtradas;
             }
 
-            // 🔥 ROL 3: EMPLEADO - Ve solo SUS tareas asignadas
-            Console.WriteLine($"👤 EMPLEADO: Filtrando solo tareas asignadas");
-
+            Console.WriteLine("EMPLEADO: Solo tareas asignadas");
             var tareasEmpleado = todasLasTareas
                 .Where(t => t.USU_ID == UsuarioActual?.USU_ID)
                 .ToList();
-
-            Console.WriteLine($"  → {tareasEmpleado.Count} tareas asignadas");
-
+            Console.WriteLine($"  {tareasEmpleado.Count} tareas asignadas");
             return tareasEmpleado;
         }
 
-        // 🔥 HELPERS: Verificar roles
         private bool EsGerente(string rol)
         {
-            var rolesGerente = new[] { "Gerente", "Administrador", "Enoc", "Admin" };
-            return rolesGerente.Any(r => rol.Equals(r, StringComparison.OrdinalIgnoreCase));
+            var roles = new[] { "Gerente", "Administrador", "Enoc", "Admin" };
+            return roles.Any(r => rol.Equals(r, StringComparison.OrdinalIgnoreCase));
         }
 
         private bool EsLiderTecnico(string rol)
         {
-            var rolesLider = new[] { "Líder Técnico", "LiderTecnico", "Lider", "Líder" };
-            return rolesLider.Any(r => rol.Equals(r, StringComparison.OrdinalIgnoreCase));
+            var roles = new[] { "Lider Tecnico", "LiderTecnico", "Lider" };
+            return roles.Any(r => rol.Equals(r, StringComparison.OrdinalIgnoreCase));
         }
 
-        // MÉTODOS DE FILTRADO
         private void FiltrarPorPrioridad(string prio)
         {
             PrioridadSeleccionada = prio;
+            // FIX: base incluye TODAS las tareas (incluyendo completadas dentro de 24h)
             TareasFiltradas = prio == "Todas"
-                ? Tasks!
+                ? Tasks!.ToList()
                 : Tasks!.Where(t => GetPrioridadNombre(t.PRI_ID) == prio).ToList();
         }
 
         private void FiltrarPorEstadoGrafica(string estado)
         {
-            if (estado == "Todas")
-                TareasFiltradas = Tasks!;
-            else
-                TareasFiltradas = Tasks!.Where(t => t.TAR_EST == estado).ToList();
+            PrioridadSeleccionada = "Todas";
+            // FIX: base incluye TODAS, filtro por estado si se pide
+            TareasFiltradas = estado == "Todas"
+                ? Tasks!.ToList()
+                : Tasks!.Where(t => t.TAR_EST == estado).ToList();
         }
 
         public string GetPrioridadNombre(Guid? id) =>
             Prioridades?.FirstOrDefault(p => p.PRI_ID == id)?.PRI_NOM ?? "Baja";
 
-        // CALENDARIO
         public void GenerarCalendarioMini()
         {
             DiasDelMesAsignaciones.Clear();
@@ -287,53 +384,52 @@ namespace Davivienda.FrontEnd.Pages.Pagess
             int offset = (int)primeroMes.DayOfWeek;
             var fechaInicio = primeroMes.AddDays(-offset);
 
+            // FIX: todas las tareas visibles, sin filtrar por estado
+            var todasLasTareas = Tasks ?? new();
+
             for (int i = 0; i < 35; i++)
             {
                 var f = fechaInicio.AddDays(i);
 
-                // 🔥 Verificar si hay tareas que INICIAN este día (verde)
-                var tieneInicio = Tasks?.Any(t =>
-                    t.TAR_FEC_INI.Date == f.Date &&
-                    t.TAR_EST == "Pendiente") ?? false;
+                // Verde = tareas que INICIAN ese dia (cualquier estado)
+                var tInicio = todasLasTareas
+                    .Where(t => t.TAR_FEC_INI.Date == f.Date)
+                    .ToList();
 
-                // 🔥 Verificar si hay tareas que FINALIZAN este día (rojo)
-                var tieneFin = Tasks?.Any(t =>
-                    t.TAR_FEC_FIN.HasValue &&
-                    t.TAR_FEC_FIN.Value.Date == f.Date &&
-                    t.TAR_EST == "Pendiente") ?? false;
+                // Rojo = tareas que FINALIZAN ese dia (cualquier estado)
+                var tFin = todasLasTareas
+                    .Where(t => t.TAR_FEC_FIN.HasValue && t.TAR_FEC_FIN.Value.Date == f.Date)
+                    .ToList();
+
+                string tooltip = "";
+                if (tInicio.Any()) tooltip += "Inicio: " + string.Join(", ", tInicio.Select(t => t.TAR_NOM)) + " ";
+                if (tFin.Any()) tooltip += "Fin: " + string.Join(", ", tFin.Select(t => t.TAR_NOM));
 
                 DiasDelMesAsignaciones.Add(new CalendarDayAsignacion
                 {
                     Fecha = f,
                     EsMesActual = f.Month == FechaCalendario.Month,
                     EsHoy = f.Date == DateTime.Today,
-                    TieneInicio = tieneInicio,
-                    TieneFin = tieneFin
+                    TieneInicio = tInicio.Any(),
+                    TieneFin = tFin.Any(),
+                    Tooltip = tooltip.Trim()
                 });
             }
         }
 
-        public TareaModel? GetProximaTareaAFinalizar()
-        {
-            return Tasks?
-                .Where(t => t.TAR_FEC_FIN.HasValue &&
-                            t.TAR_FEC_FIN.Value >= DateTimeOffset.Now &&
-                            t.TAR_EST == "Pendiente")
-                .OrderBy(t => t.TAR_FEC_FIN)
-                .FirstOrDefault();
-        }
+        public TareaModel? GetProximaTareaAFinalizar() =>
+            Tasks?.Where(t => t.TAR_FEC_FIN.HasValue &&
+                              t.TAR_FEC_FIN.Value >= DateTimeOffset.Now &&
+                              t.TAR_EST == "Pendiente")
+                  .OrderBy(t => t.TAR_FEC_FIN)
+                  .FirstOrDefault();
 
         public TareaModel? GetProximaTarea() =>
             Tasks?.Where(t => t.TAR_FEC_FIN >= DateTimeOffset.Now)
                   .OrderBy(t => t.TAR_FEC_FIN)
                   .FirstOrDefault();
 
-        // MODALES
-        private void AbrirModalCalendario()
-        {
-            ModalActual = "CALENDARIO";
-            MostrarModal = true;
-        }
+        private void AbrirModalCalendario() { ModalActual = "CALENDARIO"; MostrarModal = true; }
 
         private void AbrirDetalleTarea(TareaModel t)
         {
@@ -349,33 +445,23 @@ namespace Davivienda.FrontEnd.Pages.Pagess
             TareaSeleccionada = null;
         }
 
-        // 🔥 NUEVO: BITÁCORA DE TAREAS
         private void AbrirBitacoraTarea()
         {
             MostrarBitacoraTarea = true;
-            Console.WriteLine("📖 Abriendo Bitácora de Tareas");
+            Console.WriteLine("Abriendo Bitacora de Tareas");
         }
 
         private void CerrarBitacoraTarea()
         {
             MostrarBitacoraTarea = false;
-            Console.WriteLine("❌ Cerrando Bitácora de Tareas");
+            Console.WriteLine("Cerrando Bitacora de Tareas");
         }
 
-        // NAVEGACIÓN CALENDARIO
-        public void MesAnterior()
-        {
-            FechaCalendario = FechaCalendario.AddMonths(-1);
-            GenerarCalendarioMini();
-        }
+        public void MesAnterior() { FechaCalendario = FechaCalendario.AddMonths(-1); GenerarCalendarioMini(); }
+        public void MesSiguiente() { FechaCalendario = FechaCalendario.AddMonths(1); GenerarCalendarioMini(); }
 
-        public void MesSiguiente()
-        {
-            FechaCalendario = FechaCalendario.AddMonths(1);
-            GenerarCalendarioMini();
-        }
+        public void Dispose() => _dotNetRef?.Dispose();
 
-        // CLASE AUXILIAR
         public class CalendarDayAsignacion
         {
             public DateTime Fecha { get; set; }
@@ -383,6 +469,7 @@ namespace Davivienda.FrontEnd.Pages.Pagess
             public bool EsHoy { get; set; }
             public bool TieneInicio { get; set; }
             public bool TieneFin { get; set; }
+            public string Tooltip { get; set; } = "";
         }
     }
 }

@@ -31,6 +31,10 @@
 		<ProjectReference Include="..\Davivienda.Component\Davivienda.Component.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="wwwroot\images\" />
+	</ItemGroup>
+
 	<Target Name="RemoveStrawberryShakeAnalyzer" BeforeTargets="CoreCompile">
 		<ItemGroup>
 			<Analyzer Remove="@(Analyzer)" Condition="'%(FileName)' == 'StrawberryShake.CodeGeneration.CSharp.Analyzers'" />

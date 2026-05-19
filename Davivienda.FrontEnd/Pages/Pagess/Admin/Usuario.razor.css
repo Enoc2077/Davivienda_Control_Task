@@ -1,4 +1,7 @@
-﻿/* --- LAYOUT GENERAL --- */
+﻿/* ========================================
+   layout general
+   ======================================== */
+
 .page-container {
     padding: 35px 55px;
     background-color: #f1f5f9;
@@ -17,7 +20,10 @@
     letter-spacing: -0.5px;
 }
 
-/* --- BARRA DE BUSQUEDA Y BOTON (ARREGLADOS) --- */
+/* ========================================
+   barra de busqueda y boton
+   ======================================== */
+
 .search-bar-wrapper {
     background: white;
     padding: 15px 25px;
@@ -48,10 +54,13 @@
         width: 100%;
         padding: 12px 15px 12px 48px;
         border-radius: 12px;
-        border: 2px solid #e2e8f0; /* Borde y espacio [cite: 2026-02-12] */
+        border: 2px solid #e2e8f0;
         outline: none;
         transition: 0.3s ease;
         background-color: #f8fafc;
+        color: #1e293b;
+        font-size: 14px;
+        box-sizing: border-box;
     }
 
         .search-input-box input:focus {
@@ -72,6 +81,7 @@
     align-items: center;
     gap: 8px;
     transition: 0.2s;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
     .btn-primary-blue:hover {
@@ -79,7 +89,10 @@
         transform: translateY(-1px);
     }
 
-/* --- TARJETAS DE USUARIO (CUADROS BLANCOS) --- */
+/* ========================================
+   tarjetas de usuario
+   ======================================== */
+
 .users-list-container {
     display: flex;
     flex-direction: column;
@@ -189,6 +202,7 @@
     border-radius: 10px;
     font-weight: 700;
     cursor: pointer;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
 .btn-action-delete-min {
@@ -199,9 +213,27 @@
     border-radius: 10px;
     font-weight: 700;
     cursor: pointer;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-/* --- MODAL Y FORMULARIO (ARREGLADO SELECT) --- */
+/* ========================================
+   estado vacio
+   ======================================== */
+
+.empty-state-card {
+    background: white;
+    padding: 60px;
+    text-align: center;
+    border-radius: 20px;
+    color: #94a3b8;
+    font-weight: 600;
+    border: 2px dashed #e2e8f0;
+}
+
+/* ========================================
+   modal
+   ======================================== */
+
 .modal-overlay {
     position: fixed;
     inset: 0;
@@ -251,47 +283,19 @@
     font-size: 22px;
     color: #94a3b8;
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
 }
+
+    .close-x-dav:hover {
+        background: #e2e8f0;
+        color: #475569;
+    }
 
 .modal-body {
     padding: 20px 40px 30px;
-}
-
-.form-grid-dav {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.input-container-dav label {
-    display: block;
-    font-size: 11px;
-    font-weight: 800;
-    color: #64748b;
-    margin-bottom: 8px;
-    text-transform: uppercase;
-}
-
-.input-field-dav {
-    width: 100%;
-    padding: 14px 18px;
-    border: 2px solid #e2e8f0; /* Borde sólido [cite: 2026-02-12] */
-    border-radius: 12px;
-    background-color: #f8fafc;
-    font-size: 15px;
-    color: #1e293b !important;
-}
-
-/* FIX PARA EL SELECT - Habilitar selección y visibilidad */
-.select-dav {
-    cursor: pointer;
-    appearance: auto !important; /* Muestra la flecha del navegador */
-    background-color: white !important;
-}
-
-.status-select-fix {
-    font-weight: 700;
-    color: #0A2463 !important; /* Fuerza color oscuro para que no se vea blanco */
 }
 
 .modal-foot-dav {
@@ -300,6 +304,102 @@
     gap: 15px;
     background: #fcfdfe;
 }
+
+/* ========================================
+   formulario del modal
+   ======================================== */
+
+.form-grid-dav {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.input-container-dav {
+    display: flex;
+    flex-direction: column;
+}
+
+    .input-container-dav label {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        color: #64748b;
+        margin-bottom: 8px;
+        text-transform: uppercase;
+        letter-spacing: 0.4px;
+    }
+
+.input-field-dav {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    background-color: #f8fafc;
+    font-size: 15px;
+    color: #1e293b;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+}
+
+    .input-field-dav:focus {
+        border-color: #0A2463;
+        background-color: white;
+        box-shadow: 0 0 0 3px rgba(10, 36, 99, 0.10);
+    }
+
+.full-width-input {
+    grid-column: span 2;
+}
+
+.disabled-input {
+    background-color: #f1f5f9;
+    color: #94a3b8;
+    cursor: not-allowed;
+}
+
+input[type="password"] {
+    letter-spacing: 3px;
+}
+
+/* ========================================
+   select de estado
+   ======================================== */
+
+.select-dav {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    background-color: white;
+    outline: none;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    appearance: auto;
+    -webkit-appearance: auto;
+}
+
+    .select-dav:focus {
+        border-color: #0A2463;
+        box-shadow: 0 0 0 3px rgba(10, 36, 99, 0.10);
+    }
+
+    .select-dav option {
+        color: #1e293b;
+        background-color: white;
+        font-weight: 600;
+    }
+
+/* ========================================
+   botones del modal
+   ======================================== */
 
 .btn-secondary-dav {
     flex: 1;
@@ -310,7 +410,14 @@
     border-radius: 12px;
     font-weight: 700;
     cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
+
+    .btn-secondary-dav:hover {
+        background: #f8fafc;
+        border-color: #94a3b8;
+    }
 
 .btn-save-main-dav {
     flex: 2;
@@ -321,9 +428,41 @@
     border-radius: 12px;
     font-weight: 800;
     cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    font-family: 'Segoe UI', system-ui, sans-serif;
 }
 
-/* Animaciones */
+    .btn-save-main-dav:hover:not(:disabled) {
+        background: #061b4d;
+        transform: translateY(-1px);
+    }
+
+    .btn-save-main-dav:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+/* ========================================
+   validaciones y errores
+   ======================================== */
+
+.input-error {
+    border-color: #ED1C24 !important;
+    background-color: #FFF5F5 !important;
+}
+
+.error-text {
+    color: #ED1C24;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 5px;
+    display: block;
+}
+
+/* ========================================
+   animaciones
+   ======================================== */
+
 @keyframes popIn {
     from {
         opacity: 0;
@@ -338,40 +477,4 @@
 
 .animate-pop {
     animation: popIn 0.3s ease-out;
-}
-
-.empty-state-card {
-    background: white;
-    padding: 60px;
-    text-align: center;
-    border-radius: 20px;
-    color: #94a3b8;
-    font-weight: 600;
-    border: 2px dashed #e2e8f0;
-}
-
-
-
-/* Nuevo estilo para errores de validación */
-.input-error {
-    border-color: #ED1C24 !important;
-    background-color: #FFF5F5 !important;
-}
-
-.error-text {
-    color: #ED1C24;
-    font-size: 11px;
-    font-weight: 700;
-    margin-top: 5px;
-    display: block;
-}
-
-/* Ajuste para que el campo de pass ocupe más espacio si es necesario */
-.full-width-input {
-    grid-column: span 2;
-}
-
-/* Estilo para inputs de contraseña para que se vean limpios */
-input[type="password"] {
-    letter-spacing: 3px;
 }
